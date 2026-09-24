@@ -14,9 +14,10 @@ without re-reading everything else.
 `EXECUTION_PLAN.md` are finalized and in place.
 
 **Execution: in progress.** Steps 0.1–0.7 done; 0.8 in progress (package `vjepa_physics` installed
-in editable mode, D-20). **0.8d in progress** (guided in Claude Code, D-21/D-22): check script
-`scripts/check_video_loader.py` created; check `inspect` passed (F-46). Next: write
-`src/vjepa_physics/video.py`, then checks `load` → `repeat` → `colour` → `order` → `opencv` → `figure`.
+in editable mode, D-20). **0.8d in progress** (guided in Claude Code, D-21/D-22): loader
+`src/vjepa_physics/video.py` (`load_clip`) written; checks `inspect`, `load`, `repeat`, `colour`, `order`
+passed; `opencv` failed (PyAV vs OpenCV not pixel-identical, F-49) → D-05 criterion sent to the
+planning chat. Next: `figure` check (independent of the D-05 decision).
 
 ---
 
@@ -58,9 +59,16 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | File | Key | Proves | Status | Source |
 |---|---|---|---|---|
 | `results/video_loader/checks.json` | `inspect` | Test clip `data/speed/videos/scene_1000/video.mp4` decodes with PyAV 18.1.0 as `mpeg4`, `yuv420p`, 256×256, 16 frames, pts step 1/24 s | ✅ passed | F-46; `scripts/check_video_loader.py inspect` |
+| `results/video_loader/checks.json` | `load` | `load_clip` gives (16, 256, 256, 3) uint8, C-contiguous; raises `ValueError` on a wrong frame count (15) or size (224) instead of padding/truncating/resizing. Min 0 / max 249 explained by `colour` | ✅ passed | `scripts/check_video_loader.py load` |
+| `results/video_loader/checks.json` | `repeat` | Two loads bit-identical; decoded-pixel SHA-256 `03285f4cf9ffc6ecf90541b47e7f08c217eab4e4809d42f7042baf29ab9d95c0` for cross-run comparison | ✅ passed | `scripts/check_video_loader.py repeat` |
+| `results/video_loader/checks.json` | `colour` | RGB order: disk core (234.0, 114.4, 39.2) orange, background (29, 32, 29); blue = 0 only in a ring 0–2.2 px outside the disk | ✅ passed | F-47; `scripts/check_video_loader.py colour` |
+| `results/video_loader/checks.json` | `order` | Frame content in time order, geometry exact: max 0.654 px vs metadata, no bias; reversed / +1 frame / no y flip rejected (54.1 / 4.2 / 73.7 px) | ✅ passed | F-48; `scripts/check_video_loader.py order` |
+| `results/video_loader/checks.json` | `opencv` | PyAV vs OpenCV (FFmpeg backend) pixel-identical | ❌ failed: all pixels differ by ≤ 3, systematic +1 in R and B; D-05 criterion under review | F-49; `scripts/check_video_loader.py opencv` |
+| `results/video_loader/checks.json` | `opencv_bicubic` | Diagnostic: swscale flag is not the cause (PyAV BILINEAR = BICUBIC); frame colour tags unspecified | ℹ️ diagnostic | F-49; `scripts/check_video_loader.py opencv_bicubic` |
+| `results/video_loader/checks.json` | `opencv_diff_stats` | Diagnostic: signed PyAV − OpenCV histogram and means by region (+1.01 / +0.01 / +1.00 overall) | ℹ️ diagnostic | F-49; `scripts/check_video_loader.py opencv_diff_stats` |
 
-Planned in the same file (0.8d): `load`, `repeat`, `colour`, `order`, `opencv`, `figure`
-(figure → `results/video_loader/frames.png`).
+Still planned in the same file (0.8d): `figure` (→ `results/video_loader/frames.png`); `opencv` re-scored
+once the planning chat settles D-05's criterion.
 
 ---
 
@@ -69,6 +77,12 @@ Planned in the same file (0.8d): `load`, `repeat`, `colour`, `order`, `opencv`, 
 *(Anything stopping progress goes here, with enough context to resume without re-deriving it.)*
 
 No blockers.
+
+Awaiting the planning chat:
+- **D-05 cross-check criterion.** Pixel-identical PyAV vs OpenCV is not achievable on our install (F-49:
+  systematic +1 R/B offset, max 3 levels; likely FFmpeg 8 vs 7). Proposed: (a) tolerance band per clip
+  (max |diff| ≤ 3, mean signed diff near (+1, 0, +1), outliers flagged), PyAV the only decoder for model
+  inputs; optional (b) textbook BT.601 reference from PyAV's raw YUV. Affects the `opencv` check and step 1.8.
 
 To confirm later:
 - **`.gitignore` for `artifacts/`** — the dry-run proved `artifacts/manifests/` is committed; that other
@@ -98,8 +112,15 @@ what's next.
 - Planned 0.8d checks on test clip `speed/scene_1000` (2.69 m/s, θ 230.625°, ~54 px motion, stays in frame):
   `inspect`, `load`, `repeat`, `colour`, `order`, `opencv`, `figure`. Full-data versions stay in 1.7–1.9.
 - `scripts/check_video_loader.py` created (user-written); `inspect` passed → F-46, saved to
-  `results/video_loader/checks.json` (see "Saved evidence").
-- **Next:** write `src/vjepa_physics/video.py` (`load_clip`), then the `load` check.
+  `results/video_loader/checks.json` (see "Saved evidence"). Committed and pushed (`cd2458c`).
+- `src/vjepa_physics/video.py` written: `load_clip(path, n_frames=16, size=256)` → (16, 256, 256, 3) uint8 RGB
+  via PyAV `to_ndarray(format="rgb24")`; raises `ValueError` on missing/non-increasing pts, wrong frame count
+  or shape (no padding/cropping/resizing).
+- Checks `load`, `repeat`, `colour` (F-47), `order` (F-48) passed. `opencv` failed: PyAV vs OpenCV differ by
+  ≤ 3 levels on every pixel, systematic +1 in R and B (F-49); diagnostics `opencv_bicubic`,
+  `opencv_diff_stats` rule out the swscale flag and colour tags. D-05 marked under review; note sent to the
+  planning chat. `cv2` now imported lazily (objc duplicate-class warning from two bundled libavdevice builds).
+- **Next:** `figure` check; then re-score `opencv` per the planning chat's D-05 decision.
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.
