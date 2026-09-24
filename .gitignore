@@ -1,0 +1,18 @@
+# Supplied data: read-only, never tracked.
+# Integrity is proven by the fingerprint in artifacts/manifests/ (step 0.2).
+data/
+
+# Third-party papers: reference only, not ours to redistribute.
+paper/
+
+# Large regenerable outputs. Keep only the small manifests (splits, checksums).
+artifacts/*
+!artifacts/manifests/
+
+# Python and the project venv (step 0.3)
+.venv/
+__pycache__/
+*.pyc
+
+# macOS Finder files
+.DS_Store
