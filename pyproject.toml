@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vjepa-physics"
+version = "0.1.0"
+description = "World Mechanics take-home: how V-JEPA 2 represents direction, speed and acceleration"
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]

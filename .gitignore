@@ -16,3 +16,9 @@ __pycache__/
 
 # macOS Finder files
 .DS_Store
+
+# Build metadata from `pip install -e .`
+*.egg-info/
+
+# Claude Code personal settings (guide-only permissions), per the Claude Code docs
+.claude/settings.local.json

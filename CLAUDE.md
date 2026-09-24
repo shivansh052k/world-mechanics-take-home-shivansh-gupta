@@ -16,6 +16,15 @@ You are a **guide**, not an author. The user writes and runs all code himself.
 
 If you are ever unsure whether something counts as "acting", it does. Ask.
 
+**How the user wants to work (D-21, user said):**
+- **One small step at a time.** Give exactly one step, then wait for the user's output before the next.
+- **Files:** give the **exact path and full content** (or the exact lines to add/replace).
+  The user creates and edits files himself. Never give terminal commands that write file
+  content (`cat >`, `echo >>`, heredocs into files, `sed -i`, …).
+- **Terminal commands** only for running and checking. If a command writes files as a side
+  effect (downloads, `pip freeze >`, installs, generated outputs), say so — and where — first.
+- Keep it short; skip trivia the user already knows.
+
 ---
 
 ## 2. Standing rules (apply to every session)
@@ -83,7 +92,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
 
 ### Model
 - **[verified]** Config: 24 layers, hidden 1024, 16 heads, patch 16, tubelet 2, crop 256;
-  predictor 12 layers × 384. Checkpoint revision `b3c1679`. (checkpoint config.json)
+  predictor 12 layers × 384. Checkpoint revision `b3c1679b7c34d3255ef3547f27c7b226aefab26f` (full hash — use this in code);
+  `model.safetensors` SHA-256 `25466aef85727d16546c6cf8c99f12fcfad9cbca8225d45f23685e2e025b786b`. (checkpoint config.json; F-44)
 - **[verified]** 16 input frames → 8 × 16 × 16 = **2048 tokens**, no CLS token. Token `i` →
   time `i // 256`, row `(i % 256) // 16`, col `i % 16`. (transformers modeling_vjepa2.py, RoPE position code)
 - **[verified]** `frames_per_clip = 64` does not affect inference; 16 frames is fine. (config docstring)
@@ -118,20 +128,30 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
 
 ## 6. Environment
 
-- MacBook, Apple **M3, 16 GB** unified memory, **macOS 27.0**, **Python 3.13.2**, fresh venv.
+- MacBook, Apple **M3, 16 GB** unified memory, **macOS 27.0**, **Python 3.13.2** (Homebrew,
+  `python@3.13` pinned) in `.venv/` at the repo root. Activate with `source .venv/bin/activate`.
+  **Always install with `python -m pip`.** (F-41, D-06)
 - Compute on **MPS** (Apple GPU). Only **pooled** activations are stored in bulk; per-token
   activations are computed **live** via hooks when a specific experiment needs them (D-13).
   Do not hold per-token activations for many layers in RAM (≈ 4 MB per clip per layer in fp16).
-- Planned video decoder: **PyAV** (bundles FFmpeg), with **OpenCV** as an independent cross-check.
-- Exact package versions will be recorded in a lock file during Phase 0.
+- Video decoders: **PyAV 18.1.0** (bundles FFmpeg) primary; **OpenCV** (`opencv-python-headless`
+  5.0.0.93) as an independent cross-check. (D-05, F-42)
+- Exact versions: `requirements.lock.txt` (52 packages; torch 2.14.0, transformers 5.17.0). (F-42)
+- Model files live in the HF cache (`~/.cache/huggingface/hub/`), not in the repo. (F-44)
 
 ---
 
 ## 7. Repo layout
 
-- `data/` — supplied data. **Read-only.**
+- `data/` — supplied data. **Read-only** (chmod'd, step 0.2); fingerprint in
+  `artifacts/manifests/data_fingerprint.sha256` (re-check: `shasum -a 256 -c …`). `.DS_Store`
+  is never part of the data (D-19).
 - `docs/` — the three source-of-truth files.
-- The layout for code and outputs is defined in `docs/EXECUTION_PLAN.md`. Follow it; do not invent folders.
+- `src/vjepa_physics/` — the installable package (D-20; `pyproject.toml` at the root, installed
+  with `python -m pip install -e .`). Import as `from vjepa_physics.<module> import …`.
+- `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
+  except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
+- Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.
 
 ---
 

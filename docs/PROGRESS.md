@@ -13,9 +13,9 @@ without re-reading everything else.
 **Planning: complete** (including two review rounds). `CLAUDE.md`, `DECISIONS.md`, and
 `EXECUTION_PLAN.md` are finalized and in place.
 
-**Execution: in progress.** Step 0.1 done. Repo folder `world-mechanics-take-home-shivansh-gupta`,
-git initialised, pushed to the private GitHub remote (D-18). Next step is **0.2 (Data fingerprint
-and protection)** in `docs/EXECUTION_PLAN.md`.
+**Execution: in progress.** Steps 0.1–0.7 done; 0.8 in progress (package `vjepa_physics` installed
+in editable mode, D-20). Next step is **0.8d: write `src/vjepa_physics/video.py`** — the first step
+guided in **Claude Code** (D-21).
 
 ---
 
@@ -23,7 +23,7 @@ and protection)** in `docs/EXECUTION_PLAN.md`.
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0 — Environment and model setup | 🟨 In progress | 0.1 done |
+| 0 — Environment and model setup | 🟨 In progress | 0.1–0.7 done; 0.8 in progress |
 | 1 — Data audit | ⬜ Not started | |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
@@ -39,11 +39,13 @@ Status legend: ⬜ Not started · 🟨 In progress · ✅ Passed gate · ⚠️ 
 
 ## Key numbers so far
 
-*(Populate as phases complete. Example rows shown for format — remove once real ones are added.)*
-
 | Metric | Value | Source |
 |---|---|---|
-| — | — | — |
+| Supplied data files (excl. `.DS_Store`) | 9,147 | F-45 |
+| Model revision | `b3c1679b7c34d3255ef3547f27c7b226aefab26f` | F-44 |
+| `model.safetensors` SHA-256 | `25466aef85727d16546c6cf8c99f12fcfad9cbca8225d45f23685e2e025b786b` | F-44 |
+| Conv3d MPS vs CPU relative difference | 2.5e-7 | F-43 |
+| Locked packages | 52 | F-42 |
 
 ---
 
@@ -72,6 +74,17 @@ Known decision points the plan cannot remove in advance (each has a planned fall
 
 Newest entry on top. One entry per work session: what was done, what passed, what didn't,
 what's next.
+
+### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
+- 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.
+- 0.3: `.venv` from Homebrew Python 3.13.2 (first attempt interrupted during pip setup → rebuilt with `--clear`); `python@3.13` pinned.
+- 0.4: all packages installed and checked; OpenCV as `opencv-python-headless`; `pip check` clean.
+- 0.5: `requirements.lock.txt` (52 packages) committed; F-38/F-39 re-confirmed on installed versions.
+- 0.6: MPS works; patch-embedding-shaped Conv3d agrees with CPU (rel. diff 2.5e-7).
+- 0.7: pinned checkpoint downloaded (4 files, no `original/`); weights SHA-256 matches the Hub.
+- 0.8a–c: `pyproject.toml`, `src/vjepa_physics/__init__.py`, editable install verified; `*.egg-info/` git-ignored.
+- Docs checkpoint: F-41–F-45, D-20, D-21; CLAUDE.md updated with the working style and environment.
+- **Next:** 0.8d (video loader), in Claude Code.
 
 ### 2026-09-24 — Step 0.1 done (project setup)
 - Renamed the repo folder to `world-mechanics-take-home-shivansh-gupta` (before any venv, which stores
