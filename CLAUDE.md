@@ -114,11 +114,16 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   forward hooks on each encoder block**, and pin the transformers version. (source of both versions)
 - **[verified] MPS → CPU float64 trap:** `t.to("cpu", torch.float64)` on an MPS tensor silently gave
   all-zero tensors. Always move first, then widen: `t.to("cpu").to(torch.float64)`. (F-55)
-- **[untested] Predictor:** by default it gets all tokens as context and predicts all tokens
+- **[verified] Write-back hooks must be prepended.** A forward hook's return value replaces the output only for
+  hooks registered after it; transformers' `hidden_states` hooks are permanent and registered first. Use
+  `edit_encoder` (prepended), never a plain `register_forward_hook`, for any edit. (F-56)
+- **[verified] Predictor:** by default it gets all tokens as context and predicts all tokens
   (reconstruction, not forecasting), and the encoder has already seen the full clip. A true
   future-prediction test = encode frames 0–7 only (1024 tokens), then call the predictor
   **separately** with context positions 0–1023 and target positions 1024–2047.
-  The combined `forward()` cannot do this. (modeling_vjepa2.py)
+  The combined `forward()` cannot do this. (modeling_vjepa2.py) Implemented in `forecast.py`; separate calls =
+  combined forward bit-for-bit; forecast beats fitting-free baselines, but only ~3% better than the mean token, so
+  whether it reads out motion is open (F-57, O-20). HF most likely ships the target (EMA) encoder (F-58, pending).
 
 ### Data
 - **[scouting]** The disk is **orange**, not blue as DATA.md says (two decoders agree).
@@ -163,7 +168,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   Modules so far: `checkpoint` (pinned model id/revision/weights hash), `video` (`load_clip`),
   `preprocess` (`preprocess_clip`), `evidence` (`save_result` with provenance, used by check scripts),
   `model` (`load_model`, `weights_fingerprint`), `reproducibility` (`set_seeds`, `SEED`),
-  `activations` (`capture_encoder`, `GRID`, `as_grid`).
+  `activations` (`capture_encoder`, `GRID`, `as_grid`), `intervention` (`edit_encoder`, `encoder_sites`),
+  `forecast` (`encode`, `predict`, `training_target`).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.

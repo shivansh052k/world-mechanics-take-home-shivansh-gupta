@@ -25,7 +25,11 @@ checkpoint processor with resize/crop off) verified by `config`, `manual`, `iden
 `hidden_states` and `token_layout` (F-53).
 **0.13 done:** `scripts/check_numerics.py` — bit-exact repeat and batch; MPS vs CPU recorded; float64 reference
 shows MPS fp32 ≥ as accurate as CPU fp32; sdpa kept (F-54, F-55). MPS-vs-CPU criterion (O-19) with the planning
-chat. **Next: 0.14 (intervention no-op test)** — waiting for the user's go.
+chat. **0.14 done:** `src/vjepa_physics/intervention.py` (`edit_encoder`, `encoder_sites`) verified by
+`scripts/check_intervention.py` `noop`, `positive_control`, `hook_order` (F-56). **0.15 done:** `src/vjepa_physics/forecast.py` (`encode`, `predict`,
+`training_target`) verified by `scripts/check_forecast.py` `predictor_path` and `forecast` (F-57); O-18 answered from
+source (F-58, user confirmation pending); O-20 (is the predictor readout informative about motion?) with the planning
+chat. **Next: 0.16 (speed and memory benchmark)** — waiting for the user's go.
 
 ---
 
@@ -33,7 +37,7 @@ chat. **Next: 0.14 (intervention no-op test)** — waiting for the user's go.
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0 — Environment and model setup | 🟨 In progress | 0.1–0.13 done; 0.14 next |
+| 0 — Environment and model setup | 🟨 In progress | 0.1–0.15 done; 0.16 next |
 | 1 — Data audit | ⬜ Not started | |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
@@ -59,6 +63,7 @@ Status legend: ⬜ Not started · 🟨 In progress · ✅ Passed gate · ⚠️ 
 | Test clip frame timing (PyAV) | time_base 1/12288, pts step 512 = 1/24 s | F-46 |
 | Parameters (encoder + predictor) | 303,885,312 + 22,086,016 = 325,971,328 | F-51 |
 | In-memory weights fingerprint (reference for "model unchanged") | `c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede` | F-51 |
+| Median time per clip on MPS (full encode / 8-frame encode / predictor) | 0.93 / 0.42 / 0.13 s | F-57 |
 
 ---
 
@@ -102,6 +107,13 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/numerics/checks.json` | `precision` | Diagnostic vs CPU float64: MPS fp32 error ≤ CPU fp32 error at all 27 outputs (ratio 0.58–0.99) | ℹ️ diagnostic | F-54; `scripts/check_numerics.py precision` |
 | `results/numerics/checks.json` | `attention` | Diagnostic: eager ÷ sdpa error vs float64 = 0.93–1.03 → keep sdpa (pre-stated rule) | ℹ️ diagnostic | F-54, D-26; `scripts/check_numerics.py attention` |
 
+| `results/intervention/checks.json` | `noop` | Writing back an unchanged activation (`clone`, `+ 0`) at each of 25 sites leaves all 27 outputs bit-identical on MPS; hook fired once per run; hooks removed (0/0); fingerprint unchanged | ✅ passed | F-56; `scripts/check_intervention.py noop` |
+| `results/intervention/checks.json` | `positive_control` | Adding a seeded random δ at each site: outputs before it bit-identical, site = baseline + δ exactly, every output after it changed (incl. final norm, predictor); change sizes recorded as observations | ✅ passed | F-56; `scripts/check_intervention.py positive_control` |
+| `results/intervention/checks.json` | `hook_order` | With transformers' `hidden_states` hooks and our capture registered before the edit, both see baseline + δ at every site (prepend works); negative control (appended edit) leaves capture unedited; hooks 48/48 | ✅ passed | F-56; `scripts/check_intervention.py hook_order` |
+
+| `results/forecast/checks.json` | `predictor_path` | Separate `encode` → `predict` = combined forward bit-for-bit; reversed forecast targets return reversed rows; forecast shapes (1, 1024, 1024); context-vs-full-clip difference 0.72 recorded as an observation | ✅ passed | F-57; `scripts/check_forecast.py predictor_path` |
+| `results/forecast/checks.json` | `forecast` | 96 clips (32 per dataset, ids saved): predictor beats copy-last-step and mean-context-token baselines in every dataset (all 95% CIs < 0); margin over the mean token ~3% of L1 (→ O-20); H-06 fields, per-step L1s, timings recorded | ✅ passed | F-57; `scripts/check_forecast.py forecast` |
+
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
 and combined), `versions` (from package metadata). **Entries saved before commit `c39e0a8` keep the old meaning**
@@ -126,6 +138,15 @@ Awaiting the planning chat:
 - **O-19, MPS-vs-CPU criterion.** Pre-set criterion failed at the last layers; float64 reference shows fp32 itself
   (CPU too) cannot meet it and MPS is at least as accurate as CPU (F-54). Proposed: keep D-06; criterion "MPS fp32
   error vs float64 ≤ CPU fp32 error" (met); probe-level MPS-vs-CPU comparison at step 2.6.
+- **O-20, is the predictor readout informative about motion?** 0.15 passed its pre-set rule (F-57), but the margin over
+  the mean-token baseline is ~3% of L1, the all-token metric is likely background-dominated, and the predictor's shrunk
+  scale may explain part of the margin. Proposed: disk-patch-restricted forecast comparison before step 5.2 relies on
+  the predictor readout.
+
+To confirm by the user:
+- **O-18 / F-58:** check in the browser that `checkpoint_key="target_encoder"` (vjepa2 `src/hub/backbones.py`), the
+  `torch.hub.load(HUB_REPO, "vjepa2_" + model_name, ...)` call (transformers `convert_vjepa2_to_hf.py`) and
+  `F.layer_norm(hi, (hi.size(-1),))` (vjepa2 `app/vjepa/train.py`) read as quoted; then mark F-58 verified and close O-18.
 
 To confirm later:
 - **Phase 0 gate (0.18):** re-run every check once from a clean, committed tree, so the whole evidence set has
@@ -139,7 +160,7 @@ To confirm later:
   `git status` / `git check-ignore -v` then.
 
 Known decision points the plan cannot remove in advance (each has a planned fallback):
-- **O-18** — which encoder weights HF ships (target vs context); check in step 0.15.
+- **O-18** — which encoder weights HF ships: answered from source at 0.15 (target encoder, F-58), user confirmation pending.
 - **Phase 1 may overturn scouting facts** (F-21–F-36); D-14's split counts are provisional until step 1.12.
 - **0.15 may fail** → step 5.2 falls back to a later-layer readout, and Part 2's behavior manifold (D-17) moves with it.
 - **Phase 3 may show no clean transition** → O-15/O-16 become documented judgment calls.
@@ -198,7 +219,15 @@ what's next.
   pre-set criterion at the last layers; `precision` (float64 reference) shows fp32 itself is the limit and MPS is at
   least as accurate as CPU; `attention` → keep sdpa. `load_model` gained diagnostic-only `dtype` / `attn_implementation`.
   Planning-chat note sent (O-19). **Step 0.13 done.**
-- **Next:** 0.14 (intervention no-op test) — waiting for the user's go.
+- `src/vjepa_physics/intervention.py` (`edit_encoder`: prepended write-back hook; `encoder_sites`) and
+  `scripts/check_intervention.py`: `noop`, `positive_control`, `hook_order` all passed (F-56). `hook_order` added after
+  noticing `positive_control` could not test `prepend` (its capture hook is registered after the edit anyway).
+  **Step 0.14 done.**
+- `src/vjepa_physics/forecast.py` (`encode`, `predict`, `training_target`) and `scripts/check_forecast.py`:
+  `predictor_path` passed (bit-exact vs the combined forward); `forecast` passed on 96 clips, clip draw and pass rule
+  (per-dataset CI < 0 vs both baselines) set by the planning chat before the run (F-57). H-06 supported. O-18 answered
+  from source (F-58, confirmation pending); O-20 raised (small margin, background-dominated metric). **Step 0.15 done.**
+- **Next:** 0.16 (speed and memory benchmark) — waiting for the user's go.
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.
