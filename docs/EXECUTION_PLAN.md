@@ -7,8 +7,8 @@ Last updated: 2026-09-24.
 ## Phase 0 — Environment and model setup
 **Goal:** Set up everything from scratch on the Mac and prove the model loads, runs, and behaves exactly as expected.
 
-- [ ] **0.1 Project setup** — Create the approved folder structure and initialise git. Folder roles: `src/` importable code; `scripts/` one entry script per step; `artifacts/` large regenerable binaries (activations, probes, splines, tracked positions), git-ignored **except** `artifacts/manifests/` (splits, data fingerprint, artifact checksums), which is committed; `results/` reports, figures, metrics (committed); `slides/` presentation (committed); `data/` git-ignored (supplied, read-only; the fingerprint proves it is unchanged). `.gitignore` also covers `.venv/`, `__pycache__/`, `.DS_Store`.
-- [ ] **0.2 Data fingerprint and protection** — Before any code touches the data, record a checksum of every supplied file (saved to `artifacts/manifests/`) and make `data/` read-only.
+- [x] **0.1 Project setup** — Create the approved folder structure and initialise git. Folder roles: `src/` importable code; `scripts/` one entry script per step; `artifacts/` large regenerable binaries (activations, probes, splines, tracked positions), git-ignored **except** `artifacts/manifests/` (splits, data fingerprint, artifact checksums), which is committed; `results/` reports, figures, metrics (committed); `slides/` presentation (committed); `data/` git-ignored (supplied, read-only; the fingerprint proves it is unchanged); `paper/` git-ignored (third-party papers). `.gitignore` also covers `.venv/`, `__pycache__/`, `.DS_Store`. Push to the private GitHub remote (D-18).
+- [ ] **0.2 Data fingerprint and protection** — Before any code touches the data, record a checksum of every supplied file, excluding `.DS_Store` files (D-19), saved to `artifacts/manifests/`, and make `data/` read-only.
 - [ ] **0.3 Create the venv** — Fresh Python 3.13.2 virtual environment for this project only.
 - [ ] **0.4 Install and verify required packages** — Install PyTorch, transformers, PyAV, OpenCV, and analysis/plotting libraries; confirm each imports and works.
 - [ ] **0.5 Record exact versions in a lock file** — Freeze every installed package version so the setup can be reproduced exactly.
@@ -29,7 +29,7 @@ Last updated: 2026-09-24.
 ## Phase 1 — Data audit
 **Goal:** Verify every manifest, metadata file, and video, and document what the data really contains.
 
-- [ ] **1.1 Manifest integrity checks** — Every line parses, row counts match DATA.md, ids are unique and contiguous, every referenced file exists, no orphan folders, no duplicate paths.
+- [ ] **1.1 Manifest integrity checks** — Every line parses, row counts match DATA.md, ids are unique and contiguous, every referenced file exists, no orphan folders or files (ignoring `.DS_Store`, D-19), no duplicate paths.
 - [ ] **1.2 Metadata consistency checks** — Fields, types, and values are self-consistent; confirm the manifests are sorted by label.
 - [ ] **1.3 Re-verify the data fingerprint** — Confirm the checksum taken in Phase 0 still matches; the data has not changed.
 - [ ] **1.4 Value-grid and design-balance analysis** — Confirm the 64-value grids, clips per value, and the direction set's motion-type split.
@@ -137,10 +137,10 @@ Last updated: 2026-09-24.
 - [ ] **8.4 Build the presentation.**
 - [ ] **8.5 Build a lightweight results notebook** — Loads saved artifacts and reproduces the key figures, so no one needs to rerun the full pipeline to see them.
 - [ ] **8.6 Code cleanup** — Remove dead/debug code, add docstrings, consistent style.
-- [ ] **8.7 Write a project-level README for the code.**
+- [ ] **8.7 Write a project-level README for the code** — Headed with the full title (D-18); decide how it coexists with the supplied task `README.md` at the root.
 - [ ] **8.8 Verify reproducibility** — Decide: full rerun vs. a scoped from-scratch smoke test, given compute limits.
 - [ ] **8.9 Requirements-compliance checklist** — Map F-01 through F-09 to exactly where each is addressed, to catch any accidental omission.
-- [ ] **8.10 Decide what's in the code submission** — Likely `src/` + `scripts/` + a small subset of `results/`, excluding bulky `artifacts/`; decide the delivery method (attachment vs. a link).
+- [ ] **8.10 Decide what's in the code submission** — Likely `src/` + `scripts/` + a small subset of `results/`, excluding bulky `artifacts/`; decide the delivery method (attachment, or a link such as inviting the reviewer to the private repo, D-18).
 - [ ] **8.11 Prepare to defend every decision** — Review `DECISIONS.md` and walk through the key code (probes, nullspace, steering, splines) so every choice and every line can be explained.
 - [ ] **8.12 Prepare likely follow-up questions and answers** — Using `DECISIONS.md`'s paper notes (P-01–P-13) and open decisions as source material, since the README says the talk is "the basis for an open discussion."
 - [ ] **8.13 Rehearse and time the talk.**
