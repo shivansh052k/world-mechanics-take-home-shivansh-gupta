@@ -29,7 +29,9 @@ chat. **0.14 done:** `src/vjepa_physics/intervention.py` (`edit_encoder`, `encod
 `scripts/check_intervention.py` `noop`, `positive_control`, `hook_order` (F-56). **0.15 done:** `src/vjepa_physics/forecast.py` (`encode`, `predict`,
 `training_target`) verified by `scripts/check_forecast.py` `predictor_path` and `forecast` (F-57); O-18 answered from
 source (F-58, user confirmation pending); O-20 (is the predictor readout informative about motion?) with the planning
-chat. **Next: 0.16 (speed and memory benchmark)** — waiting for the user's go.
+chat. **0.16 done:** `scripts/check_benchmark.py benchmark` (F-59): ~0.84 s per
+clip, batching gives no speed-up (batch size 1 suggested), ~65 min to extract all clips, memory well within limits.
+**Next: 0.17 (optional official-implementation parity, O-14) or 0.18 (Phase 0 gate)** — waiting for the user's go.
 
 ---
 
@@ -37,7 +39,7 @@ chat. **Next: 0.16 (speed and memory benchmark)** — waiting for the user's go.
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0 — Environment and model setup | 🟨 In progress | 0.1–0.15 done; 0.16 next |
+| 0 — Environment and model setup | 🟨 In progress | 0.1–0.16 done; 0.17 (optional) / 0.18 next |
 | 1 — Data audit | ⬜ Not started | |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
@@ -64,6 +66,10 @@ Status legend: ⬜ Not started · 🟨 In progress · ✅ Passed gate · ⚠️ 
 | Parameters (encoder + predictor) | 303,885,312 + 22,086,016 = 325,971,328 | F-51 |
 | In-memory weights fingerprint (reference for "model unchanged") | `c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede` | F-51 |
 | Median time per clip on MPS (full encode / 8-frame encode / predictor) | 0.93 / 0.42 / 0.13 s | F-57 |
+| Extraction stand-in per clip (all 25 sites, mean-pooled), batch 1 / 8 | 0.84 / 0.92 s; batch size 1 suggested | F-59 |
+| Estimated extraction time, all 4,572 clips | ~65 min | F-59 |
+| MPS memory: weights / pool at batch 1 / Metal recommended max | 1.215 / 2.06 / 11.84 GiB | F-59 |
+| Pooled storage fp32 (mean over tokens / per time step) | 0.44 / 3.5 GiB | F-59 |
 
 ---
 
@@ -114,6 +120,8 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/forecast/checks.json` | `predictor_path` | Separate `encode` → `predict` = combined forward bit-for-bit; reversed forecast targets return reversed rows; forecast shapes (1, 1024, 1024); context-vs-full-clip difference 0.72 recorded as an observation | ✅ passed | F-57; `scripts/check_forecast.py predictor_path` |
 | `results/forecast/checks.json` | `forecast` | 96 clips (32 per dataset, ids saved): predictor beats copy-last-step and mean-context-token baselines in every dataset (all 95% CIs < 0); margin over the mean token ~3% of L1 (→ O-20); H-06 fields, per-step L1s, timings recorded | ✅ passed | F-57; `scripts/check_forecast.py forecast` |
 
+| `results/benchmark/checks.json` | `benchmark` | Time and memory per clip on MPS at batch sizes 1/2/4/8 (no batching gain; batch 1 suggested by the pre-set rule); batched pooled outputs = single bit-for-bit at 2/4/8; extraction ~65 min; storage estimates | ℹ️ diagnostic | F-59; `scripts/check_benchmark.py benchmark` |
+
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
 and combined), `versions` (from package metadata). **Entries saved before commit `c39e0a8` keep the old meaning**
@@ -151,8 +159,9 @@ To confirm by the user:
 To confirm later:
 - **Phase 0 gate (0.18):** re-run every check once from a clean, committed tree, so the whole evidence set has
   clean provenance (D-27).
-- **Batch size at extraction (2.4):** `batch` proved bit-exactness for batch size 2 only; re-run it with the
-  extraction's real batch size.
+- **Batch size at extraction (2.4):** `batch` proved per-token bit-exactness for batch size 2; `benchmark` showed
+  pooled outputs bit-exact at 2/4/8 and no speed gain from batching (F-59), so batch size 1 is suggested. If 2.4 uses
+  any batch size > 1, re-run `batch` with it.
 - **D-05 criterion must be settled in the planning chat before step 1.8** (current "pixel-identical" wording
   cannot pass, F-49).
 - **`.gitignore` for `artifacts/`** — the dry-run proved `artifacts/manifests/` is committed; that other
@@ -165,7 +174,8 @@ Known decision points the plan cannot remove in advance (each has a planned fall
 - **0.15 may fail** → step 5.2 falls back to a later-layer readout, and Part 2's behavior manifold (D-17) moves with it.
 - **Phase 3 may show no clean transition** → O-15/O-16 become documented judgment calls.
 - **Downstream steering effects may wash out** → a finding, not a failure; the same-layer control keeps it interpretable.
-- **MPS operator gaps and the compute budget** are unknown until steps 0.6 and 0.16.
+- **MPS operator gaps and the compute budget:** no operator gaps so far (fallback never enabled, F-43); budget
+  measured at 0.16 (F-59: ~0.9 s per forward pass, ~65 min for full extraction).
 
 ---
 
@@ -227,7 +237,10 @@ what's next.
   `predictor_path` passed (bit-exact vs the combined forward); `forecast` passed on 96 clips, clip draw and pass rule
   (per-dataset CI < 0 vs both baselines) set by the planning chat before the run (F-57). H-06 supported. O-18 answered
   from source (F-58, confirmation pending); O-20 raised (small margin, background-dominated metric). **Step 0.15 done.**
-- **Next:** 0.16 (speed and memory benchmark) — waiting for the user's go.
+- `scripts/check_benchmark.py benchmark` (diagnostic): batching gives no speed-up on MPS (0.84 s per clip at batch 1),
+  batched pooled outputs bit-identical at 2/4/8, extraction ~65 min, memory well within limits (F-59). **Step 0.16 done.**
+- Doc workflow changed (user said): doc updates now applied directly after each step, no chat preview (D-22 amended).
+- **Next:** 0.17 (optional parity, O-14) or 0.18 (Phase 0 gate) — waiting for the user's go.
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.

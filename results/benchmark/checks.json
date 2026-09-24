@@ -1,0 +1,106 @@
+{
+  "benchmark": {
+    "provenance": {
+      "utc": "2026-09-24T22:21:11+00:00",
+      "git_commit": "a5c833f5389c5034f2974e7e1dc6a3ee619b193d",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        "?? scripts/check_benchmark.py",
+        "?? scripts/check_intervention.py",
+        "?? src/vjepa_physics/intervention.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
+          "scripts/check_benchmark.py": "fd1e88eaaddeaafbb96166377314f242451902a074639cf498c9ca6306f300d9"
+        },
+        "combined_sha256": "348d8ae12fa76a8b60bd98c4ef61e52e6eb9e1bb683dfd83d672aa9162fef50a"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "device": "mps",
+      "clips": [
+        "data/speed/videos/scene_1000/video.mp4",
+        "data/speed/videos/scene_1001/video.mp4",
+        "data/speed/videos/scene_1002/video.mp4",
+        "data/speed/videos/scene_1003/video.mp4",
+        "data/speed/videos/scene_1004/video.mp4",
+        "data/speed/videos/scene_1005/video.mp4",
+        "data/speed/videos/scene_1006/video.mp4",
+        "data/speed/videos/scene_1007/video.mp4",
+        "data/speed/videos/scene_1008/video.mp4",
+        "data/speed/videos/scene_1009/video.mp4",
+        "data/speed/videos/scene_1010/video.mp4",
+        "data/speed/videos/scene_1011/video.mp4",
+        "data/speed/videos/scene_1012/video.mp4",
+        "data/speed/videos/scene_1013/video.mp4",
+        "data/speed/videos/scene_1014/video.mp4",
+        "data/speed/videos/scene_1015/video.mp4"
+      ],
+      "decode_seconds_median": 0.003809,
+      "preprocess_seconds_median": 0.001732,
+      "per_batch_size": {
+        "1": {
+          "batches_timed": 16,
+          "seconds_per_clip_median": 0.8435,
+          "mps_pool_gib": 2.063,
+          "batched_equals_single": true,
+          "max_abs_diff_vs_single": 0.0
+        },
+        "2": {
+          "batches_timed": 8,
+          "seconds_per_clip_median": 0.8848,
+          "mps_pool_gib": 2.063,
+          "batched_equals_single": true,
+          "max_abs_diff_vs_single": 0.0
+        },
+        "4": {
+          "batches_timed": 4,
+          "seconds_per_clip_median": 0.9013,
+          "mps_pool_gib": 3.063,
+          "batched_equals_single": true,
+          "max_abs_diff_vs_single": 0.0
+        },
+        "8": {
+          "batches_timed": 2,
+          "seconds_per_clip_median": 0.9235,
+          "mps_pool_gib": 5.063,
+          "batched_equals_single": true,
+          "max_abs_diff_vs_single": 0.0
+        }
+      },
+      "weights_gib_on_mps": 1.215,
+      "recommended_max_gib": 11.84,
+      "memory_limit_gib": 5.92,
+      "peak_process_rss_gib": 0.946,
+      "memory_note": "MPS has no peak-memory API; mps_pool_gib is the allocator pool after emptying the cache and running that batch size (high-water proxy).",
+      "rule": "smallest batch size within 1.1x of the fastest time per clip, pool <= 0.5 x recommended max",
+      "suggested_batch_size": 1,
+      "estimated_extraction_minutes_all_clips": 64.7,
+      "pooled_storage_gib_fp32": {
+        "mean_over_tokens": 0.436,
+        "per_time_step": 3.488
+      },
+      "weights_fingerprint_unchanged": true
+    }
+  }
+}

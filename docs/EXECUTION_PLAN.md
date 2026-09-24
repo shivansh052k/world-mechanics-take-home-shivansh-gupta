@@ -22,7 +22,7 @@ Last updated: 2026-09-24.
 - [x] **0.13 Correctness checks** — Same input gives the same output on the same device (expect exact; if not, record the size of the difference); batched equals single (including hook-captured activations); MPS vs CPU: record per-layer relative error and cosine similarity (F-39's default fp32 tolerances are expected to be too strict across 24 layers — hypothesis). Stay fp32 (D-06). **No probe is fit here** (no splits exist yet, D-07); any fp16 switch is tested in step 2.6 on train/validation only.
 - [x] **0.14 Intervention no-op test** — Prove that writing back an unchanged activation leaves every downstream output identical.
 - [x] **0.15 Predictor forecasting path** — Encode frames 0–7, predict tokens 1024–2047 (D-10). Target: the full-clip encoder output at those positions passed through non-affine layer_norm, as in training (F-37); metric: mean per-token L1. Must beat two fitting-free baselines on the same clips, with bootstrap CIs: (a) copy the last context time-step forward; (b) the clip's own mean context token. Nothing is fitted, so no split is needed. Also resolve O-18 (which encoder weights HF ships).
-- [ ] **0.16 Speed and memory benchmark** — Measure time and memory per clip on MPS to estimate the budget for later phases.
+- [x] **0.16 Speed and memory benchmark** — Measure time and memory per clip on MPS to estimate the budget for later phases.
 - [ ] **0.17 (Optional) Official implementation parity** — Check the HF model matches Meta's official implementation numerically.
 - [ ] **0.18 Phase 0 report and gate** — Save a short report to `results/`, update `PROGRESS.md`, and confirm Phase 0 has passed.
 
