@@ -31,7 +31,7 @@ Last updated: 2026-09-24.
 
 - [x] **1.1 Manifest integrity checks** — Every line parses, row counts match DATA.md, ids are unique and contiguous, every referenced file exists, no orphan folders or files (ignoring `.DS_Store`, D-19), no duplicate paths.
 - [x] **1.2 Metadata consistency checks** — Fields, types, and values are self-consistent; confirm the manifests are sorted by label.
-- [ ] **1.3 Re-verify the data fingerprint** — Confirm the checksum taken in Phase 0 still matches; the data has not changed.
+- [x] **1.3 Re-verify the data fingerprint** — Confirm the checksum taken in Phase 0 still matches; the data has not changed.
 - [ ] **1.4 Value-grid and design-balance analysis** — Confirm the 64-value grids, clips per value, and the direction set's motion-type split.
 - [ ] **1.5 Start-position and label-independence analysis** — Confirm start positions are spread evenly and uncorrelated with every label.
 - [ ] **1.6 Magnitude-vs-distance confound analysis** — Quantify how strongly speed/acceleration correlate with distance travelled.

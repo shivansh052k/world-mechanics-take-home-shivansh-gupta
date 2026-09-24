@@ -7,10 +7,14 @@ Each check prints its result and stores it under its own key in results/data_fil
 """
 import argparse
 import json
+import re
+import stat
+import subprocess
+from collections import defaultdict
 from pathlib import Path
 
 from vjepa_physics.data import DATASETS, MANIFEST, ROW_KEYS, read_manifest, resolve
-from vjepa_physics.evidence import save_result
+from vjepa_physics.evidence import file_sha256, git, save_result
 
 REPO = Path(__file__).resolve().parents[1]
 DATA = REPO / "data"
@@ -24,6 +28,10 @@ EXPECTED_TOTAL_FILES = 9147
 IGNORED = {".DS_Store"}  # written by Finder, not part of the supplied data
 SAMPLE = 20  # problem lists are saved as a count plus the first few entries
 
+# Fingerprint of data/ taken before any code touched it: one '<sha256>  data/<path>' line per file.
+FINGERPRINT = REPO / "artifacts/manifests/data_fingerprint.sha256"
+FINGERPRINT_LINE = re.compile(r"([0-9a-f]{64})  (data/.+)")
+WRITE_BITS = stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH
 
 def rel(path: Path) -> str:
     return path.relative_to(DATA).as_posix()
@@ -144,9 +152,85 @@ def check_manifests() -> dict:
         and all(all(r["criteria"].values()) for r in per_dataset.values()),
     }
 
+def read_fingerprint() -> tuple[dict[str, str], list[str]]:
+    """Recorded path -> SHA-256 from the fingerprint file, plus any malformed or repeated lines."""
+    recorded, malformed = {}, []
+    for number, line in enumerate(FINGERPRINT.read_text(encoding="utf-8").splitlines(), start=1):
+        match = FINGERPRINT_LINE.fullmatch(line)
+        if match is None or match[2] in recorded:
+            malformed.append(f"line {number}: {line[:120]}")
+        else:
+            recorded[match[2]] = match[1]
+    return recorded, malformed
+
+
+def check_fingerprint() -> dict:
+    """The supplied data is unchanged since the fingerprint was taken, and still read-only.
+
+    Passes if: the fingerprint file is tracked by git and unchanged since the last commit; every
+    line is '<sha256>  data/<path>' with no repeated path, 9,147 lines; the files under data/
+    (without .DS_Store) are exactly the listed ones; every file's SHA-256 now equals the recorded
+    one; `shasum -a 256 -c` agrees; and nothing under data/, nor data/ itself, has a write
+    permission bit. Groups of byte-identical files are a diagnostic.
+    """
+    reference = FINGERPRINT.relative_to(REPO).as_posix()
+    tracked = subprocess.run(
+        ["git", "-C", str(REPO), "ls-files", "--error-unmatch", reference], capture_output=True
+    ).returncode == 0
+    unchanged = git(REPO, "status", "--porcelain", "--", reference) == ""
+
+    recorded, malformed = read_fingerprint()
+    files, folders = listing(DATA)
+    current = {path.relative_to(REPO).as_posix() for path in files}
+    added, removed = current - recorded.keys(), recorded.keys() - current
+    compared = sorted(current & recorded.keys())
+    changed = [path for path in compared if file_sha256(REPO / path) != recorded[path]]
+
+    shasum = subprocess.run(
+        ["shasum", "-a", "256", "-c", "--quiet", reference], cwd=REPO, capture_output=True, text=True
+    )
+    writable = [rel(path) for path in files | folders if path.stat().st_mode & WRITE_BITS]
+    data_dir_writable = bool(DATA.stat().st_mode & WRITE_BITS)
+
+    by_hash = defaultdict(list)
+    for path, digest in recorded.items():
+        by_hash[digest].append(path)
+    identical = sorted(sorted(paths) for paths in by_hash.values() if len(paths) > 1)
+
+    criteria = {
+        "reference_committed_and_unchanged": tracked and unchanged,
+        "reference_well_formed": not malformed and len(recorded) == EXPECTED_TOTAL_FILES,
+        "no_files_added_or_removed": not added and not removed,
+        "every_hash_matches": not changed and len(compared) == EXPECTED_TOTAL_FILES,
+        "shasum_agrees": shasum.returncode == 0,
+        "read_only": not writable and not data_dir_writable,
+    }
+    return {
+        "fingerprint_file": reference,
+        "fingerprint_file_sha256": file_sha256(FINGERPRINT),
+        "criteria": criteria,
+        "recorded_files": len(recorded),
+        "files_compared": len(compared),
+        "problems": {
+            "malformed_lines": sample(malformed),
+            "added": sample(added),
+            "removed": sample(removed),
+            "hash_changed": sample(changed),
+            "shasum_output": sample((shasum.stdout + shasum.stderr).splitlines()),
+            "writable": sample(writable),
+            "data_dir_writable": data_dir_writable,
+        },
+        "diagnostics": {
+            "distinct_hashes": len(by_hash),
+            "identical_file_groups": {"count": len(identical), "first": identical[:SAMPLE]},
+        },
+        "passed": all(criteria.values()),
+    }
+
 
 CHECKS = {
     "manifests": check_manifests,
+    "fingerprint": check_fingerprint,
 }
 
 

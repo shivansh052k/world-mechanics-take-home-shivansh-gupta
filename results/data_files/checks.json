@@ -196,5 +196,97 @@
       },
       "passed": true
     }
+  },
+  "fingerprint": {
+    "provenance": {
+      "utc": "2026-09-24T23:37:16+00:00",
+      "git_commit": "1b45c9789dced42cae5338224312155e40fda61a",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        " M scripts/check_data_files.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/data.py": "0400b6b77b3e88053c98f7c25590afdabc0fdacb7e97e218e9e3f36b32be0066",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
+          "scripts/check_data_files.py": "6ba936ad51a22cfaba73e4fec751b5f6fe78eaf7e4a471d10ba615e1884edaa8"
+        },
+        "combined_sha256": "7a68ae7daff0890d73fa4fa3dc892ddc2a53319648006ce4ac0e0e24bc3c6416"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "fingerprint_file": "artifacts/manifests/data_fingerprint.sha256",
+      "fingerprint_file_sha256": "212662664879fb82943bf6fb88f1a32bce0a644f7ec0c7f7b58029894f6ade07",
+      "criteria": {
+        "reference_committed_and_unchanged": true,
+        "reference_well_formed": true,
+        "no_files_added_or_removed": true,
+        "every_hash_matches": true,
+        "shasum_agrees": true,
+        "read_only": true
+      },
+      "recorded_files": 9147,
+      "files_compared": 9147,
+      "problems": {
+        "malformed_lines": {
+          "count": 0,
+          "first": []
+        },
+        "added": {
+          "count": 0,
+          "first": []
+        },
+        "removed": {
+          "count": 0,
+          "first": []
+        },
+        "hash_changed": {
+          "count": 0,
+          "first": []
+        },
+        "shasum_output": {
+          "count": 0,
+          "first": []
+        },
+        "writable": {
+          "count": 0,
+          "first": []
+        },
+        "data_dir_writable": false
+      },
+      "diagnostics": {
+        "distinct_hashes": 9146,
+        "identical_file_groups": {
+          "count": 1,
+          "first": [
+            [
+              "data/acceleration/manifest.jsonl",
+              "data/speed/manifest.jsonl"
+            ]
+          ]
+        }
+      },
+      "passed": true
+    }
   }
 }

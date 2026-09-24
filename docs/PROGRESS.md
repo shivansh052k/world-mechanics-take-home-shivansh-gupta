@@ -37,7 +37,9 @@ step it blocks. **Phase 1 started. 1.1 done:** `src/vjepa_physics/data.py` (`DAT
 `resolve`) and `scripts/check_data_files.py manifests` passed on all data (F-60, D-31). **1.2 done:**
 `read_metadata` + `scripts/check_metadata.py`: `consistency` passed on all 4,572 clips; `documented_fields` failed as
 predicted (direction has no `primary_label`; kept on record, note for the planning chat); `sorted_by_label`: all three
-manifests sorted by label (F-61, D-32). **Next: 1.3 (re-verify the data fingerprint)** — waiting for the user's go.
+manifests sorted by label (F-61, D-32). **1.3 done:** `check_data_files.py fingerprint` passed — all 9,147 hashes
+match (Python and `shasum`), no files added/removed, `data/` still read-only (F-62). **Next: 1.4 (value-grid and
+design-balance analysis)** — waiting for the user's go.
 
 ---
 
@@ -46,7 +48,7 @@ manifests sorted by label (F-61, D-32). **Next: 1.3 (re-verify the data fingerpr
 | Phase | Status | Notes |
 |---|---|---|
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
-| 1 — Data audit | 🟨 In progress | 1.1–1.2 done (`documented_fields` failed as predicted, kept on record) |
+| 1 — Data audit | 🟨 In progress | 1.1–1.3 done (`documented_fields` failed as predicted, kept on record) |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
@@ -123,6 +125,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/metadata/checks.json` | `consistency` | All 4,572 metadata files: strict parse, id = manifest id, fps 24 / frames 16, finite typed fields, speed/acceleration ≥ 0, direction θ in [0, 360), `primary_label`/`magnitude` per DATA.md in speed/acceleration, motion consistent with values and dataset. Diagnostics: acceleration set all from rest; direction 750 + 750; start ranges ±1.2 / ±2 m | ✅ passed | F-61, D-32; `scripts/check_metadata.py consistency` |
 | `results/metadata/checks.json` | `documented_fields` | Every file has DATA.md's documented fields | ❌ failed as predicted: all 1,500 direction files lack `primary_label` (speed/acceleration complete); kept on record; labels come from the dataset name | F-61, D-32, F-25; `scripts/check_metadata.py documented_fields` |
 | `results/metadata/checks.json` | `sorted_by_label` | Diagnostic: label never decreases with id in all three manifests; 64 runs (64 × 24; direction 36 × 23 + 28 × 24); Spearman 0.999878 | ℹ️ diagnostic | F-61, F-22; `scripts/check_metadata.py sorted_by_label` |
+| `results/data_files/checks.json` | `fingerprint` | Reference tracked and unchanged; 9,147 lines well-formed; file set unchanged; all hashes match (Python + `shasum -c`); nothing under `data/` writable. Diagnostic: only byte-identical files = speed/acceleration manifests | ✅ passed | F-62; `scripts/check_data_files.py fingerprint` |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
@@ -185,7 +188,9 @@ what's next.
   set checked presence but not label meaning (D-32). `read_metadata` added to `data.py`; `scripts/check_metadata.py`:
   `consistency` passed; `documented_fields` failed as predicted (direction lacks `primary_label`; note drafted for the
   planning chat); `sorted_by_label` shows all three manifests sorted by label (F-61). **Step 1.2 done.**
-- **Next:** 1.3 (re-verify the data fingerprint) — waiting for the user's go.
+- 1.3: `fingerprint` check added to `check_data_files.py` (reference tracked/unchanged, format, file set, hashes via
+  Python and `shasum -c`, write bits); passed (F-62). **Step 1.3 done.**
+- **Next:** 1.4 (value-grid and design-balance analysis) — waiting for the user's go.
 
 ### 2026-09-24 — Step 0.8d started in Claude Code
 - Claude Code permissions set: `Bash`, `NotebookEdit` denied; edits denied everywhere except `docs/` and
