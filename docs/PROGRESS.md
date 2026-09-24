@@ -18,7 +18,9 @@ without re-reading everything else.
 `order`, `figure`; `opencv` failed (PyAV vs OpenCV not pixel-identical, F-49) → D-05 criterion is with the
 planning chat (affects step 1.8, not 0.8). **0.9 done:** `src/vjepa_physics/preprocess.py` (`preprocess_clip`,
 checkpoint processor with resize/crop off) verified by `config`, `manual`, `identity`, `default` (F-50).
-**Next: 0.10 (model loading and freezing).**
+**0.10 done:** `src/vjepa_physics/model.py` (`load_model`, `weights_fingerprint`) and `reproducibility.py`
+(`set_seeds`) verified by `config`, `load`, `fingerprint`, `seeds` (F-51, D-26).
+**Next: 0.11 (first end-to-end forward pass)** — waiting for the user's go.
 
 ---
 
@@ -26,7 +28,7 @@ checkpoint processor with resize/crop off) verified by `config`, `manual`, `iden
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0 — Environment and model setup | 🟨 In progress | 0.1–0.9 done; 0.10 next |
+| 0 — Environment and model setup | 🟨 In progress | 0.1–0.10 done; 0.11 next |
 | 1 — Data audit | ⬜ Not started | |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
@@ -50,6 +52,8 @@ Status legend: ⬜ Not started · 🟨 In progress · ✅ Passed gate · ⚠️ 
 | Conv3d MPS vs CPU relative difference | 2.5e-7 | F-43 |
 | Locked packages | 53 (torchvision 0.29.0 added) | F-42, D-25 |
 | Test clip frame timing (PyAV) | time_base 1/12288, pts step 512 = 1/24 s | F-46 |
+| Parameters (encoder + predictor) | 303,885,312 + 22,086,016 = 325,971,328 | F-51 |
+| In-memory weights fingerprint (reference for "model unchanged") | `c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede` | F-51 |
 
 ---
 
@@ -74,6 +78,11 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/preprocessing/checks.json` | `manual` | Output (16, 3, 256, 256) float32 CPU = manual (x/255 − mean)/std, max abs diff 1.65e-7 | ✅ passed | F-50; `scripts/check_preprocessing.py manual` |
 | `results/preprocessing/checks.json` | `identity` | Un-normalize + round = decoded uint8 clip bit-for-bit (max 9.4e-6 levels) → no spatial change | ✅ passed | F-50; `scripts/check_preprocessing.py identity` |
 | `results/preprocessing/checks.json` + `default_vs_ours.png` | `default` | Shipped default scales ×1.1406 (slope 1.1393/1.1405) and crops 18 px/side (offset −17.93 px); disk 350 → 455 px; 36.5 px/m; figure reviewed | ✅ passed | F-50; `scripts/check_preprocessing.py default` |
+
+| `results/model/checks.json` | `config` | Config and built structure = F-10: 24 encoder / 12 predictor blocks, patch Conv3d (1024, 3, 2, 16, 16), dropout 0 | ✅ passed | F-51; `scripts/check_model.py config` |
+| `results/model/checks.json` | `load` | Weights SHA-256 = pinned; loading report empty (587 tensors); 303.9M + 22.1M params; fp32, eval, no grad, sdpa; fingerprint recorded | ✅ passed | F-51; `scripts/check_model.py load` |
+| `results/model/checks.json` | `fingerprint` | Two independent loads → identical in-memory weights fingerprint `c865f524…04ede` | ✅ passed | F-51; `scripts/check_model.py fingerprint` |
+| `results/model/checks.json` | `seeds` | `set_seeds(0)` reproduces Python / NumPy / torch CPU / torch MPS draws; seed 1 changes all | ✅ passed | F-51; `scripts/check_model.py seeds` |
 
 Check scripts save through `src/vjepa_physics/evidence.py` (`save_result`, provenance with package versions);
 `scripts/check_video_loader.py` still has its own copy (switching it is optional).
@@ -142,7 +151,10 @@ what's next.
   `save_result`) added; `scripts/check_preprocessing.py` checks `config`, `manual`, `identity`, `default` all passed
   (F-50); figure `results/preprocessing/default_vs_ours.png` reviewed (title fixed). F-36's scale/crop verified.
   **Step 0.9 done.**
-- **Next:** 0.10 (model loading and freezing).
+- `src/vjepa_physics/model.py` (`load_model`: file SHA-256 check, offline pinned load, fp32, sdpa, clean loading
+  report required, eval, no grad; `weights_fingerprint`) and `reproducibility.py` (`set_seeds`, `SEED = 0`) added;
+  `scripts/check_model.py` checks `config`, `load`, `fingerprint`, `seeds` all passed (F-51, D-26). **Step 0.10 done.**
+- **Next:** 0.11 (first end-to-end forward pass) — waiting for the user's go.
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.

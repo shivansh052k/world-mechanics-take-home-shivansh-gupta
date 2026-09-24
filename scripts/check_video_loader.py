@@ -1,7 +1,7 @@
 """Sanity checks for video decoding and the clip loader.
 
 Run one check at a time from the repo root, with .venv active:
-    python scripts/check_video_loader.py inspect
+    python scripts/check_video_loader.py <check>
 
 Each check prints its result and stores it under its own key in
 results/video_loader/checks.json, so that file holds the evidence for every check.
@@ -9,17 +9,15 @@ results/video_loader/checks.json, so that file holds the evidence for every chec
 import argparse
 import hashlib
 import json
-import subprocess
-from datetime import datetime, timezone
-from importlib.metadata import version
+from fractions import Fraction
 from pathlib import Path
 
-import av
 import av
 import numpy as np
 from matplotlib.figure import Figure
 from scipy import ndimage
 
+from vjepa_physics.evidence import save_result
 from vjepa_physics.video import load_clip
 
 REPO = Path(__file__).resolve().parents[1]
@@ -28,53 +26,55 @@ OUT = REPO / "results/video_loader/checks.json"
 FIGURE = REPO / "results/video_loader/frames.png"
 
 
-def provenance() -> dict:
-    """When, on which commit, and with which decoder version a check ran."""
-    def git(*args: str) -> str:
-        return subprocess.run(["git", *args], cwd=REPO, capture_output=True, text=True).stdout.strip()
-
-    return {
-        "utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        "git_commit": git("rev-parse", "HEAD"),
-        "git_dirty": bool(git("status", "--porcelain")),
-        "pyav": av.__version__,
-        "numpy": np.__version__,
-        "opencv": version("opencv-python-headless"),
-        "matplotlib": version("matplotlib"),
-    }
-
-
-def save(name: str, result: dict) -> None:
-    """Store one check's result under its own key; other checks' results are kept."""
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    data = json.loads(OUT.read_text()) if OUT.exists() else {}
-    data[name] = {"provenance": provenance(), "result": result}
-    OUT.write_text(json.dumps(data, indent=2) + "\n")
-    print(f"saved '{name}' -> {OUT.relative_to(REPO)}")
-
-
 def check_inspect() -> dict:
-    """Raw stream facts from PyAV, before any loader exists.
+    """Raw stream facts from PyAV, independent of the loader.
 
-    Expected: mpeg4 codec, yuv420p, 256x256, 16 frames, strictly increasing pts.
+    Passes if: 16 frames are decoded and the container also reports 16; every frame is
+    256 x 256; timestamps (pts x time_base, as exact fractions) rise by exactly 1/24 s from
+    each frame to the next. Container, codec and pixel format are recorded as observations.
     """
     with av.open(str(CLIP)) as c:
         s = c.streams.video[0]
         frames = list(c.decode(video=0))
-        return {
-            "clip": str(CLIP.relative_to(REPO)),
+        observed = {
             "container": c.format.name,
             "codec": s.codec_context.name,
             "pix_fmt": s.codec_context.pix_fmt,
-            "size": [s.width, s.height],
-            "stream_frames": s.frames,
             "average_rate": str(s.average_rate),
-            "time_base": str(s.time_base),
-            "decoded_frames": len(frames),
-            "pts": [f.pts for f in frames],
             "frame_formats": sorted({f.format.name for f in frames}),
-            "frame_sizes": sorted({(f.width, f.height) for f in frames}),
         }
+        stream_frames = s.frames
+        stream_time_base = s.time_base
+        pts = [f.pts for f in frames]
+        frame_time_bases = {f.time_base for f in frames}
+        times = [
+            Fraction(f.pts) * f.time_base
+            for f in frames
+            if f.pts is not None and f.time_base is not None
+        ]
+        sizes = sorted({(f.width, f.height) for f in frames})
+
+    steps = {b - a for a, b in zip(times, times[1:])}
+    criteria = {
+        "sixteen_frames_decoded_and_reported": len(frames) == 16 and stream_frames == 16,
+        "every_frame_256x256": sizes == [(256, 256)],
+        "step_exactly_1_24_s": len(times) == len(frames) and steps == {Fraction(1, 24)},
+    }
+    return {
+        "clip": str(CLIP.relative_to(REPO)),
+        "observed": observed,
+        "size": [s.width, s.height],
+        "stream_frames": stream_frames,
+        "decoded_frames": len(frames),
+        "frame_sizes": sizes,
+        "time_base": str(stream_time_base),
+        "frame_time_bases_equal_stream": frame_time_bases == {stream_time_base},
+        "pts": pts,
+        "times_s": [str(t) for t in times],
+        "steps_s": sorted(str(step) for step in steps),
+        "criteria": criteria,
+        "passed": all(criteria.values()),
+    }
 
 
 def expect_value_error(**kwargs) -> dict:
@@ -112,6 +112,7 @@ def check_load() -> dict:
             and guard_size["raised"]
         ),
     }
+
 
 def check_repeat() -> dict:
     """Decoding is deterministic: two independent loads are bit-identical.
@@ -240,8 +241,8 @@ def check_order() -> dict:
         "alternatives_error_px_max": {k: round(float(v.max()), 3) for k, v in alternatives.items()},
         "passed": bool(err.max() <= 1.0 and all(v.max() > 2.0 for v in alternatives.values())),
     }
-    
-    
+
+
 def load_clip_opencv(path: Path) -> tuple[np.ndarray, str]:
     """Independent decode with OpenCV's FFmpeg backend: (T, H, W, 3) uint8 RGB, backend name."""
     # Imported here only: cv2 bundles its own FFmpeg, and loading it next to PyAV's
@@ -354,6 +355,7 @@ def check_opencv_diff_stats() -> dict:
         "mean_abs_diff_all": round(float(np.abs(diff).mean()), 3),
     }
 
+
 def check_figure() -> dict:
     """Frames 0, 5, 10, 15 with the metadata-predicted (+) and measured (x) disk centre.
 
@@ -410,7 +412,8 @@ def main() -> None:
     name = parser.parse_args().check
     result = CHECKS[name]()
     print(json.dumps(result, indent=2))
-    save(name, result)
+    save_result(OUT, name, result)
+    print(f"saved '{name}' -> {OUT.relative_to(REPO)}")
     if result.get("passed") is False:
         raise SystemExit(f"check '{name}' FAILED")
 
