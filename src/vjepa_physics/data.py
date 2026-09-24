@@ -6,6 +6,9 @@ DATASETS = ("direction", "speed", "acceleration")
 MANIFEST = "manifest.jsonl"
 ROW_KEYS = ("id", "video", "metadata")
 
+# Each dataset's label field (DATA.md's primary target). Never primary_label: the direction set has none.
+LABEL_FIELD = {"direction": "theta_degrees", "speed": "magnitude", "acceleration": "magnitude"}
+
 
 def reject_duplicate_keys(pairs: list[tuple[str, object]]) -> dict:
     """json object hook: a key given twice is an error (json.loads would silently keep the last)."""
@@ -88,3 +91,19 @@ def read_metadata(path: str | Path) -> dict:
     if not isinstance(meta, dict):
         raise ValueError(f"{path}: expected a JSON object, got {type(meta).__name__}")
     return meta
+
+
+def load_dataset(data_dir: str | Path, dataset: str) -> list[dict]:
+    """Every clip's metadata for one dataset, in manifest order, as read by read_metadata.
+
+    Strict: any malformed manifest row or metadata file raises, and so does a metadata id that
+    differs from its manifest id (later steps join clips by id).
+    """
+    root = Path(data_dir) / dataset
+    clips = []
+    for row in read_manifest(root):
+        meta = read_metadata(resolve(root, row["metadata"]))
+        if meta.get("id") != row["id"]:
+            raise ValueError(f"{dataset}: manifest id {row['id']} but metadata id {meta.get('id')!r}")
+        clips.append(meta)
+    return clips

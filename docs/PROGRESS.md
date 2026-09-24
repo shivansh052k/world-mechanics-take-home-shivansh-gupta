@@ -38,8 +38,11 @@ step it blocks. **Phase 1 started. 1.1 done:** `src/vjepa_physics/data.py` (`DAT
 `read_metadata` + `scripts/check_metadata.py`: `consistency` passed on all 4,572 clips; `documented_fields` failed as
 predicted (direction has no `primary_label`; kept on record, note for the planning chat); `sorted_by_label`: all three
 manifests sorted by label (F-61, D-32). **1.3 done:** `check_data_files.py fingerprint` passed — all 9,147 hashes
-match (Python and `shasum`), no files added/removed, `data/` still read-only (F-62). **Next: 1.4 (value-grid and
-design-balance analysis)** — waiting for the user's go.
+match (Python and `shasum`), no files added/removed, `data/` still read-only (F-62). **1.4 done:** `load_dataset`,
+`LABEL_FIELD` in `data.py`; `scripts/check_design.py`: `value_grids` passed (64 values, DATA.md ranges, direction
+5.625° apart), `design_balance` diagnostic (angles shared by id across speed/acceleration, direction groups balanced
+across angles and octants) (F-63). **Next: 1.5 (start-position and label-independence analysis)** — waiting for the
+user's go.
 
 ---
 
@@ -48,7 +51,7 @@ design-balance analysis)** — waiting for the user's go.
 | Phase | Status | Notes |
 |---|---|---|
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
-| 1 — Data audit | 🟨 In progress | 1.1–1.3 done (`documented_fields` failed as predicted, kept on record) |
+| 1 — Data audit | 🟨 In progress | 1.1–1.4 done (`documented_fields` failed as predicted, kept on record) |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
@@ -126,6 +129,8 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/metadata/checks.json` | `documented_fields` | Every file has DATA.md's documented fields | ❌ failed as predicted: all 1,500 direction files lack `primary_label` (speed/acceleration complete); kept on record; labels come from the dataset name | F-61, D-32, F-25; `scripts/check_metadata.py documented_fields` |
 | `results/metadata/checks.json` | `sorted_by_label` | Diagnostic: label never decreases with id in all three manifests; 64 runs (64 × 24; direction 36 × 23 + 28 × 24); Spearman 0.999878 | ℹ️ diagnostic | F-61, F-22; `scripts/check_metadata.py sorted_by_label` |
 | `results/data_files/checks.json` | `fingerprint` | Reference tracked and unchanged; 9,147 lines well-formed; file set unchanged; all hashes match (Python + `shasum -c`); nothing under `data/` writable. Diagnostic: only byte-identical files = speed/acceleration manifests | ✅ passed | F-62; `scripts/check_data_files.py fingerprint` |
+| `results/design/checks.json` | `value_grids` | 64 distinct values per dataset; speed 0.25–4.0, acceleration 0.25–10.0; direction gaps all 5.625° around the circle; 4,572 clips. Diagnostics: linear grids (full grids saved for the split), 24 clips per value, direction 24 clips at the first 28 angles and 23 at the rest | ✅ passed | F-63; `scripts/check_design.py value_grids` |
+| `results/design/checks.json` | `design_balance` | Diagnostic: speed/acceleration unique (value, θ) pairs, same θ by id in both sets, corr with cos/sin θ ≈ −0.001; direction 12 motion groups (108/107 velocity, 150 acceleration), angle × group cells 1–3, Cramér's V 0.073, octant × group table (13–20 per cell) saved | ℹ️ diagnostic | F-63; `scripts/check_design.py design_balance` |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
@@ -190,7 +195,11 @@ what's next.
   planning chat); `sorted_by_label` shows all three manifests sorted by label (F-61). **Step 1.2 done.**
 - 1.3: `fingerprint` check added to `check_data_files.py` (reference tracked/unchanged, format, file set, hashes via
   Python and `shasum -c`, write bits); passed (F-62). **Step 1.3 done.**
-- **Next:** 1.4 (value-grid and design-balance analysis) — waiting for the user's go.
+- 1.4: `load_dataset` + `LABEL_FIELD` added to `data.py`; `scripts/check_design.py`: `value_grids` passed (criteria
+  from DATA.md only), `design_balance` recorded as a diagnostic (F-63). Exact-zero deviation from a linear grid checked
+  and explained (values bit-identical to `linspace`); identical label–angle correlations in speed and acceleration
+  explained (same θ by id, labels affine in the value index). **Step 1.4 done.**
+- **Next:** 1.5 (start-position and label-independence analysis) — waiting for the user's go.
 
 ### 2026-09-24 — Step 0.8d started in Claude Code
 - Claude Code permissions set: `Bash`, `NotebookEdit` denied; edits denied everywhere except `docs/` and

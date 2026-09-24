@@ -1,0 +1,595 @@
+{
+  "value_grids": {
+    "provenance": {
+      "utc": "2026-09-24T23:41:49+00:00",
+      "git_commit": "f84571579d73f782813738f0a72f9ad79e544873",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        " M src/vjepa_physics/data.py",
+        "?? scripts/check_design.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/data.py": "b1ddff4412bc5dbdf630dd1a98bbdf01cccc6a3b15fadbc8811da5d534b61972",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
+          "scripts/check_design.py": "c6f47576735d72abbbcd4cca264bf6850c64bb34b159d3edf4f24c1f4f8c57a8"
+        },
+        "combined_sha256": "f34c5d1055dfa65d998d07cee7ed6783b33843b3b6858677e2b9a7927853c04d"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "criteria": {
+        "all_clips_counted": true
+      },
+      "clips": 4572,
+      "per_dataset": {
+        "direction": {
+          "criteria": {
+            "sixty_four_values": true,
+            "direction_equally_spaced": true
+          },
+          "label": "theta_degrees",
+          "clips": 1500,
+          "distinct_values": 64,
+          "grid": [
+            0.0,
+            5.625,
+            11.25,
+            16.875,
+            22.5,
+            28.125,
+            33.75,
+            39.375,
+            45.0,
+            50.625,
+            56.25,
+            61.875,
+            67.5,
+            73.125,
+            78.75,
+            84.375,
+            90.0,
+            95.625,
+            101.25,
+            106.875,
+            112.5,
+            118.125,
+            123.75,
+            129.375,
+            135.0,
+            140.625,
+            146.25,
+            151.875,
+            157.5,
+            163.125,
+            168.75,
+            174.375,
+            180.0,
+            185.625,
+            191.25,
+            196.875,
+            202.5,
+            208.125,
+            213.75,
+            219.375,
+            225.0,
+            230.625,
+            236.25,
+            241.875,
+            247.5,
+            253.125,
+            258.75,
+            264.375,
+            270.0,
+            275.625,
+            281.25,
+            286.875,
+            292.5,
+            298.125,
+            303.75,
+            309.375,
+            315.0,
+            320.625,
+            326.25,
+            331.875,
+            337.5,
+            343.125,
+            348.75,
+            354.375
+          ],
+          "spacing": {
+            "gap_min": 5.625,
+            "gap_max": 5.625
+          },
+          "clips_per_value_histogram": {
+            "23": 36,
+            "24": 28
+          },
+          "values_not_at_most_common_count": [
+            0.0,
+            5.625,
+            11.25,
+            16.875,
+            22.5,
+            28.125,
+            33.75,
+            39.375,
+            45.0,
+            50.625,
+            56.25,
+            61.875,
+            67.5,
+            73.125,
+            78.75,
+            84.375,
+            90.0,
+            95.625,
+            101.25,
+            106.875,
+            112.5,
+            118.125,
+            123.75,
+            129.375,
+            135.0,
+            140.625,
+            146.25,
+            151.875
+          ]
+        },
+        "speed": {
+          "criteria": {
+            "sixty_four_values": true,
+            "range_endpoints": true
+          },
+          "label": "magnitude",
+          "clips": 1536,
+          "distinct_values": 64,
+          "grid": [
+            0.25,
+            0.30952380952380953,
+            0.36904761904761907,
+            0.42857142857142855,
+            0.4880952380952381,
+            0.5476190476190477,
+            0.6071428571428571,
+            0.6666666666666666,
+            0.7261904761904762,
+            0.7857142857142857,
+            0.8452380952380952,
+            0.9047619047619048,
+            0.9642857142857142,
+            1.0238095238095237,
+            1.0833333333333333,
+            1.1428571428571428,
+            1.2023809523809523,
+            1.2619047619047619,
+            1.3214285714285714,
+            1.380952380952381,
+            1.4404761904761905,
+            1.5,
+            1.5595238095238095,
+            1.619047619047619,
+            1.6785714285714284,
+            1.738095238095238,
+            1.7976190476190474,
+            1.857142857142857,
+            1.9166666666666665,
+            1.976190476190476,
+            2.0357142857142856,
+            2.095238095238095,
+            2.1547619047619047,
+            2.2142857142857144,
+            2.2738095238095237,
+            2.333333333333333,
+            2.392857142857143,
+            2.452380952380952,
+            2.511904761904762,
+            2.571428571428571,
+            2.630952380952381,
+            2.6904761904761902,
+            2.75,
+            2.8095238095238093,
+            2.869047619047619,
+            2.9285714285714284,
+            2.988095238095238,
+            3.0476190476190474,
+            3.1071428571428568,
+            3.1666666666666665,
+            3.226190476190476,
+            3.2857142857142856,
+            3.345238095238095,
+            3.4047619047619047,
+            3.464285714285714,
+            3.5238095238095237,
+            3.583333333333333,
+            3.642857142857143,
+            3.702380952380952,
+            3.761904761904762,
+            3.821428571428571,
+            3.880952380952381,
+            3.9404761904761902,
+            4.0
+          ],
+          "spacing": {
+            "step_min": 0.05952380952380931,
+            "step_max": 0.059523809523809756,
+            "step_if_linear": 0.05952380952380952,
+            "max_deviation_from_linear_grid": 0.0
+          },
+          "clips_per_value_histogram": {
+            "24": 64
+          },
+          "values_not_at_most_common_count": []
+        },
+        "acceleration": {
+          "criteria": {
+            "sixty_four_values": true,
+            "range_endpoints": true
+          },
+          "label": "magnitude",
+          "clips": 1536,
+          "distinct_values": 64,
+          "grid": [
+            0.25,
+            0.40476190476190477,
+            0.5595238095238095,
+            0.7142857142857143,
+            0.8690476190476191,
+            1.0238095238095237,
+            1.1785714285714286,
+            1.3333333333333335,
+            1.4880952380952381,
+            1.6428571428571428,
+            1.7976190476190477,
+            1.9523809523809526,
+            2.107142857142857,
+            2.261904761904762,
+            2.416666666666667,
+            2.5714285714285716,
+            2.7261904761904763,
+            2.880952380952381,
+            3.0357142857142856,
+            3.1904761904761907,
+            3.3452380952380953,
+            3.5,
+            3.654761904761905,
+            3.8095238095238098,
+            3.9642857142857144,
+            4.119047619047619,
+            4.273809523809524,
+            4.428571428571429,
+            4.583333333333334,
+            4.738095238095238,
+            4.892857142857143,
+            5.0476190476190474,
+            5.2023809523809526,
+            5.357142857142858,
+            5.511904761904762,
+            5.666666666666667,
+            5.821428571428571,
+            5.976190476190476,
+            6.130952380952381,
+            6.285714285714286,
+            6.440476190476191,
+            6.595238095238096,
+            6.75,
+            6.904761904761905,
+            7.05952380952381,
+            7.214285714285714,
+            7.3690476190476195,
+            7.523809523809524,
+            7.678571428571429,
+            7.833333333333334,
+            7.988095238095238,
+            8.142857142857142,
+            8.297619047619047,
+            8.452380952380953,
+            8.607142857142858,
+            8.761904761904763,
+            8.916666666666668,
+            9.071428571428571,
+            9.226190476190476,
+            9.380952380952381,
+            9.535714285714286,
+            9.690476190476192,
+            9.845238095238095,
+            10.0
+          ],
+          "spacing": {
+            "step_min": 0.15476190476190332,
+            "step_max": 0.1547619047619051,
+            "step_if_linear": 0.15476190476190477,
+            "max_deviation_from_linear_grid": 0.0
+          },
+          "clips_per_value_histogram": {
+            "24": 64
+          },
+          "values_not_at_most_common_count": []
+        }
+      },
+      "passed": true
+    }
+  },
+  "design_balance": {
+    "provenance": {
+      "utc": "2026-09-24T23:43:33+00:00",
+      "git_commit": "f84571579d73f782813738f0a72f9ad79e544873",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        " M src/vjepa_physics/data.py",
+        "?? scripts/check_design.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/data.py": "b1ddff4412bc5dbdf630dd1a98bbdf01cccc6a3b15fadbc8811da5d534b61972",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
+          "scripts/check_design.py": "485380ff0f8125ebb5b5b5532807f6141029f397bc38a291e98a6e395a9721ca"
+        },
+        "combined_sha256": "ba228bc292c347c498f409118cf86fa531d378581ce387473870f38c368f1e06"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "speed": {
+        "distinct_angles": 64,
+        "angle_gap_min_max": [
+          5.625,
+          5.625
+        ],
+        "clips_per_angle_histogram": {
+          "24": 64
+        },
+        "every_value_angle_pair_unique": true,
+        "distinct_angles_per_value_histogram": {
+          "24": 64
+        },
+        "distinct_values_per_angle_histogram": {
+          "24": 64
+        },
+        "corr_label_cos_theta": -0.001332,
+        "corr_label_sin_theta": -0.0008902
+      },
+      "acceleration": {
+        "distinct_angles": 64,
+        "angle_gap_min_max": [
+          5.625,
+          5.625
+        ],
+        "clips_per_angle_histogram": {
+          "24": 64
+        },
+        "every_value_angle_pair_unique": true,
+        "distinct_angles_per_value_histogram": {
+          "24": 64
+        },
+        "distinct_values_per_angle_histogram": {
+          "24": 64
+        },
+        "corr_label_cos_theta": -0.001332,
+        "corr_label_sin_theta": -0.0008902
+      },
+      "speed_vs_acceleration_same_angle_by_id": {
+        "clips_compared": 1536,
+        "same_length": true,
+        "mismatches": 0
+      },
+      "direction": {
+        "group_counts": {
+          "velocity 1 m/s": 108,
+          "velocity 2 m/s": 107,
+          "velocity 3 m/s": 107,
+          "velocity 4 m/s": 107,
+          "velocity 5 m/s": 107,
+          "velocity 6 m/s": 107,
+          "velocity 7 m/s": 107,
+          "acceleration 2 m/s^2": 150,
+          "acceleration 4 m/s^2": 150,
+          "acceleration 6 m/s^2": 150,
+          "acceleration 8 m/s^2": 150,
+          "acceleration 10 m/s^2": 150
+        },
+        "angle_by_group": {
+          "shape": [
+            64,
+            12
+          ],
+          "cell_min": 1,
+          "cell_max": 3,
+          "zero_cells": 0,
+          "chi2": 88.98,
+          "dof": 693,
+          "p_value_approximate": 1.0,
+          "cramers_v": 0.07344
+        },
+        "octant_by_group": {
+          "octants_deg": [
+            "[0, 45)",
+            "[45, 90)",
+            "[90, 135)",
+            "[135, 180)",
+            "[180, 225)",
+            "[225, 270)",
+            "[270, 315)",
+            "[315, 360)"
+          ],
+          "counts_per_group": {
+            "velocity 1 m/s": [
+              14,
+              14,
+              14,
+              13,
+              13,
+              13,
+              13,
+              14
+            ],
+            "velocity 2 m/s": [
+              14,
+              13,
+              14,
+              13,
+              14,
+              13,
+              13,
+              13
+            ],
+            "velocity 3 m/s": [
+              14,
+              14,
+              13,
+              14,
+              13,
+              13,
+              13,
+              13
+            ],
+            "velocity 4 m/s": [
+              13,
+              14,
+              14,
+              13,
+              13,
+              14,
+              13,
+              13
+            ],
+            "velocity 5 m/s": [
+              14,
+              14,
+              13,
+              14,
+              13,
+              13,
+              13,
+              13
+            ],
+            "velocity 6 m/s": [
+              13,
+              14,
+              14,
+              13,
+              13,
+              13,
+              14,
+              13
+            ],
+            "velocity 7 m/s": [
+              14,
+              13,
+              14,
+              14,
+              13,
+              13,
+              13,
+              13
+            ],
+            "acceleration 2 m/s^2": [
+              19,
+              19,
+              20,
+              18,
+              19,
+              18,
+              19,
+              18
+            ],
+            "acceleration 4 m/s^2": [
+              20,
+              19,
+              19,
+              19,
+              18,
+              19,
+              18,
+              18
+            ],
+            "acceleration 6 m/s^2": [
+              19,
+              19,
+              19,
+              19,
+              19,
+              18,
+              18,
+              19
+            ],
+            "acceleration 8 m/s^2": [
+              19,
+              20,
+              19,
+              19,
+              18,
+              18,
+              19,
+              18
+            ],
+            "acceleration 10 m/s^2": [
+              19,
+              19,
+              19,
+              19,
+              18,
+              19,
+              18,
+              19
+            ]
+          },
+          "cell_min": 13,
+          "cell_max": 20
+        },
+        "velocity_clips_per_angle_min_max": [
+          11,
+          12
+        ],
+        "angles_without_velocity_clips": 0,
+        "corr_speed_with_angle_velocity_clips": {
+          "cos": -0.002799,
+          "sin": 0.0001217
+        },
+        "corr_acceleration_with_angle_acceleration_clips": {
+          "cos": 4.539e-05,
+          "sin": -1.183e-05
+        }
+      }
+    }
+  }
+}
