@@ -14,8 +14,9 @@ without re-reading everything else.
 `EXECUTION_PLAN.md` are finalized and in place.
 
 **Execution: in progress.** Steps 0.1–0.7 done; 0.8 in progress (package `vjepa_physics` installed
-in editable mode, D-20). Next step is **0.8d: write `src/vjepa_physics/video.py`** — the first step
-guided in **Claude Code** (D-21).
+in editable mode, D-20). **0.8d in progress** (guided in Claude Code, D-21/D-22): check script
+`scripts/check_video_loader.py` created; check `inspect` passed (F-46). Next: write
+`src/vjepa_physics/video.py`, then checks `load` → `repeat` → `colour` → `order` → `opencv` → `figure`.
 
 ---
 
@@ -46,6 +47,20 @@ Status legend: ⬜ Not started · 🟨 In progress · ✅ Passed gate · ⚠️ 
 | `model.safetensors` SHA-256 | `25466aef85727d16546c6cf8c99f12fcfad9cbca8225d45f23685e2e025b786b` | F-44 |
 | Conv3d MPS vs CPU relative difference | 2.5e-7 | F-43 |
 | Locked packages | 52 | F-42 |
+| Test clip frame timing (PyAV) | time_base 1/12288, pts step 512 = 1/24 s | F-46 |
+
+---
+
+## Saved evidence
+
+Every saved check result (D-24). Each entry: file, key, what it proves, status.
+
+| File | Key | Proves | Status | Source |
+|---|---|---|---|---|
+| `results/video_loader/checks.json` | `inspect` | Test clip `data/speed/videos/scene_1000/video.mp4` decodes with PyAV 18.1.0 as `mpeg4`, `yuv420p`, 256×256, 16 frames, pts step 1/24 s | ✅ passed | F-46; `scripts/check_video_loader.py inspect` |
+
+Planned in the same file (0.8d): `load`, `repeat`, `colour`, `order`, `opencv`, `figure`
+(figure → `results/video_loader/frames.png`).
 
 ---
 
@@ -74,6 +89,17 @@ Known decision points the plan cannot remove in advance (each has a planned fall
 
 Newest entry on top. One entry per work session: what was done, what passed, what didn't,
 what's next.
+
+### 2026-09-24 — Step 0.8d started in Claude Code
+- Claude Code permissions set: `Bash`, `NotebookEdit` denied; edits denied everywhere except `docs/` and
+  `CLAUDE.md`, which always prompt (D-22). `CLAUDE.md` §1 updated to match.
+- Working-style rules added: no plan IDs in code or outputs (D-23); checks are scripts saving evidence to
+  `results/` (D-24).
+- Planned 0.8d checks on test clip `speed/scene_1000` (2.69 m/s, θ 230.625°, ~54 px motion, stays in frame):
+  `inspect`, `load`, `repeat`, `colour`, `order`, `opencv`, `figure`. Full-data versions stay in 1.7–1.9.
+- `scripts/check_video_loader.py` created (user-written); `inspect` passed → F-46, saved to
+  `results/video_loader/checks.json` (see "Saved evidence").
+- **Next:** write `src/vjepa_physics/video.py` (`load_clip`), then the `load` check.
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.

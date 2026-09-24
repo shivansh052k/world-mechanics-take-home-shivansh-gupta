@@ -1,0 +1,51 @@
+{
+  "inspect": {
+    "provenance": {
+      "utc": "2026-09-24T09:27:45+00:00",
+      "git_commit": "9c11f1088b0e00b695bb29f7fa87b653b463edc7",
+      "git_dirty": true,
+      "pyav": "18.1.0"
+    },
+    "result": {
+      "clip": "data/speed/videos/scene_1000/video.mp4",
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "codec": "mpeg4",
+      "pix_fmt": "yuv420p",
+      "size": [
+        256,
+        256
+      ],
+      "stream_frames": 16,
+      "average_rate": "24",
+      "time_base": "1/12288",
+      "decoded_frames": 16,
+      "pts": [
+        0,
+        512,
+        1024,
+        1536,
+        2048,
+        2560,
+        3072,
+        3584,
+        4096,
+        4608,
+        5120,
+        5632,
+        6144,
+        6656,
+        7168,
+        7680
+      ],
+      "frame_formats": [
+        "yuv420p"
+      ],
+      "frame_sizes": [
+        [
+          256,
+          256
+        ]
+      ]
+    }
+  }
+}
