@@ -1,20 +1,16 @@
 {
   "predictor_path": {
     "provenance": {
-      "utc": "2026-09-24T21:53:35+00:00",
-      "git_commit": "43e25f5d9f364fd63ca9c641b96f3fb5cf91bdfc",
-      "git_dirty": true,
-      "git_dirty_paths": [
-        "?? scripts/check_forecast.py",
-        "?? scripts/check_intervention.py",
-        "?? src/vjepa_physics/forecast.py",
-        "?? src/vjepa_physics/intervention.py"
-      ],
+      "utc": "2026-09-24T22:42:51+00:00",
+      "git_commit": "5dd1385d42388506b49a9ef5840236779d71be8a",
+      "git_dirty": false,
+      "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
           "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
           "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
           "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
           "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
           "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
@@ -22,9 +18,9 @@
           "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
           "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
           "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
-          "scripts/check_forecast.py": "02702c795691a5ae8be743be76af8cd489c0254ee7595e58789847e0fb2e6f3a"
+          "scripts/check_forecast.py": "fadd7e3f44cb0de89be9209f3138bf4fb7193593e763c87e3c1c8c57b55e39a8"
         },
-        "combined_sha256": "fee6fdca6c2d32ac3b1119ca2f6854283fb2c62803eebb4a7dea213ab6e47005"
+        "combined_sha256": "3393f464c4cb454726990ebfde7b60860ef764550a78e85dd2267c7704bba135"
       },
       "versions": {
         "av": "18.1.0",
@@ -66,20 +62,16 @@
   },
   "forecast": {
     "provenance": {
-      "utc": "2026-09-24T22:09:47+00:00",
-      "git_commit": "43e25f5d9f364fd63ca9c641b96f3fb5cf91bdfc",
-      "git_dirty": true,
-      "git_dirty_paths": [
-        "?? scripts/check_forecast.py",
-        "?? scripts/check_intervention.py",
-        "?? src/vjepa_physics/forecast.py",
-        "?? src/vjepa_physics/intervention.py"
-      ],
+      "utc": "2026-09-24T22:52:05+00:00",
+      "git_commit": "5dd1385d42388506b49a9ef5840236779d71be8a",
+      "git_dirty": false,
+      "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
           "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
           "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
           "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
           "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
           "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
@@ -89,7 +81,7 @@
           "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
           "scripts/check_forecast.py": "fadd7e3f44cb0de89be9209f3138bf4fb7193593e763c87e3c1c8c57b55e39a8"
         },
-        "combined_sha256": "194a90da9046f03447adcc610090d5cdcd7fd29be19c97d6d3c9fccac47dd344"
+        "combined_sha256": "3393f464c4cb454726990ebfde7b60860ef764550a78e85dd2267c7704bba135"
       },
       "versions": {
         "av": "18.1.0",
@@ -1361,9 +1353,9 @@
         }
       },
       "seconds_median": {
-        "encode_full": 0.9301,
-        "encode_context": 0.4179,
-        "predict": 0.1297
+        "encode_full": 1.281,
+        "encode_context": 0.5721,
+        "predict": 0.1734
       },
       "timed_clips": 95,
       "all_usable": true,

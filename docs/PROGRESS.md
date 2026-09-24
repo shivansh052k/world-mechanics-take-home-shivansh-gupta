@@ -227,8 +227,14 @@ what's next.
   (primary steering readout = later-layer probe; predictor readout optional; closes O-20, narrows O-07); D-05 tolerance
   criterion for step 1.8. Corrections: F-54 ranges, D-27 old-semantics wording, `dirty_flag` terminal-only result,
   evidence table blank lines removed, CLAUDE.md §5 (predictor line, decoder agreement).
-- **Next:** 0.18 (Phase 0 gate), guided one step at a time: `opencv_tolerance` check → commit everything incl.
-  `results/` → clean re-run of every check → `git diff results/` → O-18 browser confirmation → Phase 0 report.
+- 0.18 in progress: `opencv_tolerance` passed (verdict ok); everything committed (`5dd1385`, tree clean; this also
+  added `intervention.py` / `check_intervention.py`, which the 0.14 commit had missed). Clean re-run of all 33 check
+  keys: 31 exit 0, `opencv` and `devices` exit 1 as expected. `git diff results/` vs `5dd1385`: every deterministic
+  value identical; only provenance (incl. old-format `versions` blocks), timings and `real_repo_code_changes_now` →
+  `[]` (now saved) changed; both figures byte-identical. Observation: `forecast` full-encode median 0.93 → 1.28 s
+  (+38%) when run last after ~15 min of GPU load, while `benchmark` earlier in the loop stayed at 0.85 s (thermal
+  throttling is a hypothesis, untested) → extraction may take ~90 min under sustained load, not ~65.
+- **Next:** commit the re-run results → O-18 browser confirmation → Phase 0 report.
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.
