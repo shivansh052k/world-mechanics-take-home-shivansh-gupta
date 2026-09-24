@@ -15,7 +15,9 @@ from importlib.metadata import version
 from pathlib import Path
 
 import av
+import av
 import numpy as np
+from matplotlib.figure import Figure
 from scipy import ndimage
 
 from vjepa_physics.video import load_clip
@@ -23,6 +25,7 @@ from vjepa_physics.video import load_clip
 REPO = Path(__file__).resolve().parents[1]
 CLIP = REPO / "data/speed/videos/scene_1000/video.mp4"  # speed 2.69 m/s, theta 230.625 deg
 OUT = REPO / "results/video_loader/checks.json"
+FIGURE = REPO / "results/video_loader/frames.png"
 
 
 def provenance() -> dict:
@@ -37,6 +40,7 @@ def provenance() -> dict:
         "pyav": av.__version__,
         "numpy": np.__version__,
         "opencv": version("opencv-python-headless"),
+        "matplotlib": version("matplotlib"),
     }
 
 
@@ -350,6 +354,41 @@ def check_opencv_diff_stats() -> dict:
         "mean_abs_diff_all": round(float(np.abs(diff).mean()), 3),
     }
 
+def check_figure() -> dict:
+    """Frames 0, 5, 10, 15 with the metadata-predicted (+) and measured (x) disk centre.
+
+    Visual evidence that decoding, colour, frame order and the pixel mapping are right.
+    The numeric version of this check is `order`.
+    """
+    clip = load_clip(CLIP)
+    meta = json.loads((CLIP.parent / "metadata.json").read_text())
+    predicted = predicted_centroids(meta)
+    measured = disk_centroids(clip)
+    shown = [0, 5, 10, 15]
+
+    fig = Figure(figsize=(12, 3.6), layout="constrained")
+    for ax, k in zip(fig.subplots(1, len(shown)), shown):
+        ax.imshow(clip[k], interpolation="nearest")
+        ax.plot(predicted[:, 0], predicted[:, 1], color="white", linewidth=0.8, alpha=0.5)
+        ax.plot(*predicted[k], marker="+", color="cyan", markersize=12, markeredgewidth=1.5, linestyle="none")
+        ax.plot(*measured[k], marker="x", color="black", markersize=7, markeredgewidth=1.5, linestyle="none")
+        ax.set_title(f"frame {k}  (t = {k}/{meta['fps']} s)", fontsize=10)
+        ax.set_xticks([])
+        ax.set_yticks([])
+    fig.suptitle(
+        f"{CLIP.relative_to(REPO)}: predicted (+) vs measured (x) disk centre; line = predicted path",
+        fontsize=10,
+    )
+    FIGURE.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(FIGURE, dpi=150)
+
+    error = np.linalg.norm(predicted - measured, axis=1)
+    return {
+        "clip": str(CLIP.relative_to(REPO)),
+        "figure": str(FIGURE.relative_to(REPO)),
+        "frames_shown": shown,
+        "error_px_shown_frames": [round(float(error[k]), 3) for k in shown],
+    }
 
 
 CHECKS = {
@@ -361,6 +400,7 @@ CHECKS = {
     "opencv": check_opencv,
     "opencv_bicubic": check_opencv_bicubic,
     "opencv_diff_stats": check_opencv_diff_stats,
+    "figure": check_figure,
 }
 
 

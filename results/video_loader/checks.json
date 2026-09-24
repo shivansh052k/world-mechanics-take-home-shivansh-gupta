@@ -363,5 +363,32 @@
       ],
       "mean_abs_diff_all": 0.675
     }
+  },
+  "figure": {
+    "provenance": {
+      "utc": "2026-09-24T10:05:07+00:00",
+      "git_commit": "4663c5d7e286e537ab4416322dbcbdf6c49c5b9b",
+      "git_dirty": true,
+      "pyav": "18.1.0",
+      "numpy": "2.5.3",
+      "opencv": "5.0.0.93",
+      "matplotlib": "3.11.2"
+    },
+    "result": {
+      "clip": "data/speed/videos/scene_1000/video.mp4",
+      "figure": "results/video_loader/frames.png",
+      "frames_shown": [
+        0,
+        5,
+        10,
+        15
+      ],
+      "error_px_shown_frames": [
+        0.319,
+        0.42,
+        0.11,
+        0.407
+      ]
+    }
   }
 }
