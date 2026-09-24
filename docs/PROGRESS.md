@@ -63,7 +63,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 
 | File | Key | Proves | Status | Source |
 |---|---|---|---|---|
-| `results/video_loader/checks.json` | `inspect` | Test clip `data/speed/videos/scene_1000/video.mp4` decodes with PyAV 18.1.0 as `mpeg4`, `yuv420p`, 256×256, 16 frames, pts step 1/24 s | ✅ passed | F-46; `scripts/check_video_loader.py inspect` |
+| `results/video_loader/checks.json` | `inspect` | Test clip `data/speed/videos/scene_1000/video.mp4` (PyAV 18.1.0): 16 frames decoded and reported by the container; every frame 256×256; pts × time_base rises by exactly 1/24 s (exact fractions, 0 → 5/8 s). Codec `mpeg4`, `yuv420p` recorded as observations | ✅ passed (explicit criteria since re-run) | F-46; `scripts/check_video_loader.py inspect` |
 | `results/video_loader/checks.json` | `load` | `load_clip` gives (16, 256, 256, 3) uint8, C-contiguous; raises `ValueError` on a wrong frame count (15) or size (224) instead of padding/truncating/resizing. Min 0 / max 249 explained by `colour` | ✅ passed | `scripts/check_video_loader.py load` |
 | `results/video_loader/checks.json` | `repeat` | Two loads bit-identical; decoded-pixel SHA-256 `03285f4cf9ffc6ecf90541b47e7f08c217eab4e4809d42f7042baf29ab9d95c0` for cross-run comparison | ✅ passed | `scripts/check_video_loader.py repeat` |
 | `results/video_loader/checks.json` | `colour` | RGB order: disk core (234.0, 114.4, 39.2) orange, background (29, 32, 29); blue = 0 only in a ring 0–2.2 px outside the disk | ✅ passed | F-47; `scripts/check_video_loader.py colour` |
@@ -84,8 +84,12 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/model/checks.json` | `fingerprint` | Two independent loads → identical in-memory weights fingerprint `c865f524…04ede` | ✅ passed | F-51; `scripts/check_model.py fingerprint` |
 | `results/model/checks.json` | `seeds` | `set_seeds(0)` reproduces Python / NumPy / torch CPU / torch MPS draws; seed 1 changes all | ✅ passed | F-51; `scripts/check_model.py seeds` |
 
-Check scripts save through `src/vjepa_physics/evidence.py` (`save_result`, provenance with package versions);
-`scripts/check_video_loader.py` still has its own copy (switching it is optional).
+| `results/evidence/checks.json` | `dirty_flag` | In a scratch git repo: `git_dirty` False when committed and for `results/`- or `docs/`-only changes; True for any edit or new file under `src/`, `scripts/`, `pyproject.toml`, `requirements.lock.txt`; same answer from repo root, subfolder and outside. Real repo root found from anywhere. Real-repo confirmation after commit `c39e0a8`: `False []` | ✅ passed | D-27; `scripts/check_evidence.py dirty_flag` |
+
+All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
+= uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
+and combined), `versions` (from package metadata). **Entries saved before commit `c39e0a8` keep the old meaning**
+(`git_dirty` = any change anywhere in the tree).
 
 Still pending: `opencv` re-scored once the planning chat settles D-05's criterion. For slides, a zoomed
 crop of `frames.png` would read better (disk ≈ 21 px of 256).
@@ -105,6 +109,10 @@ Awaiting the planning chat:
   inputs; optional (b) textbook BT.601 reference from PyAV's raw YUV. Affects the `opencv` check and step 1.8.
 
 To confirm later:
+- **Phase 0 gate (0.18):** re-run every check once from a clean, committed tree, so the whole evidence set has
+  clean provenance (D-27).
+- **D-05 criterion must be settled in the planning chat before step 1.8** (current "pixel-identical" wording
+  cannot pass, F-49).
 - **`.gitignore` for `artifacts/`** — the dry-run proved `artifacts/manifests/` is committed; that other
   files in `artifacts/` are ignored is untested until the first one is written. Check with
   `git status` / `git check-ignore -v` then.
@@ -154,7 +162,12 @@ what's next.
 - `src/vjepa_physics/model.py` (`load_model`: file SHA-256 check, offline pinned load, fp32, sdpa, clean loading
   report required, eval, no grad; `weights_fingerprint`) and `reproducibility.py` (`set_seeds`, `SEED = 0`) added;
   `scripts/check_model.py` checks `config`, `load`, `fingerprint`, `seeds` all passed (F-51, D-26). **Step 0.10 done.**
-- **Next:** 0.11 (first end-to-end forward pass) — waiting for the user's go.
+- Planning-chat review, two changes before 0.11: (1) `evidence.py` provenance rewritten — code-only dirty flag via
+  `git -C <repo root>`, `git_dirty_paths`, `code` hashes (D-27); proved by `scripts/check_evidence.py dirty_flag`
+  in a scratch repo, confirmed on the real repo (`False []` at `c39e0a8`); `check_video_loader.py` switched to the
+  shared `save_result` (duplicate import and whitespace cleaned; `repeat` re-run, same pixel hash). (2) `inspect`
+  given explicit criteria and a verdict; re-run: passed (F-46).
+- **Next:** 0.11 (first end-to-end forward pass).
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.

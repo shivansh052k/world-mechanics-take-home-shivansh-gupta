@@ -1,0 +1,93 @@
+{
+  "forward": {
+    "provenance": {
+      "utc": "2026-09-24T11:18:22+00:00",
+      "git_commit": "df245eed96691620a2cb89a2138a67ada768b5af",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        "?? scripts/check_forward.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/model.py": "2c9be659e49a4f51b0ced282a7f82d30b26c099385b626e58f6431868c8ac230",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
+          "scripts/check_forward.py": "96f24a8296af0077e3bf83e47e4b04b8d09c1549291ccfadd24ae1cfb623f1da"
+        },
+        "combined_sha256": "667e0161fcf56e3f448c80ad004951a883733b24a48dcf6f38e69d26a345dad3"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "clip": "data/speed/videos/scene_1000/video.mp4",
+      "input": {
+        "shape": [
+          1,
+          16,
+          3,
+          256,
+          256
+        ],
+        "dtype": "torch.float32",
+        "device": "mps",
+        "all_finite": true,
+        "mean": -1.455986,
+        "std": 0.200216
+      },
+      "outputs": {
+        "encoder": {
+          "shape": [
+            1,
+            2048,
+            1024
+          ],
+          "dtype": "torch.float32",
+          "device": "mps",
+          "all_finite": true,
+          "mean": 0.036742,
+          "std": 3.116734
+        },
+        "predictor": {
+          "shape": [
+            1,
+            2048,
+            1024
+          ],
+          "dtype": "torch.float32",
+          "device": "mps",
+          "all_finite": true,
+          "mean": 9e-05,
+          "std": 0.650498
+        },
+        "predictor_target": {
+          "shape": [
+            1,
+            2048,
+            1024
+          ],
+          "dtype": "torch.float32",
+          "device": "mps",
+          "all_finite": true,
+          "mean": 0.036742,
+          "std": 3.116734
+        }
+      },
+      "weights_fingerprint_before": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "weights_fingerprint_after": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "passed": true
+    }
+  }
+}
