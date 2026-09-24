@@ -16,9 +16,9 @@ without re-reading everything else.
 **Execution: in progress.** Steps 0.1–0.8 done (guided in Claude Code since 0.8d, D-21/D-22). Loader
 `src/vjepa_physics/video.py` (`load_clip`) verified by checks `inspect`, `load`, `repeat`, `colour`,
 `order`, `figure`; `opencv` failed (PyAV vs OpenCV not pixel-identical, F-49) → D-05 criterion is with the
-planning chat (affects step 1.8, not 0.8). **0.9 (preprocessing) in progress:** `src/vjepa_physics/checkpoint.py`
-(pinned model id, revision, weights SHA-256) added; torchvision 0.29.0 installed (D-25). Next:
-`src/vjepa_physics/preprocess.py`.
+planning chat (affects step 1.8, not 0.8). **0.9 done:** `src/vjepa_physics/preprocess.py` (`preprocess_clip`,
+checkpoint processor with resize/crop off) verified by `config`, `manual`, `identity`, `default` (F-50).
+**Next: 0.10 (model loading and freezing).**
 
 ---
 
@@ -26,7 +26,7 @@ planning chat (affects step 1.8, not 0.8). **0.9 (preprocessing) in progress:** 
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0 — Environment and model setup | 🟨 In progress | 0.1–0.8 done; 0.9 in progress |
+| 0 — Environment and model setup | 🟨 In progress | 0.1–0.9 done; 0.10 next |
 | 1 — Data audit | ⬜ Not started | |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
@@ -69,6 +69,14 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/video_loader/checks.json` | `opencv_diff_stats` | Diagnostic: signed PyAV − OpenCV histogram and means by region (+1.01 / +0.01 / +1.00 overall) | ℹ️ diagnostic | F-49; `scripts/check_video_loader.py opencv_diff_stats` |
 
 | `results/video_loader/frames.png` + `checks.json` | `figure` | Visual evidence: frames 0/5/10/15 with predicted (+) and measured (×) disk centre and predicted path; disk orange, moving down-left (θ 230.6°); errors at shown frames 0.319 / 0.42 / 0.11 / 0.407 px (= `order`) | ℹ️ visual (reviewed) | `scripts/check_video_loader.py figure` |
+
+| `results/preprocessing/checks.json` | `config` | Our processor: resize and crop off; rescale 1/255 and ImageNet normalization as shipped. Default: shortest edge 292 + crop 256 | ✅ passed | F-50; `scripts/check_preprocessing.py config` |
+| `results/preprocessing/checks.json` | `manual` | Output (16, 3, 256, 256) float32 CPU = manual (x/255 − mean)/std, max abs diff 1.65e-7 | ✅ passed | F-50; `scripts/check_preprocessing.py manual` |
+| `results/preprocessing/checks.json` | `identity` | Un-normalize + round = decoded uint8 clip bit-for-bit (max 9.4e-6 levels) → no spatial change | ✅ passed | F-50; `scripts/check_preprocessing.py identity` |
+| `results/preprocessing/checks.json` + `default_vs_ours.png` | `default` | Shipped default scales ×1.1406 (slope 1.1393/1.1405) and crops 18 px/side (offset −17.93 px); disk 350 → 455 px; 36.5 px/m; figure reviewed | ✅ passed | F-50; `scripts/check_preprocessing.py default` |
+
+Check scripts save through `src/vjepa_physics/evidence.py` (`save_result`, provenance with package versions);
+`scripts/check_video_loader.py` still has its own copy (switching it is optional).
 
 Still pending: `opencv` re-scored once the planning chat settles D-05's criterion. For slides, a zoomed
 crop of `frames.png` would read better (disk ≈ 21 px of 256).
@@ -130,6 +138,11 @@ what's next.
   video processor requires torchvision (not installed) → D-25: `torchvision 0.29.0` installed with the lock as
   constraint (dry run: only torchvision; `pip check` clean; torch 2.14.0 unchanged); `requirements.lock.txt`
   regenerated (`pip freeze --exclude-editable`), diff = one added line → 53 packages.
+- `src/vjepa_physics/preprocess.py` (`load_processor`, `preprocess_clip`) and `src/vjepa_physics/evidence.py` (shared
+  `save_result`) added; `scripts/check_preprocessing.py` checks `config`, `manual`, `identity`, `default` all passed
+  (F-50); figure `results/preprocessing/default_vs_ours.png` reviewed (title fixed). F-36's scale/crop verified.
+  **Step 0.9 done.**
+- **Next:** 0.10 (model loading and freezing).
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.

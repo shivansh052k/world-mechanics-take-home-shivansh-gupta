@@ -158,6 +158,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
 - `docs/` — the three source-of-truth files.
 - `src/vjepa_physics/` — the installable package (D-20; `pyproject.toml` at the root, installed
   with `python -m pip install -e .`). Import as `from vjepa_physics.<module> import …`.
+  Modules so far: `checkpoint` (pinned model id/revision/weights hash), `video` (`load_clip`),
+  `preprocess` (`preprocess_clip`), `evidence` (`save_result` with provenance, used by check scripts).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.
