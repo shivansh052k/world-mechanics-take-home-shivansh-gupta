@@ -20,7 +20,8 @@ planning chat (affects step 1.8, not 0.8). **0.9 done:** `src/vjepa_physics/prep
 checkpoint processor with resize/crop off) verified by `config`, `manual`, `identity`, `default` (F-50).
 **0.10 done:** `src/vjepa_physics/model.py` (`load_model`, `weights_fingerprint`) and `reproducibility.py`
 (`set_seeds`) verified by `config`, `load`, `fingerprint`, `seeds` (F-51, D-26).
-**Next: 0.11 (first end-to-end forward pass)** — waiting for the user's go.
+**0.11 done:** full forward pass on MPS verified by `scripts/check_forward.py forward` (F-52).
+**Next: 0.12 (activation capture).**
 
 ---
 
@@ -28,7 +29,7 @@ checkpoint processor with resize/crop off) verified by `config`, `manual`, `iden
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0 — Environment and model setup | 🟨 In progress | 0.1–0.10 done; 0.11 next |
+| 0 — Environment and model setup | 🟨 In progress | 0.1–0.11 done; 0.12 next |
 | 1 — Data audit | ⬜ Not started | |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
@@ -85,6 +86,8 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/model/checks.json` | `seeds` | `set_seeds(0)` reproduces Python / NumPy / torch CPU / torch MPS draws; seed 1 changes all | ✅ passed | F-51; `scripts/check_model.py seeds` |
 
 | `results/evidence/checks.json` | `dirty_flag` | In a scratch git repo: `git_dirty` False when committed and for `results/`- or `docs/`-only changes; True for any edit or new file under `src/`, `scripts/`, `pyproject.toml`, `requirements.lock.txt`; same answer from repo root, subfolder and outside. Real repo root found from anywhere. Real-repo confirmation after commit `c39e0a8`: `False []` | ✅ passed | D-27; `scripts/check_evidence.py dirty_flag` |
+
+| `results/forward/checks.json` | `forward` | One clip through encoder + predictor on MPS: all outputs (1, 2048, 1024), finite; predictor target = encoder output; weights fingerprint unchanged by the forward pass | ✅ passed | F-52; `scripts/check_forward.py forward` |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
@@ -167,7 +170,9 @@ what's next.
   in a scratch repo, confirmed on the real repo (`False []` at `c39e0a8`); `check_video_loader.py` switched to the
   shared `save_result` (duplicate import and whitespace cleaned; `repeat` re-run, same pixel hash). (2) `inspect`
   given explicit criteria and a verdict; re-run: passed (F-46).
-- **Next:** 0.11 (first end-to-end forward pass).
+- `scripts/check_forward.py forward`: first full forward pass on MPS passed (F-52); predictor vs encoder output
+  scale difference recorded as hypothesis H-06 (tested at 0.15). **Step 0.11 done.**
+- **Next:** 0.12 (activation capture).
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.
