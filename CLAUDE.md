@@ -112,6 +112,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
 - **[verified] Layer-indexing trap:** `hidden_states` has 25 entries (embeddings + 24 blocks), but
   the last entry is post-final-LayerNorm in v4.53.x and pre-LayerNorm in v5.x. **Use our own
   forward hooks on each encoder block**, and pin the transformers version. (source of both versions)
+- **[verified] MPS → CPU float64 trap:** `t.to("cpu", torch.float64)` on an MPS tensor silently gave
+  all-zero tensors. Always move first, then widen: `t.to("cpu").to(torch.float64)`. (F-55)
 - **[untested] Predictor:** by default it gets all tokens as context and predicts all tokens
   (reconstruction, not forecasting), and the encoder has already seen the full clip. A true
   future-prediction test = encode frames 0–7 only (1024 tokens), then call the predictor

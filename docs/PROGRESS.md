@@ -22,7 +22,10 @@ checkpoint processor with resize/crop off) verified by `config`, `manual`, `iden
 (`set_seeds`) verified by `config`, `load`, `fingerprint`, `seeds` (F-51, D-26).
 **0.11 done:** full forward pass on MPS verified by `scripts/check_forward.py forward` (F-52).
 **0.12 done:** `src/vjepa_physics/activations.py` (`capture_encoder`, `GRID`, `as_grid`) verified by
-`hidden_states` and `token_layout` (F-53). **Next: 0.13 (correctness checks).**
+`hidden_states` and `token_layout` (F-53).
+**0.13 done:** `scripts/check_numerics.py` — bit-exact repeat and batch; MPS vs CPU recorded; float64 reference
+shows MPS fp32 ≥ as accurate as CPU fp32; sdpa kept (F-54, F-55). MPS-vs-CPU criterion (O-19) with the planning
+chat. **Next: 0.14 (intervention no-op test)** — waiting for the user's go.
 
 ---
 
@@ -30,7 +33,7 @@ checkpoint processor with resize/crop off) verified by `config`, `manual`, `iden
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0 — Environment and model setup | 🟨 In progress | 0.1–0.12 done; 0.13 next |
+| 0 — Environment and model setup | 🟨 In progress | 0.1–0.13 done; 0.14 next |
 | 1 — Data audit | ⬜ Not started | |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
@@ -93,6 +96,12 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/activations/checks.json` | `hidden_states` | Own hooks vs `hidden_states` in one pass: entry 0 = embedding, entry i = block i−1, entry 24 = block 23 pre-LayerNorm; `last_hidden_state` = LN(block 23) exactly; our hooks removed (48 transformers hooks before and after). Proves index alignment and semantics, not run-to-run determinism (0.13) | ✅ passed | F-53; `scripts/check_activations.py hidden_states` |
 | `results/activations/checks.json` | `token_layout` | Token index = t·256 + row·16 + col shown from the data: disk patch is the most deviant embedding token in 8/8 time steps; swapped rows/cols 3/8, reversed time 4/8 rejected. Limit: one clip whose path crosses near the row = col diagonal | ✅ passed | F-53; `scripts/check_activations.py token_layout` |
 
+| `results/numerics/checks.json` | `repeat` | Same input twice: bit-exact at all 27 outputs on MPS and on CPU (re-run after fixing the MPS float64 conversion, F-55) | ✅ passed | F-54; `scripts/check_numerics.py repeat` |
+| `results/numerics/checks.json` | `batch` | Batch of 2 = each clip alone, bit-exact on MPS (batch size 2 only) | ✅ passed | F-54; `scripts/check_numerics.py batch` |
+| `results/numerics/checks.json` | `devices` | MPS vs CPU per layer: rel. error 6e-7 → 1.2e-3 with depth, token cosine ≥ 0.9999; default fp32 tolerances fail everywhere (hypothesis confirmed) | ❌ failed own criterion at blocks 19–23 + final norm (≤ 1.23e-3 vs 1e-3); explained by `precision` (fp32 limit, not MPS); criterion → O-19 | F-54; `scripts/check_numerics.py devices` |
+| `results/numerics/checks.json` | `precision` | Diagnostic vs CPU float64: MPS fp32 error ≤ CPU fp32 error at all 27 outputs (ratio 0.58–0.99) | ℹ️ diagnostic | F-54; `scripts/check_numerics.py precision` |
+| `results/numerics/checks.json` | `attention` | Diagnostic: eager ÷ sdpa error vs float64 = 0.93–1.03 → keep sdpa (pre-stated rule) | ℹ️ diagnostic | F-54, D-26; `scripts/check_numerics.py attention` |
+
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
 and combined), `versions` (from package metadata). **Entries saved before commit `c39e0a8` keep the old meaning**
@@ -114,10 +123,15 @@ Awaiting the planning chat:
   systematic +1 R/B offset, max 3 levels; likely FFmpeg 8 vs 7). Proposed: (a) tolerance band per clip
   (max |diff| ≤ 3, mean signed diff near (+1, 0, +1), outliers flagged), PyAV the only decoder for model
   inputs; optional (b) textbook BT.601 reference from PyAV's raw YUV. Affects the `opencv` check and step 1.8.
+- **O-19, MPS-vs-CPU criterion.** Pre-set criterion failed at the last layers; float64 reference shows fp32 itself
+  (CPU too) cannot meet it and MPS is at least as accurate as CPU (F-54). Proposed: keep D-06; criterion "MPS fp32
+  error vs float64 ≤ CPU fp32 error" (met); probe-level MPS-vs-CPU comparison at step 2.6.
 
 To confirm later:
 - **Phase 0 gate (0.18):** re-run every check once from a clean, committed tree, so the whole evidence set has
   clean provenance (D-27).
+- **Batch size at extraction (2.4):** `batch` proved bit-exactness for batch size 2 only; re-run it with the
+  extraction's real batch size.
 - **D-05 criterion must be settled in the planning chat before step 1.8** (current "pixel-identical" wording
   cannot pass, F-49).
 - **`.gitignore` for `artifacts/`** — the dry-run proved `artifacts/manifests/` is committed; that other
@@ -179,7 +193,12 @@ what's next.
 - `src/vjepa_physics/activations.py` (`capture_encoder`: own read-only hooks on the patch embedding and 24 blocks,
   removed on exit; `GRID`, `as_grid`) and `scripts/check_activations.py`: `hidden_states` and `token_layout` passed
   (F-53); F-15 verified on transformers 5.17.0. **Step 0.12 done.**
-- **Next:** 0.13 (correctness checks).
+- `scripts/check_numerics.py`: first `repeat` run was a false pass (MPS → CPU float64 conversion gave all-zero tensors,
+  F-55) → fixed with two-step conversion + guards, re-run: bit-exact. `batch` bit-exact (size 2). `devices` failed the
+  pre-set criterion at the last layers; `precision` (float64 reference) shows fp32 itself is the limit and MPS is at
+  least as accurate as CPU; `attention` → keep sdpa. `load_model` gained diagnostic-only `dtype` / `attn_implementation`.
+  Planning-chat note sent (O-19). **Step 0.13 done.**
+- **Next:** 0.14 (intervention no-op test) — waiting for the user's go.
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.
