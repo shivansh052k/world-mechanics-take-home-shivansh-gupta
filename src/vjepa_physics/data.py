@@ -62,3 +62,29 @@ def resolve(dataset_dir: str | Path, relative: str) -> Path:
     if target == base or not target.is_relative_to(base):
         raise ValueError(f"{relative!r} resolves to {target}, outside {base}")
     return target
+
+
+def reject_constant(name: str) -> None:
+    """json parse_constant hook: NaN, Infinity and -Infinity are not valid JSON numbers."""
+    raise ValueError(f"non-finite number {name}")
+
+
+def read_metadata(path: str | Path) -> dict:
+    """One clip's metadata.json as a dict.
+
+    Strict: raises ValueError, naming the file, if it is not a JSON object, repeats a key, or
+    contains NaN / Infinity (Python's json accepts those by default; standard JSON does not).
+    Field names and values are not checked here.
+    """
+    path = Path(path)
+    try:
+        meta = json.loads(
+            path.read_text(encoding="utf-8"),
+            object_pairs_hook=reject_duplicate_keys,
+            parse_constant=reject_constant,
+        )
+    except ValueError as e:
+        raise ValueError(f"{path}: {e}") from None
+    if not isinstance(meta, dict):
+        raise ValueError(f"{path}: expected a JSON object, got {type(meta).__name__}")
+    return meta

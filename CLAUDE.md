@@ -175,7 +175,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `model` (`load_model`, `weights_fingerprint`), `reproducibility` (`set_seeds`, `SEED`),
   `activations` (`capture_encoder`, `GRID`, `as_grid`), `intervention` (`edit_encoder`, `encoder_sites`),
   `forecast` (`encode`, `predict`, `training_target`), `decoders` (`load_clip_opencv`, `compare_decoders`),
-  `data` (`DATASETS`, `read_manifest`, `resolve`: strict manifest reader; paths must stay inside `data/<variable>/`).
+  `data` (`DATASETS`, `read_manifest`, `resolve`, `read_metadata`: strict readers; paths must stay inside
+  `data/<variable>/`; take labels from the dataset name, never `primary_label`, which direction lacks).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.
