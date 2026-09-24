@@ -27,13 +27,13 @@ checkpoint processor with resize/crop off) verified by `config`, `manual`, `iden
 shows MPS fp32 ≥ as accurate as CPU fp32; sdpa kept (F-54, F-55); MPS fp32 accepted with the float64-relative
 criterion (D-28). **0.14 done:** `src/vjepa_physics/intervention.py` (`edit_encoder`, `encoder_sites`) verified by
 `scripts/check_intervention.py` `noop`, `positive_control`, `hook_order` (F-56). **0.15 done:** `src/vjepa_physics/forecast.py` (`encode`, `predict`,
-`training_target`) verified by `scripts/check_forecast.py` `predictor_path` and `forecast` (F-57); O-18 answered from
-source (F-58, user confirmation pending); primary steering readout = later-layer probe on the full clip, predictor
+`training_target`) verified by `scripts/check_forecast.py` `predictor_path` and `forecast` (F-57); HF ships the target
+(EMA) encoder (F-58, verified; O-18 closed); primary steering readout = later-layer probe on the full clip, predictor
 readout optional (D-30). **0.16 done:** `scripts/check_benchmark.py benchmark` (F-59): ~0.84 s per
 clip, batching gives no speed-up (batch size 1 suggested), ~65 min to extract all clips, memory well within limits.
-**0.17 skipped** (D-29). **Next: 0.18 (Phase 0 gate)** — `opencv_tolerance` check, commit everything, re-run every
-check from the clean tree, compare with `git diff results/`, O-18 browser confirmation, short Phase 0 report. The gate
-may pass with open items if the report lists each one and the step it blocks.
+**0.17 skipped** (D-29). **0.18 done — Phase 0 passed:** `opencv_tolerance` passed; clean re-run of all 33 checks
+matches the committed results; O-18 closed (F-58); report `results/setup/report.md` lists every open item with the
+step it blocks. **Next: Phase 1 (data audit), starting at 1.1 (manifest integrity)** — waiting for the user's go.
 
 ---
 
@@ -41,7 +41,7 @@ may pass with open items if the report lists each one and the step it blocks.
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0 — Environment and model setup | 🟨 In progress | 0.1–0.16 done; 0.17 skipped (D-29); 0.18 next |
+| 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
 | 1 — Data audit | ⬜ Not started | |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
@@ -114,6 +114,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/forecast/checks.json` | `predictor_path` | Separate `encode` → `predict` = combined forward bit-for-bit; reversed forecast targets return reversed rows; forecast shapes (1, 1024, 1024); context-vs-full-clip difference 0.72 recorded as an observation | ✅ passed | F-57; `scripts/check_forecast.py predictor_path` |
 | `results/forecast/checks.json` | `forecast` | 96 clips (32 per dataset, ids saved): predictor beats copy-last-step and mean-context-token baselines in every dataset (all 95% CIs < 0); margin over the mean token ~3% of L1 (→ D-30); H-06 fields, per-step L1s, timings recorded | ✅ passed | F-57; `scripts/check_forecast.py forecast` |
 | `results/benchmark/checks.json` | `benchmark` | Time and memory per clip on MPS at batch sizes 1/2/4/8 (no batching gain; batch 1 suggested by the pre-set rule); batched pooled outputs = single bit-for-bit at 2/4/8; extraction ~65 min; storage estimates | ℹ️ diagnostic | F-59; `scripts/check_benchmark.py benchmark` |
+| `results/setup/report.md` | — | Setup report: what was verified (with check keys), failures kept on record, skipped parity, clean re-run and diff, open items with the step each blocks | ✅ gate passed | 0.18; user-written from saved evidence |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
@@ -133,11 +134,6 @@ No blockers.
 
 Awaiting the planning chat: nothing (D-05 criterion, O-19 → D-28, O-14 → D-29, O-20 → D-30 settled 2026-09-24).
 
-To confirm by the user:
-- **O-18 / F-58:** check in the browser that `checkpoint_key="target_encoder"` (vjepa2 `src/hub/backbones.py`), the
-  `torch.hub.load(HUB_REPO, "vjepa2_" + model_name, ...)` call (transformers `convert_vjepa2_to_hf.py`) and
-  `F.layer_norm(hi, (hi.size(-1),))` (vjepa2 `app/vjepa/train.py`) read as quoted; then mark F-58 verified and close O-18.
-
 To confirm later:
 - **Phase 0 gate (0.18):** re-run every check once from a clean, committed tree, so the whole evidence set has
   clean provenance (D-27); compare with `git diff results/` (deterministic checks: only provenance fields may change).
@@ -150,7 +146,6 @@ To confirm later:
   `git status` / `git check-ignore -v` then.
 
 Known decision points the plan cannot remove in advance (each has a planned fallback):
-- **O-18** — which encoder weights HF ships: answered from source at 0.15 (target encoder, F-58), user confirmation pending.
 - **Phase 1 may overturn scouting facts** (F-21–F-36); D-14's split counts are provisional until step 1.12.
 - **Steering readout** — 0.15 passed, but D-30 makes a later-layer probe on the full clip the primary readout (the
   predictor readout is optional); which layer is settled at step 5.2 (O-07), and Part 2's behavior manifold (D-17)
@@ -234,7 +229,12 @@ what's next.
   `[]` (now saved) changed; both figures byte-identical. Observation: `forecast` full-encode median 0.93 → 1.28 s
   (+38%) when run last after ~15 min of GPU load, while `benchmark` earlier in the loop stayed at 0.85 s (thermal
   throttling is a hypothesis, untested) → extraction may take ~90 min under sustained load, not ~65.
-- **Next:** commit the re-run results → O-18 browser confirmation → Phase 0 report.
+- Re-run results committed. O-18 confirmed on source files the user downloaded from GitHub `main` (F-58 verified:
+  HF ships the target/EMA encoder; the conversion script itself asserts parity with the original at atol 1e-3). O-18
+  closed.
+- Setup report written to `results/setup/report.md` (named without "phase" per D-23). **Step 0.18 done; Phase 0
+  passed** with open items listed in the report.
+- **Next:** Phase 1 (data audit), step 1.1 — waiting for the user's go.
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.
