@@ -1,0 +1,97 @@
+{
+  "dirty_flag": {
+    "provenance": {
+      "utc": "2026-09-24T11:10:00+00:00",
+      "git_commit": "17bcb1dc65405f8d14885623811c47731f18ecd2",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        " M src/vjepa_physics/evidence.py",
+        "?? scripts/check_evidence.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/model.py": "2c9be659e49a4f51b0ced282a7f82d30b26c099385b626e58f6431868c8ac230",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
+          "scripts/check_evidence.py": "de69277556c13d8dbd98ce7c0847ca3d02a6d2933c5470fc383af4db33c1acd9"
+        },
+        "combined_sha256": "6c3b74f82c1fd3fa144cd706813f44566f1535310a70191901d1a4d214ce19ba"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "scenarios": {
+        "committed": {
+          "dirty": false,
+          "expected": false,
+          "paths": []
+        },
+        "results_changed": {
+          "dirty": false,
+          "expected": false,
+          "paths": []
+        },
+        "docs_changed": {
+          "dirty": false,
+          "expected": false,
+          "paths": []
+        },
+        "src_edited": {
+          "dirty": true,
+          "expected": true,
+          "paths": [
+            " M src/pkg/module.py"
+          ]
+        },
+        "src_new_untracked": {
+          "dirty": true,
+          "expected": true,
+          "paths": [
+            "?? src/pkg/extra.py"
+          ]
+        },
+        "scripts_edited": {
+          "dirty": true,
+          "expected": true,
+          "paths": [
+            " M scripts/run.py"
+          ]
+        },
+        "pyproject_changed": {
+          "dirty": true,
+          "expected": true,
+          "paths": [
+            " M pyproject.toml"
+          ]
+        },
+        "lock_changed": {
+          "dirty": true,
+          "expected": true,
+          "paths": [
+            " M requirements.lock.txt"
+          ]
+        }
+      },
+      "same_answer_from_any_working_directory": true,
+      "real_repo_root_found_from_repo_and_outside": true,
+      "real_repo_code_changes_now": [
+        " M src/vjepa_physics/evidence.py",
+        "?? scripts/check_evidence.py"
+      ],
+      "passed": true
+    }
+  }
+}
