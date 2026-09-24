@@ -123,10 +123,12 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   **separately** with context positions 0–1023 and target positions 1024–2047.
   The combined `forward()` cannot do this. (modeling_vjepa2.py) Implemented in `forecast.py`; separate calls =
   combined forward bit-for-bit; forecast beats fitting-free baselines, but only ~3% better than the mean token, so
-  whether it reads out motion is open (F-57, O-20). HF most likely ships the target (EMA) encoder (F-58, pending).
+  whether it reads out motion is open (F-52, F-57); the primary steering readout is a later-layer probe on the full clip, the predictor readout
+  optional (D-30). HF most likely ships the target (EMA) encoder (F-58, pending).
 
 ### Data
-- **[scouting]** The disk is **orange**, not blue as DATA.md says (two decoders agree).
+- **[scouting]** The disk is **orange**, not blue as DATA.md says (FFmpeg CLI and OpenCV agree pixel for pixel, F-29;
+  PyAV confirms orange, F-47; PyAV vs OpenCV differ by ≤ 3 levels, F-49 → D-05 tolerance).
 - **[scouting]** Exact mapping: pixel x = 128 + 32·x_world, pixel row = 128 − 32·y_world
   (32 px/m, visible area ±4 m, **y flipped**). Frame k is at t = k/24 s (clip spans 15/24 s).
 - **[scouting]** Angles use the math convention: 0° = right, **90° = up on screen**.
@@ -169,7 +171,7 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `preprocess` (`preprocess_clip`), `evidence` (`save_result` with provenance, used by check scripts),
   `model` (`load_model`, `weights_fingerprint`), `reproducibility` (`set_seeds`, `SEED`),
   `activations` (`capture_encoder`, `GRID`, `as_grid`), `intervention` (`edit_encoder`, `encoder_sites`),
-  `forecast` (`encode`, `predict`, `training_target`).
+  `forecast` (`encode`, `predict`, `training_target`), `decoders` (`load_clip_opencv`, `compare_decoders`).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.

@@ -18,6 +18,7 @@ from matplotlib.figure import Figure
 from scipy import ndimage
 
 from vjepa_physics.evidence import save_result
+from vjepa_physics.decoders import compare_decoders, load_clip_opencv
 from vjepa_physics.video import load_clip
 
 REPO = Path(__file__).resolve().parents[1]
@@ -243,24 +244,41 @@ def check_order() -> dict:
     }
 
 
-def load_clip_opencv(path: Path) -> tuple[np.ndarray, str]:
-    """Independent decode with OpenCV's FFmpeg backend: (T, H, W, 3) uint8 RGB, backend name."""
-    # Imported here only: cv2 bundles its own FFmpeg, and loading it next to PyAV's
-    # duplicates some Objective-C classes on macOS. Only the OpenCV checks need both.
-    import cv2
+# def load_clip_opencv(path: Path) -> tuple[np.ndarray, str]:
+#     """Independent decode with OpenCV's FFmpeg backend: (T, H, W, 3) uint8 RGB, backend name."""
+#     # Imported here only: cv2 bundles its own FFmpeg, and loading it next to PyAV's
+#     # duplicates some Objective-C classes on macOS. Only the OpenCV checks need both.
+#     import cv2
 
-    cap = cv2.VideoCapture(str(path), cv2.CAP_FFMPEG)
-    if not cap.isOpened():
-        raise RuntimeError(f"OpenCV could not open {path} with the FFmpeg backend")
-    backend = cap.getBackendName()
-    frames = []
-    while True:
-        ok, bgr = cap.read()
-        if not ok:
-            break
-        frames.append(cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB))
-    cap.release()
-    return np.stack(frames), backend
+#     cap = cv2.VideoCapture(str(path), cv2.CAP_FFMPEG)
+#     if not cap.isOpened():
+#         raise RuntimeError(f"OpenCV could not open {path} with the FFmpeg backend")
+#     backend = cap.getBackendName()
+#     frames = []
+#     while True:
+#         ok, bgr = cap.read()
+#         if not ok:
+#             break
+#         frames.append(cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB))
+#     cap.release()
+#     return np.stack(frames), backend
+
+
+def check_opencv_tolerance() -> dict:
+    """PyAV vs OpenCV on the test clip under the per-clip decoder tolerance (vjepa_physics.decoders).
+
+    Passes unless the verdict is "fail"; a "flag" passes but is reported with its reasons. The
+    earlier pixel-identical check (`opencv`) is kept as it was, failed.
+    """
+    pyav = load_clip(CLIP)
+    ocv, backend = load_clip_opencv(CLIP)
+    comparison = compare_decoders(pyav, ocv)
+    return {
+        "clip": str(CLIP.relative_to(REPO)),
+        "opencv_backend": backend,
+        **comparison,
+        "passed": comparison["verdict"] != "fail",
+    }
 
 
 def check_opencv() -> dict:
@@ -403,6 +421,7 @@ CHECKS = {
     "opencv_bicubic": check_opencv_bicubic,
     "opencv_diff_stats": check_opencv_diff_stats,
     "figure": check_figure,
+    "opencv_tolerance": check_opencv_tolerance,
 }
 
 

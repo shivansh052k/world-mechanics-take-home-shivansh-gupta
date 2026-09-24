@@ -1,0 +1,863 @@
+{
+  "noop": {
+    "provenance": {
+      "utc": "2026-09-24T21:30:34+00:00",
+      "git_commit": "43e25f5d9f364fd63ca9c641b96f3fb5cf91bdfc",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        "?? scripts/check_intervention.py",
+        "?? src/vjepa_physics/intervention.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
+          "scripts/check_intervention.py": "bdc77be57f5a12f471deae7bdaaaf544c5b4e417a0eaae8f180bf616a4a07eef"
+        },
+        "combined_sha256": "b5ea1a2e17e6c70f5d6c8e124567f5b34f8905cf3cdd11fc27901c4ab81e4e3d"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "clip": "data/speed/videos/scene_1000/video.mp4",
+      "device": "mps",
+      "sites": 25,
+      "edits": [
+        "clone",
+        "add_zeros"
+      ],
+      "repeat_identical": true,
+      "per_site": {
+        "embedding": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_0": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_1": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_2": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_3": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_4": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_5": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_6": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_7": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_8": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_9": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_10": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_11": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_12": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_13": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_14": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_15": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_16": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_17": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_18": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_19": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_20": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_21": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_22": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        },
+        "block_23": {
+          "clone": {
+            "identical": true,
+            "hook_calls": 1
+          },
+          "add_zeros": {
+            "identical": true,
+            "hook_calls": 1
+          }
+        }
+      },
+      "failures": [],
+      "plain_run_after_edits_identical": true,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "passed": true
+    }
+  },
+  "positive_control": {
+    "provenance": {
+      "utc": "2026-09-24T21:34:32+00:00",
+      "git_commit": "43e25f5d9f364fd63ca9c641b96f3fb5cf91bdfc",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        "?? scripts/check_intervention.py",
+        "?? src/vjepa_physics/intervention.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
+          "scripts/check_intervention.py": "f71767baf5cddc4bc132532491b7b465dc006709efb7405209aeb209e3c8c921"
+        },
+        "combined_sha256": "b4745e76b3176b23fa8660e40d692c9b590fb3f557d53d98d512de58ba8e0bda"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "clip": "data/speed/videos/scene_1000/video.mp4",
+      "device": "mps",
+      "delta_relative_std": 0.001,
+      "seed": 0,
+      "output_order_ok": true,
+      "per_site": {
+        "embedding": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.0009792,
+          "min_downstream_rel_change": 0.0001089,
+          "final_norm_rel_change": 0.002592,
+          "predictor_rel_change": 0.0002253
+        },
+        "block_0": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001013,
+          "min_downstream_rel_change": 0.0002523,
+          "final_norm_rel_change": 0.005504,
+          "predictor_rel_change": 0.0004492
+        },
+        "block_1": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001015,
+          "min_downstream_rel_change": 0.0001984,
+          "final_norm_rel_change": 0.00468,
+          "predictor_rel_change": 0.0003935
+        },
+        "block_2": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001019,
+          "min_downstream_rel_change": 0.0002966,
+          "final_norm_rel_change": 0.008426,
+          "predictor_rel_change": 0.0006942
+        },
+        "block_3": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.00102,
+          "min_downstream_rel_change": 0.0005233,
+          "final_norm_rel_change": 0.01614,
+          "predictor_rel_change": 0.001472
+        },
+        "block_4": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001021,
+          "min_downstream_rel_change": 0.000468,
+          "final_norm_rel_change": 0.0108,
+          "predictor_rel_change": 0.0009754
+        },
+        "block_5": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001022,
+          "min_downstream_rel_change": 0.0005016,
+          "final_norm_rel_change": 0.01057,
+          "predictor_rel_change": 0.001175
+        },
+        "block_6": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001022,
+          "min_downstream_rel_change": 0.000513,
+          "final_norm_rel_change": 0.006983,
+          "predictor_rel_change": 0.0009515
+        },
+        "block_7": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001023,
+          "min_downstream_rel_change": 0.0006836,
+          "final_norm_rel_change": 0.006439,
+          "predictor_rel_change": 0.002352
+        },
+        "block_8": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001023,
+          "min_downstream_rel_change": 0.0005531,
+          "final_norm_rel_change": 0.003967,
+          "predictor_rel_change": 0.0007454
+        },
+        "block_9": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001023,
+          "min_downstream_rel_change": 0.0006143,
+          "final_norm_rel_change": 0.003499,
+          "predictor_rel_change": 0.0007808
+        },
+        "block_10": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001022,
+          "min_downstream_rel_change": 0.0007291,
+          "final_norm_rel_change": 0.004193,
+          "predictor_rel_change": 0.0007812
+        },
+        "block_11": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001021,
+          "min_downstream_rel_change": 0.0007881,
+          "final_norm_rel_change": 0.004409,
+          "predictor_rel_change": 0.001678
+        },
+        "block_12": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.00102,
+          "min_downstream_rel_change": 0.0007554,
+          "final_norm_rel_change": 0.00344,
+          "predictor_rel_change": 0.001262
+        },
+        "block_13": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001018,
+          "min_downstream_rel_change": 0.0006836,
+          "final_norm_rel_change": 0.001931,
+          "predictor_rel_change": 0.001104
+        },
+        "block_14": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001017,
+          "min_downstream_rel_change": 0.0007695,
+          "final_norm_rel_change": 0.00163,
+          "predictor_rel_change": 0.0008794
+        },
+        "block_15": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001017,
+          "min_downstream_rel_change": 0.0007386,
+          "final_norm_rel_change": 0.001571,
+          "predictor_rel_change": 0.0007386
+        },
+        "block_16": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001016,
+          "min_downstream_rel_change": 0.00092,
+          "final_norm_rel_change": 0.001604,
+          "predictor_rel_change": 0.00092
+        },
+        "block_17": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001015,
+          "min_downstream_rel_change": 0.000884,
+          "final_norm_rel_change": 0.001477,
+          "predictor_rel_change": 0.001112
+        },
+        "block_18": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001015,
+          "min_downstream_rel_change": 0.000886,
+          "final_norm_rel_change": 0.001339,
+          "predictor_rel_change": 0.0009928
+        },
+        "block_19": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001014,
+          "min_downstream_rel_change": 0.0009321,
+          "final_norm_rel_change": 0.001344,
+          "predictor_rel_change": 0.001104
+        },
+        "block_20": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001015,
+          "min_downstream_rel_change": 0.001028,
+          "final_norm_rel_change": 0.001405,
+          "predictor_rel_change": 0.00124
+        },
+        "block_21": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001017,
+          "min_downstream_rel_change": 0.001174,
+          "final_norm_rel_change": 0.00154,
+          "predictor_rel_change": 0.001484
+        },
+        "block_22": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001018,
+          "min_downstream_rel_change": 0.00136,
+          "final_norm_rel_change": 0.001455,
+          "predictor_rel_change": 0.001411
+        },
+        "block_23": {
+          "delta_nonzero": true,
+          "upstream_identical": true,
+          "site_equals_baseline_plus_delta": true,
+          "unchanged_downstream": [],
+          "hook_calls": 1,
+          "site_rel_change": 0.001014,
+          "min_downstream_rel_change": 0.000969,
+          "final_norm_rel_change": 0.001079,
+          "predictor_rel_change": 0.000969
+        }
+      },
+      "failures": [],
+      "plain_run_after_edits_identical": true,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "passed": true
+    }
+  },
+  "hook_order": {
+    "provenance": {
+      "utc": "2026-09-24T21:41:09+00:00",
+      "git_commit": "43e25f5d9f364fd63ca9c641b96f3fb5cf91bdfc",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        "?? scripts/check_intervention.py",
+        "?? src/vjepa_physics/intervention.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
+          "scripts/check_intervention.py": "c68d1dad4feb56723d46b2155ff2e8afc1de5abb8640068ab2613398e8fa26f1"
+        },
+        "combined_sha256": "cf1dd4dc2fc98a38849cfdab9eddb7b6bcb05c169dd295fccee73e151b48eae3"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "clip": "data/speed/videos/scene_1000/video.mp4",
+      "device": "mps",
+      "seed": 0,
+      "hidden_states_alignment_ok": true,
+      "per_site": {
+        "embedding": {
+          "hidden_states_index": 0,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_0": {
+          "hidden_states_index": 1,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_1": {
+          "hidden_states_index": 2,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_2": {
+          "hidden_states_index": 3,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_3": {
+          "hidden_states_index": 4,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_4": {
+          "hidden_states_index": 5,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_5": {
+          "hidden_states_index": 6,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_6": {
+          "hidden_states_index": 7,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_7": {
+          "hidden_states_index": 8,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_8": {
+          "hidden_states_index": 9,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_9": {
+          "hidden_states_index": 10,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_10": {
+          "hidden_states_index": 11,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_11": {
+          "hidden_states_index": 12,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_12": {
+          "hidden_states_index": 13,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_13": {
+          "hidden_states_index": 14,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_14": {
+          "hidden_states_index": 15,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_15": {
+          "hidden_states_index": 16,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_16": {
+          "hidden_states_index": 17,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_17": {
+          "hidden_states_index": 18,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_18": {
+          "hidden_states_index": 19,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_19": {
+          "hidden_states_index": 20,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_20": {
+          "hidden_states_index": 21,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_21": {
+          "hidden_states_index": 22,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_22": {
+          "hidden_states_index": 23,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        },
+        "block_23": {
+          "hidden_states_index": 24,
+          "capture_sees_edit": true,
+          "hidden_states_sees_edit": true,
+          "hook_calls": 1,
+          "appended_edit_capture_unedited": true
+        }
+      },
+      "failures": [],
+      "plain_run_after_edits_identical": true,
+      "forward_hooks_before_and_after": [
+        48,
+        48
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "passed": true
+    }
+  }
+}

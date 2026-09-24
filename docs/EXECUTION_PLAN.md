@@ -23,8 +23,8 @@ Last updated: 2026-09-24.
 - [x] **0.14 Intervention no-op test** — Prove that writing back an unchanged activation leaves every downstream output identical.
 - [x] **0.15 Predictor forecasting path** — Encode frames 0–7, predict tokens 1024–2047 (D-10). Target: the full-clip encoder output at those positions passed through non-affine layer_norm, as in training (F-37); metric: mean per-token L1. Must beat two fitting-free baselines on the same clips, with bootstrap CIs: (a) copy the last context time-step forward; (b) the clip's own mean context token. Nothing is fitted, so no split is needed. Also resolve O-18 (which encoder weights HF ships).
 - [x] **0.16 Speed and memory benchmark** — Measure time and memory per clip on MPS to estimate the budget for later phases.
-- [ ] **0.17 (Optional) Official implementation parity** — Check the HF model matches Meta's official implementation numerically.
-- [ ] **0.18 Phase 0 report and gate** — Save a short report to `results/`, update `PROGRESS.md`, and confirm Phase 0 has passed.
+- [x] **0.17 (Optional) Official implementation parity** — **Skipped (D-29).** Check the HF model matches Meta's official implementation numerically. Limitation stated: HF's conversion is not independently checked.
+- [ ] **0.18 Phase 0 report and gate** — Re-score the test clip under D-05's tolerance (`opencv_tolerance`); commit everything including `results/`; re-run every check from the clean tree and compare with `git diff results/` (deterministic checks: only provenance fields may change); user confirms O-18; save a short report to `results/`, update `PROGRESS.md`, and confirm Phase 0 has passed. The gate may pass with open items if the report lists each one and the step it blocks.
 
 ## Phase 1 — Data audit
 **Goal:** Verify every manifest, metadata file, and video, and document what the data really contains.
@@ -36,7 +36,7 @@ Last updated: 2026-09-24.
 - [ ] **1.5 Start-position and label-independence analysis** — Confirm start positions are spread evenly and uncorrelated with every label.
 - [ ] **1.6 Magnitude-vs-distance confound analysis** — Quantify how strongly speed/acceleration correlate with distance travelled.
 - [ ] **1.7 Video format and duplicate check (all clips)** — Every clip decodes to 16 frames at 256×256, 24 fps, with no corrupted or fully-black frames; hash decoded frames to catch duplicate clips, both within and **across** all three datasets.
-- [ ] **1.8 Two-decoder cross-check** — Confirm PyAV and OpenCV decode every clip pixel-for-pixel identically.
+- [ ] **1.8 Two-decoder cross-check** — Compare PyAV and OpenCV on every clip under D-05's tolerance criterion (per clip FAIL / FLAG: frame count and shape, max |diff|, whole-clip and disk-pixel mean signed diff per channel), saving per-clip stats. Pixel-identical is not achievable on our install (F-49). PyAV stays the only decoder the model sees.
 - [ ] **1.9 Full disk tracking and mapping verification (all clips)** — Track the disk in every frame, confirm the pixel/metre, angle, and timing mapping holds everywhere, and save the tracked per-frame positions for reuse in later phases.
 - [ ] **1.10 Flag problem clips** — Frame-exit, clipped, tiny-motion, and frozen-start clips, with counts and identifiers saved for later use.
 - [ ] **1.11 Build contact sheets and audit figures** — Visual evidence for the presentation.
@@ -85,7 +85,7 @@ Last updated: 2026-09-24.
 **Goal:** Reproduce the paper's steering experiment and evaluate it on held-out data.
 
 - [ ] **5.1 Select the steering layer** — Settle O-16: choose one specific layer to steer at (from Phase 4's candidates, or a new choice with reasoning based on train/validation results only — test never informs it), since Phase 4 selects several layers for the dimensionality curve but steering needs exactly one.
-- [ ] **5.2 Decide and document the steering-evaluation readout** — Settle O-07: try the predictor-based readout first (if Phase 0's check 0.15 showed it works), fall back to a later-layer probe, and use same-layer readout only as a last resort. The readout probe is fit on **validation** (D-16); a same-layer readout carries D-16's caveat.
+- [ ] **5.2 Decide and document the steering-evaluation readout** — Settle what remains of O-07 within D-30: the primary readout is a probe at a later encoder layer on the full clip (choose which layer, with reasoning, from train/validation only); the predictor-based readout is an optional extension; a same-layer readout is only a labeled control. The readout probe is fit on **validation** (D-16); a same-layer readout carries D-16's caveat.
 - [ ] **5.3 Decide and document the token-mapping method** — Settle O-08: how a pooled-space edit is applied across all 2,048 tokens.
 - [ ] **5.4 Decide and document the held-out steering protocol** — Settle what remains of O-10 within D-14/D-16: steered clips come only from **test** (test-seen and test-unseen, never used for probe fitting or layer selection); target values include the test-unseen values; report the two groups separately. Unlike Phase 3/4's selection decisions, this is the intended, final use of test.
 - [ ] **5.5 Implement multi-probe subspace steering** — Reusing step 4.7's saved artifacts at the selected layer; the least-squares step uses each probe's **composite** map in raw space, not the bare Wₖ (P-08).

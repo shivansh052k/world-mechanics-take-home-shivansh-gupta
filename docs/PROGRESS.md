@@ -15,8 +15,8 @@ without re-reading everything else.
 
 **Execution: in progress.** Steps 0.1–0.8 done (guided in Claude Code since 0.8d, D-21/D-22). Loader
 `src/vjepa_physics/video.py` (`load_clip`) verified by checks `inspect`, `load`, `repeat`, `colour`,
-`order`, `figure`; `opencv` failed (PyAV vs OpenCV not pixel-identical, F-49) → D-05 criterion is with the
-planning chat (affects step 1.8, not 0.8). **0.9 done:** `src/vjepa_physics/preprocess.py` (`preprocess_clip`,
+`order`, `figure`; `opencv` failed (PyAV vs OpenCV not pixel-identical, F-49) → D-05 now has a tolerance
+criterion (test clip re-scored as `opencv_tolerance` at 0.18; full data at step 1.8). **0.9 done:** `src/vjepa_physics/preprocess.py` (`preprocess_clip`,
 checkpoint processor with resize/crop off) verified by `config`, `manual`, `identity`, `default` (F-50).
 **0.10 done:** `src/vjepa_physics/model.py` (`load_model`, `weights_fingerprint`) and `reproducibility.py`
 (`set_seeds`) verified by `config`, `load`, `fingerprint`, `seeds` (F-51, D-26).
@@ -24,14 +24,16 @@ checkpoint processor with resize/crop off) verified by `config`, `manual`, `iden
 **0.12 done:** `src/vjepa_physics/activations.py` (`capture_encoder`, `GRID`, `as_grid`) verified by
 `hidden_states` and `token_layout` (F-53).
 **0.13 done:** `scripts/check_numerics.py` — bit-exact repeat and batch; MPS vs CPU recorded; float64 reference
-shows MPS fp32 ≥ as accurate as CPU fp32; sdpa kept (F-54, F-55). MPS-vs-CPU criterion (O-19) with the planning
-chat. **0.14 done:** `src/vjepa_physics/intervention.py` (`edit_encoder`, `encoder_sites`) verified by
+shows MPS fp32 ≥ as accurate as CPU fp32; sdpa kept (F-54, F-55); MPS fp32 accepted with the float64-relative
+criterion (D-28). **0.14 done:** `src/vjepa_physics/intervention.py` (`edit_encoder`, `encoder_sites`) verified by
 `scripts/check_intervention.py` `noop`, `positive_control`, `hook_order` (F-56). **0.15 done:** `src/vjepa_physics/forecast.py` (`encode`, `predict`,
 `training_target`) verified by `scripts/check_forecast.py` `predictor_path` and `forecast` (F-57); O-18 answered from
-source (F-58, user confirmation pending); O-20 (is the predictor readout informative about motion?) with the planning
-chat. **0.16 done:** `scripts/check_benchmark.py benchmark` (F-59): ~0.84 s per
+source (F-58, user confirmation pending); primary steering readout = later-layer probe on the full clip, predictor
+readout optional (D-30). **0.16 done:** `scripts/check_benchmark.py benchmark` (F-59): ~0.84 s per
 clip, batching gives no speed-up (batch size 1 suggested), ~65 min to extract all clips, memory well within limits.
-**Next: 0.17 (optional official-implementation parity, O-14) or 0.18 (Phase 0 gate)** — waiting for the user's go.
+**0.17 skipped** (D-29). **Next: 0.18 (Phase 0 gate)** — `opencv_tolerance` check, commit everything, re-run every
+check from the clean tree, compare with `git diff results/`, O-18 browser confirmation, short Phase 0 report. The gate
+may pass with open items if the report lists each one and the step it blocks.
 
 ---
 
@@ -39,7 +41,7 @@ clip, batching gives no speed-up (batch size 1 suggested), ~65 min to extract al
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0 — Environment and model setup | 🟨 In progress | 0.1–0.16 done; 0.17 (optional) / 0.18 next |
+| 0 — Environment and model setup | 🟨 In progress | 0.1–0.16 done; 0.17 skipped (D-29); 0.18 next |
 | 1 — Data audit | ⬜ Not started | |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
@@ -84,50 +86,41 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/video_loader/checks.json` | `repeat` | Two loads bit-identical; decoded-pixel SHA-256 `03285f4cf9ffc6ecf90541b47e7f08c217eab4e4809d42f7042baf29ab9d95c0` for cross-run comparison | ✅ passed | `scripts/check_video_loader.py repeat` |
 | `results/video_loader/checks.json` | `colour` | RGB order: disk core (234.0, 114.4, 39.2) orange, background (29, 32, 29); blue = 0 only in a ring 0–2.2 px outside the disk | ✅ passed | F-47; `scripts/check_video_loader.py colour` |
 | `results/video_loader/checks.json` | `order` | Frame content in time order, geometry exact: max 0.654 px vs metadata, no bias; reversed / +1 frame / no y flip rejected (54.1 / 4.2 / 73.7 px) | ✅ passed | F-48; `scripts/check_video_loader.py order` |
-| `results/video_loader/checks.json` | `opencv` | PyAV vs OpenCV (FFmpeg backend) pixel-identical | ❌ failed: all pixels differ by ≤ 3, systematic +1 in R and B; D-05 criterion under review | F-49; `scripts/check_video_loader.py opencv` |
+| `results/video_loader/checks.json` | `opencv` | PyAV vs OpenCV (FFmpeg backend) pixel-identical | ❌ failed: all pixels differ by ≤ 3, systematic +1 in R and B; kept as failed; re-scored under `opencv_tolerance` (D-05) | F-49; `scripts/check_video_loader.py opencv` |
 | `results/video_loader/checks.json` | `opencv_bicubic` | Diagnostic: swscale flag is not the cause (PyAV BILINEAR = BICUBIC); frame colour tags unspecified | ℹ️ diagnostic | F-49; `scripts/check_video_loader.py opencv_bicubic` |
 | `results/video_loader/checks.json` | `opencv_diff_stats` | Diagnostic: signed PyAV − OpenCV histogram and means by region (+1.01 / +0.01 / +1.00 overall) | ℹ️ diagnostic | F-49; `scripts/check_video_loader.py opencv_diff_stats` |
-
+| `results/video_loader/checks.json` | `opencv_tolerance` | PyAV vs OpenCV under D-05's per-clip tolerance (`vjepa_physics.decoders.compare_decoders`): verdict ok, no reasons; max \|diff\| 3/2/2, mean (+1.010, +0.012, +1.002), disk mean (+1.69, +0.62, +1.39) over 5,593 disk pixels | ✅ passed | D-05, F-49; `scripts/check_video_loader.py opencv_tolerance` |
 | `results/video_loader/frames.png` + `checks.json` | `figure` | Visual evidence: frames 0/5/10/15 with predicted (+) and measured (×) disk centre and predicted path; disk orange, moving down-left (θ 230.6°); errors at shown frames 0.319 / 0.42 / 0.11 / 0.407 px (= `order`) | ℹ️ visual (reviewed) | `scripts/check_video_loader.py figure` |
-
 | `results/preprocessing/checks.json` | `config` | Our processor: resize and crop off; rescale 1/255 and ImageNet normalization as shipped. Default: shortest edge 292 + crop 256 | ✅ passed | F-50; `scripts/check_preprocessing.py config` |
 | `results/preprocessing/checks.json` | `manual` | Output (16, 3, 256, 256) float32 CPU = manual (x/255 − mean)/std, max abs diff 1.65e-7 | ✅ passed | F-50; `scripts/check_preprocessing.py manual` |
 | `results/preprocessing/checks.json` | `identity` | Un-normalize + round = decoded uint8 clip bit-for-bit (max 9.4e-6 levels) → no spatial change | ✅ passed | F-50; `scripts/check_preprocessing.py identity` |
 | `results/preprocessing/checks.json` + `default_vs_ours.png` | `default` | Shipped default scales ×1.1406 (slope 1.1393/1.1405) and crops 18 px/side (offset −17.93 px); disk 350 → 455 px; 36.5 px/m; figure reviewed | ✅ passed | F-50; `scripts/check_preprocessing.py default` |
-
 | `results/model/checks.json` | `config` | Config and built structure = F-10: 24 encoder / 12 predictor blocks, patch Conv3d (1024, 3, 2, 16, 16), dropout 0 | ✅ passed | F-51; `scripts/check_model.py config` |
 | `results/model/checks.json` | `load` | Weights SHA-256 = pinned; loading report empty (587 tensors); 303.9M + 22.1M params; fp32, eval, no grad, sdpa; fingerprint recorded | ✅ passed | F-51; `scripts/check_model.py load` |
 | `results/model/checks.json` | `fingerprint` | Two independent loads → identical in-memory weights fingerprint `c865f524…04ede` | ✅ passed | F-51; `scripts/check_model.py fingerprint` |
 | `results/model/checks.json` | `seeds` | `set_seeds(0)` reproduces Python / NumPy / torch CPU / torch MPS draws; seed 1 changes all | ✅ passed | F-51; `scripts/check_model.py seeds` |
-
-| `results/evidence/checks.json` | `dirty_flag` | In a scratch git repo: `git_dirty` False when committed and for `results/`- or `docs/`-only changes; True for any edit or new file under `src/`, `scripts/`, `pyproject.toml`, `requirements.lock.txt`; same answer from repo root, subfolder and outside. Real repo root found from anywhere. Real-repo confirmation after commit `c39e0a8`: `False []` | ✅ passed | D-27; `scripts/check_evidence.py dirty_flag` |
-
+| `results/evidence/checks.json` | `dirty_flag` | In a scratch git repo: `git_dirty` False when committed and for `results/`- or `docs/`-only changes; True for any edit or new file under `src/`, `scripts/`, `pyproject.toml`, `requirements.lock.txt`; same answer from repo root, subfolder and outside. Real repo root found from anywhere. Real-repo confirmation after commit `c39e0a8`: `False []` (seen in the terminal, not saved) | ✅ passed | D-27; `scripts/check_evidence.py dirty_flag` |
 | `results/forward/checks.json` | `forward` | One clip through encoder + predictor on MPS: all outputs (1, 2048, 1024), finite; predictor target = encoder output; weights fingerprint unchanged by the forward pass | ✅ passed | F-52; `scripts/check_forward.py forward` |
-
 | `results/activations/checks.json` | `hidden_states` | Own hooks vs `hidden_states` in one pass: entry 0 = embedding, entry i = block i−1, entry 24 = block 23 pre-LayerNorm; `last_hidden_state` = LN(block 23) exactly; our hooks removed (48 transformers hooks before and after). Proves index alignment and semantics, not run-to-run determinism (0.13) | ✅ passed | F-53; `scripts/check_activations.py hidden_states` |
 | `results/activations/checks.json` | `token_layout` | Token index = t·256 + row·16 + col shown from the data: disk patch is the most deviant embedding token in 8/8 time steps; swapped rows/cols 3/8, reversed time 4/8 rejected. Limit: one clip whose path crosses near the row = col diagonal | ✅ passed | F-53; `scripts/check_activations.py token_layout` |
-
 | `results/numerics/checks.json` | `repeat` | Same input twice: bit-exact at all 27 outputs on MPS and on CPU (re-run after fixing the MPS float64 conversion, F-55) | ✅ passed | F-54; `scripts/check_numerics.py repeat` |
 | `results/numerics/checks.json` | `batch` | Batch of 2 = each clip alone, bit-exact on MPS (batch size 2 only) | ✅ passed | F-54; `scripts/check_numerics.py batch` |
-| `results/numerics/checks.json` | `devices` | MPS vs CPU per layer: rel. error 6e-7 → 1.2e-3 with depth, token cosine ≥ 0.9999; default fp32 tolerances fail everywhere (hypothesis confirmed) | ❌ failed own criterion at blocks 19–23 + final norm (≤ 1.23e-3 vs 1e-3); explained by `precision` (fp32 limit, not MPS); criterion → O-19 | F-54; `scripts/check_numerics.py devices` |
+| `results/numerics/checks.json` | `devices` | MPS vs CPU per layer: rel. error 6e-7 → 1.2e-3 with depth, token cosine ≥ 0.9999; default fp32 tolerances fail everywhere (hypothesis confirmed) | ❌ failed own criterion at blocks 19–23 + final norm (≤ 1.23e-3 vs 1e-3); explained by `precision` (fp32 limit, not MPS); kept as failed; replacement criterion D-28 (met) | F-54; `scripts/check_numerics.py devices` |
 | `results/numerics/checks.json` | `precision` | Diagnostic vs CPU float64: MPS fp32 error ≤ CPU fp32 error at all 27 outputs (ratio 0.58–0.99) | ℹ️ diagnostic | F-54; `scripts/check_numerics.py precision` |
-| `results/numerics/checks.json` | `attention` | Diagnostic: eager ÷ sdpa error vs float64 = 0.93–1.03 → keep sdpa (pre-stated rule) | ℹ️ diagnostic | F-54, D-26; `scripts/check_numerics.py attention` |
-
+| `results/numerics/checks.json` | `attention` | Diagnostic: eager ÷ sdpa error vs float64 = 0.93–1.04 → keep sdpa (pre-stated rule) | ℹ️ diagnostic | F-54, D-26; `scripts/check_numerics.py attention` |
 | `results/intervention/checks.json` | `noop` | Writing back an unchanged activation (`clone`, `+ 0`) at each of 25 sites leaves all 27 outputs bit-identical on MPS; hook fired once per run; hooks removed (0/0); fingerprint unchanged | ✅ passed | F-56; `scripts/check_intervention.py noop` |
 | `results/intervention/checks.json` | `positive_control` | Adding a seeded random δ at each site: outputs before it bit-identical, site = baseline + δ exactly, every output after it changed (incl. final norm, predictor); change sizes recorded as observations | ✅ passed | F-56; `scripts/check_intervention.py positive_control` |
 | `results/intervention/checks.json` | `hook_order` | With transformers' `hidden_states` hooks and our capture registered before the edit, both see baseline + δ at every site (prepend works); negative control (appended edit) leaves capture unedited; hooks 48/48 | ✅ passed | F-56; `scripts/check_intervention.py hook_order` |
-
 | `results/forecast/checks.json` | `predictor_path` | Separate `encode` → `predict` = combined forward bit-for-bit; reversed forecast targets return reversed rows; forecast shapes (1, 1024, 1024); context-vs-full-clip difference 0.72 recorded as an observation | ✅ passed | F-57; `scripts/check_forecast.py predictor_path` |
-| `results/forecast/checks.json` | `forecast` | 96 clips (32 per dataset, ids saved): predictor beats copy-last-step and mean-context-token baselines in every dataset (all 95% CIs < 0); margin over the mean token ~3% of L1 (→ O-20); H-06 fields, per-step L1s, timings recorded | ✅ passed | F-57; `scripts/check_forecast.py forecast` |
-
+| `results/forecast/checks.json` | `forecast` | 96 clips (32 per dataset, ids saved): predictor beats copy-last-step and mean-context-token baselines in every dataset (all 95% CIs < 0); margin over the mean token ~3% of L1 (→ D-30); H-06 fields, per-step L1s, timings recorded | ✅ passed | F-57; `scripts/check_forecast.py forecast` |
 | `results/benchmark/checks.json` | `benchmark` | Time and memory per clip on MPS at batch sizes 1/2/4/8 (no batching gain; batch 1 suggested by the pre-set rule); batched pooled outputs = single bit-for-bit at 2/4/8; extraction ~65 min; storage estimates | ℹ️ diagnostic | F-59; `scripts/check_benchmark.py benchmark` |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
-and combined), `versions` (from package metadata). **Entries saved before commit `c39e0a8` keep the old meaning**
-(`git_dirty` = any change anywhere in the tree).
+and combined), `versions` (from package metadata). **Entries without a `git_dirty_paths` field keep the old
+meaning** (`git_dirty` = any change anywhere in the tree).
 
-Still pending: `opencv` re-scored once the planning chat settles D-05's criterion. For slides, a zoomed
+`opencv_tolerance` (test clip re-scored under D-05's tolerance) passed at step 0.18. For slides, a zoomed
 crop of `frames.png` would read better (disk ≈ 21 px of 256).
 
 ---
@@ -138,18 +131,7 @@ crop of `frames.png` would read better (disk ≈ 21 px of 256).
 
 No blockers.
 
-Awaiting the planning chat:
-- **D-05 cross-check criterion.** Pixel-identical PyAV vs OpenCV is not achievable on our install (F-49:
-  systematic +1 R/B offset, max 3 levels; likely FFmpeg 8 vs 7). Proposed: (a) tolerance band per clip
-  (max |diff| ≤ 3, mean signed diff near (+1, 0, +1), outliers flagged), PyAV the only decoder for model
-  inputs; optional (b) textbook BT.601 reference from PyAV's raw YUV. Affects the `opencv` check and step 1.8.
-- **O-19, MPS-vs-CPU criterion.** Pre-set criterion failed at the last layers; float64 reference shows fp32 itself
-  (CPU too) cannot meet it and MPS is at least as accurate as CPU (F-54). Proposed: keep D-06; criterion "MPS fp32
-  error vs float64 ≤ CPU fp32 error" (met); probe-level MPS-vs-CPU comparison at step 2.6.
-- **O-20, is the predictor readout informative about motion?** 0.15 passed its pre-set rule (F-57), but the margin over
-  the mean-token baseline is ~3% of L1, the all-token metric is likely background-dominated, and the predictor's shrunk
-  scale may explain part of the margin. Proposed: disk-patch-restricted forecast comparison before step 5.2 relies on
-  the predictor readout.
+Awaiting the planning chat: nothing (D-05 criterion, O-19 → D-28, O-14 → D-29, O-20 → D-30 settled 2026-09-24).
 
 To confirm by the user:
 - **O-18 / F-58:** check in the browser that `checkpoint_key="target_encoder"` (vjepa2 `src/hub/backbones.py`), the
@@ -158,12 +140,11 @@ To confirm by the user:
 
 To confirm later:
 - **Phase 0 gate (0.18):** re-run every check once from a clean, committed tree, so the whole evidence set has
-  clean provenance (D-27).
+  clean provenance (D-27); compare with `git diff results/` (deterministic checks: only provenance fields may change).
+  The gate may pass with open items if the Phase 0 report lists each one and the step it blocks (planning chat).
 - **Batch size at extraction (2.4):** `batch` proved per-token bit-exactness for batch size 2; `benchmark` showed
   pooled outputs bit-exact at 2/4/8 and no speed gain from batching (F-59), so batch size 1 is suggested. If 2.4 uses
   any batch size > 1, re-run `batch` with it.
-- **D-05 criterion must be settled in the planning chat before step 1.8** (current "pixel-identical" wording
-  cannot pass, F-49).
 - **`.gitignore` for `artifacts/`** — the dry-run proved `artifacts/manifests/` is committed; that other
   files in `artifacts/` are ignored is untested until the first one is written. Check with
   `git status` / `git check-ignore -v` then.
@@ -171,7 +152,9 @@ To confirm later:
 Known decision points the plan cannot remove in advance (each has a planned fallback):
 - **O-18** — which encoder weights HF ships: answered from source at 0.15 (target encoder, F-58), user confirmation pending.
 - **Phase 1 may overturn scouting facts** (F-21–F-36); D-14's split counts are provisional until step 1.12.
-- **0.15 may fail** → step 5.2 falls back to a later-layer readout, and Part 2's behavior manifold (D-17) moves with it.
+- **Steering readout** — 0.15 passed, but D-30 makes a later-layer probe on the full clip the primary readout (the
+  predictor readout is optional); which layer is settled at step 5.2 (O-07), and Part 2's behavior manifold (D-17)
+  moves with it.
 - **Phase 3 may show no clean transition** → O-15/O-16 become documented judgment calls.
 - **Downstream steering effects may wash out** → a finding, not a failure; the same-layer control keeps it interpretable.
 - **MPS operator gaps and the compute budget:** no operator gaps so far (fallback never enabled, F-43); budget
@@ -240,7 +223,12 @@ what's next.
 - `scripts/check_benchmark.py benchmark` (diagnostic): batching gives no speed-up on MPS (0.84 s per clip at batch 1),
   batched pooled outputs bit-identical at 2/4/8, extraction ~65 min, memory well within limits (F-59). **Step 0.16 done.**
 - Doc workflow changed (user said): doc updates now applied directly after each step, no chat preview (D-22 amended).
-- **Next:** 0.17 (optional parity, O-14) or 0.18 (Phase 0 gate) — waiting for the user's go.
+- Planning-chat decisions applied: D-28 (MPS fp32 accepted, closes O-19), D-29 (0.17 skipped, closes O-14), D-30
+  (primary steering readout = later-layer probe; predictor readout optional; closes O-20, narrows O-07); D-05 tolerance
+  criterion for step 1.8. Corrections: F-54 ranges, D-27 old-semantics wording, `dirty_flag` terminal-only result,
+  evidence table blank lines removed, CLAUDE.md §5 (predictor line, decoder agreement).
+- **Next:** 0.18 (Phase 0 gate), guided one step at a time: `opencv_tolerance` check → commit everything incl.
+  `results/` → clean re-run of every check → `git diff results/` → O-18 browser confirmation → Phase 0 report.
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.
