@@ -33,7 +33,7 @@ Last updated: 2026-09-24.
 - [x] **1.2 Metadata consistency checks** — Fields, types, and values are self-consistent; confirm the manifests are sorted by label.
 - [x] **1.3 Re-verify the data fingerprint** — Confirm the checksum taken in Phase 0 still matches; the data has not changed.
 - [x] **1.4 Value-grid and design-balance analysis** — Confirm the 64-value grids, clips per value, and the direction set's motion-type split.
-- [ ] **1.5 Start-position and label-independence analysis** — Confirm start positions are spread evenly and uncorrelated with every label.
+- [x] **1.5 Start-position and label-independence analysis** — Confirm start positions are spread evenly and uncorrelated with every label.
 - [ ] **1.6 Magnitude-vs-distance confound analysis** — Quantify how strongly speed/acceleration correlate with distance travelled.
 - [ ] **1.7 Video format and duplicate check (all clips)** — Every clip decodes to 16 frames at 256×256, 24 fps, with no corrupted or fully-black frames; hash decoded frames to catch duplicate clips, both within and **across** all three datasets.
 - [ ] **1.8 Two-decoder cross-check** — Compare PyAV and OpenCV on every clip under D-05's tolerance criterion (per clip FAIL / FLAG: frame count and shape, max |diff|, whole-clip and disk-pixel mean signed diff per channel), saving per-clip stats. Pixel-identical is not achievable on our install (F-49). PyAV stays the only decoder the model sees.

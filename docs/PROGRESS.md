@@ -41,8 +41,9 @@ manifests sorted by label (F-61, D-32). **1.3 done:** `check_data_files.py finge
 match (Python and `shasum`), no files added/removed, `data/` still read-only (F-62). **1.4 done:** `load_dataset`,
 `LABEL_FIELD` in `data.py`; `scripts/check_design.py`: `value_grids` passed (64 values, DATA.md ranges, direction
 5.625° apart), `design_balance` diagnostic (angles shared by id across speed/acceleration, direction groups balanced
-across angles and octants) (F-63). **Next: 1.5 (start-position and label-independence analysis)** — waiting for the
-user's go.
+across angles and octants) (F-63). **1.5 done:** `start_positions` and `label_independence` diagnostics (flag rule
+p < 1e-4, D-33): start positions distinct and uniform; 0 of 70 label-dependence tests flagged (F-64). **Next: 1.6
+(magnitude-vs-distance confound analysis)** — waiting for the user's go.
 
 ---
 
@@ -51,7 +52,7 @@ user's go.
 | Phase | Status | Notes |
 |---|---|---|
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
-| 1 — Data audit | 🟨 In progress | 1.1–1.4 done (`documented_fields` failed as predicted, kept on record) |
+| 1 — Data audit | 🟨 In progress | 1.1–1.5 done (`documented_fields` failed as predicted, kept on record) |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
@@ -131,6 +132,8 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/data_files/checks.json` | `fingerprint` | Reference tracked and unchanged; 9,147 lines well-formed; file set unchanged; all hashes match (Python + `shasum -c`); nothing under `data/` writable. Diagnostic: only byte-identical files = speed/acceleration manifests | ✅ passed | F-62; `scripts/check_data_files.py fingerprint` |
 | `results/design/checks.json` | `value_grids` | 64 distinct values per dataset; speed 0.25–4.0, acceleration 0.25–10.0; direction gaps all 5.625° around the circle; 4,572 clips. Diagnostics: linear grids (full grids saved for the split), 24 clips per value, direction 24 clips at the first 28 angles and 23 at the rest | ✅ passed | F-63; `scripts/check_design.py value_grids` |
 | `results/design/checks.json` | `design_balance` | Diagnostic: speed/acceleration unique (value, θ) pairs, same θ by id in both sets, corr with cos/sin θ ≈ −0.001; direction 12 motion groups (108/107 velocity, 150 acceleration), angle × group cells 1–3, Cramér's V 0.073, octant × group table (13–20 per cell) saved | ℹ️ diagnostic | F-63; `scripts/check_design.py design_balance` |
+| `results/design/checks.json` | `start_positions` | Diagnostic: start positions distinct in every dataset, within ±2 m (direction) / ±1.2 m (speed, acceleration), uniform by KS (p ≥ 0.26), x–y uncorrelated, quadrants even; no flags | ℹ️ diagnostic | F-64, D-33; `scripts/check_design.py start_positions` |
+| `results/design/checks.json` | `label_independence` | Diagnostic: 0 of 70 tests flagged (p < 1e-4) — start position vs magnitude and cos/sin θ, along/across-motion projections (no starts placed behind the motion), ANOVA across label values | ℹ️ diagnostic | F-64, D-33; `scripts/check_design.py label_independence` |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
@@ -199,7 +202,10 @@ what's next.
   from DATA.md only), `design_balance` recorded as a diagnostic (F-63). Exact-zero deviation from a linear grid checked
   and explained (values bit-identical to `linspace`); identical label–angle correlations in speed and acceleration
   explained (same θ by id, labels affine in the value index). **Step 1.4 done.**
-- **Next:** 1.5 (start-position and label-independence analysis) — waiting for the user's go.
+- 1.5: diagnostics only, flag rule p < 1e-4 fixed before the runs (D-33); `start_positions` and `label_independence`
+  added to `check_design.py`; nothing flagged (F-64). F-26's "< 0.05" slightly exceeded in direction subsets
+  (\|r\| ≤ 0.08, n = 750), chance-level. **Step 1.5 done.**
+- **Next:** 1.6 (magnitude-vs-distance confound analysis) — waiting for the user's go.
 
 ### 2026-09-24 — Step 0.8d started in Claude Code
 - Claude Code permissions set: `Bash`, `NotebookEdit` denied; edits denied everywhere except `docs/` and

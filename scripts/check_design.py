@@ -28,6 +28,9 @@ LABEL_RANGE = {"speed": (0.25, 4.0), "acceleration": (0.25, 10.0)}
 DIRECTION_STEP = 360 / N_VALUES
 TOLERANCE = 1e-9  # float slack for comparing generated values with DATA.md's round numbers
 
+# Flag rule for the start-position diagnostics, fixed before running (DATA.md sets no criterion):
+# a test is flagged when p < FLAG_P (about 4 sigma), so ~50 tests in the step give almost no chance flags.
+FLAG_P = 1e-4
 
 def sci(value: float) -> float:
     """Round to 4 significant digits, for readable JSON."""
@@ -201,9 +204,136 @@ def check_design_balance() -> dict:
     }
     return result
 
+def check_start_positions() -> dict:
+    """Diagnostic: how start positions are spread in each dataset. No pass/fail (DATA.md states nothing).
+
+    Per dataset: range and mean of x and y; whether all start positions are distinct;
+    Kolmogorov-Smirnov test of x and of y against a uniform distribution on their observed range
+    (approximate, since the range comes from the same data); correlation of x with y; counts per
+    quadrant around the centre. A test is flagged if p < FLAG_P.
+    """
+    result: dict = {"flag_rule": f"p < {FLAG_P}"}
+    for dataset in DATASETS:
+        start = np.array([c["start_position_xy_m"] for c in load_dataset(DATA, dataset)], dtype=float)
+        x, y = start[:, 0], start[:, 1]
+        entry: dict = {
+            "clips": len(start),
+            "distinct_positions": len({tuple(p) for p in start.tolist()}),
+        }
+        for name, v in (("x", x), ("y", y)):
+            low, high = float(v.min()), float(v.max())
+            ks = stats.kstest(v, stats.uniform(loc=low, scale=high - low).cdf)
+            entry[name] = {
+                "min": sci(low),
+                "max": sci(high),
+                "mean": sci(float(v.mean())),
+                "ks_uniform_statistic": sci(ks.statistic),
+                "ks_p": sci(ks.pvalue),
+                "flagged": bool(ks.pvalue < FLAG_P),
+            }
+        r = stats.pearsonr(x, y)
+        entry["corr_x_y"] = {"r": sci(r.statistic), "p": sci(r.pvalue), "flagged": bool(r.pvalue < FLAG_P)}
+        quadrants = Counter(f"{'+' if a >= 0 else '-'}x {'+' if b >= 0 else '-'}y" for a, b in start.tolist())
+        entry["quadrant_counts"] = dict(sorted(quadrants.items()))
+        result[dataset] = entry
+    return result
+
+
+def corr_entry(a: np.ndarray, b: np.ndarray) -> dict:
+    """Pearson r and its p-value, flagged if p < FLAG_P."""
+    r = stats.pearsonr(a, b)
+    return {"r": sci(r.statistic), "p": sci(r.pvalue), "flagged": bool(r.pvalue < FLAG_P)}
+
+
+def check_label_independence() -> dict:
+    """Diagnostic: does where the disk starts depend on its labels? No pass/fail (DATA.md states nothing).
+
+    Start features: x, y, |x|, |y|, distance from the centre, and the start position projected
+    along the direction of motion (x cos(theta) + y sin(theta); negative = starts behind the centre
+    relative to where it moves) and across it. Per dataset:
+    - Pearson correlation of x, y, |x|, |y|, radius with the magnitude (speed / acceleration sets;
+      within each motion type in the direction set) and with cos(theta), sin(theta);
+    - correlation of the along / across projections with the magnitude, and a one-sample t-test of
+      their mean against 0 (a generator keeping the disk in frame would start it behind);
+    - one-way ANOVA of x and of y across the 64 label values (catches non-linear dependence).
+    A test is flagged if p < FLAG_P. Later positions depend on the labels by construction; that is
+    the distance confound, measured separately.
+    """
+    result: dict = {"flag_rule": f"p < {FLAG_P}"}
+    for dataset in DATASETS:
+        clips = load_dataset(DATA, dataset)
+        x, y = np.array([c["start_position_xy_m"] for c in clips], dtype=float).T
+        theta = np.deg2rad([c["theta_degrees"] for c in clips])
+        cos_t, sin_t = np.cos(theta), np.sin(theta)
+        label = np.array([c[LABEL_FIELD[dataset]] for c in clips], dtype=float)
+        everyone = np.ones(len(clips), dtype=bool)
+
+        features = {"x": x, "y": y, "abs_x": np.abs(x), "abs_y": np.abs(y), "radius": np.hypot(x, y)}
+        projections = {"along_motion": x * cos_t + y * sin_t, "across_motion": -x * sin_t + y * cos_t}
+        if dataset == "direction":
+            motion = np.array([c["motion"] for c in clips])
+            magnitude = np.array([c["speed_mps"] + c["acceleration_mps2"] for c in clips])  # the other is 0
+            magnitude_targets = {
+                "speed_within_velocity_clips": (magnitude, motion == "velocity"),
+                "acceleration_within_acceleration_clips": (magnitude, motion == "acceleration"),
+            }
+        else:
+            magnitude_targets = {"magnitude": (label, everyone)}
+        targets = magnitude_targets | {"cos_theta": (cos_t, everyone), "sin_theta": (sin_t, everyone)}
+
+        correlations = {
+            f"{f}_vs_{t}": corr_entry(fv[mask], tv[mask])
+            for f, fv in features.items()
+            for t, (tv, mask) in targets.items()
+        }
+        correlations |= {
+            f"{p}_vs_{t}": corr_entry(pv[mask], tv[mask])
+            for p, pv in projections.items()
+            for t, (tv, mask) in magnitude_targets.items()
+        }
+
+        mean_tests = {}
+        for p, pv in projections.items():
+            test = stats.ttest_1samp(pv, 0.0)
+            mean_tests[p] = {
+                "mean_m": sci(float(pv.mean())),
+                "t": sci(test.statistic),
+                "p": sci(test.pvalue),
+                "flagged": bool(test.pvalue < FLAG_P),
+            }
+
+        anova = {}
+        grid = np.unique(label)
+        for name, v in (("x", x), ("y", y)):
+            test = stats.f_oneway(*(v[label == g] for g in grid))
+            anova[name] = {
+                "groups": len(grid),
+                "F": sci(test.statistic),
+                "p": sci(test.pvalue),
+                "flagged": bool(test.pvalue < FLAG_P),
+            }
+
+        flagged = (
+            [k for k, e in correlations.items() if e["flagged"]]
+            + [f"mean_{k}" for k, e in mean_tests.items() if e["flagged"]]
+            + [f"anova_{k}" for k, e in anova.items() if e["flagged"]]
+        )
+        result[dataset] = {
+            "clips": len(clips),
+            "tests": len(correlations) + len(mean_tests) + len(anova),
+            "flagged": flagged,
+            "correlations": correlations,
+            "projection_mean_tests": mean_tests,
+            "anova_by_label_value": anova,
+        }
+    return result
+
+
 CHECKS = {
     "value_grids": check_value_grids,
     "design_balance": check_design_balance,
+    "start_positions": check_start_positions,
+    "label_independence": check_label_independence,
 }
 
 
