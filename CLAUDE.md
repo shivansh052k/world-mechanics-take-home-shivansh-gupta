@@ -160,7 +160,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   with `python -m pip install -e .`). Import as `from vjepa_physics.<module> import …`.
   Modules so far: `checkpoint` (pinned model id/revision/weights hash), `video` (`load_clip`),
   `preprocess` (`preprocess_clip`), `evidence` (`save_result` with provenance, used by check scripts),
-  `model` (`load_model`, `weights_fingerprint`), `reproducibility` (`set_seeds`, `SEED`).
+  `model` (`load_model`, `weights_fingerprint`), `reproducibility` (`set_seeds`, `SEED`),
+  `activations` (`capture_encoder`, `GRID`, `as_grid`).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.

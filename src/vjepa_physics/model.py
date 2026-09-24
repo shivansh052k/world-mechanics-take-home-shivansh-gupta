@@ -23,8 +23,15 @@ def file_sha256(path: str, chunk_bytes: int = 1 << 24) -> str:
     return digest.hexdigest()
 
 
-def load_model(device: str | torch.device = "cpu", verify_file: bool = True) -> tuple[VJEPA2Model, dict]:
-    """Frozen V-JEPA 2 (encoder + predictor): fp32, eval mode, no gradients.
+def load_model(
+    device: str | torch.device = "cpu",
+    verify_file: bool = True,
+    dtype: torch.dtype = torch.float32,
+    attn_implementation: str = "sdpa",
+) -> tuple[VJEPA2Model, dict]:
+    """Frozen V-JEPA 2 (encoder + predictor): fp32 by default, eval mode, no gradients.
+
+    Other dtypes are for numerical diagnostics only (e.g. a float64 reference on the CPU).
 
     Returns the model and transformers' loading report. Raises if the weights file does not
     match the pinned SHA-256, or if any checkpoint key is missing, unexpected or mismatched.
@@ -38,8 +45,8 @@ def load_model(device: str | torch.device = "cpu", verify_file: bool = True) -> 
         MODEL_ID,
         revision=REVISION,
         local_files_only=True,
-        dtype=torch.float32,
-        attn_implementation="sdpa",
+        dtype=dtype,
+        attn_implementation=attn_implementation,
         output_loading_info=True,
     )
     model, info = cast(tuple[VJEPA2Model, dict], loaded)

@@ -21,7 +21,8 @@ checkpoint processor with resize/crop off) verified by `config`, `manual`, `iden
 **0.10 done:** `src/vjepa_physics/model.py` (`load_model`, `weights_fingerprint`) and `reproducibility.py`
 (`set_seeds`) verified by `config`, `load`, `fingerprint`, `seeds` (F-51, D-26).
 **0.11 done:** full forward pass on MPS verified by `scripts/check_forward.py forward` (F-52).
-**Next: 0.12 (activation capture).**
+**0.12 done:** `src/vjepa_physics/activations.py` (`capture_encoder`, `GRID`, `as_grid`) verified by
+`hidden_states` and `token_layout` (F-53). **Next: 0.13 (correctness checks).**
 
 ---
 
@@ -29,7 +30,7 @@ checkpoint processor with resize/crop off) verified by `config`, `manual`, `iden
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0 — Environment and model setup | 🟨 In progress | 0.1–0.11 done; 0.12 next |
+| 0 — Environment and model setup | 🟨 In progress | 0.1–0.12 done; 0.13 next |
 | 1 — Data audit | ⬜ Not started | |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
@@ -88,6 +89,9 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/evidence/checks.json` | `dirty_flag` | In a scratch git repo: `git_dirty` False when committed and for `results/`- or `docs/`-only changes; True for any edit or new file under `src/`, `scripts/`, `pyproject.toml`, `requirements.lock.txt`; same answer from repo root, subfolder and outside. Real repo root found from anywhere. Real-repo confirmation after commit `c39e0a8`: `False []` | ✅ passed | D-27; `scripts/check_evidence.py dirty_flag` |
 
 | `results/forward/checks.json` | `forward` | One clip through encoder + predictor on MPS: all outputs (1, 2048, 1024), finite; predictor target = encoder output; weights fingerprint unchanged by the forward pass | ✅ passed | F-52; `scripts/check_forward.py forward` |
+
+| `results/activations/checks.json` | `hidden_states` | Own hooks vs `hidden_states` in one pass: entry 0 = embedding, entry i = block i−1, entry 24 = block 23 pre-LayerNorm; `last_hidden_state` = LN(block 23) exactly; our hooks removed (48 transformers hooks before and after). Proves index alignment and semantics, not run-to-run determinism (0.13) | ✅ passed | F-53; `scripts/check_activations.py hidden_states` |
+| `results/activations/checks.json` | `token_layout` | Token index = t·256 + row·16 + col shown from the data: disk patch is the most deviant embedding token in 8/8 time steps; swapped rows/cols 3/8, reversed time 4/8 rejected. Limit: one clip whose path crosses near the row = col diagonal | ✅ passed | F-53; `scripts/check_activations.py token_layout` |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
@@ -172,7 +176,10 @@ what's next.
   given explicit criteria and a verdict; re-run: passed (F-46).
 - `scripts/check_forward.py forward`: first full forward pass on MPS passed (F-52); predictor vs encoder output
   scale difference recorded as hypothesis H-06 (tested at 0.15). **Step 0.11 done.**
-- **Next:** 0.12 (activation capture).
+- `src/vjepa_physics/activations.py` (`capture_encoder`: own read-only hooks on the patch embedding and 24 blocks,
+  removed on exit; `GRID`, `as_grid`) and `scripts/check_activations.py`: `hidden_states` and `token_layout` passed
+  (F-53); F-15 verified on transformers 5.17.0. **Step 0.12 done.**
+- **Next:** 0.13 (correctness checks).
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.
