@@ -13,11 +13,10 @@ without re-reading everything else.
 **Planning: complete** (including two review rounds). `CLAUDE.md`, `DECISIONS.md`, and
 `EXECUTION_PLAN.md` are finalized and in place.
 
-**Execution: in progress.** Steps 0.1–0.7 done; 0.8 in progress (package `vjepa_physics` installed
-in editable mode, D-20). **0.8d in progress** (guided in Claude Code, D-21/D-22): loader
-`src/vjepa_physics/video.py` (`load_clip`) written; checks `inspect`, `load`, `repeat`, `colour`, `order`
-passed; `opencv` failed (PyAV vs OpenCV not pixel-identical, F-49) → D-05 criterion sent to the
-planning chat. Next: `figure` check (independent of the D-05 decision).
+**Execution: in progress.** Steps 0.1–0.8 done (guided in Claude Code since 0.8d, D-21/D-22). Loader
+`src/vjepa_physics/video.py` (`load_clip`) verified by checks `inspect`, `load`, `repeat`, `colour`,
+`order`, `figure`; `opencv` failed (PyAV vs OpenCV not pixel-identical, F-49) → D-05 criterion is with the
+planning chat (affects step 1.8, not 0.8). **Next: 0.9 (preprocessing).**
 
 ---
 
@@ -25,7 +24,7 @@ planning chat. Next: `figure` check (independent of the D-05 decision).
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0 — Environment and model setup | 🟨 In progress | 0.1–0.7 done; 0.8 in progress |
+| 0 — Environment and model setup | 🟨 In progress | 0.1–0.8 done; 0.9 next |
 | 1 — Data audit | ⬜ Not started | |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
@@ -67,8 +66,10 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/video_loader/checks.json` | `opencv_bicubic` | Diagnostic: swscale flag is not the cause (PyAV BILINEAR = BICUBIC); frame colour tags unspecified | ℹ️ diagnostic | F-49; `scripts/check_video_loader.py opencv_bicubic` |
 | `results/video_loader/checks.json` | `opencv_diff_stats` | Diagnostic: signed PyAV − OpenCV histogram and means by region (+1.01 / +0.01 / +1.00 overall) | ℹ️ diagnostic | F-49; `scripts/check_video_loader.py opencv_diff_stats` |
 
-Still planned in the same file (0.8d): `figure` (→ `results/video_loader/frames.png`); `opencv` re-scored
-once the planning chat settles D-05's criterion.
+| `results/video_loader/frames.png` + `checks.json` | `figure` | Visual evidence: frames 0/5/10/15 with predicted (+) and measured (×) disk centre and predicted path; disk orange, moving down-left (θ 230.6°); errors at shown frames 0.319 / 0.42 / 0.11 / 0.407 px (= `order`) | ℹ️ visual (reviewed) | `scripts/check_video_loader.py figure` |
+
+Still pending: `opencv` re-scored once the planning chat settles D-05's criterion. For slides, a zoomed
+crop of `frames.png` would read better (disk ≈ 21 px of 256).
 
 ---
 
@@ -120,7 +121,9 @@ what's next.
   ≤ 3 levels on every pixel, systematic +1 in R and B (F-49); diagnostics `opencv_bicubic`,
   `opencv_diff_stats` rule out the swscale flag and colour tags. D-05 marked under review; note sent to the
   planning chat. `cv2` now imported lazily (objc duplicate-class warning from two bundled libavdevice builds).
-- **Next:** `figure` check; then re-score `opencv` per the planning chat's D-05 decision.
+- `figure` check: `results/video_loader/frames.png` reviewed (direction, colour, order, markers agree with
+  `order`). No objc warning without `cv2` → lazy import works. **Step 0.8 done.**
+- **Next:** 0.9 (preprocessing); re-score `opencv` once the planning chat settles D-05.
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.
