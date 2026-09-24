@@ -33,7 +33,9 @@ readout optional (D-30). **0.16 done:** `scripts/check_benchmark.py benchmark` (
 clip, batching gives no speed-up (batch size 1 suggested), ~65 min to extract all clips, memory well within limits.
 **0.17 skipped** (D-29). **0.18 done — Phase 0 passed:** `opencv_tolerance` passed; clean re-run of all 33 checks
 matches the committed results; O-18 closed (F-58); report `results/setup/report.md` lists every open item with the
-step it blocks. **Next: Phase 1 (data audit), starting at 1.1 (manifest integrity)** — waiting for the user's go.
+step it blocks. **Phase 1 started. 1.1 done:** `src/vjepa_physics/data.py` (`DATASETS`, `read_manifest`,
+`resolve`) and `scripts/check_data_files.py manifests` passed on all data (F-60, D-31). **Next: 1.2 (metadata
+consistency)** — waiting for the user's go.
 
 ---
 
@@ -42,7 +44,7 @@ step it blocks. **Next: Phase 1 (data audit), starting at 1.1 (manifest integrit
 | Phase | Status | Notes |
 |---|---|---|
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
-| 1 — Data audit | ⬜ Not started | |
+| 1 — Data audit | 🟨 In progress | 1.1 done |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
@@ -115,6 +117,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/forecast/checks.json` | `forecast` | 96 clips (32 per dataset, ids saved): predictor beats copy-last-step and mean-context-token baselines in every dataset (all 95% CIs < 0); margin over the mean token ~3% of L1 (→ D-30); H-06 fields, per-step L1s, timings recorded | ✅ passed | F-57; `scripts/check_forecast.py forecast` |
 | `results/benchmark/checks.json` | `benchmark` | Time and memory per clip on MPS at batch sizes 1/2/4/8 (no batching gain; batch 1 suggested by the pre-set rule); batched pooled outputs = single bit-for-bit at 2/4/8; extraction ~65 min; storage estimates | ℹ️ diagnostic | F-59; `scripts/check_benchmark.py benchmark` |
 | `results/setup/report.md` | — | Setup report: what was verified (with check keys), failures kept on record, skipped parity, clean re-run and diff, open items with the step each blocks | ✅ gate passed | 0.18; user-written from saved evidence |
+| `results/data_files/checks.json` | `manifests` | All 3 manifests: lines parse, rows 1,500 / 1,536 / 1,536 = DATA.md, ids 0 … N − 1, paths inside `data/<dataset>/`, distinct, non-empty regular files, video + metadata same folder, no orphan files/folders; 9,147 files = fingerprint count, file set = manifests ∪ referenced. Diagnostics: `scene_{id:04d}` naming everywhere, line order = id order. Saved with `git_dirty` true (new code uncommitted); clean re-run at the Phase 1 gate | ✅ passed | F-60, D-31; `scripts/check_data_files.py manifests` |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
@@ -161,6 +164,17 @@ Known decision points the plan cannot remove in advance (each has a planned fall
 
 Newest entry on top. One entry per work session: what was done, what passed, what didn't,
 what's next.
+
+### 2026-09-24 — Phase 1 started (data audit)
+- Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (directly, after each step);
+  asks before every step or sub-step; does not re-read user-saved files unless there is an error or suspicious result.
+- Phase 1 script layout proposed: `check_data_files.py` (1.1, 1.3), `check_metadata.py` (1.2), `check_design.py`
+  (1.4–1.6), `check_videos.py` (1.7, 1.8), `check_tracking.py` (1.9, 1.10); figures as `figure_*` checks; package
+  gains `data.py` now, `geometry.py` / `tracking.py` at 1.9.
+- 1.1: criteria fixed before the run (D-31; folder naming made a diagnostic, same-folder and inside-the-dataset
+  rules added by the user). `src/vjepa_physics/data.py` (`DATASETS`, `read_manifest`, `resolve`);
+  `scripts/check_data_files.py manifests` passed on all data (F-60). **Step 1.1 done.**
+- **Next:** 1.2 (metadata consistency) — waiting for the user's go.
 
 ### 2026-09-24 — Step 0.8d started in Claude Code
 - Claude Code permissions set: `Bash`, `NotebookEdit` denied; edits denied everywhere except `docs/` and

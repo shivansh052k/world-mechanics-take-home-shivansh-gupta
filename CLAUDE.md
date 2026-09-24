@@ -22,6 +22,9 @@ If you are ever unsure whether something counts as "acting", it does. Ask.
 
 **How the user wants to work (D-21, user said):**
 - **One small step at a time.** Give exactly one step, then wait for the user's output before the next.
+  **Ask the user before moving to any new step or sub-step** (user said, 2026-09-24).
+- **Save tokens: don't re-read files the user saved from a given step** unless there is an error or a
+  suspicious result (user said, 2026-09-24).
 - **Files:** give the **exact path and full content** (or the exact lines to add/replace).
   The user creates and edits files himself. Never give terminal commands that write file
   content (`cat >`, `echo >>`, heredocs into files, `sed -i`, …).
@@ -124,7 +127,7 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   The combined `forward()` cannot do this. (modeling_vjepa2.py) Implemented in `forecast.py`; separate calls =
   combined forward bit-for-bit; forecast beats fitting-free baselines, but only ~3% better than the mean token, so
   whether it reads out motion is open (F-52, F-57); the primary steering readout is a later-layer probe on the full clip, the predictor readout
-  optional (D-30). HF most likely ships the target (EMA) encoder (F-58, pending).
+  optional (D-30). HF ships the target (EMA) encoder; the conversion asserted parity with Meta's model at atol 1e-3 (F-58).
 
 ### Data
 - **[scouting]** The disk is **orange**, not blue as DATA.md says (FFmpeg CLI and OpenCV agree pixel for pixel, F-29;
@@ -171,7 +174,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `preprocess` (`preprocess_clip`), `evidence` (`save_result` with provenance, used by check scripts),
   `model` (`load_model`, `weights_fingerprint`), `reproducibility` (`set_seeds`, `SEED`),
   `activations` (`capture_encoder`, `GRID`, `as_grid`), `intervention` (`edit_encoder`, `encoder_sites`),
-  `forecast` (`encode`, `predict`, `training_target`), `decoders` (`load_clip_opencv`, `compare_decoders`).
+  `forecast` (`encode`, `predict`, `training_target`), `decoders` (`load_clip_opencv`, `compare_decoders`),
+  `data` (`DATASETS`, `read_manifest`, `resolve`: strict manifest reader; paths must stay inside `data/<variable>/`).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.
