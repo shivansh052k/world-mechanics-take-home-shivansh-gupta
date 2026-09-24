@@ -1,0 +1,156 @@
+{
+  "config": {
+    "provenance": {
+      "utc": "2026-09-24T10:49:39+00:00",
+      "git_commit": "bb35e4d723f16f8fc712b0d64293dc9ce61f2552",
+      "git_dirty": true,
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "config": {
+        "num_hidden_layers": 24,
+        "hidden_size": 1024,
+        "num_attention_heads": 16,
+        "patch_size": 16,
+        "tubelet_size": 2,
+        "crop_size": 256,
+        "pred_hidden_size": 384,
+        "pred_num_hidden_layers": 12,
+        "hidden_dropout_prob": 0.0,
+        "attention_probs_dropout_prob": 0.0,
+        "drop_path_rate": 0.0
+      },
+      "structure": {
+        "encoder_blocks": 24,
+        "predictor_blocks": 12,
+        "patch_embedding_weight_shape": [
+          1024,
+          3,
+          2,
+          16,
+          16
+        ]
+      },
+      "passed": true
+    }
+  },
+  "load": {
+    "provenance": {
+      "utc": "2026-09-24T10:49:44+00:00",
+      "git_commit": "bb35e4d723f16f8fc712b0d64293dc9ce61f2552",
+      "git_dirty": true,
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "weights_file_sha256": "25466aef85727d16546c6cf8c99f12fcfad9cbca8225d45f23685e2e025b786b",
+      "matches_pinned_sha256": true,
+      "loading_report": {
+        "missing_keys": [],
+        "unexpected_keys": [],
+        "mismatched_keys": [],
+        "error_msgs": []
+      },
+      "parameters_total": 325971328,
+      "parameters_encoder": 303885312,
+      "parameters_predictor": 22086016,
+      "state_dict_tensors": 587,
+      "dtypes": [
+        "torch.float32"
+      ],
+      "device": "cpu",
+      "training_mode": false,
+      "any_requires_grad": false,
+      "attn_implementation": "sdpa",
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "passed": true
+    }
+  },
+  "fingerprint": {
+    "provenance": {
+      "utc": "2026-09-24T10:49:48+00:00",
+      "git_commit": "bb35e4d723f16f8fc712b0d64293dc9ce61f2552",
+      "git_dirty": true,
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "first": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "second": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "identical": true,
+      "passed": true
+    }
+  },
+  "seeds": {
+    "provenance": {
+      "utc": "2026-09-24T10:52:43+00:00",
+      "git_commit": "bb35e4d723f16f8fc712b0d64293dc9ce61f2552",
+      "git_dirty": true,
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "seed": 0,
+      "first": {
+        "python": 0.8444218515250481,
+        "numpy": [
+          0.5488135039273248,
+          0.7151893663724195,
+          0.6027633760716439
+        ],
+        "torch_cpu": [
+          0.49625658988952637,
+          0.7682217955589294,
+          0.08847743272781372
+        ],
+        "torch_mps": [
+          0.8762418627738953,
+          0.6746000647544861,
+          0.6181737184524536
+        ]
+      },
+      "repeat_identical": true,
+      "other_seed_differs": {
+        "python": true,
+        "numpy": true,
+        "torch_cpu": true,
+        "torch_mps": true
+      },
+      "mps_available": true,
+      "passed": true
+    }
+  }
+}
