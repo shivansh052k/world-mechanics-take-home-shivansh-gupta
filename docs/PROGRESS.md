@@ -16,7 +16,9 @@ without re-reading everything else.
 **Execution: in progress.** Steps 0.1–0.8 done (guided in Claude Code since 0.8d, D-21/D-22). Loader
 `src/vjepa_physics/video.py` (`load_clip`) verified by checks `inspect`, `load`, `repeat`, `colour`,
 `order`, `figure`; `opencv` failed (PyAV vs OpenCV not pixel-identical, F-49) → D-05 criterion is with the
-planning chat (affects step 1.8, not 0.8). **Next: 0.9 (preprocessing).**
+planning chat (affects step 1.8, not 0.8). **0.9 (preprocessing) in progress:** `src/vjepa_physics/checkpoint.py`
+(pinned model id, revision, weights SHA-256) added; torchvision 0.29.0 installed (D-25). Next:
+`src/vjepa_physics/preprocess.py`.
 
 ---
 
@@ -24,7 +26,7 @@ planning chat (affects step 1.8, not 0.8). **Next: 0.9 (preprocessing).**
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0 — Environment and model setup | 🟨 In progress | 0.1–0.8 done; 0.9 next |
+| 0 — Environment and model setup | 🟨 In progress | 0.1–0.8 done; 0.9 in progress |
 | 1 — Data audit | ⬜ Not started | |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
@@ -46,7 +48,7 @@ Status legend: ⬜ Not started · 🟨 In progress · ✅ Passed gate · ⚠️ 
 | Model revision | `b3c1679b7c34d3255ef3547f27c7b226aefab26f` | F-44 |
 | `model.safetensors` SHA-256 | `25466aef85727d16546c6cf8c99f12fcfad9cbca8225d45f23685e2e025b786b` | F-44 |
 | Conv3d MPS vs CPU relative difference | 2.5e-7 | F-43 |
-| Locked packages | 52 | F-42 |
+| Locked packages | 53 (torchvision 0.29.0 added) | F-42, D-25 |
 | Test clip frame timing (PyAV) | time_base 1/12288, pts step 512 = 1/24 s | F-46 |
 
 ---
@@ -124,6 +126,10 @@ what's next.
 - `figure` check: `results/video_loader/frames.png` reviewed (direction, colour, order, markers agree with
   `order`). No objc warning without `cv2` → lazy import works. **Step 0.8 done.**
 - **Next:** 0.9 (preprocessing); re-score `opencv` once the planning chat settles D-05.
+- 0.9 started: `src/vjepa_physics/checkpoint.py` (MODEL_ID, full REVISION, WEIGHTS_SHA256). Found that transformers'
+  video processor requires torchvision (not installed) → D-25: `torchvision 0.29.0` installed with the lock as
+  constraint (dry run: only torchvision; `pip check` clean; torch 2.14.0 unchanged); `requirements.lock.txt`
+  regenerated (`pip freeze --exclude-editable`), diff = one added line → 53 packages.
 
 ### 2026-09-24 — Steps 0.2–0.7 done, 0.8 started; checkpoint before Claude Code
 - 0.2: 9,147 files fingerprinted (SHA-256, sorted, `.DS_Store` excluded), `shasum -c` passes, `data/` read-only; fingerprint committed.

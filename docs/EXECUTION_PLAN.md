@@ -14,7 +14,7 @@ Last updated: 2026-09-24.
 - [x] **0.5 Record exact versions in a lock file** — Freeze every installed package version so the setup can be reproduced exactly.
 - [x] **0.6 Apple GPU check** — Confirm MPS is available and that 3D convolution runs on it.
 - [x] **0.7 Model download** — Download only the weights and configs (~1.3 GB), pinned to the full revision `b3c1679b7c34d3255ef3547f27c7b226aefab26f`; verify `model.safetensors` against the Hub's SHA-256 (F-44).
-- [ ] **0.8 Video loader** — Set up the installable package (D-20), then write `src/vjepa_physics/video.py`: read a clip into 16 RGB frames of 256×256 and confirm the shape, order, and colours are right.
+- [x] **0.8 Video loader** — Set up the installable package (D-20), then write `src/vjepa_physics/video.py`: read a clip into 16 RGB frames of 256×256 and confirm the shape, order, and colours are right.
 - [ ] **0.9 Preprocessing** — Turn resize and center-crop off, verify the output against manual normalisation, and save a figure comparing it with the default.
 - [ ] **0.10 Model loading and freezing** — Load the model, confirm the config matches our documented facts (F-10: 24 layers, 1024-dim, 16 heads, patch 16), confirm no missing or unexpected weight keys, set eval mode with no gradients; checksum the weights (reference: F-44) and fix seeds.
 - [ ] **0.11 First end-to-end forward pass** — Run one real clip through the full model; check the output shape, and confirm there are no NaNs or Infs, before building anything on top of it.

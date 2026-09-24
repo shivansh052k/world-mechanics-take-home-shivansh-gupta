@@ -145,7 +145,7 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   Do not hold per-token activations for many layers in RAM (≈ 4 MB per clip per layer in fp16).
 - Video decoders: **PyAV 18.1.0** (bundles FFmpeg) primary; **OpenCV** (`opencv-python-headless`
   5.0.0.93) as an independent cross-check. (D-05, F-42)
-- Exact versions: `requirements.lock.txt` (52 packages; torch 2.14.0, transformers 5.17.0). (F-42)
+- Exact versions: `requirements.lock.txt` (53 packages; torch 2.14.0, torchvision 0.29.0, transformers 5.17.0). (F-42)
 - Model files live in the HF cache (`~/.cache/huggingface/hub/`), not in the repo. (F-44)
 
 ---

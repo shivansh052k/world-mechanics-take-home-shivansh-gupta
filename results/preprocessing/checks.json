@@ -1,0 +1,171 @@
+{
+  "config": {
+    "provenance": {
+      "utc": "2026-09-24T10:35:43+00:00",
+      "git_commit": "eac74dbf8ede0b206244547a41c48f3b34b0b694",
+      "git_dirty": true,
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "native": {
+        "do_resize": false,
+        "shortest_edge": 292,
+        "do_center_crop": false,
+        "crop_height_width": [
+          256,
+          256
+        ],
+        "do_rescale": true,
+        "rescale_factor": 0.00392156862745098,
+        "do_normalize": true,
+        "image_mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "image_std": [
+          0.229,
+          0.224,
+          0.225
+        ]
+      },
+      "default": {
+        "do_resize": true,
+        "shortest_edge": 292,
+        "do_center_crop": true,
+        "crop_height_width": [
+          256,
+          256
+        ],
+        "do_rescale": true,
+        "rescale_factor": 0.00392156862745098,
+        "do_normalize": true,
+        "image_mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "image_std": [
+          0.229,
+          0.224,
+          0.225
+        ]
+      },
+      "passed": true
+    }
+  },
+  "manual": {
+    "provenance": {
+      "utc": "2026-09-24T10:35:51+00:00",
+      "git_commit": "eac74dbf8ede0b206244547a41c48f3b34b0b694",
+      "git_dirty": true,
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "clip": "data/speed/videos/scene_1000/video.mp4",
+      "shape": [
+        16,
+        3,
+        256,
+        256
+      ],
+      "dtype": "torch.float32",
+      "device": "cpu",
+      "value_min_max": [
+        -1.8268,
+        2.1462
+      ],
+      "max_abs_diff": 1.6529019131183986e-07,
+      "mean_abs_diff": 8.24358514453562e-08,
+      "passed": true
+    }
+  },
+  "identity": {
+    "provenance": {
+      "utc": "2026-09-24T10:37:29+00:00",
+      "git_commit": "eac74dbf8ede0b206244547a41c48f3b34b0b694",
+      "git_dirty": true,
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "clip": "data/speed/videos/scene_1000/video.mp4",
+      "max_distance_to_integer_level": 9.441375727448076e-06,
+      "identical": true,
+      "passed": true
+    }
+  },
+  "default": {
+    "provenance": {
+      "utc": "2026-09-24T10:41:07+00:00",
+      "git_commit": "eac74dbf8ede0b206244547a41c48f3b34b0b694",
+      "git_dirty": true,
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "clip": "data/speed/videos/scene_1000/video.mp4",
+      "figure": "results/preprocessing/default_vs_ours.png",
+      "default_shape": [
+        16,
+        256,
+        256,
+        3
+      ],
+      "predicted_scale": 1.140625,
+      "predicted_offset_px": -17.9296875,
+      "fitted_slope_col_row": [
+        1.1393,
+        1.1405
+      ],
+      "offset_at_predicted_scale_col_row": [
+        -17.929,
+        -17.938
+      ],
+      "kept_original_pixels_edges": [
+        15.78,
+        240.22
+      ],
+      "px_per_metre_default": 36.5,
+      "disk_pixels_frame0_ours_default": [
+        350,
+        455
+      ],
+      "passed": true
+    }
+  }
+}
