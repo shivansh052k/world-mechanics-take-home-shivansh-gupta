@@ -14,6 +14,7 @@ from scipy import stats
 import numpy as np
 
 from vjepa_physics.data import DATASETS, LABEL_FIELD, load_dataset
+from vjepa_physics.geometry import distance_travelled, frame_times, speed_at
 from vjepa_physics.evidence import save_result
 
 REPO = Path(__file__).resolve().parents[1]
@@ -31,6 +32,9 @@ TOLERANCE = 1e-9  # float slack for comparing generated values with DATA.md's ro
 # Flag rule for the start-position diagnostics, fixed before running (DATA.md sets no criterion):
 # a test is flagged when p < FLAG_P (about 4 sigma), so ~50 tests in the step give almost no chance flags.
 FLAG_P = 1e-4
+
+# Pixel scale: 32 px per metre (verified on one clip; checked on every clip by disk tracking).
+PX_PER_M = 32
 
 def sci(value: float) -> float:
     """Round to 4 significant digits, for readable JSON."""
@@ -328,12 +332,102 @@ def check_label_independence() -> dict:
         }
     return result
 
+def kinematics(clips: list[dict]) -> dict[str, np.ndarray]:
+    """Per clip, over the whole clip (frame 0 to the last frame): distance travelled (m), mean speed
+    (distance / duration, m/s) and final speed (m/s)."""
+    duration = np.array([frame_times(c["fps"], c["frames"])[-1] for c in clips])
+    v = np.array([c["speed_mps"] for c in clips])
+    a = np.array([c["acceleration_mps2"] for c in clips])
+    distance = distance_travelled(v, a, duration)
+    return {
+        "duration_s": duration,
+        "distance_m": distance,
+        "mean_speed_mps": distance / duration,
+        "final_speed_mps": speed_at(v, a, duration),
+}
+
+
+def min_max(values: np.ndarray, scale: float = 1.0) -> list[float]:
+    return [sci(float(values.min()) * scale), sci(float(values.max()) * scale)]
+
+
+def check_distance_confound() -> dict:
+    """Diagnostic: how the magnitude labels are tied to distance travelled. No pass/fail.
+
+    From metadata, with s = v t + a t^2 / 2 over the clip (frame k at t = k / fps). Speed and
+    acceleration sets: correlation of the label with distance, mean speed and final speed, and the
+    distance / label ratio (constant = exactly proportional). Across the two sets: the distance
+    window both cover, the clips and values inside it, and for each acceleration value inside it the
+    gap to the nearest speed value by distance (how closely the grids can be matched). Direction set:
+    distance and final speed per motion group, and the correlation of motion type with distance.
+    Distances also in pixels (PX_PER_M).
+    """
+    clips = {dataset: load_dataset(DATA, dataset) for dataset in DATASETS}
+    kin = {dataset: kinematics(rows) for dataset, rows in clips.items()}
+    result: dict = {"px_per_m": PX_PER_M}
+
+    for dataset in ("speed", "acceleration"):
+        label = np.array([c["magnitude"] for c in clips[dataset]])
+        k = kin[dataset]
+        ratio = k["distance_m"] / label
+        result[dataset] = {
+            "durations_s": sorted(set(k["duration_s"].tolist())),
+            "corr_label_with": {
+                q: sci(stats.pearsonr(label, k[q]).statistic)
+                for q in ("distance_m", "mean_speed_mps", "final_speed_mps")
+            },
+            "distance_over_label_min_max": [float(ratio.min()), float(ratio.max())],
+            "distance_m_min_max": min_max(k["distance_m"]),
+            "distance_px_min_max": min_max(k["distance_m"], PX_PER_M),
+        }
+
+    ds, da = kin["speed"]["distance_m"], kin["acceleration"]["distance_m"]
+    low, high = max(ds.min(), da.min()), min(ds.max(), da.max())
+    inside_s = (ds >= low - TOLERANCE) & (ds <= high + TOLERANCE)
+    inside_a = (da >= low - TOLERANCE) & (da <= high + TOLERANCE)
+    speed_distances = np.unique(ds)
+    accel_distances = np.unique(da[inside_a])
+    gaps = np.array([np.abs(speed_distances - d).min() for d in accel_distances])
+    result["speed_vs_acceleration_overlap"] = {
+        "window_m": [float(low), float(high)],
+        "window_px": [float(low) * PX_PER_M, float(high) * PX_PER_M],
+        "speed_clips_inside": int(inside_s.sum()),
+        "acceleration_clips_inside": int(inside_a.sum()),
+        "speed_values_inside": len(np.unique(ds[inside_s])),
+        "acceleration_values_inside": len(accel_distances),
+        "nearest_speed_value_distance_gap_m": (
+            {"median": sci(float(np.median(gaps))), "max": sci(float(gaps.max()))} if gaps.size else None
+        ),
+        "nearest_gap_px_max": sci(float(gaps.max()) * PX_PER_M) if gaps.size else None,
+    }
+
+    rows, k = clips["direction"], kin["direction"]
+    groups = [direction_group(c) for c in rows]
+    per_group = {}
+    for name in sorted(set(groups), key=group_order):
+        sel = np.array([g == name for g in groups])
+        per_group[name] = {
+            "clips": int(sel.sum()),
+            "distance_m_min_max": min_max(k["distance_m"][sel]),
+            "final_speed_mps_min_max": min_max(k["final_speed_mps"][sel]),
+        }
+    is_acceleration = np.array([c["motion"] == "acceleration" for c in rows], dtype=float)
+    result["direction"] = {
+        "durations_s": sorted(set(k["duration_s"].tolist())),
+        "distance_by_group": per_group,
+        "corr_acceleration_motion_with_distance": sci(stats.pearsonr(is_acceleration, k["distance_m"]).statistic),
+        "distance_m_min_max": min_max(k["distance_m"]),
+        "distance_px_min_max": min_max(k["distance_m"], PX_PER_M),
+    }
+    return result
+
 
 CHECKS = {
     "value_grids": check_value_grids,
     "design_balance": check_design_balance,
     "start_positions": check_start_positions,
     "label_independence": check_label_independence,
+    "distance_confound": check_distance_confound,
 }
 
 

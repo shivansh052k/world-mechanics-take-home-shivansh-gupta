@@ -176,7 +176,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `activations` (`capture_encoder`, `GRID`, `as_grid`), `intervention` (`edit_encoder`, `encoder_sites`),
   `forecast` (`encode`, `predict`, `training_target`), `decoders` (`load_clip_opencv`, `compare_decoders`),
   `data` (`DATASETS`, `LABEL_FIELD`, `read_manifest`, `resolve`, `read_metadata`, `load_dataset`: strict readers; paths must stay inside
-  `data/<variable>/`; take labels from the dataset name, never `primary_label`, which direction lacks).
+  `data/<variable>/`; take labels from the dataset name, never `primary_label`, which direction lacks),
+  `geometry` (`frame_times`, `distance_travelled`, `speed_at`: s = v t + a t²/2, frame k at t = k/fps).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.
