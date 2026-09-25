@@ -72,7 +72,9 @@ extraction settings, D-41 layout and gate; D-37 extended to Phase 2). Hash-guard
 byte-identical writes (F-77). **2.2b done:** `scripts/check_splits.py build` passed; splits saved to
 `artifacts/manifests/splits.csv` (SHA-256 `bb64b6ae…`, F-78). **2.2c done:** `balance` diagnostics (F-79); two notes for
 the planning chat (one seen direction angle without a test_seen clip; direction exit clips val_seen 8 vs test_seen 20).
-**Next:** planning chat's view on the notes, then step 2.4 (extraction pipeline).
+**2.4a done:** `src/vjepa_physics/extraction.py` (26 sites, per-time-step pooling; test clip within 5.3e-8 of a float64
+pool, repeat bit-exact, F-80). **Next:** 2.4b `scripts/check_extraction.py` (saved pipeline check + extraction keys),
+committed before the real run (D-41).
 
 ---
 
@@ -262,7 +264,10 @@ what's next.
   no speed/acceleration exits, identical val/test seen tables). Notes: one seen direction angle has no test_seen clip;
   exit clips val_seen 8 vs test_seen 20 (chance level). Recommendation: keep splits; notes to the planning chat (F-79).
   **Step 2.2 done.**
-- **Next:** step 2.4 (extraction pipeline), after the user's go.
+- 2.4a: `src/vjepa_physics/extraction.py`; smoke test on the test clip: shape/dtype/device right, repeat bit-exact,
+  rel. error 5.29e-8 vs a float64 pool, derived mean 5.13e-8, final_norm ≠ block_23, plot indices 0/1/24 (F-80).
+  **Step 2.4a done.**
+- **Next:** 2.4b `check_extraction.py`.
 
 ### 2026-09-24 — Phase 1 started (data audit)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (directly, after each step);
