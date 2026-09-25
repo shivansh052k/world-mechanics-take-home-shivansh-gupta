@@ -7,6 +7,7 @@ Each check prints a summary and stores its full result under its own key in resu
 """
 import argparse
 import json
+from collections import Counter
 from pathlib import Path
 
 import numpy as np
@@ -15,6 +16,7 @@ from vjepa_physics.data import DATASETS
 from vjepa_physics.evidence import file_sha256, save_result
 from vjepa_physics.extraction import SITES, plot_index
 from vjepa_physics.joined import load_joined
+from vjepa_physics.reproducibility import SEED
 from vjepa_physics.probes import ALPHAS, alpha_verdict, fit_probe, probe_scores, probe_targets, site_features
 
 REPO = Path(__file__).resolve().parents[1]
@@ -24,6 +26,9 @@ PROBES = REPO / "artifacts/probes"  # regenerable, git-ignored
 EXPECTED_FIT = {"direction": 813, "speed": 832, "acceleration": 832}  # train clips per variable (split decision)
 EVAL_ROLES = ("val_seen", "val_unseen")  # scored here; test is scored once, after the layer choice is frozen
 
+N_PERMUTATIONS = 20  # label permutations within train, per variable (the same ones at every site)
+MAX_SHUFFLED_R2 = 0.1  # every shuffled fit's val_seen R² must stay below this
+MIN_MEAN_SHUFFLED_CIRCULAR_MAE = 80.0  # per site, direction's circular MAE averaged over the permutations (chance 90)
 
 def site_plot_index(site: str) -> int | None:
     """hidden_states index of a site (0 = embedding, 1-24 = blocks); None for the final norm, plotted separately."""
@@ -113,8 +118,92 @@ def print_layer_curves(result: dict) -> None:
                   f"  unseen R2 {r['val_unseen']['r2']:7.3f} {other} {r['val_unseen'][other]:7.3f}")
 
 
+def train_permutations(n_train: int, n: int, seed: int) -> np.ndarray:
+    """(n, n_train) permutations of the train rows from one seeded generator. Raises if one is the identity."""
+    rng = np.random.default_rng(seed)
+    permutations = np.stack([rng.permutation(n_train) for _ in range(n)])
+    if (permutations == np.arange(n_train)).all(axis=1).any():
+        raise RuntimeError("a permutation is the identity")
+    return permutations
+
+
+def check_shuffled_labels() -> dict:
+    """Probes fit on train with shuffled labels must score at chance on val_seen with the true labels.
+
+    Per variable, N_PERMUTATIONS permutations of the train labels (seed SEED), the same at every site; only
+    train rows' labels move, and only train rows are fitted. Passes if: every shuffled fit's val_seen R² <
+    MAX_SHUFFLED_R2; for direction, the circular MAE averaged over the permutations > 80 degrees at every site;
+    no alpha verdict is "failure" (the alpha rule covers controls); every fit saw exactly the train clips.
+    """
+    result: dict = {}
+    fit_ok, verdict_ok, r2_ok, circular_ok = [], [], [], []
+    for variable in DATASETS:
+        table = load_joined(variable)
+        acts, roles, labels = table["activations"], table["role"], table["label"]
+        y = probe_targets(variable, labels)
+        train = np.flatnonzero(roles == "train")
+        seen = roles == "val_seen"
+        permutations = train_permutations(len(train), N_PERMUTATIONS, SEED)
+        shuffled = []
+        for permutation in permutations:
+            y_shuffled = y.copy()
+            y_shuffled[train] = y[train[permutation]]
+            shuffled.append(y_shuffled)
+        moved = [float(np.mean(labels[train[p]] != labels[train])) for p in permutations]
+
+        sites = {}
+        for site in SITES:
+            x = site_features(acts, site)
+            fits = []
+            for y_shuffled in shuffled:
+                probe = fit_probe(x, y_shuffled, roles)
+                scores = probe_scores(variable, labels[seen], probe.predict(x[seen]))
+                fits.append((probe, scores, alpha_verdict(probe.alpha_edge, scores["r2"])))
+            r2s = [scores["r2"] for _, scores, _ in fits]
+            entry = {
+                "plot_index": site_plot_index(site),
+                "alphas": [probe.alpha for probe, _, _ in fits],
+                "alpha_verdicts": dict(Counter(verdict for _, _, verdict in fits)),
+                "r2": r2s,
+                "max_r2": max(r2s),
+            }
+            if variable == "direction":
+                errors = [scores["circular_mae"] for _, scores, _ in fits]
+                entry |= {"circular_mae": errors, "mean_circular_mae": float(np.mean(errors)),
+                          "min_circular_mae": min(errors)}
+                circular_ok.append(entry["mean_circular_mae"] > MIN_MEAN_SHUFFLED_CIRCULAR_MAE)
+            else:
+                entry["mae"] = [scores["mae"] for _, scores, _ in fits]
+            fit_ok.append(all(probe.n_fit == EXPECTED_FIT[variable] for probe, _, _ in fits))
+            verdict_ok.append("failure" not in entry["alpha_verdicts"])
+            r2_ok.append(entry["max_r2"] < MAX_SHUFFLED_R2)
+            sites[site] = entry
+        result[variable] = {"labels_moved_fraction_min": min(moved), "sites": sites}
+
+    criteria = {
+        "n_fit_equals_train_count": all(fit_ok),
+        "no_alpha_failure": all(verdict_ok),
+        "max_shuffled_r2_below_0_1": all(r2_ok),
+        "direction_mean_circular_mae_above_80": bool(circular_ok) and all(circular_ok),
+    }
+    return {"criteria": criteria, "n_permutations": N_PERMUTATIONS, "seed": SEED, **result,
+            "passed": all(criteria.values())}
+
+
+def print_shuffled_labels(result: dict) -> None:
+    """One line per site: alpha verdict counts, max shuffled R², and direction's mean / min circular MAE."""
+    for variable in DATASETS:
+        print(f"\n{variable}  (labels moved, min over permutations: {result[variable]['labels_moved_fraction_min']:.3f})")
+        for site, r in result[variable]["sites"].items():
+            extra = (f"  circular MAE mean {r['mean_circular_mae']:6.2f} min {r['min_circular_mae']:6.2f}"
+                     if variable == "direction" else "")
+            print(f"  {site:10s} max R2 {r['max_r2']:7.3f}  verdicts {r['alpha_verdicts']}{extra}")
+
+
+
 CHECKS = {
     "layer_curves": (check_layer_curves, print_layer_curves),
+    "shuffled_labels": (check_shuffled_labels, print_shuffled_labels),
 }
 
 
@@ -125,7 +214,7 @@ def main() -> None:
     run, show = CHECKS[name]
     result = run()
     show(result)
-    print(json.dumps({"criteria": result["criteria"], "artifact": result["artifact"], "passed": result["passed"]}, indent=2))
+    print(json.dumps({k: result[k] for k in ("criteria", "artifact", "passed") if k in result}, indent=2))
     save_result(OUT, name, result)
     print(f"saved '{name}' -> {OUT.relative_to(REPO)}")
     if result.get("passed") is False:

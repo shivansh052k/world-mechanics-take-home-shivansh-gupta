@@ -96,7 +96,14 @@ on val-seen for all three variables (F-91).
 **3.2c done:** `scripts/check_probes.py layer_curves` passed (F-92): val-seen R² jumps from the embedding to block_0
 (speed 0.00 → 0.98, acceleration 0.00 → 0.98, direction 0.12 → 0.85), maxima ≈ 0.99 around index 18–19; transition at
 index 1 for all three by D-43's rule (hypothesis H-07). Test scores (end of 3.2) wait until 3.7 is frozen.
-**Next:** planning-chat note on the early transition (O-15); then 3.3 (shuffled labels) and 3.4 (floor), which test H-07.
+**Planning chat:** the idx-1 result matches the paper for mean-pooled probes (F-93); D-45 (O-15 narrowed, no saturation
+rule, time-averaged floor, 3.3 criterion, transition bootstrap); D-46 (3.8 repurposed as a direction local-to-global
+test; design brief first).
+**3.3 done:** `shuffled_labels` passed — max shuffled R² ≤ 0.087, direction mean circular MAE 87–92° at every site
+(F-94). Low per-fit direction minima: H-08's pre-set symmetry rule failed at 5 of 21 sites (not supported as stated;
+post-hoc refinement H-08b untested; does not affect the pass).
+**3.4b done:** exact pixel Gram and Gram-based ridge in `baselines.py`, identical to sklearn RidgeCV (F-95).
+**Next:** 3.4c `check_baselines.py pixel_grams` (commit first), 3.4d `pixel_floor`, 3.4e `physics_ceiling`; 3.8 brief.
 
 ---
 
@@ -107,7 +114,7 @@ index 1 for all three by D-43's rule (hypothesis H-07). Test scores (end of 3.2)
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
 | 1 — Data audit | ✅ Passed gate | 1.1–1.13 done; report `results/data_audit/report.md`; clean re-run identical (`documented_fields`, `documented_colour` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
 | 2 — Splits and activation extraction | ✅ Passed gate | 2.1–2.9 done (D-38–D-41, F-75–F-87); report `results/splits_and_extraction/report.md`; clean re-run identical; two balance notes await the planning chat |
-| 3 — Part 1a: Layer-wise probing | 🟨 In progress | 3.1 settled (D-42–D-44); 3.8 skipped; metrics (F-89) and physics fit (F-90) done |
+| 3 — Part 1a: Layer-wise probing | 🟨 In progress | 3.1 settled (D-42–D-46); 3.2 validation curves done (F-92); 3.8 repurposed (D-46) |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
 | 5 — Part 1c: Multi-probe subspace steering | ⬜ Not started | |
 | 6 — Part 2: Spline steering | ⬜ Not started | |
@@ -210,6 +217,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/splits_and_extraction/report.md` | — | Splits and extraction report: splits, how representations are extracted and pooled, joined tables, storage, clean re-run, notes, open items | ✅ gate passed | F-87; user-written from saved evidence |
 | `results/splits/checks.json` | `balance` | Flags, mean cos/sin θ per role; direction group × octant per role; clips per seen angle (test_seen: one angle with 0) | ℹ️ diagnostic | F-79; `scripts/check_splits.py balance` |
 | `results/probes/checks.json` + `artifacts/probes/layer_predictions.npz` | `layer_curves` | Ridge probe per site (26) and variable on train, scored on val_seen / val_unseen; n_fit 813 / 832; alpha rule; only validation rows predicted; refit identical; predictions saved (SHA-256 `b7261ed0…`, git-ignored) | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-92; `scripts/check_probes.py layer_curves` |
+| `results/probes/checks.json` | `shuffled_labels` | 20 train-label permutations × 26 sites × 3 variables, scored on val_seen with true labels: max R² ≤ 0.087 < 0.1; direction mean circular MAE 87–92° > 80; no alpha failure; n_fit exact | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-94; `scripts/check_probes.py shuffled_labels` |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
@@ -294,7 +302,14 @@ what's next.
   (F-91). **Step 3.2b done.**
 - 3.2c: `scripts/check_probes.py layer_curves` passed, smoke-test points reproduced exactly (F-92); early transition
   (index 1) recorded with hypothesis H-07 and a note for the planning chat. **Step 3.2 done for validation** (test at 3.7).
-- **Next:** planning-chat note, then 3.3.
+- Planning-chat decisions recorded: F-93, D-45, D-46; plan 3.8 repurposed (un-ticked).
+- 3.3: `check_probes.py shuffled_labels` passed (F-94); Claude Code's predictions for max R² and per-fit direction
+  minima were wrong; H-08 with a symmetry rule fixed before reading. **Step 3.3 done.**
+- H-08 read-out (terminal, from the saved result): symmetry rule failed at block_0, 7, 14, 16, 17; kept on record;
+  H-08b noted (post hoc). Claude Code's symmetry premise was wrong (reflections give ≈ 90°, not > 90°).
+- 3.4b: `pixel_matrix`, `exact_gram`, `kernel_ridge` in `baselines.py`; smoke test exact as predicted (F-95).
+  **Step 3.4b done.**
+- **Next:** commit, then 3.4c.
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each

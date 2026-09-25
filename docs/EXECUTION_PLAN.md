@@ -66,7 +66,7 @@ Last updated: 2026-09-24.
 - [ ] **3.5 Uncertainty estimate** — Bootstrap CIs over clips on the validation curves and the test numbers (no refitting; ridge is deterministic, so seeds give no spread). Optional: 5-fold refits within train ∪ val-seen, grouped by value, with test fixed.
 - [ ] **3.6 Plot probe performance vs. layer** — For all three variables, matching the paper's presentation style.
 - [ ] **3.7 Identify and document the emergence transition** — From the val-seen curve, where each variable becomes reliably readable, reported both as a raw layer index and as a fraction of total depth, for direct comparison with the paper's "one-third" finding.
-- [x] **3.8 (Optional) Patch-preserving probes** — **Skipped (D-43):** attentive probes are not needed for Phases 4–5. — Attentive-MLP probes as a complement to the mean-pooled probes, if time allows.
+- [ ] **3.8 Direction local-to-global test** — **Repurposed (D-46; replaces the skipped attentive probes of D-43):** region-pooled activations (4 × 4 regions of 4 × 4 patches, time-averaged, indices 0–24) for direction clips; per-region probes and a spatial-generalization test (train on one half of the frame, test on the other), mirroring the paper's Fig. 18; design brief to the planning chat first. Original wording: — Attentive-MLP probes as a complement to the mean-pooled probes, if time allows.
 - [ ] **3.9 Phase 3 report and gate** — Save the report and figures to `results/`, update `PROGRESS.md`, and confirm Phase 3 has passed.
 
 ## Phase 4 — Part 1b: Iterative nullspace probing
