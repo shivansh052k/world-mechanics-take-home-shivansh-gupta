@@ -1,13 +1,10 @@
 {
   "value_grids": {
     "provenance": {
-      "utc": "2026-09-24T23:41:49+00:00",
-      "git_commit": "f84571579d73f782813738f0a72f9ad79e544873",
-      "git_dirty": true,
-      "git_dirty_paths": [
-        " M src/vjepa_physics/data.py",
-        "?? scripts/check_design.py"
-      ],
+      "utc": "2026-09-25T03:54:45+00:00",
+      "git_commit": "78699697c6a3df4a8ea06937074564eaa91720bb",
+      "git_dirty": false,
+      "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
@@ -16,15 +13,19 @@
           "src/vjepa_physics/data.py": "b1ddff4412bc5dbdf630dd1a98bbdf01cccc6a3b15fadbc8811da5d534b61972",
           "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
           "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
           "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "dc98690f3728587a7fff205b75f8c91db1eee154bc635d95fe6f64dfe1d229bd",
           "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
           "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
           "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
           "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
-          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
-          "scripts/check_design.py": "c6f47576735d72abbbcd4cca264bf6850c64bb34b159d3edf4f24c1f4f8c57a8"
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_design.py": "6d0bb9f00207e50c387842c7d3385dd7c792f18b46a2d5c4b6d158eea9643713"
         },
-        "combined_sha256": "f34c5d1055dfa65d998d07cee7ed6783b33843b3b6858677e2b9a7927853c04d"
+        "combined_sha256": "afa43f6bc688270edf1b2dd6a9ff23bb6eb63320544989c5f6382c505d279fbd"
       },
       "versions": {
         "av": "18.1.0",
@@ -332,13 +333,10 @@
   },
   "design_balance": {
     "provenance": {
-      "utc": "2026-09-24T23:43:33+00:00",
-      "git_commit": "f84571579d73f782813738f0a72f9ad79e544873",
-      "git_dirty": true,
-      "git_dirty_paths": [
-        " M src/vjepa_physics/data.py",
-        "?? scripts/check_design.py"
-      ],
+      "utc": "2026-09-25T03:54:46+00:00",
+      "git_commit": "78699697c6a3df4a8ea06937074564eaa91720bb",
+      "git_dirty": false,
+      "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
@@ -347,15 +345,19 @@
           "src/vjepa_physics/data.py": "b1ddff4412bc5dbdf630dd1a98bbdf01cccc6a3b15fadbc8811da5d534b61972",
           "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
           "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
           "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "dc98690f3728587a7fff205b75f8c91db1eee154bc635d95fe6f64dfe1d229bd",
           "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
           "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
           "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
           "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
-          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
-          "scripts/check_design.py": "485380ff0f8125ebb5b5b5532807f6141029f397bc38a291e98a6e395a9721ca"
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_design.py": "6d0bb9f00207e50c387842c7d3385dd7c792f18b46a2d5c4b6d158eea9643713"
         },
-        "combined_sha256": "ba228bc292c347c498f409118cf86fa531d378581ce387473870f38c368f1e06"
+        "combined_sha256": "afa43f6bc688270edf1b2dd6a9ff23bb6eb63320544989c5f6382c505d279fbd"
       },
       "versions": {
         "av": "18.1.0",
@@ -594,12 +596,10 @@
   },
   "start_positions": {
     "provenance": {
-      "utc": "2026-09-24T23:46:47+00:00",
-      "git_commit": "2bb0eba2e5d39249aa7257be4338979210baabe4",
-      "git_dirty": true,
-      "git_dirty_paths": [
-        " M scripts/check_design.py"
-      ],
+      "utc": "2026-09-25T03:54:47+00:00",
+      "git_commit": "78699697c6a3df4a8ea06937074564eaa91720bb",
+      "git_dirty": false,
+      "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
@@ -608,15 +608,19 @@
           "src/vjepa_physics/data.py": "b1ddff4412bc5dbdf630dd1a98bbdf01cccc6a3b15fadbc8811da5d534b61972",
           "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
           "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
           "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "dc98690f3728587a7fff205b75f8c91db1eee154bc635d95fe6f64dfe1d229bd",
           "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
           "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
           "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
           "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
-          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
-          "scripts/check_design.py": "8900265bb43a6495b11fe84e83318a41a970f04e58da22d94c780df0020f510f"
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_design.py": "6d0bb9f00207e50c387842c7d3385dd7c792f18b46a2d5c4b6d158eea9643713"
         },
-        "combined_sha256": "030b6f3cdb90e71f50fd248a7dda7261733ac2399595bf0f4a5b36e3bcb9364a"
+        "combined_sha256": "afa43f6bc688270edf1b2dd6a9ff23bb6eb63320544989c5f6382c505d279fbd"
       },
       "versions": {
         "av": "18.1.0",
@@ -728,12 +732,10 @@
   },
   "label_independence": {
     "provenance": {
-      "utc": "2026-09-24T23:49:24+00:00",
-      "git_commit": "2bb0eba2e5d39249aa7257be4338979210baabe4",
-      "git_dirty": true,
-      "git_dirty_paths": [
-        " M scripts/check_design.py"
-      ],
+      "utc": "2026-09-25T03:54:48+00:00",
+      "git_commit": "78699697c6a3df4a8ea06937074564eaa91720bb",
+      "git_dirty": false,
+      "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
@@ -742,15 +744,19 @@
           "src/vjepa_physics/data.py": "b1ddff4412bc5dbdf630dd1a98bbdf01cccc6a3b15fadbc8811da5d534b61972",
           "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
           "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
           "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "dc98690f3728587a7fff205b75f8c91db1eee154bc635d95fe6f64dfe1d229bd",
           "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
           "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
           "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
           "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
-          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
-          "scripts/check_design.py": "e8d1eea288e54bde894acc6fedf70a2b76c316700186f063a5a11c6a8cde3ba4"
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_design.py": "6d0bb9f00207e50c387842c7d3385dd7c792f18b46a2d5c4b6d158eea9643713"
         },
-        "combined_sha256": "4f32ee2bfe2196f42b9bd02aa6c6a8ea9fdf6873381d66a1d108130273ee14d4"
+        "combined_sha256": "afa43f6bc688270edf1b2dd6a9ff23bb6eb63320544989c5f6382c505d279fbd"
       },
       "versions": {
         "av": "18.1.0",
@@ -1164,13 +1170,10 @@
   },
   "distance_confound": {
     "provenance": {
-      "utc": "2026-09-24T23:58:10+00:00",
-      "git_commit": "72378e14514948577d214563e1687cc6f41c229e",
-      "git_dirty": true,
-      "git_dirty_paths": [
-        " M scripts/check_design.py",
-        "?? src/vjepa_physics/geometry.py"
-      ],
+      "utc": "2026-09-25T03:54:49+00:00",
+      "git_commit": "78699697c6a3df4a8ea06937074564eaa91720bb",
+      "git_dirty": false,
+      "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
@@ -1179,16 +1182,19 @@
           "src/vjepa_physics/data.py": "b1ddff4412bc5dbdf630dd1a98bbdf01cccc6a3b15fadbc8811da5d534b61972",
           "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
           "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
           "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
-          "src/vjepa_physics/geometry.py": "99cbcf8031e57c44c2ca7a1a1cd3191ed6cacaa48873907ed48f5f4d2e6b782e",
+          "src/vjepa_physics/geometry.py": "dc98690f3728587a7fff205b75f8c91db1eee154bc635d95fe6f64dfe1d229bd",
           "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
           "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
           "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
           "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
-          "src/vjepa_physics/video.py": "a62fe9730b828a601599beb6a57b13f2788c662106a3b88fffd1421d76c6bb68",
-          "scripts/check_design.py": "30e304bb21c00503797a5d6d22d21178289bd4e6681b3a37790d1710ba923944"
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_design.py": "6d0bb9f00207e50c387842c7d3385dd7c792f18b46a2d5c4b6d158eea9643713"
         },
-        "combined_sha256": "69453ac5f97e1605a1bfd961cac028169fdbbb766e0433a22a9f5fe1df9be3e0"
+        "combined_sha256": "afa43f6bc688270edf1b2dd6a9ff23bb6eb63320544989c5f6382c505d279fbd"
       },
       "versions": {
         "av": "18.1.0",
@@ -1418,14 +1424,10 @@
   },
   "figure_design": {
     "provenance": {
-      "utc": "2026-09-25T03:44:11+00:00",
-      "git_commit": "0b949da36b1bea75de49b510a3c88ae581181fdd",
-      "git_dirty": true,
-      "git_dirty_paths": [
-        " M scripts/check_design.py",
-        " M scripts/check_videos.py",
-        "?? src/vjepa_physics/plotting.py"
-      ],
+      "utc": "2026-09-25T03:54:51+00:00",
+      "git_commit": "78699697c6a3df4a8ea06937074564eaa91720bb",
+      "git_dirty": false,
+      "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
