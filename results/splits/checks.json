@@ -162,5 +162,946 @@
       },
       "passed": true
     }
+  },
+  "balance": {
+    "provenance": {
+      "utc": "2026-09-25T05:03:11+00:00",
+      "git_commit": "35402a599f8546bfdeb3e0c192922c11148d4983",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        " M scripts/check_splits.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "066f2c8d8c18f78ad15b7c8facc6f97037e13cc4fa3eee0a2da94a233affb104",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "dc98690f3728587a7fff205b75f8c91db1eee154bc635d95fe6f64dfe1d229bd",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_splits.py": "d8287b07d3238c760b15196721693e467caa46707609f83922118ad308f39932"
+        },
+        "combined_sha256": "5ed39d22f1ed72a359e72e567fdf070288fa3af714250172fc1b546ec3a996d8"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "direction": {
+        "per_role": {
+          "train": {
+            "clips": 813,
+            "flags": {
+              "exit": 61,
+              "clipped": 100,
+              "sub_patch_motion": 81,
+              "frozen_start": 49
+            },
+            "mean_cos_theta": 0.003,
+            "mean_sin_theta": 0.0028
+          },
+          "val_seen": {
+            "clips": 203,
+            "flags": {
+              "exit": 8,
+              "clipped": 25,
+              "sub_patch_motion": 19,
+              "frozen_start": 9
+            },
+            "mean_cos_theta": -0.0044,
+            "mean_sin_theta": 0.0185
+          },
+          "val_unseen": {
+            "clips": 94,
+            "flags": {
+              "exit": 9,
+              "clipped": 16,
+              "sub_patch_motion": 9,
+              "frozen_start": 6
+            },
+            "mean_cos_theta": 0.0084,
+            "mean_sin_theta": 0.0125
+          },
+          "test_seen": {
+            "clips": 203,
+            "flags": {
+              "exit": 20,
+              "clipped": 32,
+              "sub_patch_motion": 19,
+              "frozen_start": 12
+            },
+            "mean_cos_theta": 0.0102,
+            "mean_sin_theta": 0.0484
+          },
+          "test_unseen": {
+            "clips": 187,
+            "flags": {
+              "exit": 15,
+              "clipped": 26,
+              "sub_patch_motion": 22,
+              "frozen_start": 16
+            },
+            "mean_cos_theta": 0.0023,
+            "mean_sin_theta": 0.0126
+          }
+        },
+        "group_by_octant": {
+          "train": {
+            "clips_per_group": {
+              "velocity 1 m/s": 57,
+              "velocity 2 m/s": 57,
+              "velocity 3 m/s": 58,
+              "velocity 4 m/s": 58,
+              "velocity 5 m/s": 57,
+              "velocity 6 m/s": 56,
+              "velocity 7 m/s": 54,
+              "acceleration 2 m/s^2": 81,
+              "acceleration 4 m/s^2": 84,
+              "acceleration 6 m/s^2": 84,
+              "acceleration 8 m/s^2": 84,
+              "acceleration 10 m/s^2": 83
+            },
+            "cell_min": 5,
+            "cell_max": 11,
+            "counts_per_group_by_octant": {
+              "velocity 1 m/s": [
+                6,
+                9,
+                6,
+                7,
+                6,
+                7,
+                7,
+                9
+              ],
+              "velocity 2 m/s": [
+                6,
+                7,
+                7,
+                8,
+                7,
+                8,
+                7,
+                7
+              ],
+              "velocity 3 m/s": [
+                7,
+                9,
+                6,
+                8,
+                7,
+                7,
+                6,
+                8
+              ],
+              "velocity 4 m/s": [
+                6,
+                8,
+                7,
+                7,
+                7,
+                9,
+                7,
+                7
+              ],
+              "velocity 5 m/s": [
+                7,
+                8,
+                6,
+                9,
+                7,
+                7,
+                6,
+                7
+              ],
+              "velocity 6 m/s": [
+                6,
+                8,
+                6,
+                7,
+                6,
+                8,
+                7,
+                8
+              ],
+              "velocity 7 m/s": [
+                6,
+                7,
+                6,
+                9,
+                5,
+                7,
+                7,
+                7
+              ],
+              "acceleration 2 m/s^2": [
+                11,
+                10,
+                10,
+                9,
+                10,
+                11,
+                10,
+                10
+              ],
+              "acceleration 4 m/s^2": [
+                10,
+                11,
+                11,
+                11,
+                9,
+                11,
+                10,
+                11
+              ],
+              "acceleration 6 m/s^2": [
+                11,
+                11,
+                11,
+                10,
+                10,
+                10,
+                10,
+                11
+              ],
+              "acceleration 8 m/s^2": [
+                11,
+                11,
+                9,
+                11,
+                10,
+                11,
+                10,
+                11
+              ],
+              "acceleration 10 m/s^2": [
+                9,
+                11,
+                11,
+                11,
+                10,
+                11,
+                9,
+                11
+              ]
+            }
+          },
+          "val_seen": {
+            "clips_per_group": {
+              "velocity 1 m/s": 16,
+              "velocity 2 m/s": 15,
+              "velocity 3 m/s": 15,
+              "velocity 4 m/s": 15,
+              "velocity 5 m/s": 15,
+              "velocity 6 m/s": 16,
+              "velocity 7 m/s": 15,
+              "acceleration 2 m/s^2": 19,
+              "acceleration 4 m/s^2": 19,
+              "acceleration 6 m/s^2": 20,
+              "acceleration 8 m/s^2": 18,
+              "acceleration 10 m/s^2": 20
+            },
+            "cell_min": 1,
+            "cell_max": 3,
+            "counts_per_group_by_octant": {
+              "velocity 1 m/s": [
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2
+              ],
+              "velocity 2 m/s": [
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                1,
+                2
+              ],
+              "velocity 3 m/s": [
+                2,
+                2,
+                2,
+                2,
+                1,
+                2,
+                2,
+                2
+              ],
+              "velocity 4 m/s": [
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                1,
+                2
+              ],
+              "velocity 5 m/s": [
+                2,
+                2,
+                2,
+                2,
+                1,
+                2,
+                2,
+                2
+              ],
+              "velocity 6 m/s": [
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2
+              ],
+              "velocity 7 m/s": [
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                1,
+                2
+              ],
+              "acceleration 2 m/s^2": [
+                2,
+                3,
+                2,
+                3,
+                2,
+                2,
+                2,
+                3
+              ],
+              "acceleration 4 m/s^2": [
+                2,
+                3,
+                2,
+                3,
+                2,
+                3,
+                2,
+                2
+              ],
+              "acceleration 6 m/s^2": [
+                2,
+                3,
+                2,
+                3,
+                2,
+                3,
+                2,
+                3
+              ],
+              "acceleration 8 m/s^2": [
+                2,
+                3,
+                2,
+                3,
+                2,
+                2,
+                2,
+                2
+              ],
+              "acceleration 10 m/s^2": [
+                2,
+                3,
+                2,
+                3,
+                2,
+                3,
+                2,
+                3
+              ]
+            }
+          },
+          "val_unseen": {
+            "clips_per_group": {
+              "velocity 1 m/s": 7,
+              "velocity 2 m/s": 6,
+              "velocity 3 m/s": 7,
+              "velocity 4 m/s": 6,
+              "velocity 5 m/s": 7,
+              "velocity 6 m/s": 7,
+              "velocity 7 m/s": 8,
+              "acceleration 2 m/s^2": 9,
+              "acceleration 4 m/s^2": 10,
+              "acceleration 6 m/s^2": 8,
+              "acceleration 8 m/s^2": 9,
+              "acceleration 10 m/s^2": 10
+            },
+            "cell_min": 0,
+            "cell_max": 3,
+            "counts_per_group_by_octant": {
+              "velocity 1 m/s": [
+                2,
+                0,
+                2,
+                0,
+                2,
+                0,
+                1,
+                0
+              ],
+              "velocity 2 m/s": [
+                2,
+                0,
+                1,
+                0,
+                1,
+                0,
+                2,
+                0
+              ],
+              "velocity 3 m/s": [
+                1,
+                0,
+                2,
+                0,
+                2,
+                0,
+                2,
+                0
+              ],
+              "velocity 4 m/s": [
+                2,
+                0,
+                1,
+                0,
+                1,
+                0,
+                2,
+                0
+              ],
+              "velocity 5 m/s": [
+                1,
+                0,
+                2,
+                0,
+                2,
+                0,
+                2,
+                0
+              ],
+              "velocity 6 m/s": [
+                2,
+                0,
+                2,
+                0,
+                2,
+                0,
+                1,
+                0
+              ],
+              "velocity 7 m/s": [
+                2,
+                0,
+                2,
+                0,
+                2,
+                0,
+                2,
+                0
+              ],
+              "acceleration 2 m/s^2": [
+                2,
+                0,
+                3,
+                0,
+                2,
+                0,
+                2,
+                0
+              ],
+              "acceleration 4 m/s^2": [
+                3,
+                0,
+                2,
+                0,
+                3,
+                0,
+                2,
+                0
+              ],
+              "acceleration 6 m/s^2": [
+                2,
+                0,
+                2,
+                0,
+                2,
+                0,
+                2,
+                0
+              ],
+              "acceleration 8 m/s^2": [
+                2,
+                0,
+                3,
+                0,
+                2,
+                0,
+                2,
+                0
+              ],
+              "acceleration 10 m/s^2": [
+                3,
+                0,
+                2,
+                0,
+                2,
+                0,
+                3,
+                0
+              ]
+            }
+          },
+          "test_seen": {
+            "clips_per_group": {
+              "velocity 1 m/s": 16,
+              "velocity 2 m/s": 15,
+              "velocity 3 m/s": 15,
+              "velocity 4 m/s": 15,
+              "velocity 5 m/s": 15,
+              "velocity 6 m/s": 16,
+              "velocity 7 m/s": 15,
+              "acceleration 2 m/s^2": 19,
+              "acceleration 4 m/s^2": 19,
+              "acceleration 6 m/s^2": 20,
+              "acceleration 8 m/s^2": 18,
+              "acceleration 10 m/s^2": 20
+            },
+            "cell_min": 1,
+            "cell_max": 3,
+            "counts_per_group_by_octant": {
+              "velocity 1 m/s": [
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2
+              ],
+              "velocity 2 m/s": [
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                1,
+                2
+              ],
+              "velocity 3 m/s": [
+                2,
+                2,
+                2,
+                2,
+                1,
+                2,
+                2,
+                2
+              ],
+              "velocity 4 m/s": [
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                1,
+                2
+              ],
+              "velocity 5 m/s": [
+                2,
+                2,
+                2,
+                2,
+                1,
+                2,
+                2,
+                2
+              ],
+              "velocity 6 m/s": [
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2
+              ],
+              "velocity 7 m/s": [
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                1,
+                2
+              ],
+              "acceleration 2 m/s^2": [
+                2,
+                3,
+                2,
+                3,
+                2,
+                2,
+                2,
+                3
+              ],
+              "acceleration 4 m/s^2": [
+                2,
+                3,
+                2,
+                3,
+                2,
+                3,
+                2,
+                2
+              ],
+              "acceleration 6 m/s^2": [
+                2,
+                3,
+                2,
+                3,
+                2,
+                3,
+                2,
+                3
+              ],
+              "acceleration 8 m/s^2": [
+                2,
+                3,
+                2,
+                3,
+                2,
+                2,
+                2,
+                2
+              ],
+              "acceleration 10 m/s^2": [
+                2,
+                3,
+                2,
+                3,
+                2,
+                3,
+                2,
+                3
+              ]
+            }
+          },
+          "test_unseen": {
+            "clips_per_group": {
+              "velocity 1 m/s": 12,
+              "velocity 2 m/s": 14,
+              "velocity 3 m/s": 12,
+              "velocity 4 m/s": 13,
+              "velocity 5 m/s": 13,
+              "velocity 6 m/s": 12,
+              "velocity 7 m/s": 15,
+              "acceleration 2 m/s^2": 22,
+              "acceleration 4 m/s^2": 18,
+              "acceleration 6 m/s^2": 18,
+              "acceleration 8 m/s^2": 21,
+              "acceleration 10 m/s^2": 17
+            },
+            "cell_min": 1,
+            "cell_max": 3,
+            "counts_per_group_by_octant": {
+              "velocity 1 m/s": [
+                2,
+                1,
+                2,
+                2,
+                1,
+                2,
+                1,
+                1
+              ],
+              "velocity 2 m/s": [
+                2,
+                2,
+                2,
+                1,
+                2,
+                1,
+                2,
+                2
+              ],
+              "velocity 3 m/s": [
+                2,
+                1,
+                1,
+                2,
+                2,
+                2,
+                1,
+                1
+              ],
+              "velocity 4 m/s": [
+                1,
+                2,
+                2,
+                2,
+                1,
+                1,
+                2,
+                2
+              ],
+              "velocity 5 m/s": [
+                2,
+                2,
+                1,
+                1,
+                2,
+                2,
+                1,
+                2
+              ],
+              "velocity 6 m/s": [
+                1,
+                2,
+                2,
+                2,
+                1,
+                1,
+                2,
+                1
+              ],
+              "velocity 7 m/s": [
+                2,
+                2,
+                2,
+                1,
+                2,
+                2,
+                2,
+                2
+              ],
+              "acceleration 2 m/s^2": [
+                2,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                2
+              ],
+              "acceleration 4 m/s^2": [
+                3,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                3
+              ],
+              "acceleration 6 m/s^2": [
+                2,
+                2,
+                2,
+                3,
+                3,
+                2,
+                2,
+                2
+              ],
+              "acceleration 8 m/s^2": [
+                2,
+                3,
+                3,
+                2,
+                2,
+                3,
+                3,
+                3
+              ],
+              "acceleration 10 m/s^2": [
+                3,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2
+              ]
+            }
+          }
+        },
+        "clips_per_seen_angle": {
+          "train": {
+            "min": 11,
+            "max": 20,
+            "angles_without_clips": 0
+          },
+          "val_seen": {
+            "min": 1,
+            "max": 7,
+            "angles_without_clips": 0
+          },
+          "test_seen": {
+            "min": 0,
+            "max": 8,
+            "angles_without_clips": 1
+          }
+        }
+      },
+      "speed": {
+        "per_role": {
+          "train": {
+            "clips": 832,
+            "flags": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 128,
+              "frozen_start": 1
+            },
+            "mean_cos_theta": 0.0013,
+            "mean_sin_theta": 0.0114
+          },
+          "val_seen": {
+            "clips": 208,
+            "flags": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 32,
+              "frozen_start": 0
+            },
+            "mean_cos_theta": 0.0543,
+            "mean_sin_theta": -0.0948
+          },
+          "val_unseen": {
+            "clips": 96,
+            "flags": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 24,
+              "frozen_start": 0
+            },
+            "mean_cos_theta": -0.0171,
+            "mean_sin_theta": 0.0256
+          },
+          "test_seen": {
+            "clips": 208,
+            "flags": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 32,
+              "frozen_start": 0
+            },
+            "mean_cos_theta": -0.0589,
+            "mean_sin_theta": 0.0485
+          },
+          "test_unseen": {
+            "clips": 192,
+            "flags": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 24,
+              "frozen_start": 0
+            },
+            "mean_cos_theta": 0.0081,
+            "mean_sin_theta": -0.0121
+          }
+        }
+      },
+      "acceleration": {
+        "per_role": {
+          "train": {
+            "clips": 832,
+            "flags": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 192,
+              "frozen_start": 142
+            },
+            "mean_cos_theta": 0.0013,
+            "mean_sin_theta": 0.0114
+          },
+          "val_seen": {
+            "clips": 208,
+            "flags": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 48,
+              "frozen_start": 41
+            },
+            "mean_cos_theta": 0.0543,
+            "mean_sin_theta": -0.0948
+          },
+          "val_unseen": {
+            "clips": 96,
+            "flags": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 24,
+              "frozen_start": 15
+            },
+            "mean_cos_theta": -0.0171,
+            "mean_sin_theta": 0.0256
+          },
+          "test_seen": {
+            "clips": 208,
+            "flags": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 48,
+              "frozen_start": 39
+            },
+            "mean_cos_theta": -0.0589,
+            "mean_sin_theta": 0.0485
+          },
+          "test_unseen": {
+            "clips": 192,
+            "flags": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 48,
+              "frozen_start": 30
+            },
+            "mean_cos_theta": 0.0081,
+            "mean_sin_theta": -0.0121
+          }
+        }
+      }
+    }
   }
 }

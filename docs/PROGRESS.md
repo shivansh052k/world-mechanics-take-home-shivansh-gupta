@@ -70,7 +70,9 @@ extraction settings, D-41 layout and gate; D-37 extended to Phase 2). Hash-guard
 `evidence.py` (F-76). **2.2a done:** `src/vjepa_physics/splits.py` gives D-38's counts exactly (direction 813 / 203 / 94 /
 203 / 187; speed and acceleration 832 / 208 / 96 / 208 / 192), shared speed/acceleration assignment, deterministic,
 byte-identical writes (F-77). **2.2b done:** `scripts/check_splits.py build` passed; splits saved to
-`artifacts/manifests/splits.csv` (SHA-256 `bb64b6ae…`, F-78). **Next:** 2.2c `balance` diagnostics.
+`artifacts/manifests/splits.csv` (SHA-256 `bb64b6ae…`, F-78). **2.2c done:** `balance` diagnostics (F-79); two notes for
+the planning chat (one seen direction angle without a test_seen clip; direction exit clips val_seen 8 vs test_seen 20).
+**Next:** planning chat's view on the notes, then step 2.4 (extraction pipeline).
 
 ---
 
@@ -175,6 +177,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/tracking/tracking.png` + `checks.json` | `figure_tracking` | Tracked-vs-predicted distance histograms (max ≤ 0.783 px); flag counts per dataset | ℹ️ visual (reviewed) | F-73; `scripts/check_tracking.py figure_tracking` |
 | `results/evidence/checks.json` | `rerun_identical` | All 21 audit keys re-run from clean HEAD `7869969`; every result identical to the committed one; flags table and PNGs unchanged | ✅ passed | F-74; `scripts/check_evidence.py rerun_identical` |
 | `results/splits/checks.json` + `artifacts/manifests/splits.csv` | `build` | Splits from metadata + seed 0 (D-38): every clip once, counts = D-38, unseen values as decided and absent from seen roles, 16/4/4 per seen value, speed = acceleration roles by id, rebuild byte-identical; file SHA-256 `bb64b6ae…` | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-78; `scripts/check_splits.py build` |
+| `results/splits/checks.json` | `balance` | Flags, mean cos/sin θ per role; direction group × octant per role; clips per seen angle (test_seen: one angle with 0) | ℹ️ diagnostic | F-79; `scripts/check_splits.py balance` |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
@@ -255,7 +258,11 @@ what's next.
 - 2.2b: `scripts/check_splits.py build` passed, all values as predicted; `artifacts/manifests/splits.csv` written and
   recorded (F-78). Own-addition criteria `labels_match_metadata`, `value_index_follows_label` noted for the planning
   chat (D-37). **Step 2.2b done.**
-- **Next:** 2.2c `balance`.
+- 2.2c: `balance` diagnostic (split file and flags table hash-guarded). Exact predictions met (sub-patch counts per role,
+  no speed/acceleration exits, identical val/test seen tables). Notes: one seen direction angle has no test_seen clip;
+  exit clips val_seen 8 vs test_seen 20 (chance level). Recommendation: keep splits; notes to the planning chat (F-79).
+  **Step 2.2 done.**
+- **Next:** step 2.4 (extraction pipeline), after the user's go.
 
 ### 2026-09-24 — Phase 1 started (data audit)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (directly, after each step);

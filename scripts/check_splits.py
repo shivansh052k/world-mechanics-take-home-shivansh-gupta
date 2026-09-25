@@ -6,6 +6,7 @@ Run one check at a time from the repo root, with .venv active:
 Each check prints its result and stores it under its own key in results/splits/checks.json.
 """
 import argparse
+import csv
 import json
 import tempfile
 from collections import Counter
@@ -13,8 +14,8 @@ from pathlib import Path
 
 import numpy as np
 
-from vjepa_physics.data import DATASETS, LABEL_FIELD, load_dataset
-from vjepa_physics.evidence import file_sha256, save_result
+from vjepa_physics.data import DATASETS, LABEL_FIELD, angle_octant, load_dataset, motion_group
+from vjepa_physics.evidence import file_sha256, save_result, verified_artifact
 from vjepa_physics.reproducibility import SEED
 from vjepa_physics.splits import (
     HELD_OUT, N_VALUES, PER_SEEN_VALUE, ROLES, SEEN_ROLES, VAL_UNSEEN, build_splits, read_splits, write_splits,
@@ -35,6 +36,8 @@ EXPECTED_COUNTS = {
 }
 SCHEME = {"direction": "direction", "speed": "magnitude", "acceleration": "magnitude"}
 
+FLAGS_CHECKS = REPO / "results/tracking/checks.json"  # where the flags table's hash is recorded (key "flags")
+FLAG_NAMES = ("exit", "clipped", "sub_patch_motion", "frozen_start")
 
 def check_build() -> dict:
     """Build the splits from metadata and SEED, save them, and check the saved file.
@@ -118,9 +121,74 @@ def check_build() -> dict:
         "passed": all(criteria.values()) and all(all(c.values()) for c in dataset_criteria.values()),
     }
 
+def group_order(name: str) -> tuple[bool, float]:
+    """Velocity groups first, each motion type by magnitude."""
+    motion, magnitude, _ = name.split()
+    return motion != "velocity", float(magnitude)
+
+
+def check_balance() -> dict:
+    """Diagnostic: how design factors and audit flags spread over the roles. No pass/fail.
+
+    Reads the split file and the flags table through their recorded hashes. Per dataset and role:
+    clips per audit flag, and mean cos / sin of theta (the angle is a nuisance factor in the speed and
+    acceleration sets). Direction also: the motion group x octant table per role with its smallest and
+    largest cell, and for each seen role the fewest and most clips any seen angle has, and how many
+    seen angles have none.
+    """
+    rows = read_splits(verified_artifact(OUT, "build"))
+    with verified_artifact(FLAGS_CHECKS, "flags", "flags_table").open(newline="") as f:
+        flags = {(r["dataset"], int(r["id"])): r for r in csv.DictReader(f)}
+    metas = {(dataset, m["id"]): m for dataset in DATASETS for m in load_dataset(DATA, dataset)}
+    if set(flags) != set(metas) or {(r["dataset"], r["id"]) for r in rows} != set(metas):
+        raise RuntimeError("split file, flags table and metadata do not cover the same clips")
+
+    result: dict = {}
+    for dataset in DATASETS:
+        per_role = {}
+        for role in ROLES:
+            keys = [(dataset, r["id"]) for r in rows if r["dataset"] == dataset and r["role"] == role]
+            theta = np.deg2rad([metas[k]["theta_degrees"] for k in keys])
+            per_role[role] = {
+                "clips": len(keys),
+                "flags": {name: sum(flags[k][name] == "1" for k in keys) for name in FLAG_NAMES},
+                "mean_cos_theta": round(float(np.cos(theta).mean()), 4),
+                "mean_sin_theta": round(float(np.sin(theta).mean()), 4),
+            }
+        result[dataset] = {"per_role": per_role}
+
+    direction = [r for r in rows if r["dataset"] == "direction"]
+    groups = sorted({motion_group(metas[("direction", r["id"])]) for r in direction}, key=group_order)
+    tables = {}
+    for role in ROLES:
+        table = {g: [0] * 8 for g in groups}
+        for r in direction:
+            if r["role"] == role:
+                meta = metas[("direction", r["id"])]
+                table[motion_group(meta)][angle_octant(meta["theta_degrees"])] += 1
+        cells = [n for counts in table.values() for n in counts]
+        tables[role] = {
+            "clips_per_group": {g: sum(counts) for g, counts in table.items()},
+            "cell_min": min(cells),
+            "cell_max": max(cells),
+            "counts_per_group_by_octant": table,
+        }
+
+    seen_angles = sorted({r["value_index"] for r in direction if r["role"] in SEEN_ROLES})
+    per_angle = {}
+    for role in SEEN_ROLES:
+        per = Counter(r["value_index"] for r in direction if r["role"] == role)
+        counts = [per[v] for v in seen_angles]
+        per_angle[role] = {"min": min(counts), "max": max(counts), "angles_without_clips": sum(c == 0 for c in counts)}
+
+    result["direction"]["group_by_octant"] = tables
+    result["direction"]["clips_per_seen_angle"] = per_angle
+    return result
+
 
 CHECKS = {
     "build": check_build,
+    "balance": check_balance,
 }
 
 
