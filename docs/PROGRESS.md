@@ -74,7 +74,8 @@ byte-identical writes (F-77). **2.2b done:** `scripts/check_splits.py build` pas
 the planning chat (one seen direction angle without a test_seen clip; direction exit clips val_seen 8 vs test_seen 20).
 **2.4a done:** `src/vjepa_physics/extraction.py` (26 sites, per-time-step pooling; test clip within 5.3e-8 of a float64
 pool, repeat bit-exact, F-80). **2.4b done:** `scripts/check_extraction.py` committed, `pipeline` passed (F-81).
-**Next:** 2.5 full extraction (`extract_direction`, `extract_speed`, `extract_acceleration`).
+**2.5 done:** all 4,572 clips extracted, every criterion passed, test clip reproduced bit for bit, ~106 min (F-82).
+**Next:** 2.6 verify the extracted activations (seeded live re-extraction spot check).
 
 ---
 
@@ -180,6 +181,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/evidence/checks.json` | `rerun_identical` | All 21 audit keys re-run from clean HEAD `7869969`; every result identical to the committed one; flags table and PNGs unchanged | ✅ passed | F-74; `scripts/check_evidence.py rerun_identical` |
 | `results/splits/checks.json` + `artifacts/manifests/splits.csv` | `build` | Splits from metadata + seed 0 (D-38): every clip once, counts = D-38, unseen values as decided and absent from seen roles, 16/4/4 per seen value, speed = acceleration roles by id, rebuild byte-identical; file SHA-256 `bb64b6ae…` | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-78; `scripts/check_splits.py build` |
 | `results/extraction/checks.json` | `pipeline` | Test clip through the extraction code: (1, 26, 8, 1024) fp32, repeat bit-exact, 5.3e-8 vs float64 pool, weights unchanged; pooled SHA-256 `29997d28…` for the full run to reproduce | ✅ passed | F-81; `scripts/check_extraction.py pipeline` |
+| `results/extraction/checks.json` + `artifacts/activations/*.npy` | `extract_direction`, `extract_speed`, `extract_acceleration` | Pooled activations (clips, 26, 8, 1024) fp32 for all 4,572 clips; read-back = computed, finite, non-zero, distinct, weights unchanged, speed test clip = `pipeline`; SHA-256 direction `0d36d025…`, speed `0c57023e…`, acceleration `067aad46…` (git-ignored, verified) | ✅ passed | F-82; `scripts/check_extraction.py extract_<dataset>` |
 | `results/splits/checks.json` | `balance` | Flags, mean cos/sin θ per role; direction group × octant per role; clips per seen angle (test_seen: one angle with 0) | ℹ️ diagnostic | F-79; `scripts/check_splits.py balance` |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
@@ -270,7 +272,11 @@ what's next.
   **Step 2.4a done.**
 - 2.4b: `scripts/check_extraction.py` (`pipeline`, `extract_<dataset>`) committed before any run (D-41); `pipeline`
   passed, errors identical to the smoke test, pooled SHA-256 `29997d28…` recorded (F-81). **Step 2.4 done.**
-- **Next:** 2.5 full extraction.
+- 2.5: `extract_direction` / `extract_speed` / `extract_acceleration` all passed (31.8 / 36.0 / 38.3 min; median
+  1.25 → 1.55 s per clip, slowing under sustained load); file sizes as predicted; speed test clip = `pipeline`;
+  speed/acceleration id files identical (same ids, expected) (F-82). **Step 2.5 done.** Tip given: back up
+  `artifacts/activations/` (git-ignored; only recovery is a ~1 h 45 min re-extraction; hashes prove a restored copy).
+- **Next:** 2.6.
 
 ### 2026-09-24 — Phase 1 started (data audit)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (directly, after each step);
