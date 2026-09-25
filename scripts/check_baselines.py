@@ -284,6 +284,7 @@ def print_physics_ceiling(result: dict) -> None:
 
 
 CHECKS = {
+    "pixel_grams": (check_pixel_grams, print_pixel_grams),
     "pixel_floor": (check_pixel_floor, print_pixel_floor),
     "physics_ceiling": (check_physics_ceiling, print_physics_ceiling),
 }
