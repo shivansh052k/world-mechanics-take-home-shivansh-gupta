@@ -41,7 +41,7 @@ Last updated: 2026-09-24.
 - [x] **1.10 Flag problem clips** — Frame-exit, clipped, tiny-motion, and frozen-start clips, with counts and identifiers saved for later use.
 - [x] **1.11 Build contact sheets and audit figures** — Visual evidence for the presentation.
 - [x] **1.12 Compare results against DECISIONS.md and update it** — Confirm or correct every scouting fact (F-21–F-36) with full-data results; update status tags.
-- [ ] **1.13 Phase 1 report and gate** — Save the audit report and figures to `results/`, update `PROGRESS.md`, and confirm Phase 1 has passed.
+- [x] **1.13 Phase 1 report and gate** — *passed 2026-09-25: clean re-run of all 21 keys reproduced the committed results (`rerun_identical`); report `results/data_audit/report.md` (F-74).* — Save the audit report and figures to `results/`, update `PROGRESS.md`, and confirm Phase 1 has passed.
 
 ## Phase 2 — Splits and activation extraction
 **Goal:** Create fair train/validation/test splits and extract the model's activations for every clip.

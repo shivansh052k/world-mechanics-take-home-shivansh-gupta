@@ -1,6 +1,6 @@
 # CLAUDE.md — World Mechanics take-home (V-JEPA physics)
 
-Last updated: 2026-09-24. Read this fully at the start of every session.
+Last updated: 2026-09-25 (Phase 1 passed; next: step 2.1). Read this fully at the start of every session.
 
 ---
 

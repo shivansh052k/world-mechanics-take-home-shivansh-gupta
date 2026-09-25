@@ -1,6 +1,6 @@
 # PROGRESS.md — where we are right now
 
-Last updated: 2026-09-24.
+Last updated: 2026-09-25.
 
 This file is the live status tracker. Update it at the end of every phase (and any time work
 pauses mid-phase), so this chat, Claude Code, and any future session can pick up instantly
@@ -60,8 +60,10 @@ integrity criteria passed; flags table `results/tracking/clip_flags.csv` committ
 `src/vjepa_physics/plotting.py`; figures `results/videos/contact_sheet.png`, `results/design/design.png`,
 `results/tracking/tracking.png`, each reviewed and fixed (F-73). **1.12 done:** every scouting fact F-21–F-36 has a
 final status (summary under DECISIONS §1.3): 10 verified as stated, 4 verified with precision-level corrections, 2 partly
-verified, no material contradiction; D-14's counts confirmed. **Next: 1.13 (Phase 1 report and gate)** — waiting for the
-user's go.
+verified, no material contradiction; D-14's counts confirmed. **1.13 done — Phase 1 passed (2026-09-25):** clean re-run
+of all 21 audit keys reproduced every committed result (`rerun_identical`, F-74); report `results/data_audit/report.md`.
+**Next: Phase 2, step 2.1 (split details: O-01, O-02, O-03)** — to be settled with the planning chat; work paused here
+at the user's request.
 
 ---
 
@@ -70,7 +72,7 @@ user's go.
 | Phase | Status | Notes |
 |---|---|---|
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
-| 1 — Data audit | 🟨 In progress | 1.1–1.12 done (`documented_fields`, `documented_colour` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
+| 1 — Data audit | ✅ Passed gate | 1.1–1.13 done; report `results/data_audit/report.md`; clean re-run identical (`documented_fields`, `documented_colour` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
@@ -164,6 +166,8 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/videos/contact_sheet.png` + `checks.json` | `figure_contact_sheet` | 6 example clips (seeded picks from the flags table; exit = most residue, id 1152) with predicted/tracked centres and a residue column | ℹ️ visual (reviewed) | F-73; `scripts/check_videos.py figure_contact_sheet` |
 | `results/design/design.png` + `checks.json` | `figure_design` | Distance vs label (speed, acceleration) with overlap window; direction octant × group heatmap | ℹ️ visual (reviewed) | F-73; `scripts/check_design.py figure_design` |
 | `results/tracking/tracking.png` + `checks.json` | `figure_tracking` | Tracked-vs-predicted distance histograms (max ≤ 0.783 px); flag counts per dataset | ℹ️ visual (reviewed) | F-73; `scripts/check_tracking.py figure_tracking` |
+| `results/evidence/checks.json` | `rerun_identical` | All 21 audit keys re-run from clean HEAD `7869969`; every result identical to the committed one; flags table and PNGs unchanged | ✅ passed | F-74; `scripts/check_evidence.py rerun_identical` |
+| `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
@@ -180,6 +184,11 @@ crop of `frames.png` would read better (disk ≈ 21 px of 256).
 *(Anything stopping progress goes here, with enough context to resume without re-deriving it.)*
 
 No blockers.
+
+**Inputs for step 2.1 (planning chat):** D-14 counts confirmed (speed/acceleration 64 × 24; direction 36 × 23 + 28 × 24,
+the 24-clip angles are 0°–151.875°); O-02 exit (113) / clipped (199) clips, direction only, velocity 3–7 m/s plus 5 clips
+at 10 m/s², 149 exit frames with residue; O-03 `sub_patch_motion` and `frozen_start` are label-driven (a label range, not
+data quality); flags table `results/tracking/clip_flags.csv`; stratification cells 13–20 clips (F-63, F-72, D-36).
 
 Awaiting the planning chat (not blocking): DATA.md's "blue disk" is wrong — the disk is orange in every clip
 (`documented_colour` failed, kept on record, F-71).
@@ -265,7 +274,11 @@ what's next.
   in `clip_flags.csv` (Grep on the committed table); F-34's two threshold counts derived from the verified formula;
   unverified remnants recorded (F-34 "≤ 3 distinct positions", F-36 default-preprocessing counts); status tags in
   DECISIONS §1.3/§1.4 and CLAUDE.md §5 updated; D-14 annotated. **Step 1.12 done.**
-- **Next:** 1.13 (Phase 1 report and gate) — waiting for the user's go.
+- 1.13: `rerun_identical` added to `check_evidence.py` and committed before the re-run; all 21 keys re-run from clean
+  HEAD `7869969` (18 exit 0, the 3 recorded failures exit 1); `rerun_identical` passed (21 keys identical, outputs
+  unchanged); npz determinism confirmed from numpy/CPython source; report `results/data_audit/report.md` written by the
+  user from a Claude Code draft. **Step 1.13 done — Phase 1 passed.** Work paused at the user's request.
+- **Next:** Phase 2, step 2.1 — settle the split details with the planning chat (inputs listed under "Open issues").
 
 ### 2026-09-24 — Step 0.8d started in Claude Code
 - Claude Code permissions set: `Bash`, `NotebookEdit` denied; edits denied everywhere except `docs/` and
