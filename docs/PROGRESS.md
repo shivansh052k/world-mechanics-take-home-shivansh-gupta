@@ -113,8 +113,8 @@ time-averaged 0.20 / 0.23 / 0.16, all far below block_0 (F-97; supports H-07; H-
 **3.5b-2 done:** `check_layer_curves.py bootstrap` passed (F-101): transition index 1 in every resample, paired
 adjacent changes, direction with/without exit nearly identical.
 **3.6 done:** `results/layer_curves/layer_curves.png` reviewed and fixed (F-102).
-**Next:** commit + push; 3.7 (transition recorded from saved evidence; then `test_scores` once, from committed code);
-3.8 brief; gate.
+**3.7 done:** transition = index 1 (depth 1/24) for all three, robust; layer choices frozen (F-103).
+**Next:** `test_scores` once, from committed code (end of 3.2/3.5); 3.8 brief; gate.
 
 ---
 
@@ -338,7 +338,8 @@ what's next.
   saved), fixed; passed, predictions met (F-101). **Step 3.5 done (validation).**
 - 3.6: `figure_layer_curves` (dataviz method; project palette); Claude Code reviewed the PNG, found three defects
   (label collision, log ticks, spine colour), fixed, re-reviewed clean (F-102). **Step 3.6 done.**
-- **Next:** commit and push, then 3.7.
+- Committed and pushed (user said). 3.7 recorded from saved evidence (F-103); plan ticked. **Step 3.7 done.**
+- **Next:** `test_scores`.
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each

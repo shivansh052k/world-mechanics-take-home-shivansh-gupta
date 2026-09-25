@@ -16,7 +16,10 @@ from matplotlib.ticker import FuncFormatter, LogLocator, NullFormatter
 
 from vjepa_physics.curves import LATE_RISE_FRACTION, MIN_CLEAR_RISE, N_INDICES, TRANSITION_FRACTION, rise_index, transition_points
 from vjepa_physics.data import DATASETS
-from vjepa_physics.evidence import file_sha256, save_result, verified_artifact
+from vjepa_physics.baselines import kernel_ridge, physics_fit
+from vjepa_physics.data import load_dataset
+from vjepa_physics.evidence import code_changes, file_sha256, repo_root, save_result, verified_artifact
+from vjepa_physics.geometry import disk_centres
 from vjepa_physics.extraction import SITES
 from vjepa_physics.joined import load_joined
 from vjepa_physics.metrics import (
@@ -24,7 +27,7 @@ from vjepa_physics.metrics import (
     sincos_targets,
 )
 from vjepa_physics.plotting import AXIS, DATASET_COLOUR, INK, INK_MUTED, INK_SECONDARY, SURFACE, style_axes
-from vjepa_physics.probes import probe_targets
+from vjepa_physics.probes import fit_probe, probe_targets, site_features
 from vjepa_physics.reproducibility import SEED
 
 REPO = Path(__file__).resolve().parents[1]
@@ -45,6 +48,14 @@ REFERENCES = (
     ("floor time_average", "pixel floor, time-averaged", (0, (1, 3))),
     ("ceiling quadratic", "physics-fit ceiling", "-."),
 )
+
+DATA = REPO / "data"
+TEST_ROLES = ("test_seen", "test_unseen")
+TEST_PREDICTIONS = REPO / "artifacts/probes/test_predictions.npz"  # regenerable, git-ignored
+EXPECTED_FIT = {"direction": 813, "speed": 832, "acceleration": 832}  # train clips per variable (split decision)
+CEILING_OUTPUT = {"direction": "theta", "speed": "speed", "acceleration": "acceleration"}  # physics_fit key read
+EXACT_TOLERANCE = 1e-9  # physics fit on metadata-predicted positions must return the label within this
+N_REFITS = 3 * 26 + 3 * 2  # probe sites + pixel floors, all variables
 
 def error_name(variable: str) -> str:
     return "circular_mae" if variable == "direction" else "mae"
@@ -271,9 +282,147 @@ def print_figure_layer_curves(result: dict) -> None:
     print(json.dumps(result["figure"], indent=2))
 
 
+def check_test_scores() -> dict:
+    """Final test scores, computed once after the layer choices were frozen, from committed code.
+
+    Refits every probe (26 sites) and pixel floor on train exactly as before and requires the same alphas and
+    bit-identical validation predictions as the saved checks, so the test scores come from the fits behind the
+    curves; then predicts test_seen and test_unseen only. The physics-fit ceiling (nothing fitted) is estimated
+    on test rows. Scored like the bootstrap (10,000 clip resamples, seed SEED, percentile 95%, one index matrix
+    per variable x role x subset; direction also without exit clips; per-value errors on test_unseen). Writes
+    artifacts/probes/test_predictions.npz (NaN on non-test rows). Passes if: the code is committed; all 84 refits
+    match the saved alphas and validation predictions; every fit saw exactly the train clips; the ceiling fit is
+    exact on metadata positions of the test clips; only test rows were predicted; the saved file equals what was
+    computed.
+    """
+    committed = not code_changes(repo_root())
+    saved_predictions = load_npz(PROBES_CHECKS, "layer_curves")
+    saved_floor_predictions = load_npz(BASELINES_CHECKS, "pixel_floor")
+    saved_probes = json.loads(PROBES_CHECKS.read_text())["layer_curves"]["result"]
+    saved_baselines = json.loads(BASELINES_CHECKS.read_text())
+    saved_floor = saved_baselines["pixel_floor"]["result"]
+    saved_ceiling = saved_baselines["physics_ceiling"]["result"]
+    sites = [str(s) for s in saved_predictions["sites"]]
+
+    result: dict = {"n_resamples": N_RESAMPLES, "level": LEVEL, "seed": SEED}
+    arrays: dict[str, np.ndarray] = {"sites": np.array(sites)}
+    alpha_ok, validation_ok, fit_ok, exact_ok, rows_ok = [], [], [], [], []
+    for variable in DATASETS:
+        table = load_joined(variable)
+        labels, roles = table["label"], table["role"]
+        y = probe_targets(variable, labels)
+        validation = np.isin(roles, EVAL_ROLES)
+        test = np.isin(roles, TEST_ROLES)
+        methods: dict[str, np.ndarray] = {}
+
+        probe_test = np.full((len(y), len(sites), *y.shape[1:]), np.nan)
+        for k, site in enumerate(sites):
+            x = site_features(table["activations"], site)
+            probe = fit_probe(x, y, roles)
+            alpha_ok.append(probe.alpha == saved_probes[variable]["sites"][site]["alpha"])
+            fit_ok.append(probe.n_fit == EXPECTED_FIT[variable])
+            validation_ok.append(np.array_equal(probe.predict(x[validation]),
+                                                saved_predictions[f"{variable}_predictions"][validation, k]))
+            probe_test[test, k] = probe.predict(x[test])
+            methods[f"probe {site}"] = probe_test[:, k]
+        arrays[f"{variable}_probe_predictions"] = probe_test
+
+        for kind in saved_floor[variable]:
+            gram = np.load(verified_artifact(BASELINES_CHECKS, "pixel_grams", f"gram_{variable}_{kind}"))
+            again = kernel_ridge(gram, y, roles, validation)  # the saved fit, reproduced
+            validation_ok.append(np.array_equal(again.predictions[validation],
+                                                saved_floor_predictions[f"{variable}_{kind}_predictions"][validation]))
+            fit = kernel_ridge(gram, y, roles, test)
+            alpha_ok.append(fit.alpha == again.alpha == saved_floor[variable][kind]["alpha"])
+            fit_ok.append(fit.n_fit == EXPECTED_FIT[variable])
+            methods[f"floor {kind}"] = fit.predictions
+            arrays[f"{variable}_floor_{kind}_predictions"] = fit.predictions
+
+        meta = {m["id"]: m for m in load_dataset(DATA, variable)}
+        visible = (table["area"] > 0) & ~table["touches_border"]
+        output = CEILING_OUTPUT[variable]
+        for model in saved_ceiling[variable]:
+            estimates = np.full(len(roles), np.nan)
+            exact = np.full(len(roles), np.nan)
+            for k in np.flatnonzero(test):
+                estimates[k] = physics_fit(table["centre"][k], visible[k], model)[output]
+                all_frames = np.ones(len(visible[k]), dtype=bool)
+                exact[k] = physics_fit(disk_centres(meta[int(table["id"][k])]), all_frames, model)[output]
+            if variable == "direction":
+                exact_ok.append(float(circular_errors(labels[test], exact[test]).max()) <= EXACT_TOLERANCE)
+                methods[f"ceiling {model}"] = sincos_targets(estimates)
+            else:
+                exact_ok.append(float(np.abs(exact[test] - labels[test]).max()) <= EXACT_TOLERANCE)
+                methods[f"ceiling {model}"] = estimates
+            arrays[f"{variable}_ceiling_{model}_estimates"] = estimates
+        arrays[f"{variable}_ids"] = table["id"]
+        arrays[f"{variable}_roles"] = roles
+        rows_ok.append(all(np.isfinite(p[test]).all() and np.isnan(p[~test]).all() for p in methods.values()))
+
+        subsets = {"all": np.ones(len(roles), dtype=bool)}
+        if variable == "direction":
+            subsets["without_exit"] = ~table["exit"]
+        per_role = {}
+        for role in TEST_ROLES:
+            per_subset = {}
+            for subset, keep in subsets.items():
+                rows = (roles == role) & keep
+                idx = bootstrap_indices(int(rows.sum()), N_RESAMPLES, SEED)
+                scored = {name: resampled_scores(variable, labels[rows], pred[rows], idx) for name, pred in methods.items()}
+                entry: dict = {"clips": int(rows.sum()), "methods": {name: summary(s) for name, s in scored.items()}}
+                if role == "test_unseen" and subset == "all":
+                    entry["per_value_error"] = {
+                        f"{value:.6g}": {name: float(clip_errors(variable, labels[rows & (labels == value)],
+                                                                 pred[rows & (labels == value)]).mean())
+                                         for name, pred in methods.items()}
+                        for value in np.unique(labels[rows])
+                    }
+                per_subset[subset] = entry
+            per_role[role] = per_subset
+        result[variable] = per_role
+
+    np.savez_compressed(TEST_PREDICTIONS, **arrays)
+    with np.load(TEST_PREDICTIONS) as saved:
+        saved_ok = set(saved.files) == set(arrays) and all(
+            np.array_equal(saved[key], value, equal_nan=value.dtype.kind == "f") for key, value in arrays.items()
+        )
+    criteria = {
+        "code_committed": committed,
+        "refit_alphas_equal_saved": len(alpha_ok) == N_REFITS and all(alpha_ok),
+        "refit_validation_predictions_identical": len(validation_ok) == N_REFITS and all(validation_ok),
+        "n_fit_equals_train_count": all(fit_ok),
+        "ceiling_exact_on_metadata_positions": bool(exact_ok) and all(exact_ok),
+        "only_test_rows_predicted": all(rows_ok),
+        "saved_equals_computed": saved_ok,
+    }
+    return {"criteria": criteria, **result,
+            "artifact": {"path": str(TEST_PREDICTIONS.relative_to(REPO)), "sha256": file_sha256(TEST_PREDICTIONS)},
+            "passed": all(criteria.values())}
+
+
+def print_test_scores(result: dict) -> None:
+    """Per variable, role and subset: selected layers, final norm, floors and ceilings with intervals."""
+    for variable in DATASETS:
+        other = error_name(variable)
+        print(f"\n{variable}")
+        for role, per_subset in result[variable].items():
+            for subset, entry in per_subset.items():
+                print(f"  {role} / {subset} ({entry['clips']} clips)")
+                probes = [name for name in entry["methods"] if name.startswith("probe")]
+                shown = [probes[i] for i in SHOWN_INDICES] + ["probe final_norm"]
+                shown += [m for m in entry["methods"] if not m.startswith("probe")]
+                for name in shown:
+                    m = entry["methods"][name]
+                    print(f"    {name:22s} R2 {m['r2']['point']:7.4f} [{m['r2']['ci'][0]:7.4f}, {m['r2']['ci'][1]:7.4f}]"
+                          f"  {other} {m[other]['point']:8.4f} [{m[other]['ci'][0]:8.4f}, {m[other]['ci'][1]:8.4f}]")
+    print(json.dumps({"criteria": result["criteria"], "artifact": result["artifact"]}, indent=2))
+
+
+
 CHECKS = {
     "bootstrap": (check_bootstrap, print_bootstrap),
     "figure_layer_curves": (check_figure_layer_curves, print_figure_layer_curves),
+    "test_scores": (check_test_scores, print_test_scores),
 }
 
 
