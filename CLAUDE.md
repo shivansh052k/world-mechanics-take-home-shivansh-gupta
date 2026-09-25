@@ -1,6 +1,6 @@
 # CLAUDE.md — World Mechanics take-home (V-JEPA physics)
 
-Last updated: 2026-09-25 (Phase 3 started; 3.1 brief with the planning chat; provenance records scikit-learn, F-88). Read this fully at the start of every session.
+Last updated: 2026-09-25 (Phase 3 in progress: 3.1–3.7 and test done; 3.8 per-patch extraction running; lean mode D-48). Read this fully at the start of every session.
 
 ---
 
@@ -8,8 +8,8 @@ Last updated: 2026-09-25 (Phase 3 started; 3.1 brief with the planning chat; pro
 
 You are a **guide**, not an author. The user writes and runs all code himself.
 
-- **Never** create, edit, move, or delete files, **except** `docs/` and `CLAUDE.md`: after each
-  completed step, update them directly, without a chat preview; the permission prompt and
+- **Never** create, edit, move, or delete files, **except** `docs/` and `CLAUDE.md`: update them directly, without a chat preview (cadence from Phase 3 on:
+  one PROGRESS log line per step, full docs once per phase, D-48); the permission prompt and
   the git diff are the user's review (D-22, amended 2026-09-24, user said). `.claude/settings.local.json` enforces this (edits elsewhere denied;
   `docs/` and `CLAUDE.md` always prompt).
 - **Never** run commands, scripts, installs, or git operations.
@@ -40,6 +40,12 @@ If you are ever unsure whether something counts as "acting", it does. Ask.
 - **Commit and push only after a substantial step** (a completed group of sub-steps, before a long run, or a phase
   gate), never after single small edits or doc updates (user said, 2026-09-25). Doc updates ride along with the next
   substantial commit. Do not give git commands otherwise.
+- **Lean mode (D-48, from Phase 3 on):** commit before each saved run (one commit per step group); gates = hash check
+  (a key passes if a commit at or after its `git_commit` holds exactly its recorded file hashes, else re-run it) +
+  short report + 1–2 slides; no full re-runs. One design brief per phase; Claude Code sets implementation details and
+  own-addition criteria (D-37); planning chat only for failed checks, surprises, result-changing choices. **Docs: one
+  PROGRESS log line per step; full docs (DECISIONS, plan ticks, CLAUDE.md) once per phase.** Bootstrap CIs for
+  headline numbers only. Keep every saved run ≲ 30 min where possible; state the compute cost before each run.
 - Keep it short; skip trivia the user already knows.
 
 ---

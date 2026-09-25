@@ -1,6 +1,7 @@
 # EXECUTION_PLAN.md
 
-Last updated: 2026-09-24.
+Last updated: 2026-09-25. **Lean mode from Phase 3 on (D-48):** gates = commit + hash check + short report + slides;
+commit before each saved run; no full re-runs; one design brief per phase; step changes marked below.
 
 ---
 
@@ -67,15 +68,15 @@ Last updated: 2026-09-24.
 - [x] **3.6 Plot probe performance vs. layer** — *done 2026-09-25: `results/layer_curves/layer_curves.png` (F-102).* — For all three variables, matching the paper's presentation style.
 - [x] **3.7 Identify and document the emergence transition** — *done 2026-09-25: index 1 (depth 1/24) for all three by D-43's rule, robust over 10,000 resamples; consistent with the paper's mean-pooled probes (F-103, F-93).* — From the val-seen curve, where each variable becomes reliably readable, reported both as a raw layer index and as a fraction of total depth, for direct comparison with the paper's "one-third" finding.
 - [ ] **3.8 Direction local-to-global test** — **Repurposed (D-46), design revised to per-patch (D-47):** time-averaged per-patch activations (1500, 25, 256, 1024) for direction clips; per-patch probes with heatmaps and on/off-path breakdown; half-frame spatial generalization with clip-grouped CV; test once after the findings, mirroring the paper's Fig. 18. Original wording: — Attentive-MLP probes as a complement to the mean-pooled probes, if time allows.
-- [ ] **3.9 Phase 3 report and gate** — Save the report and figures to `results/`, update `PROGRESS.md`, and confirm Phase 3 has passed.
+- [ ] **3.9 Phase 3 report and gate** — *D-48: hash-check gate (re-run `pixel_grams` → `pixel_floor` → `shuffled_labels` → `bootstrap`, which must reproduce the saved numbers), short report, 1–2 slides.* — Save the report and figures to `results/`, update `PROGRESS.md`, and confirm Phase 3 has passed.
 
 ## Phase 4 — Part 1b: Iterative nullspace probing
 **Goal:** Measure how many dimensions each variable uses and how redundantly it is stored.
 
-- [ ] **4.1 Select the layer(s)** — Settle O-15: choose 2–3 layers spanning before, at, and after the emergence transition found in Phase 3, so dimensionality can be compared across depth (matching the paper's by-layer figure), with reasoning documented.
-- [ ] **4.2 Decide and document our own stopping criteria** — A shuffled-label null: fit probes on train with permuted labels (~100 permutations) and score them on **val-seen** (not test); stop when the real val-seen score falls inside the null's 95th percentile. Report the paper's inconsistent thresholds (P-01) alongside, for comparison.
+- [ ] **4.1 Select the layer(s)** — *D-48: idx 1, the 3.8 transition (else ~idx 9), the plateau (~idx 18), fixed in the Phase 4 brief.* — Settle O-15: choose 2–3 layers spanning before, at, and after the emergence transition found in Phase 3, so dimensionality can be compared across depth (matching the paper's by-layer figure), with reasoning documented.
+- [ ] **4.2 Decide and document our own stopping criteria** — *Changed by D-48: stop at val-seen R² < 0.1 (3.3's measured null), cap 150 rounds; no per-round permutation null; the paper's thresholds read off the same curve.* Original wording: — A shuffled-label null: fit probes on train with permuted labels (~100 permutations) and score them on **val-seen** (not test); stop when the real val-seen score falls inside the null's 95th percentile. Report the paper's inconsistent thresholds (P-01) alongside, for comparison.
 - [ ] **4.3 Run iterative nullspace probing** — For all three variables, at the selected layer(s). Each round's probe is fit on **train** (alpha by leave-one-out inside train, D-15); the stopping criterion (4.2) is checked on **val-seen**. Test is not touched anywhere in this iterative process.
-- [ ] **4.4 Random-direction control** — Compare against removing random subspaces of the same size at each round, to confirm the probe's subspace matters more than its size alone.
+- [ ] **4.4 Random-direction control** — *D-48: 5 seeds; projections in the train-standardized space.* — Compare against removing random subspaces of the same size at each round, to confirm the probe's subspace matters more than its size alone.
 - [ ] **4.5 Plot performance-vs-rounds curves** — For all three variables: the val-seen curve (used for stopping) and the **frozen** probe sequence run once on test (the reported figure).
 - [ ] **4.6 Document dimensionality and redundancy findings** — Per variable: K chosen on val-seen, plus where the test curve crosses the same threshold; in a form precise enough to compare against Phase 6's spline dimensionality (for H-01).
 - [ ] **4.7 Save probe subspace artifacts** — Persist each probe's weights Wₖ **and** the projection matrices, so each probe's composite map in raw activation space (Wₖ applied after projections 1…k−1) can be rebuilt; Phase 5's multi-probe steering reuses exactly these, not a re-derived version.
@@ -84,7 +85,7 @@ Last updated: 2026-09-24.
 ## Phase 5 — Part 1c: Multi-probe subspace steering
 **Goal:** Reproduce the paper's steering experiment and evaluate it on held-out data.
 
-- [ ] **5.1 Select the steering layer** — Settle O-16: choose one specific layer to steer at (from Phase 4's candidates, or a new choice with reasoning based on train/validation results only — test never informs it), since Phase 4 selects several layers for the dimensionality curve but steering needs exactly one.
+- [ ] **5.1 Select the steering layer** — *D-48: the middle Phase 4 layer; fallback idx 9. 5.1, 5.2 and 5.4 share one brief; 5.6–5.8 run as one (probe counts 1 / K/2 / K + random baseline; 15 test-seen + 15 test-unseen clips per variable; 5 targets; steering-layer cache, partial forward to the readout layer after a zero-edit correctness check).* — Settle O-16: choose one specific layer to steer at (from Phase 4's candidates, or a new choice with reasoning based on train/validation results only — test never informs it), since Phase 4 selects several layers for the dimensionality curve but steering needs exactly one.
 - [ ] **5.2 Decide and document the steering-evaluation readout** — Settle what remains of O-07 within D-30: the primary readout is a probe at a later encoder layer on the full clip (choose which layer, with reasoning, from train/validation only); the predictor-based readout is an optional extension; a same-layer readout is only a labeled control. The readout probe is fit on **validation** (D-16); a same-layer readout carries D-16's caveat.
 - [ ] **5.3 Decide and document the token-mapping method** — Settle O-08: how a pooled-space edit is applied across all 2,048 tokens.
 - [ ] **5.4 Decide and document the held-out steering protocol** — Settle what remains of O-10 within D-14/D-16: steered clips come only from **test** (test-seen and test-unseen, never used for probe fitting or layer selection); target values include the test-unseen values; report the two groups separately. Unlike Phase 3/4's selection decisions, this is the intended, final use of test.
@@ -102,14 +103,14 @@ Last updated: 2026-09-24.
 - [ ] **6.1 Decide and document the layer(s)** — Match Phase 5's layer choice (step 5.1) where possible, for a fair comparison.
 - [ ] **6.2 Decide and document activation-manifold construction** — Settle O-09: exact vs. smoothing, PCA dimensions, parameterization, and a periodic curve for direction. PCA is fit on train only; smoothing and PCA dimension are chosen by leave-one-centroid-out within train values, with val-unseen centroids as confirmation (D-15).
 - [ ] **6.3 Fit activation manifolds** — For direction, speed, and acceleration, using only training data (never the held-out test split).
-- [ ] **6.4 Decide and document behavior-manifold construction and the naturalness metric** — Settle what remains of O-11 within D-17: the behavior readout sits at the readout location downstream of the steering layer (not a same-layer softmax over the activation centroids); choose its form and temperature and the off-manifold distance metric.
+- [ ] **6.4 Decide and document behavior-manifold construction and the naturalness metric** — *D-48: 16-bin multinomial logistic readout fit on validation at the readout layer; spline through √p centroids from train clips; naturalness = Hellinger distance of the steered readout distribution to the behavior manifold, for both methods (F-106).* — Settle what remains of O-11 within D-17: the behavior readout sits at the readout location downstream of the steering layer (not a same-layer softmax over the activation centroids); choose its form and temperature and the off-manifold distance metric.
 - [ ] **6.5 Fit behavior manifolds** — The counterpart to step 6.3, in behavior space: on train, at the readout location (D-17).
 - [ ] **6.6 Isometry validation** — Correlate activation-manifold and behavior-manifold distances; compare against straight-line distances. The downstream version (D-17) is the evidence; the same-layer softmax-over-centroids version is reported only as a labeled by-construction control (P-10). This is one of the paper's two headline results.
 - [ ] **6.7 Visualize the fitted manifolds** — As the README explicitly asks for.
 - [ ] **6.8 Implement spline steering** — Reusing Phase 5's readout and token-mapping methods, for consistency.
 - [ ] **6.9 Run spline steering experiments** — Using the same held-out protocol as Phase 5, across a range of target values.
-- [ ] **6.10 (Optional) Pullback / bidirectional check** — Optimize an activation path to match a target behavior path, and check whether it naturally traces the fitted manifold (the paper's other headline result; App. A.8–A.9).
-- [ ] **6.11 (Optional, ambitious) 2D joint manifold and factored-control test** — Fit a joint (speed × direction) or (acceleration × direction) manifold, using data we already have (every clip has a unique pair, F-23), and test whether steering one axis leaves the other undisturbed (the paper's most advanced result, §4).
+- [x] **6.10 (Optional) Pullback / bidirectional check** — **Skipped (D-48):** future-work line in the talk. — Optimize an activation path to match a target behavior path, and check whether it naturally traces the fitted manifold (the paper's other headline result; App. A.8–A.9).
+- [x] **6.11 (Optional, ambitious) 2D joint manifold and factored-control test** — **Skipped (D-48):** future-work line in the talk. — Fit a joint (speed × direction) or (acceleration × direction) manifold, using data we already have (every clip has a unique pair, F-23), and test whether steering one axis leaves the other undisturbed (the paper's most advanced result, §4).
 - [ ] **6.12 Test H-01** — Compare the spline's effective dimensionality against Phase 4's nullspace dimensionality.
 - [ ] **6.13 Test H-02** — Harmonic analysis of direction's sawtooth pattern.
 - [ ] **6.14 Compare spline steering against Phase 5's multi-probe steering** — Side by side, on the same clips and targets, scored under the **same metrics for both** (readout error and naturalness), not just readout error for one and naturalness for the other.
@@ -122,7 +123,7 @@ Last updated: 2026-09-24.
 
 - [ ] **7.1 Run O-12's confound controls** — Velocity-vs-acceleration classifier at matched distance; speed probe applied to acceleration clips; a direct displacement probe as a comparison ceiling. Resolves H-03.
 - [ ] **7.2 Motion-type generalization check for direction** — Train on train-split clips of one motion type, evaluate on test-split clips of the other, and vice versa (unique to our direction dataset's design).
-- [ ] **7.3 Error breakdown by Phase 1's flags** — For both probing (Phase 3/4) and steering (Phase 5/6) results, broken down by exit/clipped, tiny-motion, and frozen-start clips. Resolves H-04.
+- [ ] **7.3 Error breakdown by Phase 1's flags** — *D-48: merged with 7.4 (breakdown by flag + one per-tubelet scatter); no new forward passes in Phase 7; 7.5 uses the Phase 5 runs; 7.6 folded into the reports.* — For both probing (Phase 3/4) and steering (Phase 5/6) results, broken down by exit/clipped, tiny-motion, and frozen-start clips. Resolves H-04.
 - [ ] **7.4 Per-tubelet motion analysis** — Correlate per-clip error against how far the disk actually moves within one 2-frame tubelet; check whether "acceleration" readout is really a continuous magnitude or just a binary moved/didn't-move detector. Resolves H-05.
 - [ ] **7.5 Cross-variable subspace overlap and steering specificity** — Principal-angle overlap between the speed, acceleration, and direction probe subspaces (matching the paper's App. C.4 method); then a causal check: does steering one variable move the readout of the others?
 - [ ] **7.6 Update Phase 5's and Phase 6's limitation write-ups** — With these findings.
@@ -132,15 +133,15 @@ Last updated: 2026-09-24.
 **Goal:** Build the presentation, clean up the code, and verify everything reproduces from scratch.
 
 - [ ] **8.1 Final data-integrity check** — Re-verify the Phase 0 fingerprint after the full pipeline has run.
-- [ ] **8.2 Decide and document the presentation medium** — Settle O-17.
-- [ ] **8.3 Outline the presentation** — Against the README's exact requested content: methods, results, interpretations, comparisons, limitations.
+- [ ] **8.2 Decide and document the presentation medium** — *D-48: slides exported as PDF (closes O-17).* Settle O-17.
+- [ ] **8.3 Outline the presentation** — *D-48: drafted now, updated per phase; slide log under `results/`.* — Against the README's exact requested content: methods, results, interpretations, comparisons, limitations.
 - [ ] **8.4 Build the presentation.**
-- [ ] **8.5 Build a lightweight results notebook** — Loads saved artifacts and reproduces the key figures, so no one needs to rerun the full pipeline to see them.
+- [ ] **8.5 Build a lightweight results notebook** — *D-48: replaced by the existing figure checks (every figure regenerates from saved results).* — Loads saved artifacts and reproduces the key figures, so no one needs to rerun the full pipeline to see them.
 - [ ] **8.6 Code cleanup** — Remove dead/debug code, add docstrings, consistent style.
 - [ ] **8.7 Write a project-level README for the code** — Headed with the full title (D-18); decide how it coexists with the supplied task `README.md` at the root.
-- [ ] **8.8 Verify reproducibility** — Decide: full rerun vs. a scoped from-scratch smoke test, given compute limits.
+- [x] **8.8 Verify reproducibility** — **Skipped (D-48):** no full re-run; a "how to reproduce" section in the code README (8.7) instead. — Decide: full rerun vs. a scoped from-scratch smoke test, given compute limits.
 - [ ] **8.9 Requirements-compliance checklist** — Map F-01 through F-09 to exactly where each is addressed, to catch any accidental omission.
-- [ ] **8.10 Decide what's in the code submission** — Likely `src/` + `scripts/` + a small subset of `results/`, excluding bulky `artifacts/`; decide the delivery method (attachment, or a link such as inviting the reviewer to the private repo, D-18).
+- [ ] **8.10 Decide what's in the code submission** — *D-48: private repo invite + zip of `src/`, `scripts/`, `results/`.* — Likely `src/` + `scripts/` + a small subset of `results/`, excluding bulky `artifacts/`; decide the delivery method (attachment, or a link such as inviting the reviewer to the private repo, D-18).
 - [ ] **8.11 Prepare to defend every decision** — Review `DECISIONS.md` and walk through the key code (probes, nullspace, steering, splines) so every choice and every line can be explained.
 - [ ] **8.12 Prepare likely follow-up questions and answers** — Using `DECISIONS.md`'s paper notes (P-01–P-13) and open decisions as source material, since the README says the talk is "the basis for an open discussion."
 - [ ] **8.13 Rehearse and time the talk.**

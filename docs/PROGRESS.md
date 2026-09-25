@@ -116,7 +116,11 @@ adjacent changes, direction with/without exit nearly identical.
 **3.7 done:** transition = index 1 (depth 1/24) for all three, robust; layer choices frozen (F-103).
 **Test scores done (once, committed code):** all criteria passed; test agrees with validation (F-104). 3.2 ticked.
 **3.8 design settled (D-47, per-patch).** **3.8a done:** `pool_patches`, `patch_activations` (F-105).
-**Next:** 3.8b per-patch extraction check (~39 GB, commit first); 3.8c–e analyses; test once; gate 3.9.
+**Lean mode adopted (D-48):** hash-check gates, commit before each saved run, no full re-runs, docs once per phase
+(one log line per step), Phase 4–8 designs and cuts fixed; Goodfire quotations F-106.
+**Now:** 3.8b per-patch `extract_direction` running. **Next:** `verify`; 3.8c per-patch probes (save fitted probes),
+on/off-path, 3.8e spatial generalization; test once; 3.9 gate (four re-runs: `pixel_grams` → `pixel_floor` →
+`shuffled_labels` → `bootstrap`); talk outline (8.3).
 
 ---
 
@@ -346,7 +350,10 @@ what's next.
   scores checked and explained. **Step 3.2 done (test).**
 - 3.8 brief sent; planning chat revised the design to per-patch (D-47); H-08b closed as an observation.
 - 3.8a: per-patch pooling in `extraction.py`; smoke test as predicted (F-105). **Step 3.8a done.**
-- **Next:** 3.8b.
+- 3.8b: `scripts/check_patches.py` given; `extract_direction` started (~40 min).
+- Lean-mode review: Claude Code found the literal hash rule would fail every key; precise rule, Phase 5 clip counts,
+  fallback layer, centroid clips, Phase 8 list and doc cadence settled with the planning chat (D-48, F-106).
+- **Next:** `verify`, then 3.8c.
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each
