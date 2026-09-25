@@ -321,7 +321,6 @@ CHECKS = {
     "rerun_identical_splits_extraction": check_rerun_identical_splits_extraction,
     "code_hash_check": check_code_hash_check,
 }
-}
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
