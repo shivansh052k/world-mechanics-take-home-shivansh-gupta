@@ -1,0 +1,166 @@
+{
+  "build": {
+    "provenance": {
+      "utc": "2026-09-25T04:58:48+00:00",
+      "git_commit": "e67bbe2dbf37f699f831eb6295a65df4d18c6502",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        "?? scripts/check_splits.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "066f2c8d8c18f78ad15b7c8facc6f97037e13cc4fa3eee0a2da94a233affb104",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "dc98690f3728587a7fff205b75f8c91db1eee154bc635d95fe6f64dfe1d229bd",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_splits.py": "79d106ee013e9f3438c07d5c372ca5300c40004c785f8cdddc2e6ef1f874e5f9"
+        },
+        "combined_sha256": "868a925d818ce6d21cda02e4e0ce1d968b084e54941182761a48eda312946290"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "criteria": {
+        "every_clip_exactly_once": true,
+        "labels_match_metadata": true,
+        "speed_acceleration_same_roles": true,
+        "rebuild_byte_identical": true
+      },
+      "seed": 0,
+      "per_dataset": {
+        "direction": {
+          "criteria": {
+            "value_index_follows_label": true,
+            "counts_match": true,
+            "unseen_values_as_decided": true,
+            "no_held_out_value_in_seen_roles": true
+          },
+          "counts": {
+            "train": 813,
+            "val_seen": 203,
+            "val_unseen": 94,
+            "test_seen": 203,
+            "test_unseen": 187
+          },
+          "seen_values": 52,
+          "held_out_labels": {
+            "val_unseen": [
+              11.25,
+              101.25,
+              191.25,
+              281.25
+            ],
+            "test_unseen": [
+              39.375,
+              73.125,
+              129.375,
+              163.125,
+              219.375,
+              253.125,
+              309.375,
+              343.125
+            ]
+          }
+        },
+        "speed": {
+          "criteria": {
+            "value_index_follows_label": true,
+            "counts_match": true,
+            "unseen_values_as_decided": true,
+            "no_held_out_value_in_seen_roles": true,
+            "sixteen_four_four_per_seen_value": true
+          },
+          "counts": {
+            "train": 832,
+            "val_seen": 208,
+            "val_unseen": 96,
+            "test_seen": 208,
+            "test_unseen": 192
+          },
+          "seen_values": 52,
+          "held_out_labels": {
+            "val_unseen": [
+              0.7857142857142857,
+              1.6785714285714284,
+              2.571428571428571,
+              3.464285714285714
+            ],
+            "test_unseen": [
+              0.4880952380952381,
+              1.0833333333333333,
+              1.380952380952381,
+              1.976190476190476,
+              2.2738095238095237,
+              2.869047619047619,
+              3.1666666666666665,
+              3.761904761904762
+            ]
+          }
+        },
+        "acceleration": {
+          "criteria": {
+            "value_index_follows_label": true,
+            "counts_match": true,
+            "unseen_values_as_decided": true,
+            "no_held_out_value_in_seen_roles": true,
+            "sixteen_four_four_per_seen_value": true
+          },
+          "counts": {
+            "train": 832,
+            "val_seen": 208,
+            "val_unseen": 96,
+            "test_seen": 208,
+            "test_unseen": 192
+          },
+          "seen_values": 52,
+          "held_out_labels": {
+            "val_unseen": [
+              1.6428571428571428,
+              3.9642857142857144,
+              6.285714285714286,
+              8.607142857142858
+            ],
+            "test_unseen": [
+              0.8690476190476191,
+              2.416666666666667,
+              3.1904761904761907,
+              4.738095238095238,
+              5.511904761904762,
+              7.05952380952381,
+              7.833333333333334,
+              9.380952380952381
+            ]
+          }
+        }
+      },
+      "artifact": {
+        "path": "artifacts/manifests/splits.csv",
+        "rows": 4572,
+        "sha256": "bb64b6aeda7522a3b9bcba392170e49b8869d63705a8f7fd4e76c7bc54f532c4"
+      },
+      "passed": true
+    }
+  }
+}
