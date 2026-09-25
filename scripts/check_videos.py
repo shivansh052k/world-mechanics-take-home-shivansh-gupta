@@ -13,10 +13,14 @@ import re
 from collections import Counter, defaultdict
 from fractions import Fraction
 from pathlib import Path
+from matplotlib.figure import Figure
 
 import numpy as np
 
 from vjepa_physics.data import DATASETS, load_dataset, read_manifest, resolve
+from vjepa_physics.plotting import INK, INK_SECONDARY
+from vjepa_physics.reproducibility import SEED
+from vjepa_physics.tracking import track_disk
 from vjepa_physics.decoders import compare_decoders, load_clip_opencv
 from vjepa_physics.evidence import file_sha256, save_result
 from vjepa_physics.geometry import disk_centres, distance_outside_image
@@ -50,6 +54,14 @@ TEST_CLIP_SHA256 = "03285f4cf9ffc6ecf90541b47e7f08c217eab4e4809d42f7042baf29ab9d
 
 # Per-clip PyAV vs OpenCV statistics (regenerable, git-ignored).
 DECODER_ARTIFACT = REPO / "artifacts/videos/decoder_comparison.csv"
+
+# Contact sheet: example clips chosen from the committed flags table by a seeded rule.
+FLAGS_TABLE = REPO / "results/tracking/clip_flags.csv"
+CONTACT_SHEET = REPO / "results/videos/contact_sheet.png"
+SHOWN_FRAMES = (0, 3, 6, 9, 12, 15)
+RESIDUE_GAIN = 8  # last column: |frame 15 - background| x 8, so faint codec residue becomes visible
+FLAG_NAMES = ("exit", "clipped", "sub_patch_motion", "frozen_start")
+FROZEN_EXAMPLE_MIN_STILL = 8  # the frozen-start example is still for at least this many frames
 
 
 def sample(items) -> dict:
@@ -397,11 +409,124 @@ def check_decoders() -> dict:
         "passed": all(criteria.values()),
     }
 
+def load_flags() -> dict[tuple[str, int], dict]:
+    """The committed flags table, keyed by (dataset, id); values as read from the CSV (strings)."""
+    with FLAGS_TABLE.open(newline="") as f:
+        return {(row["dataset"], int(row["id"])): row for row in csv.DictReader(f)}
+
+
+def pick_examples() -> list[dict]:
+    """The contact sheet's six clips, chosen by a fixed rule with one seeded generator."""
+    flags = load_flags()
+    motion = {meta["id"]: meta["motion"] for meta in load_dataset(DATA, "direction")}
+    rng = np.random.default_rng(SEED)
+
+    def unflagged(row: dict) -> bool:
+        return all(row[name] == "0" for name in FLAG_NAMES)
+
+    pools = [
+        ("speed, no flag", [k for k, r in flags.items() if k[0] == "speed" and unflagged(r)]),
+        ("acceleration, no flag", [k for k, r in flags.items() if k[0] == "acceleration" and unflagged(r)]),
+        ("direction, velocity, no flag",
+         [k for k, r in flags.items() if k[0] == "direction" and unflagged(r) and motion[k[1]] == "velocity"]),
+        ("clipped, no exit", [k for k, r in flags.items() if r["clipped"] == "1" and r["exit"] == "0"]),
+        (f"frozen start (still >= {FROZEN_EXAMPLE_MIN_STILL} frames)",
+         [k for k, r in flags.items() if r["frozen_start"] == "1" and int(r["still_frames"]) >= FROZEN_EXAMPLE_MIN_STILL]),
+    ]
+    examples = []
+    for title, pool in pools:
+        if not pool:
+            raise RuntimeError(f"no clip qualifies for '{title}'")
+        pool = sorted(pool)
+        examples.append({"title": title, "clip": pool[int(rng.integers(len(pool)))], "pool": len(pool)})
+
+    exits = sorted(k for k, r in flags.items() if r["exit"] == "1")
+    paths = {dataset: dict(clip_paths(dataset)) for dataset in DATASETS}
+    residue = {
+        key: int((load_clip(paths[key[0]][key[1]])[-1] != BACKGROUND).any(axis=-1).sum()) for key in exits
+    }
+    key = max(exits, key=lambda k: (residue[k], -k[1]))  # most residue; ties -> smallest id
+    if residue[key] == 0:
+        raise RuntimeError("no exit clip keeps residue in its last frame")
+    examples.insert(4, {"title": f"exit, most residue ({residue[key]} px) in last frame", "clip": key, "pool": len(exits)})
+    return examples
+
+
+def describe(dataset: str, meta: dict) -> str:
+    """Short label text for a clip: its label and motion."""
+    if dataset == "speed":
+        return f"speed {meta['magnitude']:.2f} m/s"
+    if dataset == "acceleration":
+        return f"acceleration {meta['magnitude']:.2f} m/s²"
+    magnitude = f"{meta['speed_mps']:g} m/s" if meta["motion"] == "velocity" else f"{meta['acceleration_mps2']:g} m/s²"
+    return f"θ {meta['theta_degrees']:g}°, {meta['motion']} {magnitude}"
+
+
+def check_figure_contact_sheet() -> dict:
+    """Visual evidence: six example clips at frames 0, 3, ..., 15, with predicted (+) and tracked (x) centres.
+
+    Rows: a speed, an acceleration and a direction velocity clip without flags; a clipped clip; an
+    exit clip whose last frame keeps residue; a frozen-start clip — chosen from the committed flags
+    table by a seeded rule (see pick_examples). Last column: |frame 15 - background| x RESIDUE_GAIN.
+    Predicted = metadata through the pixel mapping; tracked = mask centroid. No pass/fail.
+    """
+    examples = pick_examples()
+    metas = {dataset: {m["id"]: m for m in load_dataset(DATA, dataset)} for dataset in DATASETS}
+    paths = {dataset: dict(clip_paths(dataset)) for dataset in DATASETS}
+
+    fig = Figure(figsize=(14, 13.5), layout="constrained")
+    axes = fig.subplots(len(examples), len(SHOWN_FRAMES) + 1)
+    for row_axes, example in zip(axes, examples):
+        dataset, clip_id = example["clip"]
+        meta = metas[dataset][clip_id]
+        clip = load_clip(paths[dataset][clip_id])
+        predicted, tracked = disk_centres(meta), track_disk(clip)["centre"]
+        example["label"] = describe(dataset, meta)
+
+        for ax, k in zip(row_axes, SHOWN_FRAMES):
+            ax.imshow(clip[k], interpolation="nearest")
+            ax.plot(*predicted[k], marker="+", color="white", markersize=11, markeredgewidth=1.5, linestyle="none")
+            if np.isfinite(tracked[k]).all():
+                ax.plot(*tracked[k], marker="x", color="black", markersize=6, markeredgewidth=1.5, linestyle="none")
+        residue = np.abs(clip[-1].astype(np.int16) - BACKGROUND.astype(np.int16)) * RESIDUE_GAIN
+        row_axes[-1].imshow(np.clip(residue, 0, 255).astype(np.uint8), interpolation="nearest")
+        for ax in row_axes:
+            ax.set_xlim(-0.5, 255.5)
+            ax.set_ylim(255.5, -0.5)
+            ax.set_xticks([])
+            ax.set_yticks([])
+        row_axes[0].set_ylabel(
+            f"{example['title']}\n{dataset} id {clip_id}\n{example['label']}", fontsize=8, color=INK_SECONDARY
+        )
+
+    for ax, k in zip(axes[0], SHOWN_FRAMES):
+        ax.set_title(f"frame {k} (t = {k}/24 s)", fontsize=9, color=INK)
+    axes[0][-1].set_title(f"|frame 15 − background| × {RESIDUE_GAIN}", fontsize=9, color=INK)
+    fig.suptitle(
+        "Example clips: predicted (+, metadata) and tracked (×, mask centroid) disk centre", fontsize=11, color=INK
+    )
+    CONTACT_SHEET.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(CONTACT_SHEET, dpi=130)
+
+    return {
+        "figure": str(CONTACT_SHEET.relative_to(REPO)),
+        "seed": SEED,
+        "rule": "seeded pick per pool from results/tracking/clip_flags.csv; exit = the exit clip with the most non-background pixels in its last frame (ties: smallest id)",
+        "frames_shown": list(SHOWN_FRAMES),
+        "residue_gain": RESIDUE_GAIN,
+        "examples": [
+            {"row": e["title"], "clip": f"{e['clip'][0]}/{e['clip'][1]}", "label": e["label"], "pool_size": e["pool"]}
+            for e in examples
+        ],
+        "sha256": file_sha256(CONTACT_SHEET),
+    }
+
 CHECKS = {
     "format": check_format,
     "uniform_frames": check_uniform_frames,
     "duplicates": check_duplicates,
     "decoders": check_decoders,
+    "figure_contact_sheet": check_figure_contact_sheet,
 }
 
 

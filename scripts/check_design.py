@@ -10,12 +10,14 @@ import json
 from collections import Counter
 from pathlib import Path
 from scipy import stats
+from matplotlib.figure import Figure
 
 import numpy as np
 
 from vjepa_physics.data import DATASETS, LABEL_FIELD, load_dataset
 from vjepa_physics.geometry import distance_travelled, frame_times, speed_at
-from vjepa_physics.evidence import save_result
+from vjepa_physics.evidence import file_sha256, save_result
+from vjepa_physics.plotting import DATASET_COLOUR, GRID, INK, INK_SECONDARY, sequential_cmap, style_axes
 
 REPO = Path(__file__).resolve().parents[1]
 DATA = REPO / "data"
@@ -35,6 +37,8 @@ FLAG_P = 1e-4
 
 # Pixel scale: 32 px per metre (verified on one clip; checked on every clip by disk tracking).
 PX_PER_M = 32
+
+DESIGN_FIGURE = REPO / "results/design/design.png"
 
 def sci(value: float) -> float:
     """Round to 4 significant digits, for readable JSON."""
@@ -421,6 +425,68 @@ def check_distance_confound() -> dict:
     }
     return result
 
+def check_figure_design() -> dict:
+    """Visual evidence: the magnitude-vs-distance confound and the direction set's stratification table.
+
+    (a, b) Distance travelled over the clip vs label, one point per label value, for the speed and the
+    acceleration set on a shared distance axis; the distance range both sets cover is shaded.
+    (c) Direction set: clips per angle octant and motion group. From metadata only. No pass/fail.
+    """
+    clips = {dataset: load_dataset(DATA, dataset) for dataset in DATASETS}
+    fig = Figure(figsize=(14, 5.2), layout="constrained")
+    ax_speed, ax_accel, ax_table = fig.subplots(1, 3, gridspec_kw={"width_ratios": [1, 1, 1.5]})
+    ax_accel.sharey(ax_speed)
+
+    distances, ratios = {}, {}
+    for ax, dataset, unit in ((ax_speed, "speed", "m/s"), (ax_accel, "acceleration", "m/s²")):
+        label = np.array([c["magnitude"] for c in clips[dataset]])
+        distance = kinematics(clips[dataset])["distance_m"]
+        values, first = np.unique(label, return_index=True)
+        distances[dataset] = distance
+        ratios[dataset] = float(distance[first][-1] / values[-1])
+        style_axes(ax, "y")
+        ax.plot(values, distance[first], color=DATASET_COLOUR[dataset], linewidth=2, marker="o", markersize=3)
+        ax.set_xlabel(f"{dataset} label ({unit})")
+        ax.set_title(f"{dataset} set: distance = {ratios[dataset]:.4g} × label", fontsize=10, color=INK)
+
+    low = max(distances["speed"].min(), distances["acceleration"].min())
+    high = min(distances["speed"].max(), distances["acceleration"].max())
+    for ax in (ax_speed, ax_accel):
+        ax.axhspan(low, high, color=GRID, alpha=0.7, zorder=0)
+    ax_speed.set_ylabel("distance travelled over the clip (m)")
+    ax_speed.text(
+        0.03, 0.97, f"shaded: distances both sets cover\n{low:.3f}–{high:.3f} m",
+        transform=ax_speed.transAxes, ha="left", va="top", fontsize=8, color=INK_SECONDARY,
+    )
+
+    rows = clips["direction"]
+    names = sorted({direction_group(c) for c in rows}, key=group_order)
+    table = np.zeros((len(names), 8), dtype=int)
+    for c in rows:
+        table[names.index(direction_group(c)), int(c["theta_degrees"] // 45)] += 1
+    style_axes(ax_table, None)
+    image = ax_table.imshow(table, cmap=sequential_cmap(), aspect="auto", vmin=0)
+    for (i, j), n in np.ndenumerate(table):
+        ax_table.text(j, i, str(n), ha="center", va="center", fontsize=8,
+                      color="white" if n > 0.55 * table.max() else INK)
+    ax_table.set_xticks(range(8), [f"{45 * k}–{45 * (k + 1)}°" for k in range(8)], fontsize=8, rotation=30, ha="right")
+    ax_table.set_yticks(range(len(names)), [name.replace("^2", "²") for name in names], fontsize=8)
+    ax_table.set_xlabel("angle octant (θ)")
+    ax_table.set_title("direction set: clips per angle octant and motion group", fontsize=10, color=INK)
+    fig.colorbar(image, ax=ax_table, label="clips", shrink=0.8)
+
+    fig.suptitle("Dataset design: magnitude labels fix the distance travelled; direction groups are balanced",
+                 fontsize=11, color=INK)
+    DESIGN_FIGURE.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(DESIGN_FIGURE, dpi=150)
+    return {
+        "figure": str(DESIGN_FIGURE.relative_to(REPO)),
+        "distance_per_label": {dataset: sci(r) for dataset, r in ratios.items()},
+        "shaded_window_m": [float(low), float(high)],
+        "octant_by_group_cell_min_max": [int(table.min()), int(table.max())],
+        "sha256": file_sha256(DESIGN_FIGURE),
+    }
+    
 
 CHECKS = {
     "value_grids": check_value_grids,
@@ -428,6 +494,7 @@ CHECKS = {
     "start_positions": check_start_positions,
     "label_independence": check_label_independence,
     "distance_confound": check_distance_confound,
+    "figure_design": check_figure_design,
 }
 
 

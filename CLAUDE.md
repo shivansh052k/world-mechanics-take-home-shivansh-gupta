@@ -186,7 +186,9 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `world_to_pixel`, `disk_centres`, `distance_outside_image`: 32 px/m, origin 128, y flipped), `video` also has
   `probe_clip` (stream facts, exact-fraction timestamps), `tracking` (`disk_mask`, `count_objects`, `track_disk`;
   tracked positions for all clips in `artifacts/tracking/tracked_disk.npz`, hash in `results/tracking/checks.json`),
-  `flags` (`clip_flags`: exit, clipped, sub_patch_motion, frozen_start; table `results/tracking/clip_flags.csv`, D-36).
+  `flags` (`clip_flags`: exit, clipped, sub_patch_motion, frozen_start; table `results/tracking/clip_flags.csv`, D-36),
+  `plotting` (`DATASET_COLOUR`, ink/grid colours, `sequential_cmap`, `style_axes`: use for every figure; open and
+  review each PNG after rendering).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.

@@ -10,6 +10,7 @@ import csv
 import json
 from collections import Counter
 from pathlib import Path
+from matplotlib.figure import Figure
 
 import numpy as np
 from scipy import ndimage
@@ -20,6 +21,7 @@ from vjepa_physics.flags import clip_flags
 from vjepa_physics.geometry import disk_centres, distance_travelled, frame_times, world_to_pixel
 from vjepa_physics.tracking import disk_mask, track_disk
 from vjepa_physics.video import load_clip
+from vjepa_physics.plotting import DATASET_COLOUR, INK, INK_MUTED, INK_SECONDARY, SURFACE, style_axes
 
 REPO = Path(__file__).resolve().parents[1]
 DATA = REPO / "data"
@@ -43,9 +45,12 @@ MIN_DISPLACEMENT_PX = 5.0
 FLAGS_TABLE = REPO / "results/tracking/clip_flags.csv"
 VIDEO_CHECKS = REPO / "results/videos/checks.json"
 FLAG_NAMES = ("exit", "clipped", "sub_patch_motion", "frozen_start")
+
 # Tracked vs predicted total displacement on clips that neither exit nor get clipped: two frames' worth
 # of the 1 px mapping tolerance (the first and the last frame).
 DISPLACEMENT_TOLERANCE_PX = 2.0
+
+TRACKING_FIGURE = REPO / "results/tracking/tracking.png"
 
 def sample(items) -> dict:
     """Count and the first SAMPLE entries, so failures are diagnosable without huge JSON."""
@@ -395,12 +400,75 @@ def check_flags() -> dict:
         "passed": all(criteria.values()),
     }
 
+def check_figure_tracking() -> dict:
+    """Visual evidence: how closely tracking matches the metadata, and how many clips carry each flag.
+
+    (a) Distance between tracked and predicted disk centre on fully visible frames, per dataset (step
+    histograms), with the 1 px criterion. (b) Clips per flag and dataset, from the committed flags
+    table. Reads the positions saved by `track` (hash-checked). No pass/fail.
+    """
+    recorded = json.loads(OUT.read_text())["track"]["result"]["artifact"]["sha256"]
+    if file_sha256(ARTIFACT) != recorded:
+        raise RuntimeError("tracked positions differ from those `track` recorded; re-run `track` first")
+    with np.load(ARTIFACT) as tracked:
+        dataset_of, centre, area, border = tracked["dataset"], tracked["centre"], tracked["area"], tracked["touches_border"]
+    metas = [meta for dataset in DATASETS for meta in load_dataset(DATA, dataset)]
+    error = np.linalg.norm(centre - np.stack([disk_centres(m) for m in metas]), axis=-1)
+    visible = (area > 0) & ~border
+    with FLAGS_TABLE.open(newline="") as f:
+        rows = list(csv.DictReader(f))
+
+    fig = Figure(figsize=(13, 4.8), layout="constrained")
+    ax_error, ax_flags = fig.subplots(1, 2, gridspec_kw={"width_ratios": [1.2, 1]})
+    style_axes(ax_error, "y")
+    style_axes(ax_flags, "y")
+
+    bins = np.arange(0, MAPPING_TOLERANCE_PX + 0.1 + 1e-9, 0.02)
+    maxima = {}
+    for dataset in DATASETS:
+        e = error[(dataset_of == dataset)[:, None] & visible]
+        maxima[dataset] = round(float(e.max()), 3)
+        ax_error.hist(e, bins=bins, histtype="step", linewidth=2, color=DATASET_COLOUR[dataset],
+                      label=f"{dataset} (max {e.max():.3f} px)")
+    ax_error.axvline(MAPPING_TOLERANCE_PX, color=INK_MUTED, linestyle="--", linewidth=1)
+    ax_error.text(MAPPING_TOLERANCE_PX, ax_error.get_ylim()[1] * 0.97, "1 px criterion ", ha="right", va="top",
+                  fontsize=8, color=INK_SECONDARY)
+    ax_error.set_xlabel("distance between tracked and predicted disk centre (px)")
+    ax_error.set_ylabel("fully visible frames")
+    ax_error.set_title("tracking vs metadata on every fully visible frame", fontsize=10, color=INK)
+    ax_error.legend(frameon=False, fontsize=8, labelcolor=INK_SECONDARY, loc="upper left")
+
+    x = np.arange(len(FLAG_NAMES))
+    width = 0.26
+    counts = {}
+    for j, dataset in enumerate(DATASETS):
+        counts[dataset] = [sum(r["dataset"] == dataset and r[name] == "1" for r in rows) for name in FLAG_NAMES]
+        bars = ax_flags.bar(x + (j - 1) * width, counts[dataset], width, color=DATASET_COLOUR[dataset],
+                            edgecolor=SURFACE, linewidth=2, label=dataset)
+        ax_flags.bar_label(bars, fontsize=7, color=INK_SECONDARY, padding=2)
+    ax_flags.set_xticks(x, [name.replace("_", " ") for name in FLAG_NAMES])
+    ax_flags.set_ylabel("clips")
+    ax_flags.set_title("clips per flag and dataset", fontsize=10, color=INK)
+    ax_flags.legend(frameon=False, fontsize=8, labelcolor=INK_SECONDARY)
+
+    fig.suptitle("Disk tracking: within 0.8 px of the metadata everywhere; flags concentrate in the direction set and low magnitudes",
+                 fontsize=11, color=INK)
+    TRACKING_FIGURE.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(TRACKING_FIGURE, dpi=150)
+    return {
+        "figure": str(TRACKING_FIGURE.relative_to(REPO)),
+        "error_max_px": maxima,
+        "flag_counts": {dataset: dict(zip(FLAG_NAMES, c)) for dataset, c in counts.items()},
+        "sha256": file_sha256(TRACKING_FIGURE),
+    }
+
 
 CHECKS = {
     "track": check_track,
     "mapping": check_mapping,
     "documented_colour": check_documented_colour,
     "flags": check_flags,
+    "figure_tracking": check_figure_tracking,
 }
 
 
