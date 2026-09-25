@@ -103,7 +103,12 @@ test; design brief first).
 (F-94). Low per-fit direction minima: H-08's pre-set symmetry rule failed at 5 of 21 sites (not supported as stated;
 post-hoc refinement H-08b untested; does not affect the pass).
 **3.4b done:** exact pixel Gram and Gram-based ridge in `baselines.py`, identical to sklearn RidgeCV (F-95).
-**Next:** 3.4c `check_baselines.py pixel_grams` (commit first), 3.4d `pixel_floor`, 3.4e `physics_ceiling`; 3.8 brief.
+**3.4c done:** `check_baselines.py pixel_grams` passed; six exact Grams saved, decoded pixels = audit hashes (F-96).
+**3.4d done:** `pixel_floor` passed; full-RGB floor R² 0.48 / 0.63 / 0.49 (direction / speed / acceleration),
+time-averaged 0.20 / 0.23 / 0.16, all far below block_0 (F-97; supports H-07; H-09 new).
+**3.4e done:** `physics_ceiling` passed; ceiling R² ≥ 0.997 (headline quadratic), design-informed variants tighter
+(F-98). **Step 3.4 complete.**
+**Next:** 3.5 bootstrap (layer curves, transition-index distribution, floors, ceiling); 3.6 figure; 3.7; 3.8 brief.
 
 ---
 
@@ -218,6 +223,9 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/splits/checks.json` | `balance` | Flags, mean cos/sin θ per role; direction group × octant per role; clips per seen angle (test_seen: one angle with 0) | ℹ️ diagnostic | F-79; `scripts/check_splits.py balance` |
 | `results/probes/checks.json` + `artifacts/probes/layer_predictions.npz` | `layer_curves` | Ridge probe per site (26) and variable on train, scored on val_seen / val_unseen; n_fit 813 / 832; alpha rule; only validation rows predicted; refit identical; predictions saved (SHA-256 `b7261ed0…`, git-ignored) | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-92; `scripts/check_probes.py layer_curves` |
 | `results/probes/checks.json` | `shuffled_labels` | 20 train-label permutations × 26 sites × 3 variables, scored on val_seen with true labels: max R² ≤ 0.087 < 0.1; direction mean circular MAE 87–92° > 80; no alpha failure; n_fit exact | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-94; `scripts/check_probes.py shuffled_labels` |
+| `results/baselines/checks.json` + `artifacts/baselines/pixel_gram_*.npy` | `pixel_grams` | Exact pixel Gram matrices per variable (full RGB, time-averaged); decoded pixels = audit hashes for all 4,572 clips; symmetric, integer < 2^53, diagonal = int64 sum of squares; 6 file hashes recorded (git-ignored) | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-96; `scripts/check_baselines.py pixel_grams` |
+| `results/baselines/checks.json` + `artifacts/baselines/floor_predictions.npz` | `pixel_floor` | Ridge on raw pixels (full RGB headline, time-averaged secondary) via the saved Grams; train-only, alpha rule, validation rows only; val-seen R² full 0.48 / 0.63 / 0.49, time-averaged 0.20 / 0.23 / 0.16 | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-97; `scripts/check_baselines.py pixel_floor` |
+| `results/baselines/checks.json` + `artifacts/baselines/ceiling_estimates.npz` | `physics_ceiling` | Per-clip physics fit on tracked positions, validation rows only; exact on metadata positions (≤ 1.7e-13); headline quadratic R² ≥ 0.997; design-informed constant-velocity (speed) and from-rest (acceleration) reported labelled | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-98; `scripts/check_baselines.py physics_ceiling` |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
@@ -309,7 +317,13 @@ what's next.
   H-08b noted (post hoc). Claude Code's symmetry premise was wrong (reflections give ≈ 90°, not > 90°).
 - 3.4b: `pixel_matrix`, `exact_gram`, `kernel_ridge` in `baselines.py`; smoke test exact as predicted (F-95).
   **Step 3.4b done.**
-- **Next:** commit, then 3.4c.
+- Committed (user said). 3.4c: `scripts/check_baselines.py pixel_grams` passed (F-96); Claude Code's time and memory
+  guesses were high (22 s per full Gram, 5.38 GB). **Step 3.4c done.**
+- 3.4d: `check_baselines.py pixel_floor` passed (F-97); one Claude Code prediction wrong (time-averaged direction floor
+  above chance → H-09). **Step 3.4d done.**
+- 3.4e: `from_rest` model in `physics_fit`; `check_baselines.py physics_ceiling` passed as predicted (F-98).
+  **Step 3.4 done.**
+- **Next:** commit and push, then 3.5.
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each
