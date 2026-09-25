@@ -8,6 +8,9 @@ Each check prints its result and stores it under its own key in results/joined/c
 import argparse
 import csv
 import json
+import os
+import resource
+import shutil
 import tempfile
 from collections import Counter
 from pathlib import Path
@@ -17,7 +20,8 @@ import numpy as np
 from vjepa_physics.data import DATASETS, load_dataset
 from vjepa_physics.evidence import file_sha256, save_result, verified_artifact
 from vjepa_physics.geometry import disk_centres
-from vjepa_physics.joined import FLAG_NAMES, build_table
+from vjepa_physics.extraction import SITES, TIME_STEPS
+from vjepa_physics.joined import FLAG_NAMES, build_table, load_joined
 from vjepa_physics.splits import ROLES, read_splits
 
 REPO = Path(__file__).resolve().parents[1]
@@ -39,6 +43,11 @@ EXPECTED_ROLE_COUNTS = {
 # Flag counts in FLAG_NAMES order (exit, clipped, sub_patch_motion, frozen_start), from the flags check.
 EXPECTED_FLAG_COUNTS = {"direction": (113, 199, 150, 92), "speed": (0, 0, 240, 1), "acceleration": (0, 0, 360, 267)}
 MAPPING_TOLERANCE_PX = 1.0  # tracked vs predicted centre on fully visible frames (tracking's mapping criterion)
+
+HIDDEN = 1024
+NPY_HEADER_MAX = 4096  # a .npy header is a few hundred bytes at most; the rest of the file is the raw array
+MIN_FREE_BYTES = 10 * 10**9  # free disk that must remain: 10 GB
+MEMORY_FRACTION = 0.5  # the largest array loaded fully into RAM must keep peak RSS within half of physical memory
 
 
 def build_all(out_dir: Path) -> dict[str, Path]:
@@ -119,8 +128,95 @@ def check_build() -> dict:
     return result
 
 
+def artifact_records() -> list[tuple[Path, str, str]]:
+    """(checks file, key, field) of every recorded artifact of the splits, extraction and joined checks."""
+    records = [(SPLITS_CHECKS, "build", "artifact")]
+    for variable in DATASETS:
+        key = f"extract_{variable}"
+        records += [(EXTRACTION_CHECKS, key, "artifact"), (EXTRACTION_CHECKS, key, "ids"), (OUT, "build", variable)]
+    return records
+
+
+def peak_rss_bytes() -> int:
+    """Peak resident memory of this process so far (macOS reports ru_maxrss in bytes)."""
+    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+
+
+def check_storage() -> dict:
+    """Every artifact still matches its recorded hash; the loader works; disk and memory fit the budget.
+
+    Passes if: all 10 recorded artifacts (split file; per variable the activation array, its ids and the joined
+    table) match their recorded SHA-256; load_joined returns, for every variable, a memory-mapped (clips, 26, 8,
+    1024) float32 array with one row per table entry; each activation file is exactly its array's bytes plus a
+    .npy header; at least 10 GB of disk stay free; and loading the largest activation array fully into RAM keeps
+    peak process memory within half of physical memory. Sizes and memory figures are recorded.
+    """
+    hashed, failed, total_bytes = [], [], 0
+    for checks, key, field in artifact_records():
+        name = f"{checks.parent.name}/{key}/{field}"
+        try:
+            path = verified_artifact(checks, key, field)
+        except (RuntimeError, KeyError, FileNotFoundError) as e:
+            failed.append(f"{name}: {type(e).__name__}: {e}")
+            continue
+        hashed.append(name)
+        total_bytes += path.stat().st_size
+
+    round_trip, size_exact = {}, {}
+    for variable in DATASETS:
+        table = load_joined(variable)
+        activations = table["activations"]
+        n = EXPECTED_CLIPS[variable]
+        round_trip[variable] = (
+            isinstance(activations, np.memmap)
+            and activations.shape == (n, len(SITES), TIME_STEPS, HIDDEN)
+            and activations.dtype == np.float32
+            and len(table["id"]) == n
+        )
+        data_bytes = n * len(SITES) * TIME_STEPS * HIDDEN * 4
+        file_bytes = Path(str(activations.filename)).stat().st_size
+        size_exact[variable] = data_bytes < file_bytes <= data_bytes + NPY_HEADER_MAX
+        del table, activations
+
+    largest = max(DATASETS, key=lambda v: EXPECTED_CLIPS[v])
+    table = load_joined(largest)
+    rss_before = peak_rss_bytes()
+    in_ram = np.array(table["activations"])  # a full copy in RAM: the worst case for probing
+    rss_after = peak_rss_bytes()
+    in_ram_bytes = in_ram.nbytes
+    del in_ram, table
+    physical = os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")
+    free = shutil.disk_usage(REPO / "artifacts").free
+
+    criteria = {
+        "every_artifact_matches_record": not failed and len(hashed) == len(artifact_records()),
+        "load_joined_round_trip": all(round_trip.values()),
+        "activation_file_sizes_exact": all(size_exact.values()),
+        "free_disk_at_least_10_gb": free >= MIN_FREE_BYTES,
+        "full_array_fits_in_memory": rss_after <= MEMORY_FRACTION * physical,
+    }
+    return {
+        "criteria": criteria,
+        "artifacts_hashed": hashed,
+        "artifacts_failed": failed,
+        "artifacts_total_bytes": total_bytes,
+        "artifacts_total_gib": round(total_bytes / 1024**3, 3),
+        "round_trip": round_trip,
+        "free_disk_bytes": free,
+        "memory": {
+            "largest_variable": largest,
+            "array_in_ram_bytes": in_ram_bytes,
+            "peak_rss_before_bytes": rss_before,
+            "peak_rss_after_bytes": rss_after,
+            "physical_bytes": physical,
+        },
+        "passed": all(criteria.values()),
+    }
+
+
 CHECKS = {
     "build": check_build,
+    "storage": check_storage,
 }
 
 

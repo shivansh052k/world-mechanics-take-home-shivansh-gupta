@@ -150,5 +150,88 @@
       },
       "passed": true
     }
+  },
+  "storage": {
+    "provenance": {
+      "utc": "2026-09-25T07:55:01+00:00",
+      "git_commit": "efedc75f1303a22c56ff16adf7173c6e2ce90742",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        " M scripts/check_joined.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "066f2c8d8c18f78ad15b7c8facc6f97037e13cc4fa3eee0a2da94a233affb104",
+          "src/vjepa_physics/extraction.py": "42edcc8e78f6e93fccf7b08f225d6a66f33d49a532204c96637cab203588278a",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "dc98690f3728587a7fff205b75f8c91db1eee154bc635d95fe6f64dfe1d229bd",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_joined.py": "3dc93f94b0c76aee840be06395ba9bb8ce64cbdeda8ccb27859f7725d107448b"
+        },
+        "combined_sha256": "4cfe7faaec4e3b54c77ba029e8e729ac2cbccf190249f71142fdfb1ba1affa86"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "criteria": {
+        "every_artifact_matches_record": true,
+        "load_joined_round_trip": true,
+        "activation_file_sizes_exact": true,
+        "free_disk_at_least_10_gb": true,
+        "full_array_fits_in_memory": true
+      },
+      "artifacts_hashed": [
+        "splits/build/artifact",
+        "extraction/extract_direction/artifact",
+        "extraction/extract_direction/ids",
+        "joined/build/direction",
+        "extraction/extract_speed/artifact",
+        "extraction/extract_speed/ids",
+        "joined/build/speed",
+        "extraction/extract_acceleration/artifact",
+        "extraction/extract_acceleration/ids",
+        "joined/build/acceleration"
+      ],
+      "artifacts_failed": [],
+      "artifacts_total_bytes": 3895813155,
+      "artifacts_total_gib": 3.628,
+      "round_trip": {
+        "direction": true,
+        "speed": true,
+        "acceleration": true
+      },
+      "free_disk_bytes": 207128375296,
+      "memory": {
+        "largest_variable": "speed",
+        "array_in_ram_bytes": 1308622848,
+        "peak_rss_before_bytes": 477888512,
+        "peak_rss_after_bytes": 2428633088,
+        "physical_bytes": 17179869184
+      },
+      "passed": true
+    }
   }
 }
