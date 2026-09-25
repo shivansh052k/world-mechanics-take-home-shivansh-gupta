@@ -79,8 +79,8 @@ pool, repeat bit-exact, F-80). **2.4b done:** `scripts/check_extraction.py` comm
 **2.7a done:** `src/vjepa_physics/joined.py` (`build_table`, `load_joined`); in-memory tables reproduce F-72's flag
 counts and F-70's pixel errors (F-84). **2.7b done:** `scripts/check_joined.py build` passed; tables in
 `artifacts/joined/` (F-85). **2.8 done:** `storage` passed — 10/10 artifacts match, `load_joined` round trip, 3.628 GiB
-on disk, peak RSS 2.43 GB with a full array in RAM (F-86). **Next:** 2.9 gate (extend `rerun_identical`, commit, clean
-re-run, report).
+on disk, peak RSS 2.43 GB with a full array in RAM (F-86). **2.9 gate:** clean re-run identical (F-87). **Next:** report
+`results/splits_and_extraction/report.md`.
 
 ---
 
@@ -190,6 +190,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/extraction/checks.json` | `verify` | Arrays, ids, split file hash-guarded; shapes; ids = split ids in order; 16 seeded clips per dataset re-extracted live bit-identical (also the gate test, D-41); site scale and nearest-pair diagnostics | ✅ passed | F-83; `scripts/check_extraction.py verify` |
 | `results/joined/checks.json` + `artifacts/joined/*.npz` | `build` | Joined tables per variable from hash-guarded sources: all clips, one entry per clip, role counts = D-38, flag counts = F-72, tracking ≤ 1 px by id, rebuild byte-identical; SHA-256 direction `3a3790ac…`, speed `1f81b80e…`, acceleration `9e191b64…` (git-ignored) | ✅ passed | F-85; `scripts/check_joined.py build` |
 | `results/joined/checks.json` | `storage` | 10/10 artifacts match their hashes; `load_joined` round trip (memory-mapped, aligned); activation files exact size; 3.628 GiB on disk; ≥ 10 GB free; full largest array in RAM → peak RSS 2.43 GB | ✅ passed | F-86; `scripts/check_joined.py storage` |
+| `results/evidence/checks.json` | `rerun_identical_splits_extraction` | 6 split/extraction/joined keys re-run from clean HEAD `910a798`, results identical (only `storage` machine-state fields excluded); `extract_*` untouched (D-41); `verify` re-run; split file unchanged | ✅ passed | F-87; `scripts/check_evidence.py rerun_identical_splits_extraction` |
 | `results/splits/checks.json` | `balance` | Flags, mean cos/sin θ per role; direction group × octant per role; clips per seen angle (test_seen: one angle with 0) | ℹ️ diagnostic | F-79; `scripts/check_splits.py balance` |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
@@ -291,7 +292,14 @@ what's next.
 - 2.7b: `scripts/check_joined.py build` passed, all values as predicted (F-85). **Step 2.7 done.**
 - 2.8: `storage` passed (F-86). Claude Code's peak-RSS prediction (1.5–2 GB) was low: 2.43 GB observed, still 14% of
   physical memory. **Step 2.8 done.**
-- **Next:** 2.9 gate.
+- 2.9a: `check_evidence.py rerun_identical_splits_extraction` added (existing `rerun_identical` untouched, so F-74 still
+  describes unchanged code): `extract_*` keys must stay byte-identical including provenance (not re-run, D-41);
+  `verify` must be re-run; only `storage`'s `free_disk_bytes` and `memory` are excluded as machine state. Committed
+  `910a798`, tree clean.
+- 2.9b: the 6 re-runnable keys re-run from clean HEAD `910a798`, all passed (user said; terminal output not available);
+  `rerun_identical_splits_extraction` passed, read by Claude Code from the saved result (F-87).
+- **Next:** 2.9c report `results/splits_and_extraction/report.md` (user-written from Claude Code's draft), then Phase 2
+  passed.
 
 ### 2026-09-24 — Phase 1 started (data audit)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (directly, after each step);

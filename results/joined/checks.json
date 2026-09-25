@@ -1,12 +1,10 @@
 {
   "build": {
     "provenance": {
-      "utc": "2026-09-25T07:51:43+00:00",
-      "git_commit": "370421cbcae02d67e24d95b1097bde5c15c6a103",
-      "git_dirty": true,
-      "git_dirty_paths": [
-        "?? scripts/check_joined.py"
-      ],
+      "utc": "2026-09-25T08:03:07+00:00",
+      "git_commit": "910a798c5725daf103815984e31ecd84d24e6527",
+      "git_dirty": false,
+      "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
@@ -28,9 +26,9 @@
           "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
           "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
           "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
-          "scripts/check_joined.py": "c6db41c1d2c9764325065b0c170889757d29d0e95ad1dabc354471126a728d75"
+          "scripts/check_joined.py": "3dc93f94b0c76aee840be06395ba9bb8ce64cbdeda8ccb27859f7725d107448b"
         },
-        "combined_sha256": "3ac35f1218bd9831ccfc939df59fb4a7344664b6709468c99ecd297aeea9e305"
+        "combined_sha256": "4cfe7faaec4e3b54c77ba029e8e729ac2cbccf190249f71142fdfb1ba1affa86"
       },
       "versions": {
         "av": "18.1.0",
@@ -153,12 +151,10 @@
   },
   "storage": {
     "provenance": {
-      "utc": "2026-09-25T07:55:01+00:00",
-      "git_commit": "efedc75f1303a22c56ff16adf7173c6e2ce90742",
-      "git_dirty": true,
-      "git_dirty_paths": [
-        " M scripts/check_joined.py"
-      ],
+      "utc": "2026-09-25T08:03:23+00:00",
+      "git_commit": "910a798c5725daf103815984e31ecd84d24e6527",
+      "git_dirty": false,
+      "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
@@ -223,12 +219,12 @@
         "speed": true,
         "acceleration": true
       },
-      "free_disk_bytes": 207128375296,
+      "free_disk_bytes": 207031656448,
       "memory": {
         "largest_variable": "speed",
         "array_in_ram_bytes": 1308622848,
-        "peak_rss_before_bytes": 477888512,
-        "peak_rss_after_bytes": 2428633088,
+        "peak_rss_before_bytes": 493617152,
+        "peak_rss_after_bytes": 2536800256,
         "physical_bytes": 17179869184
       },
       "passed": true
