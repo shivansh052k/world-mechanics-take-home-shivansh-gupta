@@ -50,7 +50,9 @@ direction motion type vs distance r = −0.565 (F-65). **1.7 run:** `probe_clip`
 failed only on `no_uniform_frames` (185 uniform exit frames in 52 direction clips; kept on record), `uniform_frames`
 diagnostic shows they are clean exit frames but its pre-stated rule failed narrowly on 3 frames (kept on record),
 `duplicates` passed (no duplicate clips; `artifacts/` ignore rule verified) (F-66, F-67, D-34). **Waiting on the
-planning chat** for the `format` re-score. **Next: 1.8 (two-decoder cross-check)** — waiting for the user's go.
+planning chat** for the `format` re-score. **1.8 done:** `check_videos.py decoders` — PyAV vs OpenCV verdict ok on
+all 4,572 clips under D-05 (F-68). **Next: 1.9 (full disk tracking and mapping verification)** — waiting for the
+user's go.
 
 ---
 
@@ -59,7 +61,7 @@ planning chat** for the `format` re-score. **Next: 1.8 (two-decoder cross-check)
 | Phase | Status | Notes |
 |---|---|---|
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
-| 1 — Data audit | 🟨 In progress | 1.1–1.7 run (`documented_fields` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
+| 1 — Data audit | 🟨 In progress | 1.1–1.8 run (`documented_fields` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
@@ -145,6 +147,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/videos/checks.json` | `format` | All clips decode; 256×256, 24 fps, constant 1/24 s step (from t = 0); no black frames; frame medians all (29, 32, 29); 113 direction clips with disk-less frames | ❌ failed: `no_uniform_frames` — 185 uniform frames in 52 direction clips (disk has left); kept on record; re-score pending the planning chat | F-66, D-34; `scripts/check_videos.py format` |
 | `results/videos/checks.json` | `uniform_frames` | Diagnostic of the `format` failure: all 185 uniform frames = background, no disk pixels, at clip end; no disk pixels anywhere with the disk predicted fully outside; 149 exit frames keep faint residue | ⚠️ `explanation_holds: false` — pre-stated rule (c) missed 3 frames by 0.39–0.55 px (within mapping error + pixel-centre offset); kept on record | F-66; `scripts/check_videos.py uniform_frames` |
 | `results/videos/checks.json` | `duplicates` | 4,572 distinct whole-clip hashes across datasets; test clip hash = Phase 0 `repeat`; per-clip hashes in `artifacts/videos/decoded_hashes.csv` (git-ignored, verified) | ✅ passed | F-67, D-34; `scripts/check_videos.py duplicates` |
+| `results/videos/checks.json` | `decoders` | PyAV vs OpenCV under D-05 on all 4,572 clips: all ok (0 flag, 0 fail); max \|diff\| R 3 / G ≤ 3 / B ≤ 3; means (+1.00–1.02, +0.01–0.02, +1.00); per-clip stats in `artifacts/videos/decoder_comparison.csv` | ✅ passed | F-68, D-05; `scripts/check_videos.py decoders` |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
@@ -227,7 +230,10 @@ what's next.
   `geometry.py`; `uniform_frames` diagnostic (rule fixed before the run) narrowly failed on 3 frames; exit-frame residue
   found. `duplicates` passed; first `artifacts/` write confirmed git-ignored. Planning-chat note drafted (re-score
   proposal, residue → O-02). **Step 1.7 run; re-score pending.**
-- **Next:** 1.8 (two-decoder cross-check) — waiting for the user's go.
+- 1.8: `decoders` check (reuses `vjepa_physics.decoders`, D-05 unchanged): all 4,572 clips ok; the whole-clip "no disk
+  pixels" flag never triggers because exit clips show the disk in early frames (Claude Code's earlier worry was wrong)
+  (F-68). **Step 1.8 done.** Closes the Phase 0 report item "decoder tolerance not yet applied to all clips".
+- **Next:** 1.9 (full disk tracking and mapping verification) — waiting for the user's go.
 
 ### 2026-09-24 — Step 0.8d started in Claude Code
 - Claude Code permissions set: `Bash`, `NotebookEdit` denied; edits denied everywhere except `docs/` and

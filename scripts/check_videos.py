@@ -9,6 +9,7 @@ import argparse
 import csv
 import hashlib
 import json
+import re
 from collections import Counter, defaultdict
 from fractions import Fraction
 from pathlib import Path
@@ -16,6 +17,7 @@ from pathlib import Path
 import numpy as np
 
 from vjepa_physics.data import DATASETS, load_dataset, read_manifest, resolve
+from vjepa_physics.decoders import compare_decoders, load_clip_opencv
 from vjepa_physics.evidence import file_sha256, save_result
 from vjepa_physics.geometry import disk_centres, distance_outside_image
 from vjepa_physics.video import load_clip, probe_clip
@@ -45,6 +47,9 @@ ARTIFACT = REPO / "artifacts/videos/decoded_hashes.csv"
 # Decoded-pixel SHA-256 of data/speed/videos/scene_1000, saved by the video loader's repeat check.
 TEST_CLIP = ("speed", 1000)
 TEST_CLIP_SHA256 = "03285f4cf9ffc6ecf90541b47e7f08c217eab4e4809d42f7042baf29ab9d95c0"
+
+# Per-clip PyAV vs OpenCV statistics (regenerable, git-ignored).
+DECODER_ARTIFACT = REPO / "artifacts/videos/decoder_comparison.csv"
 
 
 def sample(items) -> dict:
@@ -307,12 +312,96 @@ def check_duplicates() -> dict:
         },
         "passed": all(criteria.values()),
     }
-    
+
+
+def check_decoders() -> dict:
+    """PyAV vs OpenCV on every clip, under the per-clip decoder tolerance (vjepa_physics.decoders).
+
+    Passes if all 4,572 clips are compared and no clip's verdict is "fail"; "flag" verdicts pass and
+    are reported with their reasons. A clip OpenCV cannot decode counts as "fail". Per-clip
+    statistics are written to artifacts/videos/decoder_comparison.csv. PyAV stays the only decoder
+    whose output the model sees; OpenCV is an independent cross-check.
+    """
+    rows, backends = [], Counter()
+    for dataset in DATASETS:
+        for clip_id, path in clip_paths(dataset):
+            try:
+                opencv, backend = load_clip_opencv(path)
+            except Exception as e:  # recorded as this clip's failure, not raised
+                comparison = {"verdict": "fail", "reasons": [f"OpenCV: {type(e).__name__}: {e}"], "stats": None}
+            else:
+                backends[backend] += 1
+                comparison = compare_decoders(load_clip(path), opencv)
+            rows.append({"dataset": dataset, "id": clip_id, **comparison})
+
+    DECODER_ARTIFACT.parent.mkdir(parents=True, exist_ok=True)
+    with DECODER_ARTIFACT.open("w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            "dataset", "id", "verdict", "reasons",
+            "max_abs_r", "max_abs_g", "max_abs_b", "mean_r", "mean_g", "mean_b",
+            "disk_mean_r", "disk_mean_g", "disk_mean_b", "disk_pixels", "differing_pixels",
+        ])
+        for row in rows:
+            s = row["stats"] or {}
+            writer.writerow([
+                row["dataset"], row["id"], row["verdict"], "; ".join(row["reasons"]),
+                *(s.get("max_abs_diff") or [None] * 3),
+                *(s.get("mean_signed_diff") or [None] * 3),
+                *(s.get("disk_mean_signed_diff") or [None] * 3),
+                s.get("disk_pixels"), s.get("differing_pixels"),
+            ])
+
+    stats = [row["stats"] for row in rows if row["stats"]]
+
+    def channel_range(key: str) -> list[list[float]] | None:
+        values = np.array([s[key] for s in stats if s[key] is not None], dtype=float)
+        return [values.min(axis=0).tolist(), values.max(axis=0).tolist()] if len(values) else None
+
+    per_dataset = {}
+    for dataset in DATASETS:
+        mine = [row for row in rows if row["dataset"] == dataset]
+        per_dataset[dataset] = {
+            "clips": len(mine),
+            "verdicts": dict(Counter(row["verdict"] for row in mine)),
+            "failed": sample(f"id {row['id']}: {'; '.join(row['reasons'])}" for row in mine if row["verdict"] == "fail"),
+            "flagged": sample(f"id {row['id']}: {'; '.join(row['reasons'])}" for row in mine if row["verdict"] == "flag"),
+        }
+
+    criteria = {
+        "all_clips_compared": len(rows) == EXPECTED_CLIPS,
+        "no_clip_fails": all(row["verdict"] != "fail" for row in rows),
+    }
+    return {
+        "criteria": criteria,
+        "clips_compared": len(rows),
+        "opencv_backends": dict(backends),
+        "verdicts": dict(Counter(row["verdict"] for row in rows)),
+        "reasons_by_type": dict(Counter(
+            re.sub(r"-?\d+(\.\d+)?", "#", reason) for row in rows for reason in row["reasons"]
+        )),
+        "per_dataset": per_dataset,
+        "diagnostics": {
+            "max_abs_diff_histogram_rgb": [
+                {str(k): v for k, v in sorted(Counter(s["max_abs_diff"][c] for s in stats).items())} for c in range(3)
+            ],
+            "mean_signed_diff_min_max_rgb": channel_range("mean_signed_diff"),
+            "disk_mean_signed_diff_min_max_rgb": channel_range("disk_mean_signed_diff"),
+            "disk_pixels_min_max": [min(s["disk_pixels"] for s in stats), max(s["disk_pixels"] for s in stats)] if stats else None,
+        },
+        "artifact": {
+            "path": str(DECODER_ARTIFACT.relative_to(REPO)),
+            "rows": len(rows),
+            "sha256": file_sha256(DECODER_ARTIFACT),
+        },
+        "passed": all(criteria.values()),
+    }
 
 CHECKS = {
     "format": check_format,
     "uniform_frames": check_uniform_frames,
     "duplicates": check_duplicates,
+    "decoders": check_decoders,
 }
 
 

@@ -131,7 +131,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
 
 ### Data
 - **[scouting]** The disk is **orange**, not blue as DATA.md says (FFmpeg CLI and OpenCV agree pixel for pixel, F-29;
-  PyAV confirms orange, F-47; PyAV vs OpenCV differ by ≤ 3 levels, F-49 → D-05 tolerance).
+  PyAV confirms orange, F-47; PyAV vs OpenCV differ by ≤ 3 levels, F-49 → D-05 tolerance; **all 4,572 clips ok
+  under D-05, F-68**).
 - **[scouting]** Exact mapping: pixel x = 128 + 32·x_world, pixel row = 128 − 32·y_world
   (32 px/m, visible area ±4 m, **y flipped**). Frame k is at t = k/24 s (clip spans 15/24 s).
 - **[scouting]** Angles use the math convention: 0° = right, **90° = up on screen**.
