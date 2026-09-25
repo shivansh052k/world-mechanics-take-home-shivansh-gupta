@@ -114,7 +114,8 @@ time-averaged 0.20 / 0.23 / 0.16, all far below block_0 (F-97; supports H-07; H-
 adjacent changes, direction with/without exit nearly identical.
 **3.6 done:** `results/layer_curves/layer_curves.png` reviewed and fixed (F-102).
 **3.7 done:** transition = index 1 (depth 1/24) for all three, robust; layer choices frozen (F-103).
-**Next:** `test_scores` once, from committed code (end of 3.2/3.5); 3.8 brief; gate.
+**Test scores done (once, committed code):** all criteria passed; test agrees with validation (F-104). 3.2 ticked.
+**Next:** 3.8 design brief (planning chat), then 3.8; gate 3.9.
 
 ---
 
@@ -234,6 +235,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/baselines/checks.json` + `artifacts/baselines/ceiling_estimates.npz` | `physics_ceiling` | Per-clip physics fit on tracked positions, validation rows only; exact on metadata positions (≤ 1.7e-13); headline quadratic R² ≥ 0.997; design-informed constant-velocity (speed) and from-rest (acceleration) reported labelled | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-98; `scripts/check_baselines.py physics_ceiling` |
 | `results/layer_curves/checks.json` | `bootstrap` | 10,000-resample clip bootstrap of probes, floors, ceiling on val_seen / val_unseen (direction also without exit); 178 point estimates = saved scores; transition index 1 in every resample; paired adjacent changes; per-value errors on val_unseen | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-101; `scripts/check_layer_curves.py bootstrap` |
 | `results/layer_curves/layer_curves.png` + `checks.json` | `figure_layer_curves` | R² and MAE / circular MAE per layer index with 95% bands, val-unseen, pixel floors, physics-fit ceiling, transition line | ℹ️ visual (reviewed) | F-102; `scripts/check_layer_curves.py figure_layer_curves` |
+| `results/layer_curves/checks.json` + `artifacts/probes/test_predictions.npz` | `test_scores` | One-time test scores (test_seen / test_unseen, direction also without exit) for all probe sites, floors, ceiling, with 95% CIs and per-value errors; 84 refits reproduce saved alphas and validation predictions; code committed | ✅ passed (from committed code) | F-104; `scripts/check_layer_curves.py test_scores` |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
@@ -339,7 +341,9 @@ what's next.
 - 3.6: `figure_layer_curves` (dataviz method; project palette); Claude Code reviewed the PNG, found three defects
   (label collision, log ticks, spine colour), fixed, re-reviewed clean (F-102). **Step 3.6 done.**
 - Committed and pushed (user said). 3.7 recorded from saved evidence (F-103); plan ticked. **Step 3.7 done.**
-- **Next:** `test_scores`.
+- `test_scores` added and committed before running; run once, passed (F-104). Identical speed-embedding val/test
+  scores checked and explained. **Step 3.2 done (test).**
+- **Next:** 3.8 brief.
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each
