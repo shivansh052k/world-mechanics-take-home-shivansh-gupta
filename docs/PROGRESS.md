@@ -67,7 +67,9 @@ sites, batch size, dtype, gate re-run cost) sent to the planning chat. Meanwhile
 to `src/vjepa_physics/data.py`; smoke test reproduced the saved `design_balance` group counts and octant × group table
 exactly (F-75). **2.1 and 2.3 settled by the planning chat** (D-38 splits and 2.2 criteria, D-39 keep and flag, D-40
 extraction settings, D-41 layout and gate; D-37 extended to Phase 2). Hash-guard helper `verified_artifact` added to
-`evidence.py` (F-76). **Next:** step 2.2 (build the splits).
+`evidence.py` (F-76). **2.2a done:** `src/vjepa_physics/splits.py` gives D-38's counts exactly (direction 813 / 203 / 94 /
+203 / 187; speed and acceleration 832 / 208 / 96 / 208 / 192), shared speed/acceleration assignment, deterministic,
+byte-identical writes (F-77). **Next:** 2.2b `scripts/check_splits.py build` (writes `artifacts/manifests/splits.csv`).
 
 ---
 
@@ -246,7 +248,9 @@ what's next.
 - Planning-chat decisions recorded: D-37 extended; D-38–D-41; plan steps 2.1 and 2.3 ticked.
 - `verified_artifact` (hash-guarded artifact read) added to `evidence.py`; `file_sha256` chunked (same digests). Smoke
   test (terminal, not saved): tracking npz and flags table pass, wrong hash and missing key rejected (F-76).
-- **Next:** step 2.2.
+- 2.2a: `src/vjepa_physics/splits.py` (D-38 rules as pure functions, CSV write/read). Smoke test (terminal, not saved):
+  every count, the shared assignment, 16/4/4, rebuild and byte-identical writes as predicted (F-77). **Step 2.2a done.**
+- **Next:** 2.2b `check_splits.py build`.
 
 ### 2026-09-24 — Phase 1 started (data audit)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (directly, after each step);

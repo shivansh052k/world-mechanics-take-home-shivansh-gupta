@@ -189,6 +189,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `probe_clip` (stream facts, exact-fraction timestamps), `tracking` (`disk_mask`, `count_objects`, `track_disk`;
   tracked positions for all clips in `artifacts/tracking/tracked_disk.npz`, hash in `results/tracking/checks.json`),
   `flags` (`clip_flags`: exit, clipped, sub_patch_motion, frozen_start; table `results/tracking/clip_flags.csv`, D-36),
+  `splits` (`ROLES`, `SEEN_ROLES`, `HELD_OUT`, `VAL_UNSEEN`, `build_splits`, `write_splits`, `read_splits`: D-38 rules
+  from metadata + seed only; speed/acceleration share one assignment by id),
   `plotting` (`DATASET_COLOUR`, ink/grid colours, `sequential_cmap`, `style_axes`: use for every figure; open and
   review each PNG after rendering).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
