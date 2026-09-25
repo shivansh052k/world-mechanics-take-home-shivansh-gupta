@@ -380,7 +380,20 @@ what's next.
 - 3.8e-1: `probes.clip_folds`, `grouped_cv_ridge` (exact grouped K-fold ridge via per-fold sums + one eigh per fold);
   vs sklearn fold-by-fold `Ridge`: CV MSE 3.8e-16 rel, same alpha (31.6, interior), coef/intercept/predict ≤ 1.3e-14;
   each clip in one fold (12 per fold); seeded folds repeatable.
-- **Next:** 3.8e-2 `spatial_generalization` (commit first, ~12–15 min), then 3.8 test once, heatmap figure, 3.9 gate.
+- 3.8e-2 `spatial_generalization` passed (9/9, 7.9 min; read from the saved file): same / across / gap val-seen R²
+  (mean of 4 halves) idx 0 0.002 / −0.006 / 0.008; idx 1 0.814 / 0.811 / 0.003; idx 9 0.974 / 0.957 (across peak) /
+  0.018; idx 13 0.980 (same peak) / 0.945 / 0.034; idx 20 0.948 / 0.819 / 0.129; idx 24 0.932 / 0.829 / 0.103.
+  Across-curve transition idx 1 in 10,000 / 10,000 resamples, 80 % rise idx 1. Claude Code's hypothesis (early gap
+  that closes) was wrong: generalization is near-perfect from block_0 and degrades from idx 11. Differs from the
+  paper's reported one-third (F-93) under our time-averaged interpretation (D-47) → planning chat.
+  `patch_alpha_diagnostic` saved with git_dirty true → hash check at 3.9.
+- Planning chat on 3.8 findings: report as a finding with caveats (time-averaging, simpler stimuli, 256 vs 224 px P-09,
+  unspecified protocol); H-11 hypothesis; "per-patch ≈ pooled from ~⅓ depth" labelled post hoc; per-time-step
+  per-patch re-extraction = future work. Two checks first: (1) negative control, off-path val-seen R² at idx 0 ≈ 0 —
+  already in `patch_breakdown`: mean −0.0034, median −0.0017 (256 patches) ✓; (2) position-only baseline (tracked mean
+  disk position → (sin, cos), train fit, val-seen score; ≥ 0.5 → planning chat); Claude Code adds a cubic variant
+  (own addition, reported alongside). Then test once (per-patch mean, off-path, across-half; saved probes), 3.9 gate.
+- **Next:** 3.8f `position_baseline`.
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each

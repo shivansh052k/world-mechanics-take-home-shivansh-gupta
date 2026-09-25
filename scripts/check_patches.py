@@ -20,7 +20,7 @@ from vjepa_physics.data import read_manifest, resolve
 from vjepa_physics.curves import LATE_RISE_FRACTION, TRANSITION_FRACTION, rise_index, transition_points
 from vjepa_physics.evidence import code_changes, file_sha256, repo_root, save_result, verified_artifact
 from vjepa_physics.extraction import PATCHES, PATCH_SITES, patch_activations
-from vjepa_physics.geometry import DISK_RADIUS_PX, PATCH_GRID, PATCH_PX, distance_to_patches
+from vjepa_physics.geometry import DISK_RADIUS_PX, PATCH_GRID, PATCH_PX, distance_to_patches, pixel_to_world
 from vjepa_physics.joined import load_joined
 from vjepa_physics.metrics import (
     angles_from_sincos, bootstrap_indices, circular_errors, percentile_interval, r2, resampled_r2,
@@ -28,6 +28,7 @@ from vjepa_physics.metrics import (
 from vjepa_physics.model import load_model, weights_fingerprint
 from vjepa_physics.preprocess import preprocess_clip
 from sklearn.linear_model import RidgeCV
+from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 
 from vjepa_physics.probes import (
@@ -69,6 +70,9 @@ N_FOLDS = 5  # clip-grouped CV folds for the shared probe's alpha
 SAMPLES_PER_CLIP = 128  # patches in one half
 SUMS_TOLERANCE = 1e-10  # R² from per-clip sums vs directly from the samples
 SPATIAL = PATCH_DIR / "spatial_generalization.npz"
+
+POSITION_THRESHOLD = 0.5  # linear position-only val_seen R² at or above this goes to the planning chat
+SHOWN_OFF_PATH = (0, 1, 6, 13, 24)  # off-path curve indices printed next to the baseline
 
 def array_sha256(a: np.ndarray) -> str:
     """SHA-256 of an array's bytes in C order."""
@@ -668,6 +672,57 @@ def check_spatial_generalization() -> dict:
         "passed": all(criteria.values()),
     }
 
+def mean_disk_position(table: dict) -> np.ndarray:
+    """(clips, 2) tracked disk position (x, y) in metres, averaged over the frames with disk pixels."""
+    x, y = pixel_to_world(table["centre"][..., 0], table["centre"][..., 1])  # NaN where no disk
+    world = np.where((table["area"] > 0)[..., None], np.stack([x, y], axis=-1), np.nan)
+    return np.nanmean(world, axis=1)
+
+
+def cubic_terms(position: np.ndarray) -> np.ndarray:
+    """(clips, 9) monomials of (x, y) up to degree 3."""
+    x, y = position[:, 0], position[:, 1]
+    return np.column_stack([x, y, x * x, x * y, y * y, x**3, x * x * y, x * y * y, y**3])
+
+
+def check_position_baseline() -> dict:
+    """How much of (sin, cos) the disk's mean position alone predicts: a bound on position-driven direction readout.
+
+    Features: each clip's tracked mean disk position (linear), and its monomials up to degree 3 (cubic). Ordinary
+    least squares with intercept (n = 813 >> 2 or 9 features, so no regularisation or alpha choice), fit on
+    train, scored on val_seen and val_unseen with the probes' metrics; printed next to the off-path curve. Passes
+    if: the code is committed; every clip has a finite position; fits used exactly the train clips; the linear
+    baseline's val_seen R² < POSITION_THRESHOLD (otherwise the result goes to the planning chat).
+    """
+    committed = not code_changes(repo_root())
+    table = load_joined(VARIABLE)
+    roles, labels = table["role"], table["label"]
+    y = probe_targets(VARIABLE, labels)
+    train = roles == "train"
+    position = mean_disk_position(table)
+    features = {"linear": position, "cubic": cubic_terms(position)}
+
+    baselines = {}
+    for name, x in features.items():
+        model = LinearRegression().fit(x[train], y[train])
+        baselines[name] = {
+            "features": int(x.shape[1]), "n_fit": int(train.sum()),
+            **{role: probe_scores(VARIABLE, labels[roles == role], model.predict(x[roles == role]))
+               for role in EVAL_ROLES},
+        }
+    off_path = json.loads(OUT.read_text())["patch_breakdown"]["result"]["curve"]
+    criteria = {
+        "code_committed": committed,
+        "positions_finite": bool(np.isfinite(position).all()),
+        "fit_on_train_only": all(b["n_fit"] == EXPECTED_FIT for b in baselines.values()),
+        "linear_position_r2_below_threshold": baselines["linear"]["val_seen"]["r2"] < POSITION_THRESHOLD,
+    }
+    return {
+        "criteria": criteria, "threshold": POSITION_THRESHOLD, "baselines": baselines,
+        "off_path_val_seen_r2_mean": {PATCH_SITES[i]: off_path[i]["off_path"]["r2_mean"] for i in SHOWN_OFF_PATH},
+        "passed": all(criteria.values()),
+    }
+
 
 CHECKS = {
     "extract_direction": check_extract_direction,
@@ -677,6 +732,7 @@ CHECKS = {
     "patch_breakdown": check_patch_breakdown,
     "patch_bootstrap": check_patch_bootstrap,
     "spatial_generalization": check_spatial_generalization,
+    "position_baseline": check_position_baseline,
 }
 
 
