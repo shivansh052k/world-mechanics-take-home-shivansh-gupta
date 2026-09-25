@@ -52,3 +52,34 @@ def pooled_activations(model: VJEPA2Model, x: torch.Tensor) -> torch.Tensor:
 def all_token_mean(pooled: torch.Tensor) -> torch.Tensor:
     """(..., 8, D) per-time-step means -> (..., D) mean over all 2048 tokens (every time step has 256 tokens)."""
     return pooled.mean(dim=-2)
+
+
+# Per-patch vectors for the local probes: indices 0-24 (embedding and the 24 blocks), each patch position's
+# token averaged over the 8 time steps. Patch p = row * 16 + col (token t * 256 + row * 16 + col).
+PATCH_SITES = SITES[:25]
+PATCHES = TOKENS_PER_STEP  # 256 patch positions
+
+
+def pool_patches(tokens: torch.Tensor) -> torch.Tensor:
+    """(B, 2048, D) tokens -> (B, 256, D): each patch position's mean over the 8 time steps."""
+    batch, n_tokens, dim = tokens.shape
+    if n_tokens != TIME_STEPS * TOKENS_PER_STEP:
+        raise ValueError(f"expected {TIME_STEPS * TOKENS_PER_STEP} tokens, got {n_tokens}")
+    return tokens.reshape(batch, TIME_STEPS, TOKENS_PER_STEP, dim).mean(dim=1)
+
+
+def patch_activations(model: VJEPA2Model, x: torch.Tensor) -> torch.Tensor:
+    """(B, 16, 3, 256, 256) encoder input on the model's device -> (B, 25, 256, 1024) float32 on the CPU.
+
+    Axis 1 follows PATCH_SITES (indices 0-24; the final norm is not included), axis 2 the patch positions.
+    Pooling runs on the model's device, then the result moves to the CPU with no dtype change. Raises if a site
+    is missing or any value is non-finite or the result is all zero.
+    """
+    with capture_encoder(model) as acts, torch.inference_mode():
+        model(pixel_values_videos=x, skip_predictor=True)
+        if set(acts) != set(PATCH_SITES):
+            raise RuntimeError(f"captured {sorted(acts)}, expected {list(PATCH_SITES)}")
+        pooled = torch.stack([pool_patches(acts[site]) for site in PATCH_SITES], dim=1).to("cpu")
+    if not torch.isfinite(pooled).all() or not pooled.any():
+        raise RuntimeError("patch activations are non-finite or all zero")
+    return pooled

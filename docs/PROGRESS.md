@@ -115,7 +115,8 @@ adjacent changes, direction with/without exit nearly identical.
 **3.6 done:** `results/layer_curves/layer_curves.png` reviewed and fixed (F-102).
 **3.7 done:** transition = index 1 (depth 1/24) for all three, robust; layer choices frozen (F-103).
 **Test scores done (once, committed code):** all criteria passed; test agrees with validation (F-104). 3.2 ticked.
-**Next:** 3.8 design brief (planning chat), then 3.8; gate 3.9.
+**3.8 design settled (D-47, per-patch).** **3.8a done:** `pool_patches`, `patch_activations` (F-105).
+**Next:** 3.8b per-patch extraction check (~39 GB, commit first); 3.8c–e analyses; test once; gate 3.9.
 
 ---
 
@@ -343,7 +344,9 @@ what's next.
 - Committed and pushed (user said). 3.7 recorded from saved evidence (F-103); plan ticked. **Step 3.7 done.**
 - `test_scores` added and committed before running; run once, passed (F-104). Identical speed-embedding val/test
   scores checked and explained. **Step 3.2 done (test).**
-- **Next:** 3.8 brief.
+- 3.8 brief sent; planning chat revised the design to per-patch (D-47); H-08b closed as an observation.
+- 3.8a: per-patch pooling in `extraction.py`; smoke test as predicted (F-105). **Step 3.8a done.**
+- **Next:** 3.8b.
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each
