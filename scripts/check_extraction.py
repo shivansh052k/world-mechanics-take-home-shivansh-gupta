@@ -16,13 +16,16 @@ from pathlib import Path
 import numpy as np
 import torch
 
+from scipy.spatial.distance import pdist
+
 from vjepa_physics.activations import capture_encoder
-from vjepa_physics.data import read_manifest, resolve
-from vjepa_physics.evidence import file_sha256, save_result
+from vjepa_physics.data import DATASETS, read_manifest, resolve
+from vjepa_physics.evidence import file_sha256, save_result, verified_artifact
 from vjepa_physics.extraction import SITES, TIME_STEPS, TOKENS_PER_STEP, all_token_mean, pooled_activations
 from vjepa_physics.model import load_model, weights_fingerprint
 from vjepa_physics.preprocess import preprocess_clip
-from vjepa_physics.reproducibility import set_seeds
+from vjepa_physics.reproducibility import SEED, set_seeds
+from vjepa_physics.splits import read_splits
 from vjepa_physics.video import load_clip
 
 REPO = Path(__file__).resolve().parents[1]
@@ -41,6 +44,10 @@ MIN_FREE_BYTES = 10 * 10**9  # free disk required before extracting: 10 GB
 # fp32 pooling vs a float64 pool of the same tokens, relative: generous for fp32 rounding of 256-token means.
 POOL_TOLERANCE = 1e-6
 PROGRESS_EVERY = 100
+
+SPLITS_CHECKS = REPO / "results/splits/checks.json"  # the split file's hash is recorded under key "build"
+SPOT_CLIPS = 16  # clips per dataset re-extracted live and compared bit for bit (also the reproducibility gate)
+DISTANCE_SITES = ("embedding", "block_23")  # sites for the nearest-pair diagnostic
 
 
 def sci(value: float) -> float:
@@ -195,11 +202,82 @@ def extract(dataset: str) -> dict:
     }
 
 
+def check_verify() -> dict:
+    """The stored activations are intact, aligned with the splits, and reproducible live.
+
+    Reads every activation array, id file and the split file through their recorded hashes. Passes if, per
+    dataset: the array is (clips, 26, 8, 1024) float32 with DATA.md's clip count; its ids equal the split file's
+    ids for that dataset, in order; and SPOT_CLIPS clips drawn without replacement by one generator seeded with
+    SEED (datasets in DATASETS order), re-extracted live, equal their stored rows bit for bit. And the weights
+    fingerprint is unchanged at the end. Diagnostics per dataset: per-site mean and std of the all-token means;
+    at DISTANCE_SITES, the smallest Euclidean distance between two clips' all-token means, absolute and relative
+    to the median distance (a near-duplicate guard).
+    """
+    splits = read_splits(verified_artifact(SPLITS_CHECKS, "build"))
+    rng = np.random.default_rng(SEED)
+    set_seeds()
+    model, _ = load_model(DEVICE)
+
+    per_dataset, dataset_criteria = {}, {}
+    for dataset in DATASETS:
+        key = f"extract_{dataset}"
+        array = np.load(verified_artifact(OUT, key), mmap_mode="r")
+        ids = np.load(verified_artifact(OUT, key, "ids"))
+        split_ids = [r["id"] for r in splits if r["dataset"] == dataset]
+
+        root = DATA / dataset
+        paths = {row["id"]: resolve(root, row["video"]) for row in read_manifest(root)}
+        picks = np.sort(rng.choice(len(ids), size=SPOT_CLIPS, replace=False)).tolist()
+        mismatched = []
+        for i in picks:
+            x = preprocess_clip(load_clip(paths[int(ids[i])])).unsqueeze(0).to(DEVICE)
+            if not np.array_equal(pooled_activations(model, x)[0].numpy(), array[i]):
+                mismatched.append(int(ids[i]))
+
+        means = array.mean(axis=2, dtype=np.float64)  # (clips, 26, 1024): all-token mean per site
+        nearest = {}
+        for site in DISTANCE_SITES:
+            distances = pdist(means[:, SITES.index(site)])
+            nearest[site] = {
+                "min": sci(float(distances.min())),
+                "min_over_median": sci(float(distances.min() / np.median(distances))),
+            }
+
+        criteria = {
+            "shape_and_dtype": array.shape == (EXPECTED_CLIPS[dataset], len(SITES), TIME_STEPS, HIDDEN)
+            and array.dtype == np.float32,
+            "ids_match_splits": ids.tolist() == split_ids,
+            "spot_clips_bit_identical": not mismatched,
+        }
+        dataset_criteria[dataset] = criteria
+        per_dataset[dataset] = {
+            "criteria": criteria,
+            "spot_clip_ids": [int(ids[i]) for i in picks],
+            "mismatched_clip_ids": mismatched,
+            "site_mean": [sci(float(v)) for v in means.mean(axis=(0, 2))],
+            "site_std": [sci(float(v)) for v in means.std(axis=(0, 2))],
+            "nearest_pair_distance": nearest,
+        }
+        del array, means
+
+    fingerprint_ok = weights_fingerprint(model) == REFERENCE_FINGERPRINT
+    return {
+        "criteria": {"weights_unchanged": fingerprint_ok},
+        "device": DEVICE,
+        "seed": SEED,
+        "spot_clips_per_dataset": SPOT_CLIPS,
+        "sites": list(SITES),
+        "per_dataset": per_dataset,
+        "passed": fingerprint_ok and all(all(c.values()) for c in dataset_criteria.values()),
+    }
+
+
 CHECKS = {
     "pipeline": check_pipeline,
     "extract_direction": lambda: extract("direction"),
     "extract_speed": lambda: extract("speed"),
     "extract_acceleration": lambda: extract("acceleration"),
+    "verify": check_verify,
 }
 
 

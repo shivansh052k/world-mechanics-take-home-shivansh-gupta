@@ -75,7 +75,8 @@ the planning chat (one seen direction angle without a test_seen clip; direction 
 **2.4a done:** `src/vjepa_physics/extraction.py` (26 sites, per-time-step pooling; test clip within 5.3e-8 of a float64
 pool, repeat bit-exact, F-80). **2.4b done:** `scripts/check_extraction.py` committed, `pipeline` passed (F-81).
 **2.5 done:** all 4,572 clips extracted, every criterion passed, test clip reproduced bit for bit, ~106 min (F-82).
-**Next:** 2.6 verify the extracted activations (seeded live re-extraction spot check).
+**2.6 done:** `verify` passed — hash-guarded, ids = splits, 48 seeded clips re-extracted live bit-identical (F-83).
+**Next:** 2.7 joined dataset artifacts (`joined.py`, `check_joined.py build`).
 
 ---
 
@@ -182,6 +183,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/splits/checks.json` + `artifacts/manifests/splits.csv` | `build` | Splits from metadata + seed 0 (D-38): every clip once, counts = D-38, unseen values as decided and absent from seen roles, 16/4/4 per seen value, speed = acceleration roles by id, rebuild byte-identical; file SHA-256 `bb64b6ae…` | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-78; `scripts/check_splits.py build` |
 | `results/extraction/checks.json` | `pipeline` | Test clip through the extraction code: (1, 26, 8, 1024) fp32, repeat bit-exact, 5.3e-8 vs float64 pool, weights unchanged; pooled SHA-256 `29997d28…` for the full run to reproduce | ✅ passed | F-81; `scripts/check_extraction.py pipeline` |
 | `results/extraction/checks.json` + `artifacts/activations/*.npy` | `extract_direction`, `extract_speed`, `extract_acceleration` | Pooled activations (clips, 26, 8, 1024) fp32 for all 4,572 clips; read-back = computed, finite, non-zero, distinct, weights unchanged, speed test clip = `pipeline`; SHA-256 direction `0d36d025…`, speed `0c57023e…`, acceleration `067aad46…` (git-ignored, verified) | ✅ passed | F-82; `scripts/check_extraction.py extract_<dataset>` |
+| `results/extraction/checks.json` | `verify` | Arrays, ids, split file hash-guarded; shapes; ids = split ids in order; 16 seeded clips per dataset re-extracted live bit-identical (also the gate test, D-41); site scale and nearest-pair diagnostics | ✅ passed | F-83; `scripts/check_extraction.py verify` |
 | `results/splits/checks.json` | `balance` | Flags, mean cos/sin θ per role; direction group × octant per role; clips per seen angle (test_seen: one angle with 0) | ℹ️ diagnostic | F-79; `scripts/check_splits.py balance` |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
@@ -276,7 +278,9 @@ what's next.
   1.25 → 1.55 s per clip, slowing under sustained load); file sizes as predicted; speed test clip = `pipeline`;
   speed/acceleration id files identical (same ids, expected) (F-82). **Step 2.5 done.** Tip given: back up
   `artifacts/activations/` (git-ignored; only recovery is a ~1 h 45 min re-extraction; hashes prove a restored copy).
-- **Next:** 2.6.
+- 2.6: `verify` passed (48/48 live clips bit-identical, ids = splits, weights unchanged). Claude Code's prediction that
+  site std grows with depth was wrong: it peaks at block_8 (≈ 8.1) and falls to 3.3 at block_23 (F-83). **Step 2.6 done.**
+- **Next:** 2.7.
 
 ### 2026-09-24 — Phase 1 started (data audit)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (directly, after each step);
