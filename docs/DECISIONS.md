@@ -314,4 +314,4 @@ Scouting source: planning-chat sandbox scripts (not in the repo), run on 2026-09
 - 2026-09-25 — step 2.7a: added F-84 (`joined.py` join logic; in-memory tables reproduce F-72 flag counts and F-70 pixel errors).
 - 2026-09-25 — step 2.7b: added F-85 (joined tables saved and checked; hashes recorded).
 - 2026-09-25 — step 2.8: added F-86 (all artifacts re-hashed, loader round trip, disk and memory within budget; own additions: exact file sizes, 50% memory limit).
-- 2026-09-25 — step 2.9: added F-87 (clean re-run of the 6 re-runnable keys identical; extraction keys untouched per D-41).
+- 2026-09-25 — step 2.9: added F-87 (clean re-run of the 6 re-runnable keys identical; extraction keys untouched per D-41). Report `results/splits_and_extraction/report.md` written. **Phase 2 passed.**

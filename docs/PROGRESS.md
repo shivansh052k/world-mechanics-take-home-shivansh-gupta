@@ -79,8 +79,9 @@ pool, repeat bit-exact, F-80). **2.4b done:** `scripts/check_extraction.py` comm
 **2.7a done:** `src/vjepa_physics/joined.py` (`build_table`, `load_joined`); in-memory tables reproduce F-72's flag
 counts and F-70's pixel errors (F-84). **2.7b done:** `scripts/check_joined.py build` passed; tables in
 `artifacts/joined/` (F-85). **2.8 done:** `storage` passed — 10/10 artifacts match, `load_joined` round trip, 3.628 GiB
-on disk, peak RSS 2.43 GB with a full array in RAM (F-86). **2.9 gate:** clean re-run identical (F-87). **Next:** report
-`results/splits_and_extraction/report.md`.
+on disk, peak RSS 2.43 GB with a full array in RAM (F-86). **2.9 gate:** clean re-run identical (F-87); report
+`results/splits_and_extraction/report.md` written by the user from a Claude Code draft. **Phase 2 passed (2026-09-25).**
+**Next: Phase 3, step 3.1 (probe family, O-05)** — a planning-chat decision; waiting for the user's go.
 
 ---
 
@@ -90,7 +91,7 @@ on disk, peak RSS 2.43 GB with a full array in RAM (F-86). **2.9 gate:** clean r
 |---|---|---|
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
 | 1 — Data audit | ✅ Passed gate | 1.1–1.13 done; report `results/data_audit/report.md`; clean re-run identical (`documented_fields`, `documented_colour` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
-| 2 — Splits and activation extraction | 🟨 In progress | 2.1, 2.3 settled (D-38–D-41); `motion_group` / `angle_octant` in `data.py` (F-75) |
+| 2 — Splits and activation extraction | ✅ Passed gate | 2.1–2.9 done (D-38–D-41, F-75–F-87); report `results/splits_and_extraction/report.md`; clean re-run identical; two balance notes await the planning chat |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
 | 5 — Part 1c: Multi-probe subspace steering | ⬜ Not started | |
@@ -191,6 +192,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/joined/checks.json` + `artifacts/joined/*.npz` | `build` | Joined tables per variable from hash-guarded sources: all clips, one entry per clip, role counts = D-38, flag counts = F-72, tracking ≤ 1 px by id, rebuild byte-identical; SHA-256 direction `3a3790ac…`, speed `1f81b80e…`, acceleration `9e191b64…` (git-ignored) | ✅ passed | F-85; `scripts/check_joined.py build` |
 | `results/joined/checks.json` | `storage` | 10/10 artifacts match their hashes; `load_joined` round trip (memory-mapped, aligned); activation files exact size; 3.628 GiB on disk; ≥ 10 GB free; full largest array in RAM → peak RSS 2.43 GB | ✅ passed | F-86; `scripts/check_joined.py storage` |
 | `results/evidence/checks.json` | `rerun_identical_splits_extraction` | 6 split/extraction/joined keys re-run from clean HEAD `910a798`, results identical (only `storage` machine-state fields excluded); `extract_*` untouched (D-41); `verify` re-run; split file unchanged | ✅ passed | F-87; `scripts/check_evidence.py rerun_identical_splits_extraction` |
+| `results/splits_and_extraction/report.md` | — | Splits and extraction report: splits, how representations are extracted and pooled, joined tables, storage, clean re-run, notes, open items | ✅ gate passed | F-87; user-written from saved evidence |
 | `results/splits/checks.json` | `balance` | Flags, mean cos/sin θ per role; direction group × octant per role; clips per seen angle (test_seen: one angle with 0) | ℹ️ diagnostic | F-79; `scripts/check_splits.py balance` |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
@@ -298,8 +300,10 @@ what's next.
   `910a798`, tree clean.
 - 2.9b: the 6 re-runnable keys re-run from clean HEAD `910a798`, all passed (user said; terminal output not available);
   `rerun_identical_splits_extraction` passed, read by Claude Code from the saved result (F-87).
-- **Next:** 2.9c report `results/splits_and_extraction/report.md` (user-written from Claude Code's draft), then Phase 2
-  passed.
+- 2.9c: report `results/splits_and_extraction/report.md` written by the user from Claude Code's draft (saved evidence
+  only; documents how representations are extracted and pooled, as the README asks). **Step 2.9 done — Phase 2 passed.**
+- **Next:** Phase 3, step 3.1 (O-05 probe family) with the planning chat; pending notes for it: two split-balance notes
+  (F-79) and the own-addition criteria listed in F-78, F-81, F-83, F-86.
 
 ### 2026-09-24 — Phase 1 started (data audit)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (directly, after each step);

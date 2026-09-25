@@ -1,6 +1,6 @@
 # CLAUDE.md — World Mechanics take-home (V-JEPA physics)
 
-Last updated: 2026-09-25 (Phase 2 started; step 2.1 with the planning chat). Read this fully at the start of every session.
+Last updated: 2026-09-25 (Phase 2 passed; next: step 3.1). Read this fully at the start of every session.
 
 ---
 
@@ -147,6 +147,11 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   (52 direction clips), and 149 exit frames keep faint codec residue. A uniform frame is not a decode fault. (F-66)
 - **[verified, F-65] Confound:** acceleration clips start from rest, so within a dataset the magnitude
   label is perfectly correlated (r = 1.0) with distance travelled (and mean speed).
+- **[verified, F-78, F-87]** Splits (D-38): `artifacts/manifests/splits.csv` (committed); 12 held-out values per dataset
+  (4 val-unseen, 8 test-unseen); speed/acceleration 16/4/4 per seen value, shared by id; direction stratified group × octant.
+  All flagged clips kept (D-39). Read them only via `load_joined` / `verified_artifact`.
+- **[verified, F-82–F-87]** Activations: (clips, 26, 8, 1024) fp32 per dataset in `artifacts/activations/` (git-ignored,
+  hash-recorded; only recovery = ~1 h 45 min re-extraction). Plot index = `hidden_states` index; final norm separate (D-40).
 - **[verified, F-65/F-72]** Tiny motion: 48 acceleration clips move < 3 px in total; some are frozen
   for up to 11 frames after frame 0.
 

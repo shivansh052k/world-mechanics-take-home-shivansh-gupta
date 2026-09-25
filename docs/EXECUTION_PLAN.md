@@ -54,7 +54,7 @@ Last updated: 2026-09-24.
 - [x] **2.6 Verify the extracted activations** — *done 2026-09-25: `verify` passed, 48 live clips bit-identical; fp32 kept, so no fp16 comparison (D-40) (F-83).* — Correct shapes, no NaNs or Infs, spot-checked against Phase 0's single-clip results. If fp16 is being considered, compare it against fp32 on train/validation probe metrics only (never test).
 - [x] **2.7 Build joined dataset artifacts** — *done 2026-09-25: `joined.py` (F-84), `check_joined.py build` passed (F-85); tables pin the activation hash instead of copying the arrays.* — One clean, loadable file per variable pairing each clip's pooled activations with its label, split assignment, Phase 1's audit flags (exit/clipped, tiny-motion, frozen-start), and Phase 1's tracked disk positions, so later phases never re-join by hand.
 - [x] **2.8 Storage integrity** — *done 2026-09-25: `storage` passed (F-86).* — Checksum the saved artifacts and confirm disk and memory use fit the budget.
-- [ ] **2.9 Phase 2 report and gate** — Save the report to `results/`, update `PROGRESS.md`, and confirm Phase 2 has passed.
+- [x] **2.9 Phase 2 report and gate** — *passed 2026-09-25: clean re-run identical, extraction verified by a 48-clip bit-identical re-extraction (`rerun_identical_splits_extraction`, F-87); report `results/splits_and_extraction/report.md`.* — Save the report to `results/`, update `PROGRESS.md`, and confirm Phase 2 has passed.
 
 ## Phase 3 — Part 1a: Layer-wise probing
 **Goal:** Find where direction, speed, and acceleration become readable across the model's layers.
