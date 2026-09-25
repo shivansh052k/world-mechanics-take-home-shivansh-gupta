@@ -38,8 +38,13 @@ def code_changes(root: Path) -> list[str]:
     return git(root, "status", "--porcelain", "--untracked-files=all", "--", *CODE_PATHS).splitlines()
 
 
-def file_sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+def file_sha256(path: Path, chunk_bytes: int = 1 << 24) -> str:
+    """SHA-256 of a file, read in 16 MB chunks, so multi-GB activation files never sit in memory whole."""
+    digest = hashlib.sha256()
+    with open(path, "rb") as f:
+        while block := f.read(chunk_bytes):
+            digest.update(block)
+    return digest.hexdigest()
 
 
 def code_hashes(root: Path) -> dict:
@@ -73,3 +78,21 @@ def save_result(out: Path, name: str, result: dict) -> None:
     data = json.loads(out.read_text()) if out.exists() else {}
     data[name] = {"provenance": provenance(), "result": result}
     out.write_text(json.dumps(data, indent=2) + "\n")
+    
+
+def verified_artifact(checks_json: Path, key: str, field: str = "artifact") -> Path:
+    """Absolute path of an artifact an earlier check saved, after checking it still has the recorded SHA-256.
+
+    Reads result[field] = {"path": <repo-relative path>, "sha256": <hex>} stored under `key` in
+    `checks_json`. Raises KeyError if that check or field was never saved, and RuntimeError if the
+    file's SHA-256 differs from the recorded one (the artifact changed since the check that wrote it).
+    """
+    entry = json.loads(checks_json.read_text())[key]["result"][field]
+    path = repo_root() / entry["path"]
+    actual = file_sha256(path)
+    if actual != entry["sha256"]:
+        raise RuntimeError(
+            f"{entry['path']}: SHA-256 {actual} differs from the {entry['sha256']} recorded by "
+            f"'{key}' in {checks_json.name}; re-run that check first"
+        )
+    return path
