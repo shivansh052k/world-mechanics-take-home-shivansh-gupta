@@ -51,8 +51,11 @@ failed only on `no_uniform_frames` (185 uniform exit frames in 52 direction clip
 diagnostic shows they are clean exit frames but its pre-stated rule failed narrowly on 3 frames (kept on record),
 `duplicates` passed (no duplicate clips; `artifacts/` ignore rule verified) (F-66, F-67, D-34). **Waiting on the
 planning chat** for the `format` re-score. **1.8 done:** `check_videos.py decoders` — PyAV vs OpenCV verdict ok on
-all 4,572 clips under D-05 (F-68). **Next: 1.9 (full disk tracking and mapping verification)** — waiting for the
-user's go.
+all 4,572 clips under D-05 (F-68). **1.9 done:** `src/vjepa_physics/tracking.py` (`disk_mask`, `count_objects`,
+`track_disk`) and `scripts/check_tracking.py`: `track` passed (one disk per frame; positions in
+`artifacts/tracking/tracked_disk.npz`), `mapping` passed (≤ 0.783 px on all fully visible frames; scale 32 px/m and
+origin 128 fitted from data; frame 0 = start everywhere), `documented_colour` failed as predicted (orange, not blue)
+(F-69–F-71, D-35). **Next: 1.10 (flag problem clips)** — waiting for the user's go.
 
 ---
 
@@ -61,7 +64,7 @@ user's go.
 | Phase | Status | Notes |
 |---|---|---|
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
-| 1 — Data audit | 🟨 In progress | 1.1–1.8 run (`documented_fields` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
+| 1 — Data audit | 🟨 In progress | 1.1–1.9 run (`documented_fields`, `documented_colour` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
@@ -148,6 +151,9 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/videos/checks.json` | `uniform_frames` | Diagnostic of the `format` failure: all 185 uniform frames = background, no disk pixels, at clip end; no disk pixels anywhere with the disk predicted fully outside; 149 exit frames keep faint residue | ⚠️ `explanation_holds: false` — pre-stated rule (c) missed 3 frames by 0.39–0.55 px (within mapping error + pixel-centre offset); kept on record | F-66; `scripts/check_videos.py uniform_frames` |
 | `results/videos/checks.json` | `duplicates` | 4,572 distinct whole-clip hashes across datasets; test clip hash = Phase 0 `repeat`; per-clip hashes in `artifacts/videos/decoded_hashes.csv` (git-ignored, verified) | ✅ passed | F-67, D-34; `scripts/check_videos.py duplicates` |
 | `results/videos/checks.json` | `decoders` | PyAV vs OpenCV under D-05 on all 4,572 clips: all ok (0 flag, 0 fail); max \|diff\| R 3 / G ≤ 3 / B ≤ 3; means (+1.00–1.02, +0.01–0.02, +1.00); per-clip stats in `artifacts/videos/decoder_comparison.csv` | ✅ passed | F-68, D-05; `scripts/check_videos.py decoders` |
+| `results/tracking/checks.json` | `track` | Disk tracked in all 73,152 frames; one piece in every frame with disk pixels; direction 347 disk-less / 466 border frames (199 clips), ≥ 6 fully visible frames per clip; area 346–353 px; positions + core colour in `artifacts/tracking/tracked_disk.npz` (git-ignored, verified) | ✅ passed | F-69, D-35; `scripts/check_tracking.py track` |
+| `results/tracking/checks.json` | `mapping` | Tracked centre within 1 px of metadata in all 72,339 fully visible frames (max 0.783); frame 0 = start in every clip; fitted ±32.00 px/m, origin 128.00; alternatives rejected per dataset; angle median error 0.3–0.5° | ✅ passed | F-70, D-35; `scripts/check_tracking.py mapping` |
+| `results/tracking/checks.json` | `documented_colour` | DATA.md's "blue disk" | ❌ failed as predicted: red brightest and R > G > B in all 4,572 clips, core (234.2, 114.5, 39.2); kept on record | F-71, D-35; `scripts/check_tracking.py documented_colour` |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
@@ -170,7 +176,8 @@ file, the direction set has none; proposal: keep on record, labels from the data
 (F-61, D-32). (2) D-29's limitation can be narrowed (the HF conversion asserts parity at atol 1e-3, F-58). (3) Step 1.7 `format` / `uniform_frames` failures: proposed
 re-score (uniform frame allowed only if it equals the background, lies at the clip end, and the disk is predicted
 outside by more than r − 1 px — or defer to tracked positions after 1.9); exit-frame residue (149 frames) for O-02
-(F-66).
+(F-66). (4) DATA.md's "blue disk" is wrong: the disk is orange in every clip (`documented_colour` failed, kept on
+record, F-71).
 
 To confirm later:
 - **Phase 0 gate (0.18):** re-run every check once from a clean, committed tree, so the whole evidence set has
@@ -233,7 +240,11 @@ what's next.
 - 1.8: `decoders` check (reuses `vjepa_physics.decoders`, D-05 unchanged): all 4,572 clips ok; the whole-clip "no disk
   pixels" flag never triggers because exit clips show the disk in early frames (Claude Code's earlier worry was wrong)
   (F-68). **Step 1.8 done.** Closes the Phase 0 report item "decoder tolerance not yet applied to all clips".
-- **Next:** 1.9 (full disk tracking and mapping verification) — waiting for the user's go.
+- 1.9: `tracking.py` added (reproduces F-47/F-48 on the test clip); `track` (one decoding pass, npz artifact with core
+  colour), `mapping` (hash-guarded read of the npz; fitted scale/origin; alternatives; angle), `documented_colour`
+  (pass/fail by the user's choice; failed as predicted). Claude Code's predicted max error (≈ 0.707 px) was slightly
+  low (observed 0.783). **Step 1.9 done.**
+- **Next:** 1.10 (flag problem clips) — waiting for the user's go.
 
 ### 2026-09-24 — Step 0.8d started in Claude Code
 - Claude Code permissions set: `Bash`, `NotebookEdit` denied; edits denied everywhere except `docs/` and

@@ -130,12 +130,12 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   optional (D-30). HF ships the target (EMA) encoder; the conversion asserted parity with Meta's model at atol 1e-3 (F-58).
 
 ### Data
-- **[scouting]** The disk is **orange**, not blue as DATA.md says (FFmpeg CLI and OpenCV agree pixel for pixel, F-29;
+- **[verified, all clips, F-71]** The disk is **orange** (core ≈ 234, 114, 39), not blue as DATA.md says (FFmpeg CLI and OpenCV agree pixel for pixel, F-29;
   PyAV confirms orange, F-47; PyAV vs OpenCV differ by ≤ 3 levels, F-49 → D-05 tolerance; **all 4,572 clips ok
   under D-05, F-68**).
-- **[scouting]** Exact mapping: pixel x = 128 + 32·x_world, pixel row = 128 − 32·y_world
+- **[verified, all clips, F-70]** Exact mapping (≤ 0.783 px on every fully visible frame; frame 0 = start): pixel x = 128 + 32·x_world, pixel row = 128 − 32·y_world
   (32 px/m, visible area ±4 m, **y flipped**). Frame k is at t = k/24 s (clip spans 15/24 s).
-- **[scouting]** Angles use the math convention: 0° = right, **90° = up on screen**.
+- **[verified, all clips, F-70]** Angles use the math convention: 0° = right, **90° = up on screen**.
 - **[scouting]** All three manifests are **sorted by label** → naive head/tail splits are invalid.
 - **[scouting]** Direction set: no `primary_label`/`magnitude` fields; 50% constant velocity
   (1–7 m/s), 50% accelerating from rest (2–10 m/s²); starts within ±2 m.
@@ -182,7 +182,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `data/<variable>/`; take labels from the dataset name, never `primary_label`, which direction lacks),
   `geometry` (`frame_times`, `distance_travelled`, `speed_at`: s = v t + a t²/2, frame k at t = k/fps;
   `world_to_pixel`, `disk_centres`, `distance_outside_image`: 32 px/m, origin 128, y flipped), `video` also has
-  `probe_clip` (stream facts, exact-fraction timestamps).
+  `probe_clip` (stream facts, exact-fraction timestamps), `tracking` (`disk_mask`, `count_objects`, `track_disk`;
+  tracked positions for all clips in `artifacts/tracking/tracked_disk.npz`, hash in `results/tracking/checks.json`).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.

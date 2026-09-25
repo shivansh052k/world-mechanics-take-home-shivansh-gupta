@@ -37,7 +37,7 @@ Last updated: 2026-09-24.
 - [x] **1.6 Magnitude-vs-distance confound analysis** — Quantify how strongly speed/acceleration correlate with distance travelled.
 - [x] **1.7 Video format and duplicate check (all clips)** — *run; `format` failed on uniform exit frames (kept on record), re-score pending the planning chat (F-66).* — Every clip decodes to 16 frames at 256×256, 24 fps, with no corrupted or fully-black frames; hash decoded frames to catch duplicate clips, both within and **across** all three datasets.
 - [x] **1.8 Two-decoder cross-check** — Compare PyAV and OpenCV on every clip under D-05's tolerance criterion (per clip FAIL / FLAG: frame count and shape, max |diff|, whole-clip and disk-pixel mean signed diff per channel), saving per-clip stats. Pixel-identical is not achievable on our install (F-49). PyAV stays the only decoder the model sees.
-- [ ] **1.9 Full disk tracking and mapping verification (all clips)** — Track the disk in every frame, confirm the pixel/metre, angle, and timing mapping holds everywhere, and save the tracked per-frame positions for reuse in later phases.
+- [x] **1.9 Full disk tracking and mapping verification (all clips)** — Track the disk in every frame, confirm the pixel/metre, angle, and timing mapping holds everywhere, and save the tracked per-frame positions for reuse in later phases.
 - [ ] **1.10 Flag problem clips** — Frame-exit, clipped, tiny-motion, and frozen-start clips, with counts and identifiers saved for later use.
 - [ ] **1.11 Build contact sheets and audit figures** — Visual evidence for the presentation.
 - [ ] **1.12 Compare results against DECISIONS.md and update it** — Confirm or correct every scouting fact (F-21–F-36) with full-data results; update status tags.
