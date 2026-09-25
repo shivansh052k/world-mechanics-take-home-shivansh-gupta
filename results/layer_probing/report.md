@@ -26,7 +26,7 @@ depends on it.
 | | Direction | Speed | Acceleration |
 |---|---|---|---|
 | Val-seen R², index 0 (patch embedding) | 0.122 | 0.000 | 0.000 |
-| Val-seen R², index 1 (after block 1) | 0.854 | 0.981 | 0.976 |
+| Val-seen R², index 1 (after the first block) | 0.854 | 0.981 | 0.976 |
 | Best val-seen R² (index) | 0.991 (18–19) | 0.995 (19) | 0.992 (18) |
 | Transition index (first reaching half the rise) | 1 | 1 | 1 |
 | Test-seen / test-unseen R², index 18 | 0.989 / 0.989 | 0.992 / 0.993 | 0.990 / 0.990 |

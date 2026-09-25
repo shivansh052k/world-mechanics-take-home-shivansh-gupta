@@ -1,6 +1,6 @@
 # CLAUDE.md — World Mechanics take-home (V-JEPA physics)
 
-Last updated: 2026-09-25 (Phase 3 gate evidence passed, F-115; report + slides next; then Phase 4 brief; lean mode D-48). Read this fully at the start of every session.
+Last updated: 2026-09-25 (Phase 3 passed, F-115; next: Phase 4 design brief; lean mode D-48). Read this fully at the start of every session.
 
 ---
 
