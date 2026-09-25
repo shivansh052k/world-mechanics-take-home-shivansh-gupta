@@ -6,6 +6,7 @@ Run from the repo root, with .venv active:
 Each check prints its result and stores it under its own key in results/evidence/checks.json.
 """
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -59,6 +60,10 @@ VOLATILE_FIELDS = {("joined", "storage"): ("free_disk_bytes", "memory")}
 # holds exactly the file hashes it recorded; otherwise it is re-run from committed code.
 HASH_CHECK_SUBJECTS = ("probes", "baselines", "layer_curves", "patches")
 CODE_PREFIXES = ("src/", "scripts/")  # the recorded code files live here
+
+# Keys re-run at the probing gate because their code changed before it was committed (code_hash_check).
+PROBING_RERUNS = (("baselines", "pixel_grams"), ("baselines", "pixel_floor"), ("probes", "shuffled_labels"),
+                  ("layer_curves", "bootstrap"), ("patches", "patch_alpha_diagnostic"))
 
 
 def scratch_git(root: Path, *args: str) -> None:
@@ -315,11 +320,55 @@ def check_code_hash_check() -> dict:
     return {"head": head, "keys_checked": len(keys), "commits_searched": len(tree_cache), "keys": keys,
             "rerun_needed": rerun, "passed": not rerun}   
 
+
+def without_machine_state(subject: str, key: str, result: dict) -> dict:
+    """A copy of `result` without timing and memory fields (they describe the machine, not the result)."""
+    r = copy.deepcopy(result)
+    if (subject, key) == ("baselines", "pixel_grams"):
+        r.pop("peak_rss_bytes", None)
+        for variable in ("direction", "speed", "acceleration"):
+            r[variable].pop("decode_seconds", None)
+            for gram in r[variable]["grams"].values():
+                gram.pop("gram_seconds", None)
+    return r
+
+
+def check_rerun_identical_probing() -> dict:
+    """The probing-stage keys re-run from committed code reproduce their committed results exactly.
+
+    For every key in PROBING_RERUNS, compares the result now on disk with the one committed at HEAD (read with
+    git show), minus machine-state fields. Passes if every result is identical, every re-run was saved from
+    committed code (git_dirty false) and at a different commit than the committed result.
+    """
+    root = repo_root()
+    head = git(root, "rev-parse", "HEAD").strip()
+    rows = []
+    for subject, key in PROBING_RERUNS:
+        path = f"results/{subject}/checks.json"
+        committed = json.loads(git(root, "show", f"HEAD:{path}"))[key]
+        current = json.loads((REPO / path).read_text())[key]
+        rows.append({
+            "subject": subject, "key": key,
+            "identical": without_machine_state(subject, key, current["result"])
+            == without_machine_state(subject, key, committed["result"]),
+            "rerun_commit": current["provenance"]["git_commit"],
+            "rerun_dirty": current["provenance"]["git_dirty"],
+            "committed_commit": committed["provenance"]["git_commit"],
+        })
+    criteria = {
+        "results_identical": all(r["identical"] for r in rows),
+        "reruns_from_committed_code": all(r["rerun_dirty"] is False for r in rows),
+        "actually_rerun": all(r["rerun_commit"] != r["committed_commit"] for r in rows),
+    }
+    return {"head": head, "criteria": criteria, "keys": rows, "passed": all(criteria.values())}
+
+
 CHECKS = {
     "dirty_flag": check_dirty_flag,
     "rerun_identical": check_rerun_identical,
     "rerun_identical_splits_extraction": check_rerun_identical_splits_extraction,
     "code_hash_check": check_code_hash_check,
+    "rerun_identical_probing": check_rerun_identical_probing,
 }
 
 def main() -> None:
