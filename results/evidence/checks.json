@@ -361,12 +361,10 @@
   },
   "code_hash_check": {
     "provenance": {
-      "utc": "2026-09-25T23:16:01+00:00",
-      "git_commit": "16ad174dd29b027a13cbf9030a9c8ab0275d2ef5",
-      "git_dirty": true,
-      "git_dirty_paths": [
-        " M scripts/check_evidence.py"
-      ],
+      "utc": "2026-09-25T23:35:46+00:00",
+      "git_commit": "afb5c356435407966d86efb471b21ea24cc5d398",
+      "git_dirty": false,
+      "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
@@ -392,9 +390,9 @@
           "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
           "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
           "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
-          "scripts/check_evidence.py": "7b34e2a3144807b852c86f28777d81233172ec7d0a062aeefd9bebb88369cdc8"
+          "scripts/check_evidence.py": "5cc8f510ec632537598dae471d38bc0022277a7572d119d88043269fa38d8ade"
         },
-        "combined_sha256": "207175b2d4bb61de528c381c366aac672b601fc8ba8466d89a2d768348ce8d8c"
+        "combined_sha256": "13cd81194c542f16d7d0aa48f8f246292b4d9c30c18f9d14cf4b3c913651ff21"
       },
       "versions": {
         "av": "18.1.0",
@@ -409,7 +407,7 @@
       }
     },
     "result": {
-      "head": "16ad174dd29b027a13cbf9030a9c8ab0275d2ef5",
+      "head": "afb5c356435407966d86efb471b21ea24cc5d398",
       "keys_checked": 18,
       "commits_searched": 15,
       "keys": [
@@ -424,26 +422,26 @@
         {
           "subject": "probes",
           "key": "shuffled_labels",
-          "recorded_commit": "88decbb0380f651a8b8723fa8da86a608cf4c2b7",
-          "git_dirty": true,
-          "files": 23,
-          "matching_commit": null
+          "recorded_commit": "8121797997ec68fd425feb2b55173a333ed5fde3",
+          "git_dirty": false,
+          "files": 24,
+          "matching_commit": "8121797997ec68fd425feb2b55173a333ed5fde3"
         },
         {
           "subject": "baselines",
           "key": "pixel_grams",
-          "recorded_commit": "a1c4beb9662a793edd95fb52c521a19adc7fc4b3",
-          "git_dirty": true,
-          "files": 23,
-          "matching_commit": null
+          "recorded_commit": "8121797997ec68fd425feb2b55173a333ed5fde3",
+          "git_dirty": false,
+          "files": 24,
+          "matching_commit": "8121797997ec68fd425feb2b55173a333ed5fde3"
         },
         {
           "subject": "baselines",
           "key": "pixel_floor",
-          "recorded_commit": "a1c4beb9662a793edd95fb52c521a19adc7fc4b3",
-          "git_dirty": true,
-          "files": 23,
-          "matching_commit": null
+          "recorded_commit": "8121797997ec68fd425feb2b55173a333ed5fde3",
+          "git_dirty": false,
+          "files": 24,
+          "matching_commit": "8121797997ec68fd425feb2b55173a333ed5fde3"
         },
         {
           "subject": "baselines",
@@ -456,10 +454,10 @@
         {
           "subject": "layer_curves",
           "key": "bootstrap",
-          "recorded_commit": "5b03a2a71de07c39cc105728000fd6ee97b9fc66",
-          "git_dirty": true,
+          "recorded_commit": "8121797997ec68fd425feb2b55173a333ed5fde3",
+          "git_dirty": false,
           "files": 24,
-          "matching_commit": null
+          "matching_commit": "8121797997ec68fd425feb2b55173a333ed5fde3"
         },
         {
           "subject": "layer_curves",
@@ -504,10 +502,10 @@
         {
           "subject": "patches",
           "key": "patch_alpha_diagnostic",
-          "recorded_commit": "692e6313b9a6b5c52ede609b4a54a432d4fcd98b",
-          "git_dirty": true,
+          "recorded_commit": "8121797997ec68fd425feb2b55173a333ed5fde3",
+          "git_dirty": false,
           "files": 24,
-          "matching_commit": null
+          "matching_commit": "8121797997ec68fd425feb2b55173a333ed5fde3"
         },
         {
           "subject": "patches",
@@ -558,14 +556,107 @@
           "matching_commit": "16ad174dd29b027a13cbf9030a9c8ab0275d2ef5"
         }
       ],
-      "rerun_needed": [
-        "probes/shuffled_labels",
-        "baselines/pixel_grams",
-        "baselines/pixel_floor",
-        "layer_curves/bootstrap",
-        "patches/patch_alpha_diagnostic"
+      "rerun_needed": [],
+      "passed": true
+    }
+  },
+  "rerun_identical_probing": {
+    "provenance": {
+      "utc": "2026-09-25T23:35:34+00:00",
+      "git_commit": "afb5c356435407966d86efb471b21ea24cc5d398",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "f81858b19b20464506e46c798b3568138a80495d3c737897d863cf0c3ff6ed25",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "ff963eb6aa3d212df13dd5a3a822cff23c667f17c7f3b9c619b3ea47d53e2e31",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_evidence.py": "5cc8f510ec632537598dae471d38bc0022277a7572d119d88043269fa38d8ade"
+        },
+        "combined_sha256": "13cd81194c542f16d7d0aa48f8f246292b4d9c30c18f9d14cf4b3c913651ff21"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "head": "afb5c356435407966d86efb471b21ea24cc5d398",
+      "criteria": {
+        "results_identical": true,
+        "reruns_from_committed_code": true,
+        "actually_rerun": true
+      },
+      "keys": [
+        {
+          "subject": "baselines",
+          "key": "pixel_grams",
+          "identical": true,
+          "rerun_commit": "8121797997ec68fd425feb2b55173a333ed5fde3",
+          "rerun_dirty": false,
+          "committed_commit": "a1c4beb9662a793edd95fb52c521a19adc7fc4b3"
+        },
+        {
+          "subject": "baselines",
+          "key": "pixel_floor",
+          "identical": true,
+          "rerun_commit": "8121797997ec68fd425feb2b55173a333ed5fde3",
+          "rerun_dirty": false,
+          "committed_commit": "a1c4beb9662a793edd95fb52c521a19adc7fc4b3"
+        },
+        {
+          "subject": "probes",
+          "key": "shuffled_labels",
+          "identical": true,
+          "rerun_commit": "8121797997ec68fd425feb2b55173a333ed5fde3",
+          "rerun_dirty": false,
+          "committed_commit": "88decbb0380f651a8b8723fa8da86a608cf4c2b7"
+        },
+        {
+          "subject": "layer_curves",
+          "key": "bootstrap",
+          "identical": true,
+          "rerun_commit": "8121797997ec68fd425feb2b55173a333ed5fde3",
+          "rerun_dirty": false,
+          "committed_commit": "5b03a2a71de07c39cc105728000fd6ee97b9fc66"
+        },
+        {
+          "subject": "patches",
+          "key": "patch_alpha_diagnostic",
+          "identical": true,
+          "rerun_commit": "8121797997ec68fd425feb2b55173a333ed5fde3",
+          "rerun_dirty": false,
+          "committed_commit": "692e6313b9a6b5c52ede609b4a54a432d4fcd98b"
+        }
       ],
-      "passed": false
+      "passed": true
     }
   }
 }

@@ -131,7 +131,7 @@ on/off-path, 3.8e spatial generalization; test once; 3.9 gate (four re-runs: `pi
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
 | 1 — Data audit | ✅ Passed gate | 1.1–1.13 done; report `results/data_audit/report.md`; clean re-run identical (`documented_fields`, `documented_colour` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
 | 2 — Splits and activation extraction | ✅ Passed gate | 2.1–2.9 done (D-38–D-41, F-75–F-87); report `results/splits_and_extraction/report.md`; clean re-run identical; two balance notes await the planning chat |
-| 3 — Part 1a: Layer-wise probing | 🟨 In progress | 3.1 settled (D-42–D-46); 3.2 validation curves done (F-92); 3.8 repurposed (D-46) |
+| 3 — Part 1a: Layer-wise probing | 🟨 Gate evidence passed (F-115); report + slides pending | 3.1–3.8 done (F-88–F-114; D-42–D-48); transition idx 1 for all three (mean-pooled) and for per-patch direction; test once (F-104, F-113) |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
 | 5 — Part 1c: Multi-probe subspace steering | ⬜ Not started | |
 | 6 — Part 2: Spline steering | ⬜ Not started | |
@@ -241,6 +241,16 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/layer_curves/checks.json` | `bootstrap` | 10,000-resample clip bootstrap of probes, floors, ceiling on val_seen / val_unseen (direction also without exit); 178 point estimates = saved scores; transition index 1 in every resample; paired adjacent changes; per-value errors on val_unseen | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-101; `scripts/check_layer_curves.py bootstrap` |
 | `results/layer_curves/layer_curves.png` + `checks.json` | `figure_layer_curves` | R² and MAE / circular MAE per layer index with 95% bands, val-unseen, pixel floors, physics-fit ceiling, transition line | ℹ️ visual (reviewed) | F-102; `scripts/check_layer_curves.py figure_layer_curves` |
 | `results/layer_curves/checks.json` + `artifacts/probes/test_predictions.npz` | `test_scores` | One-time test scores (test_seen / test_unseen, direction also without exit) for all probe sites, floors, ceiling, with 95% CIs and per-value errors; 84 refits reproduce saved alphas and validation predictions; code committed | ✅ passed (from committed code) | F-104; `scripts/check_layer_curves.py test_scores` |
+| `results/patches/checks.json` + `artifacts/patches/direction.npy` | `extract_direction`, `verify` | Per-patch time-averaged direction activations (1500, 25, 256, 1024), 39.3 GB, patch mean = all-token mean ≤ 6.5e-8; 16 clips re-extracted bit-identical | ✅ passed | F-107 |
+| `results/patches/checks.json` + `patch_probes.npz` | `patch_probes` | 6,400 per-patch probes; mean per-patch R² curve; fitted probes saved | ❌ failed `no_alpha_failure` (20 lower-edge alphas at idx 0), kept on record; no transition result depends on it | F-108 |
+| `results/patches/checks.json` | `patch_alpha_diagnostic` | Tie explanation for the 20 failures (rule fixed first) | ⚠️ diagnostic, `explanation_holds: false` (H-10 not supported) | F-108 |
+| `results/patches/checks.json` + `patch_breakdown.npz` | `patch_breakdown` | On/off-path breakdown; off-path idx 0 ≈ 0 (negative control), 0.648 at idx 1 | ✅ passed | F-109 |
+| `results/patches/checks.json` | `patch_bootstrap` | Headline CIs, transition distribution, gap to mean-pooled | ✅ passed | F-110 |
+| `results/patches/checks.json` + `spatial_generalization.npz` | `spatial_generalization` | Shared probe per half, clip-grouped CV; same vs across, gap | ✅ passed | F-111 |
+| `results/patches/checks.json` | `position_baseline` | Position-only baseline, linear 0.197 / cubic 0.211 < 0.5 | ✅ passed | F-112 |
+| `results/patches/checks.json` + `patch_test_scores.npz` | `patch_test_scores` | One-time test of per-patch mean, off-path, across-half (saved probes, exact reproduction) | ✅ passed (committed code) | F-113 |
+| `results/patches/local_to_global.png` + `checks.json` | `figure_local_to_global` | Heatmaps + local-to-global curves | ℹ️ visual (reviewed) | F-114 |
+| `results/evidence/checks.json` | `code_hash_check`, `rerun_identical_probing` | Phase 3 gate: 18 keys matched to commits holding their exact code; 5 re-runs identical | ✅ passed | F-115 |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
@@ -406,9 +416,12 @@ what's next.
   vs per-patch mean vs off/on-path vs position-only; same vs other half with gap). Claude Code's first review: legend
   collided with the position line, uneven heatmap spacing, tall colour bar → fixed; second review clean.
   **Step 3.8 done.**
-- **Next:** 3.9 gate: (a) hash-check key in `check_evidence.py`; (b) re-run the keys it flags (expected:
-  `pixel_grams` → `pixel_floor` → `shuffled_labels` → `bootstrap`, plus any 3.8 key saved dirty); (c) full docs pass,
-  report, 1–2 slides, talk outline (8.3).
+- 3.9a `code_hash_check`: 18 keys, 5 flagged (as predicted; Claude Code's "~25 keys" count was wrong). Lost
+  `pixel_grams` entry in `check_baselines.py` `CHECKS` restored. 3.9b: 5 re-runs from `8121797`. 3.9c
+  `rerun_identical_probing` passed (all identical); `code_hash_check` re-run passed (`rerun_needed` empty) (F-115).
+  Full Phase 3 docs pass done (F-107–F-115, H-10/H-10b/H-11).
+- **Next:** 3.9d Phase 3 report (`results/layer_probing/report.md`), 1–2 slides in the slide log, talk outline (8.3);
+  then commit + push; then Phase 4 design brief.
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each

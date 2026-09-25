@@ -1,6 +1,6 @@
 # CLAUDE.md — World Mechanics take-home (V-JEPA physics)
 
-Last updated: 2026-09-25 (Phase 3 in progress: 3.1–3.7 and test done; 3.8 per-patch extraction running; lean mode D-48). Read this fully at the start of every session.
+Last updated: 2026-09-25 (Phase 3 gate evidence passed, F-115; report + slides next; then Phase 4 brief; lean mode D-48). Read this fully at the start of every session.
 
 ---
 
@@ -161,6 +161,11 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   All flagged clips kept (D-39). Read them only via `load_joined` / `verified_artifact`.
 - **[verified, F-82–F-87]** Activations: (clips, 26, 8, 1024) fp32 per dataset in `artifacts/activations/` (git-ignored,
   hash-recorded; only recovery = ~1 h 45 min re-extraction). Plot index = `hidden_states` index; final norm separate (D-40).
+- **[verified, F-92–F-115] Phase 3 results:** mean-pooled probes: transition idx 1 (block_0) for all three
+  variables, R² ≈ 0.99 by idx ~18, test agrees (F-104); pixel floors far below, physics ceiling above. Per-patch
+  direction (39 GB per-patch array in `artifacts/patches/`): transition idx 1, off-path patches readable from block_0,
+  spatial generalization near-perfect early and degrading late (unlike the paper's one-third, under our time-averaged
+  interpretation). Index-0 per-patch alpha failure kept on record (F-108).
 - **[verified, F-65/F-72]** Tiny motion: 48 acceleration clips move < 3 px in total; some are frozen
   for up to 11 frames after frame 0.
 
@@ -211,7 +216,16 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   tracked disk, theta/speed/acceleration/motion, direction group/octant, plus key "activations" (clips, 26, 8, 1024)
   memory-mapped; every file hash-guarded, activation hash pinned in the table),
   `plotting` (`DATASET_COLOUR`, ink/grid colours, `sequential_cmap`, `style_axes`: use for every figure; open and
-  review each PNG after rendering).
+  review each PNG after rendering),
+  `metrics` (`r2`, `mae`, `sincos_targets`, `angles_from_sincos`, `circular_errors`, `circular_mae`; bootstrap
+  `bootstrap_indices`, `resampled_r2`, `resampled_mean`, `percentile_interval`),
+  `probes` (`site_features` all-token mean, `probe_targets`, `fit_probe` = train-only z-score + RidgeCV LOO,
+  `alpha_verdict` (D-42 rule), `probe_scores`; `clip_folds`, `grouped_cv_ridge` = exact clip-grouped K-fold ridge),
+  `baselines` (`physics_fit` quadratic / linear / from_rest; `pixel_matrix`, `exact_gram`, `kernel_ridge`),
+  `curves` (`rise_index`, `largest_jump_index`, `transition_points`: D-43 rules), `geometry` also `pixel_to_world`,
+  `distance_to_patches`, `DISK_RADIUS_PX`; `extraction` also `pool_patches`, `patch_activations` (per-patch, idx 0–24).
+  Phase 3 scripts: `check_probes.py`, `check_baselines.py`, `check_layer_curves.py`, `check_patches.py`;
+  gate keys in `check_evidence.py` (`code_hash_check`, `rerun_identical_probing`).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.
