@@ -176,7 +176,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
 - `src/vjepa_physics/` — the installable package (D-20; `pyproject.toml` at the root, installed
   with `python -m pip install -e .`). Import as `from vjepa_physics.<module> import …`.
   Modules so far: `checkpoint` (pinned model id/revision/weights hash), `video` (`load_clip`),
-  `preprocess` (`preprocess_clip`), `evidence` (`save_result` with provenance, used by check scripts),
+  `preprocess` (`preprocess_clip`), `evidence` (`save_result` with provenance, used by check scripts; `verified_artifact` = hash-guarded read of a
+  recorded artifact, use it for every artifact a check reads; chunked `file_sha256`),
   `model` (`load_model`, `weights_fingerprint`), `reproducibility` (`set_seeds`, `SEED`),
   `activations` (`capture_encoder`, `GRID`, `as_grid`), `intervention` (`edit_encoder`, `encoder_sites`),
   `forecast` (`encode`, `predict`, `training_target`), `decoders` (`load_clip_opencv`, `compare_decoders`),

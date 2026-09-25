@@ -65,7 +65,9 @@ of all 21 audit keys reproduced every committed result (`rerun_identical`, F-74)
 **Phase 2 started (2026-09-25).** Step 2.1 decision brief (O-01–O-03, plus D-37 scope and the 2.3 items O-04, O-06,
 sites, batch size, dtype, gate re-run cost) sent to the planning chat. Meanwhile `motion_group` and `angle_octant` added
 to `src/vjepa_physics/data.py`; smoke test reproduced the saved `design_balance` group counts and octant × group table
-exactly (F-75). **Next:** record the planning chat's answers, then step 2.2 (build the splits).
+exactly (F-75). **2.1 and 2.3 settled by the planning chat** (D-38 splits and 2.2 criteria, D-39 keep and flag, D-40
+extraction settings, D-41 layout and gate; D-37 extended to Phase 2). Hash-guard helper `verified_artifact` added to
+`evidence.py` (F-76). **Next:** step 2.2 (build the splits).
 
 ---
 
@@ -75,7 +77,7 @@ exactly (F-75). **Next:** record the planning chat's answers, then step 2.2 (bui
 |---|---|---|
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
 | 1 — Data audit | ✅ Passed gate | 1.1–1.13 done; report `results/data_audit/report.md`; clean re-run identical (`documented_fields`, `documented_colour` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
-| 2 — Splits and activation extraction | 🟨 In progress | 2.1 brief with the planning chat; `motion_group` / `angle_octant` in `data.py` (F-75) |
+| 2 — Splits and activation extraction | 🟨 In progress | 2.1, 2.3 settled (D-38–D-41); `motion_group` / `angle_octant` in `data.py` (F-75) |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
 | 5 — Part 1c: Multi-probe subspace steering | ⬜ Not started | |
@@ -192,15 +194,11 @@ the 24-clip angles are 0°–151.875°); O-02 exit (113) / clipped (199) clips, 
 at 10 m/s², 149 exit frames with residue; O-03 `sub_patch_motion` and `frozen_start` are label-driven (a label range, not
 data quality); flags table `results/tracking/clip_flags.csv`; stratification cells 13–20 clips (F-63, F-72, D-36).
 
-**Awaiting the planning chat (blocks 2.2 and 2.4):** step 2.1 brief — O-01 held-out values (proposal: speed/acceleration
-stride-5 indices {4, 9, …, 59}, val-unseen {9, 24, 39, 54}, one shared id assignment 16/4/4 per seen value; direction
-angles {2, 7, 13, 18, 23, 29, 34, 39, 45, 50, 55, 61}, val-unseen {2, 18, 34, 50}, seen clips stratified group × octant),
-O-02 / O-03 (proposal: keep all, flag, report by flag and magnitude bin), proposed 2.2 pass criteria; whether D-37
-extends to Phase 2; 2.3 items (O-04 pooling, O-06 numbering, sites 25 vs 26, batch size 1, fp32 storage) and whether
-the gate must re-run the full extraction. Phase 2 layout proposed (not yet approved): package `splits.py`,
-`extraction.py`, `joined.py`, hash-guard helper in `evidence.py`; scripts `check_splits.py`, `check_extraction.py`
-(subject `extraction`, since `results/activations/` is taken), `check_joined.py`; joined files small, pinning the
-activation `.npy` hash and memory-mapping it.
+**Settled by the planning chat (2026-09-25):** 2.1 and 2.3 — D-38 (held-out values, shared 16/4/4 assignment, direction
+stratification, 2.2 pass criteria), D-39 (keep and flag; direction headlines with and without exit clips), D-40
+(per-time-step pooling, 26 sites, index convention, batch 1, fp32, free disk ≥ 10 GB), D-41 (layout; gate = seeded
+16-clip-per-dataset re-extraction, extraction code committed before the real run); D-37 extended to Phase 2. Joined
+files stay small, pinning the activation `.npy` hash and memory-mapping it (Claude Code design, within D-41).
 
 Awaiting the planning chat (not blocking): DATA.md's "blue disk" is wrong — the disk is orange in every clip
 (`documented_colour` failed, kept on record, F-71).
@@ -245,7 +243,10 @@ what's next.
 - `motion_group` and `angle_octant` added to `src/vjepa_physics/data.py` (Phase 1 scripts keep their local copies, so
   their code hashes stay unchanged). Smoke test (terminal, not saved): group counts and octant × group table equal
   `design_balance` exactly, cells 13–20, octant edges correct, θ = 360 rejected (F-75).
-- **Next:** planning-chat answers → step 2.2.
+- Planning-chat decisions recorded: D-37 extended; D-38–D-41; plan steps 2.1 and 2.3 ticked.
+- `verified_artifact` (hash-guarded artifact read) added to `evidence.py`; `file_sha256` chunked (same digests). Smoke
+  test (terminal, not saved): tracking npz and flags table pass, wrong hash and missing key rejected (F-76).
+- **Next:** step 2.2.
 
 ### 2026-09-24 — Phase 1 started (data audit)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (directly, after each step);

@@ -46,9 +46,9 @@ Last updated: 2026-09-24.
 ## Phase 2 — Splits and activation extraction
 **Goal:** Create fair train/validation/test splits and extract the model's activations for every clip.
 
-- [ ] **2.1 Decide and document the split details** — Within D-14's two-level structure, settle what remains of O-01 (exact held-out value indices and counts, direction stratification on motion group × angle octant), plus O-02 (frame-exit/clipped clips) and O-03 (tiny-motion clips), using Phase 1's flags and confirmed counts.
+- [x] **2.1 Decide and document the split details** — *settled 2026-09-25: D-38 (splits, 2.2 criteria), D-39 (keep and flag).* — Within D-14's two-level structure, settle what remains of O-01 (exact held-out value indices and counts, direction stratification on motion group × angle octant), plus O-02 (frame-exit/clipped clips) and O-03 (tiny-motion clips), using Phase 1's flags and confirmed counts.
 - [ ] **2.2 Build and save the splits** — Train / val-seen / val-unseen / test-seen / test-unseen assignments for all three datasets, saved to `artifacts/manifests/`; verify no leakage between them and print balance tables (per value, per motion group).
-- [ ] **2.3 Decide and document pooling and layer numbering** — Settle O-04 (how activations are pooled) and O-06 (what "layer 0" means), matching Phase 0's hooks.
+- [x] **2.3 Decide and document pooling and layer numbering** — *settled 2026-09-25: D-40 (per-time-step means, 26 sites, index = `hidden_states` index, batch 1, fp32); gate subset re-extraction D-41.* — Settle O-04 (how activations are pooled) and O-06 (what "layer 0" means), matching Phase 0's hooks.
 - [ ] **2.4 Build the extraction pipeline** — Load each clip, preprocess it (Phase 0's settings), run it through the model, and pool the activations at every layer.
 - [ ] **2.5 Run full extraction** — All 4,572 clips, watching for crashes, skipped clips, or data loss.
 - [ ] **2.6 Verify the extracted activations** — Correct shapes, no NaNs or Infs, spot-checked against Phase 0's single-clip results. If fp16 is being considered, compare it against fp32 on train/validation probe metrics only (never test).
