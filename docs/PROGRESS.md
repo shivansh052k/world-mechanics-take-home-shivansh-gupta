@@ -393,7 +393,11 @@ what's next.
   already in `patch_breakdown`: mean −0.0034, median −0.0017 (256 patches) ✓; (2) position-only baseline (tracked mean
   disk position → (sin, cos), train fit, val-seen score; ≥ 0.5 → planning chat); Claude Code adds a cubic variant
   (own addition, reported alongside). Then test once (per-patch mean, off-path, across-half; saved probes), 3.9 gate.
-- **Next:** 3.8f `position_baseline`.
+- 3.8f `position_baseline` passed (4/4): tracked mean position → (sin, cos), OLS on train (no alpha: n ≫ p); val-seen
+  R² linear 0.197 (circ MAE 63.0°), cubic 0.211; val-unseen 0.233 / 0.255; far below off-path 0.648 (idx 1) / 0.959
+  (idx 6) → off-path readout is not explained by position. Also H-09's proposed test: position alone ≈ the
+  time-averaged pixel floor (0.197 vs 0.202, F-97) → supports H-09 (not proof).
+- **Next:** 3.8g `patch_test_scores` (one-time test of per-patch mean, off-path, across-half; saved probes, no refit).
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each

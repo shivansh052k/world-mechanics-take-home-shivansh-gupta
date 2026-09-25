@@ -74,6 +74,10 @@ SPATIAL = PATCH_DIR / "spatial_generalization.npz"
 POSITION_THRESHOLD = 0.5  # linear position-only val_seen R² at or above this goes to the planning chat
 SHOWN_OFF_PATH = (0, 1, 6, 13, 24)  # off-path curve indices printed next to the baseline
 
+TEST_ROLES = ("test_seen", "test_unseen")
+REPRODUCE_TOLERANCE = 1e-10  # saved probe re-applied vs its saved validation output (absolute; relative for sums)
+TEST_SCORES = PATCH_DIR / "patch_test_scores.npz"
+
 def array_sha256(a: np.ndarray) -> str:
     """SHA-256 of an array's bytes in C order."""
     return hashlib.sha256(np.ascontiguousarray(a).tobytes()).hexdigest()
@@ -723,6 +727,167 @@ def check_position_baseline() -> dict:
         "passed": all(criteria.values()),
     }
 
+def apply_patch_probes(x: np.ndarray, mean: np.ndarray, scale: np.ndarray, coef: np.ndarray,
+                       intercept: np.ndarray) -> np.ndarray:
+    """(n, 256, 1024) vectors of one index -> (n, 256, 2): each patch's saved probe applied to that patch."""
+    z = (x.astype(np.float64) - mean[None]) / scale[None]
+    return np.matmul(z.transpose(1, 0, 2), coef.transpose(0, 2, 1)).transpose(1, 0, 2) + intercept[None]
+
+
+def resample_counts(idx: np.ndarray, n: int) -> np.ndarray:
+    """(B, n) how often each clip is drawn in each resample (the rows of idx)."""
+    counts = np.zeros((len(idx), n))
+    np.add.at(counts, (np.repeat(np.arange(len(idx)), idx.shape[1]), idx.ravel()), 1.0)
+    return counts
+
+
+def masked_r2(counts: np.ndarray, y: np.ndarray, pred: np.ndarray, mask: np.ndarray) -> np.ndarray:
+    """(B, P) per-patch R² (mean over sin, cos) on every resample, using only clips where mask[:, p].
+
+    counts (B, n) clip multiplicities (np.ones((1, n)) = the sample itself); y (n, 2); pred (n, P, 2); mask (n, P).
+    R² on a weighted sample: SS_res and SS_tot from count-weighted sums. NaN where a resample leaves a patch
+    with constant targets.
+    """
+    m = mask.astype(np.float64)
+    n_b = counts @ m
+    out = np.zeros(n_b.shape)
+    with np.errstate(invalid="ignore", divide="ignore"):
+        for k in range(y.shape[1]):
+            yk = y[:, k][:, None]
+            ss_res = counts @ (m * (yk - pred[:, :, k]) ** 2)
+            sy, syy = counts @ (m * yk), counts @ (m * yk**2)
+            out += 1 - ss_res / (syy - sy**2 / n_b)
+    return out / y.shape[1]
+
+
+def check_patch_test_scores() -> dict:
+    """One-time test scores of the per-patch headline curves, from the saved probes (no refit).
+
+    Per test role (test_seen, test_unseen) and index: the mean per-patch R² (256 saved probes), the off-path mean
+    R² (patches with at least MIN_CATEGORY_CLIPS test clips of that role off-path), and the same- / across-half R²
+    of the saved shared probes (mean of 4 halves) with the gap; clip bootstrap (N_RESAMPLES, seed SEED) for each;
+    the transition rule on each test curve (reported only). Writes artifacts/patches/patch_test_scores.npz (test
+    predictions and per-clip sums). Passes if: the code is committed; ids align; every saved per-patch probe
+    re-applied to the validation clips reproduces its saved validation predictions within 1e-10; every saved shared
+    probe reproduces its saved val_seen residual sums within 1e-10 relative; the count-weighted bootstrap equals
+    resampled_r2 on a spot patch within 1e-10; only test rows predicted; point scores finite; the saved file equals
+    what was computed.
+    """
+    committed = not code_changes(repo_root())
+    table = load_joined(VARIABLE)
+    roles, labels = table["role"], table["label"]
+    y = probe_targets(VARIABLE, labels)
+    validation = np.flatnonzero(np.isin(roles, EVAL_ROLES))
+    seen = np.flatnonzero(roles == "val_seen")
+    test = np.flatnonzero(np.isin(roles, TEST_ROLES))
+    role_rows = {role: np.flatnonzero(roles == role) for role in TEST_ROLES}
+    patches = np.load(verified_artifact(OUT, "extract_direction"), mmap_mode="r")
+    ids = np.load(verified_artifact(OUT, "extract_direction", "ids"))
+    with np.load(verified_artifact(OUT, "patch_probes")) as f:
+        probes = {k: f[k] for k in ("scaler_mean", "scaler_scale", "coef", "intercept", "validation_predictions")}
+    with np.load(verified_artifact(OUT, "spatial_generalization")) as f:
+        shared = {k: f[k] for k in ("scaler_mean", "scaler_scale", "coef", "intercept", "val_seen_sse")}
+    halves = {h: half_patches(h) for h in HALF_NAMES}
+    n_index = len(PATCH_SITES)
+
+    test_pred = np.full((len(y), n_index, PATCHES, 2), np.nan)
+    test_sums = {role: (np.zeros((n_index, len(HALF_NAMES), 2, len(rows), 2)),
+                        np.zeros((n_index, len(HALF_NAMES), 2, len(rows))))
+                 for role, rows in role_rows.items()}
+    patch_diff, spatial_diff = [], []
+    start = time.perf_counter()
+    for i in range(n_index):
+        block = np.asarray(patches[:, i])
+        params = [probes[k][i] for k in ("scaler_mean", "scaler_scale", "coef", "intercept")]
+        again = apply_patch_probes(block[validation], *params)
+        patch_diff.append(float(np.abs(again - probes["validation_predictions"][validation, i]).max()))
+        test_pred[test, i] = apply_patch_probes(block[test], *params)
+        for h, half in enumerate(HALF_NAMES):
+            mean, scale, coef, intercept = (shared[k][i, h] for k in ("scaler_mean", "scaler_scale", "coef", "intercept"))
+            for w, target in enumerate((half, OPPOSITE[half])):
+                pred = ((half_samples(block, seen, halves[target]) - mean) / scale) @ coef.T + intercept
+                sse_val = clip_sums(labels[seen], y[seen], pred)[0]
+                saved = shared["val_seen_sse"][i, h, w]
+                spatial_diff.append(float(np.abs(sse_val - saved).max() / np.abs(saved).max()))
+                for role, rows in role_rows.items():
+                    pred = ((half_samples(block, rows, halves[target]) - mean) / scale) @ coef.T + intercept
+                    test_sums[role][0][i, h, w], test_sums[role][1][i, h, w] = clip_sums(labels[rows], y[rows], pred)
+        del block, again
+        print(f"index {i:2d} ({PATCH_SITES[i]}): {(time.perf_counter() - start) / 60:.1f} min", flush=True)
+
+    off = path_categories(table)[1]
+    curves, transitions, spot_ok = {}, {}, None
+    for role, rows in role_rows.items():
+        n = len(rows)
+        idx = bootstrap_indices(n, N_RESAMPLES, SEED)
+        counts, ones = resample_counts(idx, n), np.ones((1, n))
+        y_r, all_patches, off_r = y[rows], np.ones((n, PATCHES), dtype=bool), off[rows]
+        reported = off_r.sum(axis=0) >= MIN_CATEGORY_CLIPS
+        sse, error_sum = test_sums[role]
+        rows_out = []
+        for i in range(n_index):
+            pred_r = test_pred[rows, i]
+            per_patch_b = masked_r2(counts, y_r, pred_r, all_patches)
+            off_b = masked_r2(counts, y_r, pred_r, off_r)[:, reported]
+            if role == "test_seen" and i == 12:
+                spot = int(np.random.default_rng(SEED).integers(PATCHES))
+                spot_ok = bool(np.abs(per_patch_b[:, spot] - resampled_r2(y_r, pred_r[:, spot], idx)).max()
+                               <= REPRODUCE_TOLERANCE)
+            shared_scores = {}
+            for w, name in enumerate(("same", "across")):
+                point = np.mean([pooled_scores(y_r, sse[i, h, w], error_sum[i, h, w])[0][0] for h in range(len(HALF_NAMES))])
+                samples = np.mean([pooled_scores(y_r, sse[i, h, w], error_sum[i, h, w], idx)[0]
+                                   for h in range(len(HALF_NAMES))], axis=0)
+                shared_scores[name] = (float(point), samples)
+            circular = [circular_errors(labels[rows], angles_from_sincos(pred_r[:, p])).mean() for p in range(PATCHES)]
+            rows_out.append({
+                "index": i, "site": PATCH_SITES[i],
+                "per_patch_mean_r2": {"point": float(masked_r2(ones, y_r, pred_r, all_patches)[0].mean()),
+                                      "ci": list(percentile_interval(per_patch_b.mean(axis=1), LEVEL))},
+                "per_patch_mean_circular_mae": float(np.mean(circular)),
+                "off_path_mean_r2": {"patches": int(reported.sum()),
+                                     "point": float(masked_r2(ones, y_r, pred_r, off_r)[0][reported].mean()),
+                                     "ci": list(percentile_interval(np.nanmean(off_b, axis=1), LEVEL))},
+                **{f"{name}_r2": {"point": p, "ci": list(percentile_interval(s, LEVEL))}
+                   for name, (p, s) in shared_scores.items()},
+                "gap_r2": {"point": shared_scores["same"][0] - shared_scores["across"][0],
+                           "ci": list(percentile_interval(shared_scores["same"][1] - shared_scores["across"][1], LEVEL))},
+            })
+        curves[role] = rows_out
+        transitions[role] = {
+            name: transition_points(np.array([r[key]["point"] for r in rows_out]))
+            for name, key in (("per_patch_mean", "per_patch_mean_r2"), ("off_path_mean", "off_path_mean_r2"),
+                              ("across_half", "across_r2"))
+        }
+
+    arrays = {"sites": np.array(PATCH_SITES), "ids": table["id"], "roles": roles, "test_predictions": test_pred,
+              **{f"{role}_sse": s[0] for role, s in test_sums.items()},
+              **{f"{role}_circular_error_sum": s[1] for role, s in test_sums.items()}}
+    np.savez_compressed(TEST_SCORES, **arrays)
+    with np.load(TEST_SCORES) as saved:
+        saved_ok = set(saved.files) == set(arrays) and all(
+            np.array_equal(saved[k], v, equal_nan=v.dtype.kind == "f") for k, v in arrays.items())
+    points = [v["point"] for rows_out in curves.values() for r in rows_out for k, v in r.items() if isinstance(v, dict)]
+    criteria = {
+        "code_committed": committed,
+        "ids_aligned": bool(np.array_equal(ids, table["id"])),
+        "per_patch_probes_reproduce_validation": max(patch_diff) <= REPRODUCE_TOLERANCE,
+        "shared_probes_reproduce_validation": max(spatial_diff) <= REPRODUCE_TOLERANCE,
+        "count_bootstrap_equals_resampled_r2": bool(spot_ok),
+        "only_test_rows_predicted": bool(np.isfinite(test_pred[test]).all()
+                                         and np.isnan(np.delete(test_pred, test, axis=0)).all()),
+        "point_scores_finite": bool(np.isfinite(points).all()),
+        "saved_equals_computed": saved_ok,
+    }
+    return {
+        "criteria": criteria, "n_resamples": N_RESAMPLES, "level": LEVEL, "seed": SEED,
+        "max_reproduce_difference": {"per_patch": max(patch_diff), "shared_relative": max(spatial_diff)},
+        "curves": curves, "transitions": transitions,
+        "minutes_total": round((time.perf_counter() - start) / 60, 1),
+        "artifact": {"path": str(TEST_SCORES.relative_to(REPO)), "sha256": file_sha256(TEST_SCORES)},
+        "passed": all(criteria.values()),
+    }
+
 
 CHECKS = {
     "extract_direction": check_extract_direction,
@@ -733,6 +898,7 @@ CHECKS = {
     "patch_bootstrap": check_patch_bootstrap,
     "spatial_generalization": check_spatial_generalization,
     "position_baseline": check_position_baseline,
+    "patch_test_scores": check_patch_test_scores,
 }
 
 
