@@ -42,6 +42,13 @@ def world_to_pixel(x: float | np.ndarray, y: float | np.ndarray) -> tuple[np.nda
     return np.asarray(col), np.asarray(row)
 
 
+def pixel_to_world(col: float | np.ndarray, row: float | np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """(col, row) in pixel-index coordinates -> world position in metres; inverse of world_to_pixel (y flipped)."""
+    x = (np.asarray(col, dtype=float) - ORIGIN_PX) / PX_PER_M
+    y = (ORIGIN_PX - np.asarray(row, dtype=float)) / PX_PER_M
+    return np.asarray(x), np.asarray(y)
+
+
 def disk_centres(meta: dict) -> np.ndarray:
     """(frames, 2) predicted disk centre (col, row) in every frame of a clip, from its metadata."""
     t = frame_times(meta["fps"], meta["frames"])

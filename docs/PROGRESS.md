@@ -81,7 +81,22 @@ counts and F-70's pixel errors (F-84). **2.7b done:** `scripts/check_joined.py b
 `artifacts/joined/` (F-85). **2.8 done:** `storage` passed — 10/10 artifacts match, `load_joined` round trip, 3.628 GiB
 on disk, peak RSS 2.43 GB with a full array in RAM (F-86). **2.9 gate:** clean re-run identical (F-87); report
 `results/splits_and_extraction/report.md` written by the user from a Claude Code draft. **Phase 2 passed (2026-09-25).**
-**Next: Phase 3, step 3.1 (probe family, O-05)** — a planning-chat decision; waiting for the user's go.
+**Phase 3 started (2026-09-25).** Step 3.1 brief (O-05, feature entry F1 all-token mean / F2 flattened / F3 per-step /
+F4 PCA; recommendation closed-form ridge + all-token mean for selection) prepared for the planning chat with the pending
+Phase 2 notes and the later Phase 3 choices (3.3 permutations, 3.4 floor/ceiling details, 3.5 bootstrap, 3.7 transition
+rule, bin edges, 3.8, gate determinism). `evidence.PACKAGES` now records scikit-learn (F-88, commit `0e2f572`).
+**3.2a done:** `src/vjepa_physics/metrics.py` (R², MAE, circular error) matches sklearn and hand-worked cases (F-89).
+**3.4a done:** `baselines.physics_fit` + `geometry.pixel_to_world`; exact on metadata positions, tracked ceiling
+speed 0.033 (quadratic) / 0.009 (linear) m/s, acceleration 0.115 m/s², direction 0.30° (F-90).
+**3.1 settled by the planning chat:** D-42 (RidgeCV on the all-token mean, alpha rule; O-05 closed), D-43 (Phase 3
+settings; 3.8 skipped), D-44 (Phase 2 items closed; D-37 extended to Phase 3). Three own-addition follow-ups sent back
+(time-averaged pixel floor; scope of 3.3's circular-MAE criterion; transition-index interval).
+**3.2b done:** `src/vjepa_physics/probes.py`; leave-one-out = brute force to 1e-12; block_11 already R² ≈ 0.985–0.989
+on val-seen for all three variables (F-91).
+**3.2c done:** `scripts/check_probes.py layer_curves` passed (F-92): val-seen R² jumps from the embedding to block_0
+(speed 0.00 → 0.98, acceleration 0.00 → 0.98, direction 0.12 → 0.85), maxima ≈ 0.99 around index 18–19; transition at
+index 1 for all three by D-43's rule (hypothesis H-07). Test scores (end of 3.2) wait until 3.7 is frozen.
+**Next:** planning-chat note on the early transition (O-15); then 3.3 (shuffled labels) and 3.4 (floor), which test H-07.
 
 ---
 
@@ -92,7 +107,7 @@ on disk, peak RSS 2.43 GB with a full array in RAM (F-86). **2.9 gate:** clean r
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
 | 1 — Data audit | ✅ Passed gate | 1.1–1.13 done; report `results/data_audit/report.md`; clean re-run identical (`documented_fields`, `documented_colour` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
 | 2 — Splits and activation extraction | ✅ Passed gate | 2.1–2.9 done (D-38–D-41, F-75–F-87); report `results/splits_and_extraction/report.md`; clean re-run identical; two balance notes await the planning chat |
-| 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
+| 3 — Part 1a: Layer-wise probing | 🟨 In progress | 3.1 settled (D-42–D-44); 3.8 skipped; metrics (F-89) and physics fit (F-90) done |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
 | 5 — Part 1c: Multi-probe subspace steering | ⬜ Not started | |
 | 6 — Part 2: Spline steering | ⬜ Not started | |
@@ -194,6 +209,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/evidence/checks.json` | `rerun_identical_splits_extraction` | 6 split/extraction/joined keys re-run from clean HEAD `910a798`, results identical (only `storage` machine-state fields excluded); `extract_*` untouched (D-41); `verify` re-run; split file unchanged | ✅ passed | F-87; `scripts/check_evidence.py rerun_identical_splits_extraction` |
 | `results/splits_and_extraction/report.md` | — | Splits and extraction report: splits, how representations are extracted and pooled, joined tables, storage, clean re-run, notes, open items | ✅ gate passed | F-87; user-written from saved evidence |
 | `results/splits/checks.json` | `balance` | Flags, mean cos/sin θ per role; direction group × octant per role; clips per seen angle (test_seen: one angle with 0) | ℹ️ diagnostic | F-79; `scripts/check_splits.py balance` |
+| `results/probes/checks.json` + `artifacts/probes/layer_predictions.npz` | `layer_curves` | Ridge probe per site (26) and variable on train, scored on val_seen / val_unseen; n_fit 813 / 832; alpha rule; only validation rows predicted; refit identical; predictions saved (SHA-256 `b7261ed0…`, git-ignored) | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-92; `scripts/check_probes.py layer_curves` |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
@@ -257,6 +273,28 @@ Known decision points the plan cannot remove in advance (each has a planned fall
 
 Newest entry on top. One entry per work session: what was done, what passed, what didn't,
 what's next.
+
+### 2026-09-25 — Phase 3 started (layer-wise probing)
+- Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),
+  asks before every step, and reads files only when there is a bug or suspicious result.
+- Phase 3 layout proposed: package `probes.py`, `metrics.py`, `baselines.py`; scripts `check_probes.py` (3.2, 3.3,
+  test scores), `check_baselines.py` (3.4), `check_layer_curves.py` (3.5–3.7, figure); gate key
+  `rerun_identical_probing` in `check_evidence.py`.
+- Step 3.1 decision brief prepared for the planning chat, plus pending Phase 2 notes and later Phase 3 choices.
+  The physics paper PDF could not be read in Claude Code (no `pdftoppm`); paper details come from DECISIONS only.
+- `scikit-learn` added to `evidence.PACKAGES`; check printed `1.9.1 9` as predicted; committed `0e2f572` (F-88).
+- Push rule (user said): commit per step, push only after a substantial step (recorded in `CLAUDE.md`).
+- 3.2a: `src/vjepa_physics/metrics.py`; smoke test (terminal, not saved) exactly as predicted (F-89). **Step 3.2a done.**
+- 3.4a: `physics_fit` in new `baselines.py`, `pixel_to_world` in `geometry.py`; smoke test (terminal, not saved): exact
+  on metadata positions; tracked ceiling values recorded; two Claude Code predictions wrong (acceleration MAE lower than
+  predicted, exit clips better not worse) (F-90). **Step 3.4a done.**
+- Planning-chat decisions recorded: D-42, D-43, D-44; O-05 closed; plan 3.1 ticked, 3.8 marked skipped. Claude Code's
+  review: adopt; three own-addition follow-ups sent back (none blocks 3.2b).
+- 3.2b: `probes.py`; smoke test (terminal, not saved): all hard expectations met; no numeric score prediction was made
+  (F-91). **Step 3.2b done.**
+- 3.2c: `scripts/check_probes.py layer_curves` passed, smoke-test points reproduced exactly (F-92); early transition
+  (index 1) recorded with hypothesis H-07 and a note for the planning chat. **Step 3.2 done for validation** (test at 3.7).
+- **Next:** planning-chat note, then 3.3.
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each

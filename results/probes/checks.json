@@ -1,0 +1,1297 @@
+{
+  "layer_curves": {
+    "provenance": {
+      "utc": "2026-09-25T08:35:50+00:00",
+      "git_commit": "52ce323ff53817ab0d23df44d2dfe91d72244612",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        " M src/vjepa_physics/geometry.py",
+        "?? scripts/check_probes.py",
+        "?? src/vjepa_physics/baselines.py",
+        "?? src/vjepa_physics/probes.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "23736580c42f47218916d1c9e71e9a15a17d2989cc07112a2d0a73250eb66708",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "42edcc8e78f6e93fccf7b08f225d6a66f33d49a532204c96637cab203588278a",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "55084b3f6d7e400e1c4660b2f5e69562d31a65e96eb76774afc0d20ca6c61b2e",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "f3244fbbb2bd448f8cec2b49bdafc4cc00ab478675336052d0095db027be8179",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "c80cdfb168be0ea4b76c45479d80593b1973139eadcfd035c096113f37276cdb",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_probes.py": "e5834521fd6d1f0b3832b9e8b75a48f2816c470409430d7dd8e2b43caf5556fa"
+        },
+        "combined_sha256": "1f3398ddb1e3f02be2b69e2cacae162558793d3daadc28a195a11418e2d33413"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "criteria": {
+        "n_fit_equals_train_count": true,
+        "no_alpha_failure": true,
+        "scores_finite": true,
+        "only_validation_rows_predicted": true,
+        "refit_identical": true,
+        "saved_equals_computed": true
+      },
+      "direction": {
+        "n_evaluated": 297,
+        "sites": {
+          "embedding": {
+            "plot_index": 0,
+            "alpha": 100.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.12240931205482691,
+              "circular_mae": 64.26935207677077
+            },
+            "val_unseen": {
+              "r2": 0.12591357790497387,
+              "circular_mae": 68.31353117491952
+            }
+          },
+          "block_0": {
+            "plot_index": 1,
+            "alpha": 0.1778279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.8536687502300846,
+              "circular_mae": 11.24501190466592
+            },
+            "val_unseen": {
+              "r2": 0.888548846958584,
+              "circular_mae": 9.934891825301012
+            }
+          },
+          "block_1": {
+            "plot_index": 2,
+            "alpha": 0.5623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9266598694576995,
+              "circular_mae": 8.697430895859416
+            },
+            "val_unseen": {
+              "r2": 0.9237913628838057,
+              "circular_mae": 7.889675621408881
+            }
+          },
+          "block_2": {
+            "plot_index": 3,
+            "alpha": 1.7782794100389228,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9496405026374211,
+              "circular_mae": 7.324654951481761
+            },
+            "val_unseen": {
+              "r2": 0.941776260918703,
+              "circular_mae": 7.762143250949831
+            }
+          },
+          "block_3": {
+            "plot_index": 4,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9587784594868238,
+              "circular_mae": 6.488416689383349
+            },
+            "val_unseen": {
+              "r2": 0.9479187205410717,
+              "circular_mae": 6.322754049322087
+            }
+          },
+          "block_4": {
+            "plot_index": 5,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9657683843768099,
+              "circular_mae": 5.875739853236447
+            },
+            "val_unseen": {
+              "r2": 0.9559386032784846,
+              "circular_mae": 5.638348703326966
+            }
+          },
+          "block_5": {
+            "plot_index": 6,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9694829721890301,
+              "circular_mae": 5.385384226612837
+            },
+            "val_unseen": {
+              "r2": 0.9662388592007822,
+              "circular_mae": 5.302935851811899
+            }
+          },
+          "block_6": {
+            "plot_index": 7,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9720891893185812,
+              "circular_mae": 5.125717749977284
+            },
+            "val_unseen": {
+              "r2": 0.9692984962097515,
+              "circular_mae": 5.193408708706989
+            }
+          },
+          "block_7": {
+            "plot_index": 8,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9740987371077634,
+              "circular_mae": 5.075450186095041
+            },
+            "val_unseen": {
+              "r2": 0.9730926280893942,
+              "circular_mae": 4.865936360747448
+            }
+          },
+          "block_8": {
+            "plot_index": 9,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9805883400152716,
+              "circular_mae": 4.097179810018142
+            },
+            "val_unseen": {
+              "r2": 0.9792564428104154,
+              "circular_mae": 4.586819699611049
+            }
+          },
+          "block_9": {
+            "plot_index": 10,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.982552983113764,
+              "circular_mae": 3.822829552557714
+            },
+            "val_unseen": {
+              "r2": 0.9784811641972913,
+              "circular_mae": 5.155468467700658
+            }
+          },
+          "block_10": {
+            "plot_index": 11,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9820367469219149,
+              "circular_mae": 3.7708702145740527
+            },
+            "val_unseen": {
+              "r2": 0.9796545894707035,
+              "circular_mae": 4.730218492015578
+            }
+          },
+          "block_11": {
+            "plot_index": 12,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9856289072410599,
+              "circular_mae": 3.415301722655697
+            },
+            "val_unseen": {
+              "r2": 0.9824622477874785,
+              "circular_mae": 4.063548899766152
+            }
+          },
+          "block_12": {
+            "plot_index": 13,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9901029063445648,
+              "circular_mae": 2.729121037231566
+            },
+            "val_unseen": {
+              "r2": 0.9868013193053,
+              "circular_mae": 3.9585665661784084
+            }
+          },
+          "block_13": {
+            "plot_index": 14,
+            "alpha": 31.622776601683793,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9889779670971448,
+              "circular_mae": 2.903060041671238
+            },
+            "val_unseen": {
+              "r2": 0.9891833368033873,
+              "circular_mae": 3.6515823224826716
+            }
+          },
+          "block_14": {
+            "plot_index": 15,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9892364015078261,
+              "circular_mae": 3.1066964066122935
+            },
+            "val_unseen": {
+              "r2": 0.9901223574349457,
+              "circular_mae": 3.1273755662977227
+            }
+          },
+          "block_15": {
+            "plot_index": 16,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9897062222798221,
+              "circular_mae": 3.168045765647031
+            },
+            "val_unseen": {
+              "r2": 0.9881091188825897,
+              "circular_mae": 3.6988352889771603
+            }
+          },
+          "block_16": {
+            "plot_index": 17,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9902335682669834,
+              "circular_mae": 2.8712599255106257
+            },
+            "val_unseen": {
+              "r2": 0.9885548669871824,
+              "circular_mae": 3.3543261579428583
+            }
+          },
+          "block_17": {
+            "plot_index": 18,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9905140322571351,
+              "circular_mae": 3.170077482268363
+            },
+            "val_unseen": {
+              "r2": 0.987911213123499,
+              "circular_mae": 3.5984733233178763
+            }
+          },
+          "block_18": {
+            "plot_index": 19,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9905181343489398,
+              "circular_mae": 3.038222364219478
+            },
+            "val_unseen": {
+              "r2": 0.9905876931348677,
+              "circular_mae": 3.2152860498284825
+            }
+          },
+          "block_19": {
+            "plot_index": 20,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9904629353277712,
+              "circular_mae": 2.9098500058749104
+            },
+            "val_unseen": {
+              "r2": 0.989953238881125,
+              "circular_mae": 3.3398079008707406
+            }
+          },
+          "block_20": {
+            "plot_index": 21,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9900126592972269,
+              "circular_mae": 3.0753206362743764
+            },
+            "val_unseen": {
+              "r2": 0.9889925471583463,
+              "circular_mae": 3.3601848164460315
+            }
+          },
+          "block_21": {
+            "plot_index": 22,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9898563763782287,
+              "circular_mae": 3.2367140737372844
+            },
+            "val_unseen": {
+              "r2": 0.9885423651179615,
+              "circular_mae": 3.466513081699787
+            }
+          },
+          "block_22": {
+            "plot_index": 23,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9891716371615107,
+              "circular_mae": 3.277529278285313
+            },
+            "val_unseen": {
+              "r2": 0.9883430866650084,
+              "circular_mae": 3.6316007150936453
+            }
+          },
+          "block_23": {
+            "plot_index": 24,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9893194091427542,
+              "circular_mae": 3.304317365430231
+            },
+            "val_unseen": {
+              "r2": 0.9880070016852975,
+              "circular_mae": 3.706499707710129
+            }
+          },
+          "final_norm": {
+            "plot_index": null,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 813,
+            "val_seen": {
+              "r2": 0.9891587751371467,
+              "circular_mae": 3.326534626848124
+            },
+            "val_unseen": {
+              "r2": 0.9878449957420475,
+              "circular_mae": 3.73135323478016
+            }
+          }
+        }
+      },
+      "speed": {
+        "n_evaluated": 304,
+        "sites": {
+          "embedding": {
+            "plot_index": 0,
+            "alpha": 10000000.0,
+            "alpha_edge": "upper",
+            "alpha_verdict": "no_signal",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": -0.00010990396687171611,
+              "mae": 0.9661566319745508
+            },
+            "val_unseen": {
+              "r2": 0.00028026481188758723,
+              "mae": 0.892717633815643
+            }
+          },
+          "block_0": {
+            "plot_index": 1,
+            "alpha": 1.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9814741912031875,
+              "mae": 0.1199282677130596
+            },
+            "val_unseen": {
+              "r2": 0.9821032088447601,
+              "mae": 0.10128375429202623
+            }
+          },
+          "block_1": {
+            "plot_index": 2,
+            "alpha": 1.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9824528207147845,
+              "mae": 0.11288072442935614
+            },
+            "val_unseen": {
+              "r2": 0.9820399095380695,
+              "mae": 0.1008898832720287
+            }
+          },
+          "block_2": {
+            "plot_index": 3,
+            "alpha": 1.7782794100389228,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9790972741298198,
+              "mae": 0.12692697495204414
+            },
+            "val_unseen": {
+              "r2": 0.9801006764032927,
+              "mae": 0.10830372920436852
+            }
+          },
+          "block_3": {
+            "plot_index": 4,
+            "alpha": 3.1622776601683795,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9771904749437876,
+              "mae": 0.13003881546106752
+            },
+            "val_unseen": {
+              "r2": 0.9794304893465067,
+              "mae": 0.11393338502475807
+            }
+          },
+          "block_4": {
+            "plot_index": 5,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9768424864441527,
+              "mae": 0.1322912025789219
+            },
+            "val_unseen": {
+              "r2": 0.9785561398617654,
+              "mae": 0.12252115862182883
+            }
+          },
+          "block_5": {
+            "plot_index": 6,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9815093533416216,
+              "mae": 0.11650311287740042
+            },
+            "val_unseen": {
+              "r2": 0.9844124444883627,
+              "mae": 0.09406367747116567
+            }
+          },
+          "block_6": {
+            "plot_index": 7,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9815442720719588,
+              "mae": 0.11896998679722774
+            },
+            "val_unseen": {
+              "r2": 0.9852650396730003,
+              "mae": 0.0964593486000681
+            }
+          },
+          "block_7": {
+            "plot_index": 8,
+            "alpha": 31.622776601683793,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9858003865827831,
+              "mae": 0.1064017502567633
+            },
+            "val_unseen": {
+              "r2": 0.9855933759150823,
+              "mae": 0.09201037606057656
+            }
+          },
+          "block_8": {
+            "plot_index": 9,
+            "alpha": 56.23413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.989067012497931,
+              "mae": 0.09256460684101842
+            },
+            "val_unseen": {
+              "r2": 0.9901782537070846,
+              "mae": 0.0780804406788358
+            }
+          },
+          "block_9": {
+            "plot_index": 10,
+            "alpha": 56.23413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9882939465870134,
+              "mae": 0.09311769439459927
+            },
+            "val_unseen": {
+              "r2": 0.9873588161216498,
+              "mae": 0.08421246663660824
+            }
+          },
+          "block_10": {
+            "plot_index": 11,
+            "alpha": 56.23413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9874496537526912,
+              "mae": 0.09848191702984868
+            },
+            "val_unseen": {
+              "r2": 0.989176973241579,
+              "mae": 0.08295196807104667
+            }
+          },
+          "block_11": {
+            "plot_index": 12,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9894488839910025,
+              "mae": 0.09201859235315621
+            },
+            "val_unseen": {
+              "r2": 0.9913466710423245,
+              "mae": 0.07545526227742944
+            }
+          },
+          "block_12": {
+            "plot_index": 13,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9888753596322951,
+              "mae": 0.0959515612700356
+            },
+            "val_unseen": {
+              "r2": 0.9902988398402433,
+              "mae": 0.08063598179210085
+            }
+          },
+          "block_13": {
+            "plot_index": 14,
+            "alpha": 31.622776601683793,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9904814633485853,
+              "mae": 0.08629042061908324
+            },
+            "val_unseen": {
+              "r2": 0.9924108046093241,
+              "mae": 0.07104505576194524
+            }
+          },
+          "block_14": {
+            "plot_index": 15,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9907462399575205,
+              "mae": 0.08722769579095656
+            },
+            "val_unseen": {
+              "r2": 0.9916933607875836,
+              "mae": 0.07493288583055215
+            }
+          },
+          "block_15": {
+            "plot_index": 16,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9930002258919933,
+              "mae": 0.07355484834300993
+            },
+            "val_unseen": {
+              "r2": 0.9922833518964967,
+              "mae": 0.06829494744691371
+            }
+          },
+          "block_16": {
+            "plot_index": 17,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9935557460094253,
+              "mae": 0.07137514785344791
+            },
+            "val_unseen": {
+              "r2": 0.9925292737211644,
+              "mae": 0.06936342994929338
+            }
+          },
+          "block_17": {
+            "plot_index": 18,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9940999678905063,
+              "mae": 0.07096031425878081
+            },
+            "val_unseen": {
+              "r2": 0.9931315514601013,
+              "mae": 0.06602050066658928
+            }
+          },
+          "block_18": {
+            "plot_index": 19,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9948754406744121,
+              "mae": 0.062496810938790656
+            },
+            "val_unseen": {
+              "r2": 0.9941892687986202,
+              "mae": 0.06097349079512846
+            }
+          },
+          "block_19": {
+            "plot_index": 20,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9938128107699078,
+              "mae": 0.07000009028118745
+            },
+            "val_unseen": {
+              "r2": 0.9929328145043036,
+              "mae": 0.06876830049335651
+            }
+          },
+          "block_20": {
+            "plot_index": 21,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9920489982133095,
+              "mae": 0.07543999440232427
+            },
+            "val_unseen": {
+              "r2": 0.9928192320224057,
+              "mae": 0.06999772348226195
+            }
+          },
+          "block_21": {
+            "plot_index": 22,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.992609016933008,
+              "mae": 0.07363455197019778
+            },
+            "val_unseen": {
+              "r2": 0.9916138070942341,
+              "mae": 0.07306968010706397
+            }
+          },
+          "block_22": {
+            "plot_index": 23,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9923753386724996,
+              "mae": 0.07721733102190748
+            },
+            "val_unseen": {
+              "r2": 0.9911012642492515,
+              "mae": 0.07400716193404193
+            }
+          },
+          "block_23": {
+            "plot_index": 24,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9922354943561005,
+              "mae": 0.07639965313893624
+            },
+            "val_unseen": {
+              "r2": 0.9908826944433337,
+              "mae": 0.07588268368081373
+            }
+          },
+          "final_norm": {
+            "plot_index": null,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9918706239629036,
+              "mae": 0.07767098356706606
+            },
+            "val_unseen": {
+              "r2": 0.9904560256624602,
+              "mae": 0.0784489253677536
+            }
+          }
+        }
+      },
+      "acceleration": {
+        "n_evaluated": 304,
+        "sites": {
+          "embedding": {
+            "plot_index": 0,
+            "alpha": 316227.7660168379,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": -0.00048422795133418184,
+              "mae": 2.510739425760539
+            },
+            "val_unseen": {
+              "r2": -0.012313190599889667,
+              "mae": 2.3368345722317407
+            }
+          },
+          "block_0": {
+            "plot_index": 1,
+            "alpha": 0.5623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9763554884465242,
+              "mae": 0.3539269854431976
+            },
+            "val_unseen": {
+              "r2": 0.9718639604188747,
+              "mae": 0.36103115197206553
+            }
+          },
+          "block_1": {
+            "plot_index": 2,
+            "alpha": 0.1778279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9748386807893092,
+              "mae": 0.36862295970012826
+            },
+            "val_unseen": {
+              "r2": 0.9717656623913412,
+              "mae": 0.3742657633633641
+            }
+          },
+          "block_2": {
+            "plot_index": 3,
+            "alpha": 1.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9728068170941222,
+              "mae": 0.3752460813707795
+            },
+            "val_unseen": {
+              "r2": 0.9684330090272109,
+              "mae": 0.3756401434431493
+            }
+          },
+          "block_3": {
+            "plot_index": 4,
+            "alpha": 1.7782794100389228,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9699426796218305,
+              "mae": 0.3927519530431808
+            },
+            "val_unseen": {
+              "r2": 0.9672007384625263,
+              "mae": 0.3795104524506483
+            }
+          },
+          "block_4": {
+            "plot_index": 5,
+            "alpha": 1.7782794100389228,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.966763973681087,
+              "mae": 0.4135015207839657
+            },
+            "val_unseen": {
+              "r2": 0.9634092762978215,
+              "mae": 0.3799409137764724
+            }
+          },
+          "block_5": {
+            "plot_index": 6,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9756322778811155,
+              "mae": 0.3561568664898918
+            },
+            "val_unseen": {
+              "r2": 0.979331601211237,
+              "mae": 0.29877664532901366
+            }
+          },
+          "block_6": {
+            "plot_index": 7,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9690995582497584,
+              "mae": 0.39687324005272095
+            },
+            "val_unseen": {
+              "r2": 0.9801629656824351,
+              "mae": 0.29606065433388845
+            }
+          },
+          "block_7": {
+            "plot_index": 8,
+            "alpha": 31.622776601683793,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9769186071221013,
+              "mae": 0.35589722733293516
+            },
+            "val_unseen": {
+              "r2": 0.9783691385522313,
+              "mae": 0.2967089833511352
+            }
+          },
+          "block_8": {
+            "plot_index": 9,
+            "alpha": 31.622776601683793,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9794602179263446,
+              "mae": 0.3326592072626478
+            },
+            "val_unseen": {
+              "r2": 0.9832777248351129,
+              "mae": 0.26808602472281273
+            }
+          },
+          "block_9": {
+            "plot_index": 10,
+            "alpha": 31.622776601683793,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9793462264724228,
+              "mae": 0.32806158244675837
+            },
+            "val_unseen": {
+              "r2": 0.9816610674165325,
+              "mae": 0.27239979576444434
+            }
+          },
+          "block_10": {
+            "plot_index": 11,
+            "alpha": 31.622776601683793,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9804869370704963,
+              "mae": 0.3175417924308028
+            },
+            "val_unseen": {
+              "r2": 0.9844253100032302,
+              "mae": 0.2689674011994469
+            }
+          },
+          "block_11": {
+            "plot_index": 12,
+            "alpha": 31.622776601683793,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9852714303944222,
+              "mae": 0.28535230715255244
+            },
+            "val_unseen": {
+              "r2": 0.9833402210237664,
+              "mae": 0.2781459716225913
+            }
+          },
+          "block_12": {
+            "plot_index": 13,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9864949626194706,
+              "mae": 0.2717469433860241
+            },
+            "val_unseen": {
+              "r2": 0.9830889755649661,
+              "mae": 0.2603727311871716
+            }
+          },
+          "block_13": {
+            "plot_index": 14,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9879015425053373,
+              "mae": 0.2544343349236998
+            },
+            "val_unseen": {
+              "r2": 0.9848902280371237,
+              "mae": 0.26724646498928534
+            }
+          },
+          "block_14": {
+            "plot_index": 15,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9883357882851945,
+              "mae": 0.24959523987092147
+            },
+            "val_unseen": {
+              "r2": 0.9883260385060806,
+              "mae": 0.2279980713009191
+            }
+          },
+          "block_15": {
+            "plot_index": 16,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9895346738959948,
+              "mae": 0.23502005446980428
+            },
+            "val_unseen": {
+              "r2": 0.9885248672274957,
+              "mae": 0.2181178537663507
+            }
+          },
+          "block_16": {
+            "plot_index": 17,
+            "alpha": 31.622776601683793,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9887698282924502,
+              "mae": 0.24010699602821955
+            },
+            "val_unseen": {
+              "r2": 0.9890153108903565,
+              "mae": 0.21342579466097886
+            }
+          },
+          "block_17": {
+            "plot_index": 18,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9915013554969699,
+              "mae": 0.21003622829476926
+            },
+            "val_unseen": {
+              "r2": 0.9913456083282051,
+              "mae": 0.19871428685566195
+            }
+          },
+          "block_18": {
+            "plot_index": 19,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9913008979069654,
+              "mae": 0.21253178263874176
+            },
+            "val_unseen": {
+              "r2": 0.9903068570412022,
+              "mae": 0.20826482403530377
+            }
+          },
+          "block_19": {
+            "plot_index": 20,
+            "alpha": 17.78279410038923,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9912183344444903,
+              "mae": 0.21875924955216564
+            },
+            "val_unseen": {
+              "r2": 0.9905412105822882,
+              "mae": 0.2026357218032936
+            }
+          },
+          "block_20": {
+            "plot_index": 21,
+            "alpha": 10.0,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9892712433183326,
+              "mae": 0.240582203191239
+            },
+            "val_unseen": {
+              "r2": 0.9893116350155081,
+              "mae": 0.2152481140167158
+            }
+          },
+          "block_21": {
+            "plot_index": 22,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9905169876451174,
+              "mae": 0.22292078805368012
+            },
+            "val_unseen": {
+              "r2": 0.9910975145281676,
+              "mae": 0.19738216168460423
+            }
+          },
+          "block_22": {
+            "plot_index": 23,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9891845277283715,
+              "mae": 0.23596956988752865
+            },
+            "val_unseen": {
+              "r2": 0.9914657758509007,
+              "mae": 0.18574576523908304
+            }
+          },
+          "block_23": {
+            "plot_index": 24,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9891887374813232,
+              "mae": 0.22583615313714206
+            },
+            "val_unseen": {
+              "r2": 0.9905386320616477,
+              "mae": 0.20201989394807965
+            }
+          },
+          "final_norm": {
+            "plot_index": null,
+            "alpha": 5.623413251903491,
+            "alpha_edge": null,
+            "alpha_verdict": "ok",
+            "n_fit": 832,
+            "val_seen": {
+              "r2": 0.9888419364144903,
+              "mae": 0.23014878150138426
+            },
+            "val_unseen": {
+              "r2": 0.9899719247962022,
+              "mae": 0.20888707132237094
+            }
+          }
+        }
+      },
+      "alpha_grid": [
+        0.001,
+        0.0017782794100389228,
+        0.0031622776601683794,
+        0.005623413251903491,
+        0.01,
+        0.01778279410038923,
+        0.03162277660168379,
+        0.05623413251903491,
+        0.1,
+        0.1778279410038923,
+        0.31622776601683794,
+        0.5623413251903491,
+        1.0,
+        1.7782794100389228,
+        3.1622776601683795,
+        5.623413251903491,
+        10.0,
+        17.78279410038923,
+        31.622776601683793,
+        56.23413251903491,
+        100.0,
+        177.82794100389228,
+        316.22776601683796,
+        562.341325190349,
+        1000.0,
+        1778.2794100389228,
+        3162.2776601683795,
+        5623.413251903491,
+        10000.0,
+        17782.794100389227,
+        31622.776601683792,
+        56234.13251903491,
+        100000.0,
+        177827.94100389228,
+        316227.7660168379,
+        562341.3251903491,
+        1000000.0,
+        1778279.410038923,
+        3162277.6601683795,
+        5623413.251903491,
+        10000000.0
+      ],
+      "artifact": {
+        "path": "artifacts/probes/layer_predictions.npz",
+        "sha256": "b7261ed0414a3901b18e9413b16acdb1dec7cba1eb548607d5daa807e031f68c"
+      },
+      "passed": true
+    }
+  }
+}

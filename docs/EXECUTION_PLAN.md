@@ -59,14 +59,14 @@ Last updated: 2026-09-24.
 ## Phase 3 — Part 1a: Layer-wise probing
 **Goal:** Find where direction, speed, and acceleration become readable across the model's layers.
 
-- [ ] **3.1 Decide and document probe type** — Settle what remains of O-05 (probe family); alpha selection, standardization, and fitting discipline follow D-15.
+- [x] **3.1 Decide and document probe type** — *settled 2026-09-25: D-42 (RidgeCV on the all-token mean, alpha rule), D-43 (other Phase 3 settings).* — Settle what remains of O-05 (probe family); alpha selection, standardization, and fitting discipline follow D-15.
 - [ ] **3.2 Train and evaluate probes at every layer** — All three variables, using the metrics from DATA.md (circular MAE/R² for direction; MAE/R² for speed and acceleration); fit on train, alpha by leave-one-out inside train (D-15). Use **val-seen** scores for the layer-wise curve that drives Phase 3.7/4.1/5.1's layer decisions (per D-07/D-14: test is never touched for selection); val-unseen scores are reported alongside. Test scores (seen and unseen), same metrics, are computed only for the final reported numbers.
 - [ ] **3.3 Shuffled-label control** — Confirm probes trained on shuffled labels score near chance; this validates that real scores reflect a genuine signal.
 - [ ] **3.4 Floor and ceiling baselines** — **Floor:** a raw-pixel ridge probe solved in dual form (chunked Gram matrix from uint8 frames + `KernelRidge(kernel="precomputed")`); center the Gram matrix and targets with train statistics (KernelRidge has no intercept, F-38); alpha by closed-form leave-one-out on train. **Ceiling:** a physics-fit oracle — least-squares fit of p(t) = p₀ + v·t + ½a·t² per clip on Phase 1's tracked positions (t = k/24, F-31; visible frames only for exit clips, F-33), reading off |v|, |a|, and the displacement angle. A linear probe on raw positions is kept only as a labeled "linear readout of positions" reference (a linear map can't compute a norm across directions). Both compared against the layer-wise curves.
 - [ ] **3.5 Uncertainty estimate** — Bootstrap CIs over clips on the validation curves and the test numbers (no refitting; ridge is deterministic, so seeds give no spread). Optional: 5-fold refits within train ∪ val-seen, grouped by value, with test fixed.
 - [ ] **3.6 Plot probe performance vs. layer** — For all three variables, matching the paper's presentation style.
 - [ ] **3.7 Identify and document the emergence transition** — From the val-seen curve, where each variable becomes reliably readable, reported both as a raw layer index and as a fraction of total depth, for direct comparison with the paper's "one-third" finding.
-- [ ] **3.8 (Optional) Patch-preserving probes** — Attentive-MLP probes as a complement to the mean-pooled probes, if time allows.
+- [x] **3.8 (Optional) Patch-preserving probes** — **Skipped (D-43):** attentive probes are not needed for Phases 4–5. — Attentive-MLP probes as a complement to the mean-pooled probes, if time allows.
 - [ ] **3.9 Phase 3 report and gate** — Save the report and figures to `results/`, update `PROGRESS.md`, and confirm Phase 3 has passed.
 
 ## Phase 4 — Part 1b: Iterative nullspace probing

@@ -1,6 +1,6 @@
 # CLAUDE.md — World Mechanics take-home (V-JEPA physics)
 
-Last updated: 2026-09-25 (Phase 2 passed; next: step 3.1). Read this fully at the start of every session.
+Last updated: 2026-09-25 (Phase 3 started; 3.1 brief with the planning chat; provenance records scikit-learn, F-88). Read this fully at the start of every session.
 
 ---
 
@@ -37,6 +37,9 @@ If you are ever unsure whether something counts as "acting", it does. Ask.
 - **Checks are scripts, not REPL (D-24).** One `scripts/check_<subject>.py` per subject, one
   function per check, run by name; each result is saved with provenance to
   `results/<subject>/checks.json`. Record every saved result in `docs/PROGRESS.md` ("Saved evidence").
+- **Commit and push only after a substantial step** (a completed group of sub-steps, before a long run, or a phase
+  gate), never after single small edits or doc updates (user said, 2026-09-25). Doc updates ride along with the next
+  substantial commit. Do not give git commands otherwise.
 - Keep it short; skip trivia the user already knows.
 
 ---
