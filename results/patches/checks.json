@@ -1,0 +1,5507 @@
+{
+  "extract_direction": {
+    "provenance": {
+      "utc": "2026-09-25T10:21:12+00:00",
+      "git_commit": "3cefb6216a232b5a6f26471f59f0e7f3d14d7a2e",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "f81858b19b20464506e46c798b3568138a80495d3c737897d863cf0c3ff6ed25",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "55084b3f6d7e400e1c4660b2f5e69562d31a65e96eb76774afc0d20ca6c61b2e",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "c80cdfb168be0ea4b76c45479d80593b1973139eadcfd035c096113f37276cdb",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_patches.py": "81f798781619e19cd52bbb3631c7aaa2813d325a146add90f7d6c8bdeeec7226"
+        },
+        "combined_sha256": "414769791117d04e1a122e590abb7222b6ce616142b80e75ffa73f294b5743fe"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "criteria": {
+        "enough_free_disk": true,
+        "all_clips_extracted": true,
+        "stored_equals_computed": true,
+        "all_finite": true,
+        "no_all_zero_clip": true,
+        "clips_distinct": true,
+        "patch_mean_equals_all_token_mean": true,
+        "weights_unchanged": true
+      },
+      "device": "mps",
+      "batch_size": 1,
+      "sites": [
+        "embedding",
+        "block_0",
+        "block_1",
+        "block_2",
+        "block_3",
+        "block_4",
+        "block_5",
+        "block_6",
+        "block_7",
+        "block_8",
+        "block_9",
+        "block_10",
+        "block_11",
+        "block_12",
+        "block_13",
+        "block_14",
+        "block_15",
+        "block_16",
+        "block_17",
+        "block_18",
+        "block_19",
+        "block_20",
+        "block_21",
+        "block_22",
+        "block_23"
+      ],
+      "free_bytes_before": 207791685632,
+      "max_mean_mismatch": 6.481661640608303e-08,
+      "minutes_total": 36.1,
+      "seconds_per_clip_median": 1.374,
+      "seconds_per_clip_max": 2.498,
+      "artifact": {
+        "path": "artifacts/patches/direction.npy",
+        "shape": [
+          1500,
+          25,
+          256,
+          1024
+        ],
+        "dtype": "float32",
+        "bytes": 39321600128,
+        "sha256": "bc414b66e4a857cc5b7865ae60b317e61ec39b564ccc8214ac91c5c6e76bb7ac"
+      },
+      "ids": {
+        "path": "artifacts/patches/direction_ids.npy",
+        "sha256": "c83e7d6eb3bd6a2aa38bb7c9594f24e282d781b8f144c5f403c011b2004b6aed"
+      },
+      "passed": true
+    }
+  },
+  "verify": {
+    "provenance": {
+      "utc": "2026-09-25T10:22:51+00:00",
+      "git_commit": "41d01f2f36e7c11fdcb49782968078abb3457d36",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "f81858b19b20464506e46c798b3568138a80495d3c737897d863cf0c3ff6ed25",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "55084b3f6d7e400e1c4660b2f5e69562d31a65e96eb76774afc0d20ca6c61b2e",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "c80cdfb168be0ea4b76c45479d80593b1973139eadcfd035c096113f37276cdb",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_patches.py": "81f798781619e19cd52bbb3631c7aaa2813d325a146add90f7d6c8bdeeec7226"
+        },
+        "combined_sha256": "414769791117d04e1a122e590abb7222b6ce616142b80e75ffa73f294b5743fe"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "criteria": {
+        "shape_and_dtype": true,
+        "ids_match_joined_table": true,
+        "spot_clips_bit_identical": true,
+        "weights_unchanged": true
+      },
+      "device": "mps",
+      "seed": 0,
+      "spot_clip_ids": [
+        24,
+        61,
+        112,
+        261,
+        401,
+        458,
+        753,
+        760,
+        908,
+        946,
+        970,
+        1094,
+        1215,
+        1263,
+        1365,
+        1455
+      ],
+      "mismatched_clip_ids": [],
+      "passed": true
+    }
+  },
+  "patch_probes": {
+    "provenance": {
+      "utc": "2026-09-25T10:41:45+00:00",
+      "git_commit": "692e6313b9a6b5c52ede609b4a54a432d4fcd98b",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "f81858b19b20464506e46c798b3568138a80495d3c737897d863cf0c3ff6ed25",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "55084b3f6d7e400e1c4660b2f5e69562d31a65e96eb76774afc0d20ca6c61b2e",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "c80cdfb168be0ea4b76c45479d80593b1973139eadcfd035c096113f37276cdb",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_patches.py": "7c0eca8966a664e801458296ec9597555d96e9380e7cf5e5ee11009e4c391b2f"
+        },
+        "combined_sha256": "d0d2972479154226377de63d50748d50aa73a77413d678679d293624d1bf6ea9"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "criteria": {
+        "code_committed": true,
+        "ids_aligned": true,
+        "n_fit_equals_train_count": true,
+        "no_alpha_failure": false,
+        "scores_finite": true,
+        "only_validation_rows_predicted": true,
+        "spot_refit_identical": true,
+        "saved_equals_computed": true
+      },
+      "curve": [
+        {
+          "index": 0,
+          "site": "embedding",
+          "val_seen_r2_mean": 0.005862095721408243,
+          "val_seen_r2_median": 0.004470440946025639,
+          "val_seen_r2_max": 0.03481252153671793,
+          "val_unseen_r2_mean": 0.00700008972589665,
+          "val_seen_circular_mae_mean": 87.45515245276195,
+          "alpha_verdicts": {
+            "no_signal": 29,
+            "ok": 207,
+            "failure": 20
+          }
+        },
+        {
+          "index": 1,
+          "site": "block_0",
+          "val_seen_r2_mean": 0.5352892340235814,
+          "val_seen_r2_median": 0.5593770249050971,
+          "val_seen_r2_max": 0.7652852627444084,
+          "val_unseen_r2_mean": 0.5443682856777201,
+          "val_seen_circular_mae_mean": 26.493287254229344,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 2,
+          "site": "block_1",
+          "val_seen_r2_mean": 0.5925711283398654,
+          "val_seen_r2_median": 0.7330831329377572,
+          "val_seen_r2_max": 0.9184483142164318,
+          "val_unseen_r2_mean": 0.735985222529002,
+          "val_seen_circular_mae_mean": 18.515227338626605,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 3,
+          "site": "block_2",
+          "val_seen_r2_mean": 0.7213469559853323,
+          "val_seen_r2_median": 0.7646669307168565,
+          "val_seen_r2_max": 0.9115821464125027,
+          "val_unseen_r2_mean": 0.770714012298402,
+          "val_seen_circular_mae_mean": 17.76265549899976,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 4,
+          "site": "block_3",
+          "val_seen_r2_mean": 0.7956108894418649,
+          "val_seen_r2_median": 0.8211133198228433,
+          "val_seen_r2_max": 0.9230020437857362,
+          "val_unseen_r2_mean": 0.7957813098506189,
+          "val_seen_circular_mae_mean": 15.007458865723985,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 5,
+          "site": "block_4",
+          "val_seen_r2_mean": 0.8772437386335568,
+          "val_seen_r2_median": 0.9027783624998532,
+          "val_seen_r2_max": 0.9546053656112021,
+          "val_unseen_r2_mean": 0.8832185051429988,
+          "val_seen_circular_mae_mean": 9.853501069257186,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 6,
+          "site": "block_5",
+          "val_seen_r2_mean": 0.9511063784187956,
+          "val_seen_r2_median": 0.9545560666889348,
+          "val_seen_r2_max": 0.9687518120621027,
+          "val_unseen_r2_mean": 0.9490608284553576,
+          "val_seen_circular_mae_mean": 6.196318543700377,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 7,
+          "site": "block_6",
+          "val_seen_r2_mean": 0.9458544632692443,
+          "val_seen_r2_median": 0.949454636102965,
+          "val_seen_r2_max": 0.9655608963544311,
+          "val_unseen_r2_mean": 0.944035463120446,
+          "val_seen_circular_mae_mean": 6.774792275728776,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 8,
+          "site": "block_7",
+          "val_seen_r2_mean": 0.9505868912426807,
+          "val_seen_r2_median": 0.9532753581436485,
+          "val_seen_r2_max": 0.9659105986776959,
+          "val_unseen_r2_mean": 0.9514048848518455,
+          "val_seen_circular_mae_mean": 6.647158775806215,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 9,
+          "site": "block_8",
+          "val_seen_r2_mean": 0.9706953232591295,
+          "val_seen_r2_median": 0.9714355944238258,
+          "val_seen_r2_max": 0.9784941189183526,
+          "val_unseen_r2_mean": 0.9698748022033585,
+          "val_seen_circular_mae_mean": 4.813645631130914,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 10,
+          "site": "block_9",
+          "val_seen_r2_mean": 0.9712657989784199,
+          "val_seen_r2_median": 0.9723700434890767,
+          "val_seen_r2_max": 0.9797839177618914,
+          "val_unseen_r2_mean": 0.9704004976363778,
+          "val_seen_circular_mae_mean": 4.875204277205311,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 11,
+          "site": "block_10",
+          "val_seen_r2_mean": 0.9681264272500245,
+          "val_seen_r2_median": 0.9701280071196914,
+          "val_seen_r2_max": 0.9807091909050165,
+          "val_unseen_r2_mean": 0.9678244809206519,
+          "val_seen_circular_mae_mean": 5.101906463208126,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 12,
+          "site": "block_11",
+          "val_seen_r2_mean": 0.9722763261428742,
+          "val_seen_r2_median": 0.9733832243423203,
+          "val_seen_r2_max": 0.983495536647508,
+          "val_unseen_r2_mean": 0.9694253897224122,
+          "val_seen_circular_mae_mean": 4.615779141458347,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 13,
+          "site": "block_12",
+          "val_seen_r2_mean": 0.9769779723349421,
+          "val_seen_r2_median": 0.9784258130309248,
+          "val_seen_r2_max": 0.9861266501436609,
+          "val_unseen_r2_mean": 0.9746515628259844,
+          "val_seen_circular_mae_mean": 4.282551026107819,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 14,
+          "site": "block_13",
+          "val_seen_r2_mean": 0.9718101021928178,
+          "val_seen_r2_median": 0.973858128147379,
+          "val_seen_r2_max": 0.985084825638577,
+          "val_unseen_r2_mean": 0.9700104019265705,
+          "val_seen_circular_mae_mean": 4.757197430298126,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 15,
+          "site": "block_14",
+          "val_seen_r2_mean": 0.9652843343245135,
+          "val_seen_r2_median": 0.9664721703455323,
+          "val_seen_r2_max": 0.985423970295264,
+          "val_unseen_r2_mean": 0.9637844286756144,
+          "val_seen_circular_mae_mean": 5.417617730068045,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 16,
+          "site": "block_15",
+          "val_seen_r2_mean": 0.9617239925192373,
+          "val_seen_r2_median": 0.9636002636962067,
+          "val_seen_r2_max": 0.9853474560008928,
+          "val_unseen_r2_mean": 0.9590617654675846,
+          "val_seen_circular_mae_mean": 5.8272043958803525,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 17,
+          "site": "block_16",
+          "val_seen_r2_mean": 0.9553413474093615,
+          "val_seen_r2_median": 0.9556572073900058,
+          "val_seen_r2_max": 0.9838137306508059,
+          "val_unseen_r2_mean": 0.9534176669942479,
+          "val_seen_circular_mae_mean": 6.42385286002707,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 18,
+          "site": "block_17",
+          "val_seen_r2_mean": 0.954663554515649,
+          "val_seen_r2_median": 0.954778913309843,
+          "val_seen_r2_max": 0.9843188212275896,
+          "val_unseen_r2_mean": 0.9530953716432529,
+          "val_seen_circular_mae_mean": 6.614186407950468,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 19,
+          "site": "block_18",
+          "val_seen_r2_mean": 0.9486593071245017,
+          "val_seen_r2_median": 0.9480264734583708,
+          "val_seen_r2_max": 0.9843287549444437,
+          "val_unseen_r2_mean": 0.9455362042565383,
+          "val_seen_circular_mae_mean": 7.060352164515363,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 20,
+          "site": "block_19",
+          "val_seen_r2_mean": 0.9475985744488854,
+          "val_seen_r2_median": 0.9467482222181565,
+          "val_seen_r2_max": 0.9827602798753841,
+          "val_unseen_r2_mean": 0.9444059239356477,
+          "val_seen_circular_mae_mean": 7.288317742106591,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 21,
+          "site": "block_20",
+          "val_seen_r2_mean": 0.9425536411335196,
+          "val_seen_r2_median": 0.9407993482753737,
+          "val_seen_r2_max": 0.9799571725728271,
+          "val_unseen_r2_mean": 0.9379499362259299,
+          "val_seen_circular_mae_mean": 7.562646126109989,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 22,
+          "site": "block_21",
+          "val_seen_r2_mean": 0.9386216990160786,
+          "val_seen_r2_median": 0.936492335842913,
+          "val_seen_r2_max": 0.9789949459621724,
+          "val_unseen_r2_mean": 0.9319008452292359,
+          "val_seen_circular_mae_mean": 7.685264899514255,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 23,
+          "site": "block_22",
+          "val_seen_r2_mean": 0.9348292325191019,
+          "val_seen_r2_median": 0.9339684778951782,
+          "val_seen_r2_max": 0.9768559587682732,
+          "val_unseen_r2_mean": 0.9274286323003393,
+          "val_seen_circular_mae_mean": 7.952849619566148,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        },
+        {
+          "index": 24,
+          "site": "block_23",
+          "val_seen_r2_mean": 0.9319250758907227,
+          "val_seen_r2_median": 0.9316470152241527,
+          "val_seen_r2_max": 0.9774404243458004,
+          "val_unseen_r2_mean": 0.9239911929713606,
+          "val_seen_circular_mae_mean": 8.186279217739468,
+          "alpha_verdicts": {
+            "ok": 256
+          }
+        }
+      ],
+      "transition_on_mean_curve": {
+        "transition_index": 1,
+        "transition_depth_fraction": 0.041666666666666664,
+        "rise_80_index": 4,
+        "largest_jump_index": 1,
+        "largest_jump": 0.5294271383021731,
+        "min": 0.005862095721408243,
+        "max": 0.9769779723349421,
+        "rise": 0.9711158766135338,
+        "clear_transition": true
+      },
+      "minutes_total": 15.8,
+      "artifact": {
+        "path": "artifacts/patches/patch_probes.npz",
+        "sha256": "aa3286a3bb3726a1042f95c8e6f7fe3ac56671250cb98f05d23e179d7695b769"
+      },
+      "passed": false
+    }
+  },
+  "patch_alpha_diagnostic": {
+    "provenance": {
+      "utc": "2026-09-25T18:25:47+00:00",
+      "git_commit": "692e6313b9a6b5c52ede609b4a54a432d4fcd98b",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        " M scripts/check_patches.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "f81858b19b20464506e46c798b3568138a80495d3c737897d863cf0c3ff6ed25",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "55084b3f6d7e400e1c4660b2f5e69562d31a65e96eb76774afc0d20ca6c61b2e",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "c80cdfb168be0ea4b76c45479d80593b1973139eadcfd035c096113f37276cdb",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_patches.py": "f2f7ec70498deb92dd68772296dd93c6f85b438cb03923e48efec128a39702e6"
+        },
+        "combined_sha256": "9711e6d28e0e8451ae22cf9af3db2d364dc857266e49e4f4788fcfc13bef95e9"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "diagnostic": "patch_probes alpha failures",
+      "rule": "explained only if every failing probe's mean LOO error is identical across the grid within 1e-12 relative",
+      "failing_probes": 20,
+      "explanation_holds": false,
+      "probes": [
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 6,
+          "row": 0,
+          "col": 6,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.0028498379958798482,
+          "distinct_train_vectors": 10,
+          "max_train_feature_std": 0.35932717680026127,
+          "val_seen_clips_differing_from_train": 1
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 24,
+          "row": 1,
+          "col": 8,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.01151972218350869,
+          "distinct_train_vectors": 21,
+          "max_train_feature_std": 0.7199073115700492,
+          "val_seen_clips_differing_from_train": 3
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 34,
+          "row": 2,
+          "col": 2,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.006677202709588729,
+          "distinct_train_vectors": 9,
+          "max_train_feature_std": 0.4174479105349478,
+          "val_seen_clips_differing_from_train": 1
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 79,
+          "row": 4,
+          "col": 15,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.007828812760833873,
+          "distinct_train_vectors": 13,
+          "max_train_feature_std": 0.5661223414255353,
+          "val_seen_clips_differing_from_train": 0
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 80,
+          "row": 5,
+          "col": 0,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.0069683117301552406,
+          "distinct_train_vectors": 12,
+          "max_train_feature_std": 0.33389192219560015,
+          "val_seen_clips_differing_from_train": 1
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 94,
+          "row": 5,
+          "col": 14,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.009459661026810385,
+          "distinct_train_vectors": 15,
+          "max_train_feature_std": 0.690858894073239,
+          "val_seen_clips_differing_from_train": 4
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 127,
+          "row": 7,
+          "col": 15,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.0021445609051680354,
+          "distinct_train_vectors": 5,
+          "max_train_feature_std": 0.3517110110415713,
+          "val_seen_clips_differing_from_train": 3
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 128,
+          "row": 8,
+          "col": 0,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.006299408023483468,
+          "distinct_train_vectors": 13,
+          "max_train_feature_std": 0.5104113451047834,
+          "val_seen_clips_differing_from_train": 3
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 144,
+          "row": 9,
+          "col": 0,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.005399172561605294,
+          "distinct_train_vectors": 8,
+          "max_train_feature_std": 0.33941285940041005,
+          "val_seen_clips_differing_from_train": 1
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 159,
+          "row": 9,
+          "col": 15,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.008992536412066838,
+          "distinct_train_vectors": 11,
+          "max_train_feature_std": 0.6429329395377265,
+          "val_seen_clips_differing_from_train": 3
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 177,
+          "row": 11,
+          "col": 1,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.004888434906722153,
+          "distinct_train_vectors": 9,
+          "max_train_feature_std": 0.5190217429762671,
+          "val_seen_clips_differing_from_train": 4
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 193,
+          "row": 12,
+          "col": 1,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.005749036554115638,
+          "distinct_train_vectors": 8,
+          "max_train_feature_std": 0.3738244130151003,
+          "val_seen_clips_differing_from_train": 4
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 206,
+          "row": 12,
+          "col": 14,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.008893835509243456,
+          "distinct_train_vectors": 11,
+          "max_train_feature_std": 0.4435280616574687,
+          "val_seen_clips_differing_from_train": 3
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 207,
+          "row": 12,
+          "col": 15,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.0016870287208091326,
+          "distinct_train_vectors": 6,
+          "max_train_feature_std": 0.3419516039863856,
+          "val_seen_clips_differing_from_train": 1
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 223,
+          "row": 13,
+          "col": 15,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.002521325781294949,
+          "distinct_train_vectors": 4,
+          "max_train_feature_std": 0.3917416664525693,
+          "val_seen_clips_differing_from_train": 0
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 236,
+          "row": 14,
+          "col": 12,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.005759850761918456,
+          "distinct_train_vectors": 10,
+          "max_train_feature_std": 0.516875518110807,
+          "val_seen_clips_differing_from_train": 1
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 237,
+          "row": 14,
+          "col": 13,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.003609816054088025,
+          "distinct_train_vectors": 7,
+          "max_train_feature_std": 0.3782298594020815,
+          "val_seen_clips_differing_from_train": 1
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 241,
+          "row": 15,
+          "col": 1,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.0034370441456607493,
+          "distinct_train_vectors": 5,
+          "max_train_feature_std": 0.29065643239275973,
+          "val_seen_clips_differing_from_train": 1
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 242,
+          "row": 15,
+          "col": 2,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.0029107782572128844,
+          "distinct_train_vectors": 7,
+          "max_train_feature_std": 0.3220575808084382,
+          "val_seen_clips_differing_from_train": 2
+        },
+        {
+          "index": 0,
+          "site": "embedding",
+          "patch": 252,
+          "row": 15,
+          "col": 12,
+          "alpha": 0.001,
+          "edge": "lower",
+          "loo_relative_spread_over_grid": 0.0024166368836561294,
+          "distinct_train_vectors": 6,
+          "max_train_feature_std": 0.3182866221109127,
+          "val_seen_clips_differing_from_train": 1
+        }
+      ]
+    }
+  },
+  "patch_breakdown": {
+    "provenance": {
+      "utc": "2026-09-25T18:42:51+00:00",
+      "git_commit": "feb074e5108ca95e6d8672ddc135cf80cc546ea1",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "f81858b19b20464506e46c798b3568138a80495d3c737897d863cf0c3ff6ed25",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "c80cdfb168be0ea4b76c45479d80593b1973139eadcfd035c096113f37276cdb",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_patches.py": "266c70f877834309ba6861869b297179e8b63739e95098e450bc112b20ddc93a"
+        },
+        "combined_sha256": "0239410cbceba5e40c7558147254700864102f8b5afe47d663ef9ea3302b5602"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "criteria": {
+        "code_committed": true,
+        "ids_aligned": true,
+        "categories_disjoint": true,
+        "every_clip_on_path_somewhere": true,
+        "both_categories_reported": true,
+        "reported_scores_finite": true,
+        "saved_equals_computed": true
+      },
+      "disk_radius_px": 10.55502061411188,
+      "off_path_margin_px": 16,
+      "min_category_clips": 20,
+      "curve": [
+        {
+          "index": 0,
+          "site": "embedding",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": -0.11199206090932015,
+            "r2_median": -0.05952545838508072
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": -0.0034254573942243552,
+            "r2_median": -0.00166626401207276
+          }
+        },
+        {
+          "index": 1,
+          "site": "block_0",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": -0.5802885860933346,
+            "r2_median": -0.41002367175540927
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.6484115644130266,
+            "r2_median": 0.6593058357372875
+          }
+        },
+        {
+          "index": 2,
+          "site": "block_1",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": -0.30728192350850014,
+            "r2_median": -0.10120043243239063
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.8072006147594795,
+            "r2_median": 0.8116039899627933
+          }
+        },
+        {
+          "index": 3,
+          "site": "block_2",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": -0.12867598270998917,
+            "r2_median": -0.00973544805960136
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.818651842554909,
+            "r2_median": 0.8343872193863118
+          }
+        },
+        {
+          "index": 4,
+          "site": "block_3",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": -0.14845409384922106,
+            "r2_median": -0.06941478687998953
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.8608363309555238,
+            "r2_median": 0.8783823759832128
+          }
+        },
+        {
+          "index": 5,
+          "site": "block_4",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.13382365503996071,
+            "r2_median": 0.22296062286869256
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9246735187796113,
+            "r2_median": 0.9391577257804195
+          }
+        },
+        {
+          "index": 6,
+          "site": "block_5",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.8416572095166964,
+            "r2_median": 0.857064016180698
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9586556284341787,
+            "r2_median": 0.9616632556424323
+          }
+        },
+        {
+          "index": 7,
+          "site": "block_6",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.8122304741756236,
+            "r2_median": 0.8297812898118302
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9549105595933756,
+            "r2_median": 0.9565984763851625
+          }
+        },
+        {
+          "index": 8,
+          "site": "block_7",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.8568438286223816,
+            "r2_median": 0.8621340915433005
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9556518523677877,
+            "r2_median": 0.9571562290163822
+          }
+        },
+        {
+          "index": 9,
+          "site": "block_8",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.9449870745445453,
+            "r2_median": 0.9455178256740583
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9719145701617821,
+            "r2_median": 0.9723459425657339
+          }
+        },
+        {
+          "index": 10,
+          "site": "block_9",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.9369248994424211,
+            "r2_median": 0.94074476230728
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9732809746198119,
+            "r2_median": 0.9735094659709627
+          }
+        },
+        {
+          "index": 11,
+          "site": "block_10",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.9196514014650309,
+            "r2_median": 0.9215080343067648
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9713441674627477,
+            "r2_median": 0.9717322838702633
+          }
+        },
+        {
+          "index": 12,
+          "site": "block_11",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.9319240170271441,
+            "r2_median": 0.9329584220051705
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9747228368579453,
+            "r2_median": 0.9749786184202058
+          }
+        },
+        {
+          "index": 13,
+          "site": "block_12",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.9360736112280972,
+            "r2_median": 0.9376801891634061
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9790692166528715,
+            "r2_median": 0.9794999678179807
+          }
+        },
+        {
+          "index": 14,
+          "site": "block_13",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.9201446633849616,
+            "r2_median": 0.926736958946816
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9745260995370959,
+            "r2_median": 0.9749306625309231
+          }
+        },
+        {
+          "index": 15,
+          "site": "block_14",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.9023586338881739,
+            "r2_median": 0.9096714960062011
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9686419879955416,
+            "r2_median": 0.9684732548781849
+          }
+        },
+        {
+          "index": 16,
+          "site": "block_15",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.8958997979733894,
+            "r2_median": 0.8983908591991642
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9653056232113492,
+            "r2_median": 0.9657482799231523
+          }
+        },
+        {
+          "index": 17,
+          "site": "block_16",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.8953894261874629,
+            "r2_median": 0.9032421533757014
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9583143860325704,
+            "r2_median": 0.9578882315174441
+          }
+        },
+        {
+          "index": 18,
+          "site": "block_17",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.8983514000897956,
+            "r2_median": 0.9011374752391227
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9576193916318176,
+            "r2_median": 0.9572380029392169
+          }
+        },
+        {
+          "index": 19,
+          "site": "block_18",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.9051489732594182,
+            "r2_median": 0.9138107005009323
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9505813119279983,
+            "r2_median": 0.9495093177612737
+          }
+        },
+        {
+          "index": 20,
+          "site": "block_19",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.9172196542106843,
+            "r2_median": 0.925879693685135
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9488538924003869,
+            "r2_median": 0.9485857529484396
+          }
+        },
+        {
+          "index": 21,
+          "site": "block_20",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.9190393493484565,
+            "r2_median": 0.9227667149441885
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.943180259493883,
+            "r2_median": 0.9414615298917703
+          }
+        },
+        {
+          "index": 22,
+          "site": "block_21",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.9077271769588198,
+            "r2_median": 0.9116592136053543
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9394620546798113,
+            "r2_median": 0.9380387704033857
+          }
+        },
+        {
+          "index": 23,
+          "site": "block_22",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.9112450879332378,
+            "r2_median": 0.9193665454869522
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9353741090540757,
+            "r2_median": 0.9346233905287877
+          }
+        },
+        {
+          "index": 24,
+          "site": "block_23",
+          "on_path": {
+            "patches": 55,
+            "r2_mean": 0.911374200080516,
+            "r2_median": 0.9182187188742006
+          },
+          "off_path": {
+            "patches": 256,
+            "r2_mean": 0.9318733475405068,
+            "r2_median": 0.9312611172276691
+          }
+        }
+      ],
+      "transition_on_off_path_mean_curve": {
+        "transition_index": 1,
+        "transition_depth_fraction": 0.041666666666666664,
+        "rise_80_index": 2,
+        "largest_jump_index": 1,
+        "largest_jump": 0.651837021807251,
+        "min": -0.0034254573942243552,
+        "max": 0.9790692166528715,
+        "rise": 0.9824946740470959,
+        "clear_transition": true
+      },
+      "artifact": {
+        "path": "artifacts/patches/patch_breakdown.npz",
+        "sha256": "0cbe2caf7550d935c5f98f272094ba6fe6404cca9310038094fcb3e50546b079"
+      },
+      "passed": true
+    }
+  },
+  "patch_bootstrap": {
+    "provenance": {
+      "utc": "2026-09-25T18:53:23+00:00",
+      "git_commit": "feb074e5108ca95e6d8672ddc135cf80cc546ea1",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "f81858b19b20464506e46c798b3568138a80495d3c737897d863cf0c3ff6ed25",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "c80cdfb168be0ea4b76c45479d80593b1973139eadcfd035c096113f37276cdb",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_patches.py": "266c70f877834309ba6861869b297179e8b63739e95098e450bc112b20ddc93a"
+        },
+        "combined_sha256": "0239410cbceba5e40c7558147254700864102f8b5afe47d663ef9ea3302b5602"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "criteria": {
+        "code_committed": true,
+        "inputs_aligned": true,
+        "per_patch_points_equal_saved": true,
+        "mean_pooled_points_equal_saved": true
+      },
+      "n_resamples": 10000,
+      "level": 0.95,
+      "seed": 0,
+      "curve": [
+        {
+          "index": 0,
+          "site": "embedding",
+          "per_patch_mean_r2": {
+            "point": 0.005862095721408243,
+            "ci": [
+              -0.013072452891365384,
+              0.0067275933735326705
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.11654721633341866,
+            "ci": [
+              0.02726378232850668,
+              0.20508866607843587
+            ]
+          }
+        },
+        {
+          "index": 1,
+          "site": "block_0",
+          "per_patch_mean_r2": {
+            "point": 0.5352892340235814,
+            "ci": [
+              0.48194972268145947,
+              0.5787995876238992
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.3183795162065032,
+            "ci": [
+              0.27665835238415754,
+              0.3694725428507902
+            ]
+          }
+        },
+        {
+          "index": 2,
+          "site": "block_1",
+          "per_patch_mean_r2": {
+            "point": 0.5925711283398654,
+            "ci": [
+              0.4015365920522114,
+              0.7254830107647887
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.33408874111783415,
+            "ci": [
+              0.20072924942950343,
+              0.5241121871944181
+            ]
+          }
+        },
+        {
+          "index": 3,
+          "site": "block_2",
+          "per_patch_mean_r2": {
+            "point": 0.7213469559853323,
+            "ci": [
+              0.6605634562988404,
+              0.7655938988032192
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.22829354665208879,
+            "ci": [
+              0.1869141752094846,
+              0.28815531778871323
+            ]
+          }
+        },
+        {
+          "index": 4,
+          "site": "block_3",
+          "per_patch_mean_r2": {
+            "point": 0.7956108894418649,
+            "ci": [
+              0.7699553459751131,
+              0.816110009779965
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.16316757004495896,
+            "ci": [
+              0.14451686738890882,
+              0.1856999630867898
+            ]
+          }
+        },
+        {
+          "index": 5,
+          "site": "block_4",
+          "per_patch_mean_r2": {
+            "point": 0.8772437386335568,
+            "ci": [
+              0.8634987874876139,
+              0.8884813730432594
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.08852464574325314,
+            "ci": [
+              0.0790655707965135,
+              0.0997395258256887
+            ]
+          }
+        },
+        {
+          "index": 6,
+          "site": "block_5",
+          "per_patch_mean_r2": {
+            "point": 0.9511063784187956,
+            "ci": [
+              0.9418263894851137,
+              0.9584239862681068
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.018376593770234484,
+            "ci": [
+              0.014644965249215632,
+              0.022473512444959678
+            ]
+          }
+        },
+        {
+          "index": 7,
+          "site": "block_6",
+          "per_patch_mean_r2": {
+            "point": 0.9458544632692443,
+            "ci": [
+              0.9355627964199519,
+              0.9538291403525505
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.026234726049336965,
+            "ci": [
+              0.022307135446974657,
+              0.030853444170201475
+            ]
+          }
+        },
+        {
+          "index": 8,
+          "site": "block_7",
+          "per_patch_mean_r2": {
+            "point": 0.9505868912426807,
+            "ci": [
+              0.9428319941355551,
+              0.9568184011390577
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.023511845865082703,
+            "ci": [
+              0.019861491464927813,
+              0.027577297950139953
+            ]
+          }
+        },
+        {
+          "index": 9,
+          "site": "block_8",
+          "per_patch_mean_r2": {
+            "point": 0.9706953232591295,
+            "ci": [
+              0.9659552334708764,
+              0.974599424744668
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.00989301675614207,
+            "ci": [
+              0.007221115274833487,
+              0.012813869960835785
+            ]
+          }
+        },
+        {
+          "index": 10,
+          "site": "block_9",
+          "per_patch_mean_r2": {
+            "point": 0.9712657989784199,
+            "ci": [
+              0.9668192676480344,
+              0.9748773323748059
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.01128718413534413,
+            "ci": [
+              0.008717395069180645,
+              0.014212065486072765
+            ]
+          }
+        },
+        {
+          "index": 11,
+          "site": "block_10",
+          "per_patch_mean_r2": {
+            "point": 0.9681264272500245,
+            "ci": [
+              0.9635005393156457,
+              0.9718321148878883
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.013910319671890381,
+            "ci": [
+              0.011354693017955927,
+              0.01681680252978978
+            ]
+          }
+        },
+        {
+          "index": 12,
+          "site": "block_11",
+          "per_patch_mean_r2": {
+            "point": 0.9722763261428742,
+            "ci": [
+              0.9681640383087174,
+              0.9754811295363292
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.013352581098185712,
+            "ci": [
+              0.011126421325523373,
+              0.01583102584808581
+            ]
+          }
+        },
+        {
+          "index": 13,
+          "site": "block_12",
+          "per_patch_mean_r2": {
+            "point": 0.9769779723349421,
+            "ci": [
+              0.9738314651822798,
+              0.9794550985356825
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.013124934009622669,
+            "ci": [
+              0.011667789973735762,
+              0.01487701492684641
+            ]
+          }
+        },
+        {
+          "index": 14,
+          "site": "block_13",
+          "per_patch_mean_r2": {
+            "point": 0.9718101021928178,
+            "ci": [
+              0.9683531740271093,
+              0.9745747734558304
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.01716786490432698,
+            "ci": [
+              0.015407736579989173,
+              0.019283554556344628
+            ]
+          }
+        },
+        {
+          "index": 15,
+          "site": "block_14",
+          "per_patch_mean_r2": {
+            "point": 0.9652843343245135,
+            "ci": [
+              0.961217283962027,
+              0.9684419644477849
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.023952067183312553,
+            "ci": [
+              0.021633300911885305,
+              0.02684265304008702
+            ]
+          }
+        },
+        {
+          "index": 16,
+          "site": "block_15",
+          "per_patch_mean_r2": {
+            "point": 0.9617239925192373,
+            "ci": [
+              0.9579141389390139,
+              0.9647410257128904
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.02798222976058473,
+            "ci": [
+              0.025677962814231476,
+              0.03094659676950539
+            ]
+          }
+        },
+        {
+          "index": 17,
+          "site": "block_16",
+          "per_patch_mean_r2": {
+            "point": 0.9553413474093615,
+            "ci": [
+              0.9511145423277204,
+              0.9585692917072091
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.03489222085762189,
+            "ci": [
+              0.03202951822844785,
+              0.03848712336938291
+            ]
+          }
+        },
+        {
+          "index": 18,
+          "site": "block_17",
+          "per_patch_mean_r2": {
+            "point": 0.954663554515649,
+            "ci": [
+              0.9505094521075118,
+              0.9578537024693682
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.035850477741486086,
+            "ci": [
+              0.03301056889722528,
+              0.0393257795307278
+            ]
+          }
+        },
+        {
+          "index": 19,
+          "site": "block_18",
+          "per_patch_mean_r2": {
+            "point": 0.9486593071245017,
+            "ci": [
+              0.9444663694549988,
+              0.9518644946155577
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.04185882722443801,
+            "ci": [
+              0.0390826271171415,
+              0.04541909704009239
+            ]
+          }
+        },
+        {
+          "index": 20,
+          "site": "block_19",
+          "per_patch_mean_r2": {
+            "point": 0.9475985744488854,
+            "ci": [
+              0.9432670231632668,
+              0.9509121419133059
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.04286436087888579,
+            "ci": [
+              0.039896650194543797,
+              0.04671194978426918
+            ]
+          }
+        },
+        {
+          "index": 21,
+          "site": "block_20",
+          "per_patch_mean_r2": {
+            "point": 0.9425536411335196,
+            "ci": [
+              0.9377067288524645,
+              0.9461979870251948
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.047459018163707345,
+            "ci": [
+              0.04438843132837815,
+              0.05143576130170409
+            ]
+          }
+        },
+        {
+          "index": 22,
+          "site": "block_21",
+          "per_patch_mean_r2": {
+            "point": 0.9386216990160786,
+            "ci": [
+              0.9335400553718645,
+              0.9423988449990486
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.05123467736215004,
+            "ci": [
+              0.04792818545016623,
+              0.05562989564336959
+            ]
+          }
+        },
+        {
+          "index": 23,
+          "site": "block_22",
+          "per_patch_mean_r2": {
+            "point": 0.9348292325191019,
+            "ci": [
+              0.9289412192834448,
+              0.9390982905931926
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.054342404642408804,
+            "ci": [
+              0.05077339662535747,
+              0.05908934165154707
+            ]
+          }
+        },
+        {
+          "index": 24,
+          "site": "block_23",
+          "per_patch_mean_r2": {
+            "point": 0.9319250758907227,
+            "ci": [
+              0.9256234691455929,
+              0.936557635680715
+            ]
+          },
+          "gap_mean_pooled_minus_per_patch": {
+            "point": 0.05739433325203147,
+            "ci": [
+              0.053342788297532036,
+              0.06265658394813552
+            ]
+          }
+        }
+      ],
+      "transition_headline": {
+        "transition_index": 1,
+        "transition_depth_fraction": 0.041666666666666664,
+        "rise_80_index": 4,
+        "largest_jump_index": 1,
+        "largest_jump": 0.5294271383021731,
+        "min": 0.005862095721408243,
+        "max": 0.9769779723349421,
+        "rise": 0.9711158766135338,
+        "clear_transition": true
+      },
+      "bootstrap_transition_index_counts": [
+        0,
+        9582,
+        294,
+        124,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "bootstrap_rise_80_index_counts": [
+        0,
+        0,
+        0,
+        11,
+        8606,
+        1383,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "passed": true
+    }
+  },
+  "spatial_generalization": {
+    "provenance": {
+      "utc": "2026-09-25T22:50:45+00:00",
+      "git_commit": "fcc50451a869ee6401b28b88e89ae15f607cb420",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "f81858b19b20464506e46c798b3568138a80495d3c737897d863cf0c3ff6ed25",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "ff963eb6aa3d212df13dd5a3a822cff23c667f17c7f3b9c619b3ea47d53e2e31",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_patches.py": "dddec4e15b71eef43d6edb6d84b752b9aa96937b5155fa9458cadb56bb56cfa1"
+        },
+        "combined_sha256": "e2784fb5f96500e1e06f130188201166a225cff037c51bd13a16c38a7c235a36"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "criteria": {
+        "code_committed": true,
+        "ids_aligned": true,
+        "no_clip_in_two_folds": true,
+        "fits_used_exactly_train_samples": true,
+        "scored_clips_val_seen_only": true,
+        "no_alpha_failure": true,
+        "sums_match_direct_r2": true,
+        "scores_finite": true,
+        "saved_equals_computed": true
+      },
+      "n_resamples": 10000,
+      "level": 0.95,
+      "seed": 0,
+      "folds": 5,
+      "curve": [
+        {
+          "index": 0,
+          "site": "embedding",
+          "same_r2": {
+            "point": 0.0021334004919162097,
+            "ci": [
+              -0.016994792774306114,
+              0.002472184760805413
+            ],
+            "circular_mae": 87.93286945819531,
+            "per_half": {
+              "left": 0.0023519048320140845,
+              "right": 0.0021827475036149124,
+              "top": 0.0020774749562214034,
+              "bottom": 0.0019214746758144385
+            }
+          },
+          "across_r2": {
+            "point": -0.006112970968141285,
+            "ci": [
+              -0.02538146170330275,
+              -0.005774367093531179
+            ],
+            "circular_mae": 91.4618715880832,
+            "per_half": {
+              "left": -0.0064166130638757535,
+              "right": -0.005901674629950282,
+              "top": -0.005576181641930744,
+              "bottom": -0.006557414536808359
+            }
+          },
+          "gap_r2": {
+            "point": 0.008246371460057494,
+            "ci": [
+              0.006671167305900062,
+              0.009856809121825107
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.0018957310021120721,
+            "across_r2": -0.005920225820567948
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 1,
+          "site": "block_0",
+          "same_r2": {
+            "point": 0.8142112801465604,
+            "ci": [
+              0.7863191332109954,
+              0.8376902853804008
+            ],
+            "circular_mae": 12.778251327009695,
+            "per_half": {
+              "left": 0.8133004673448718,
+              "right": 0.8135195090627663,
+              "top": 0.8144693847398966,
+              "bottom": 0.8155557594387068
+            }
+          },
+          "across_r2": {
+            "point": 0.8112276232760602,
+            "ci": [
+              0.7834813738710973,
+              0.8347172621993059
+            ],
+            "circular_mae": 12.853417232879114,
+            "per_half": {
+              "left": 0.8133170019637286,
+              "right": 0.8093734397441347,
+              "top": 0.8093155913235786,
+              "bottom": 0.8129044600727988
+            }
+          },
+          "gap_r2": {
+            "point": 0.002983656870500173,
+            "ci": [
+              0.0016781449076323925,
+              0.004334713833047854
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.8362263191886652,
+            "across_r2": 0.833134364437033
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 2,
+          "site": "block_1",
+          "same_r2": {
+            "point": 0.8890257316633777,
+            "ci": [
+              0.8674849292464872,
+              0.9062161315650522
+            ],
+            "circular_mae": 11.517698165101752,
+            "per_half": {
+              "left": 0.8887910831292211,
+              "right": 0.889194859710792,
+              "top": 0.887733747901903,
+              "bottom": 0.8903832359115946
+            }
+          },
+          "across_r2": {
+            "point": 0.8871800849012597,
+            "ci": [
+              0.8655268906870217,
+              0.9043894575001816
+            ],
+            "circular_mae": 11.576047661765443,
+            "per_half": {
+              "left": 0.8864395883075928,
+              "right": 0.887331235872429,
+              "top": 0.8879602123114867,
+              "bottom": 0.8869893031135301
+            }
+          },
+          "gap_r2": {
+            "point": 0.0018456467621180694,
+            "ci": [
+              0.0012032600721272185,
+              0.002539573442532786
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.8837300792970098,
+            "across_r2": 0.8826287069334673
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 3,
+          "site": "block_2",
+          "same_r2": {
+            "point": 0.883559701755827,
+            "ci": [
+              0.8608708458725141,
+              0.901136133511804
+            ],
+            "circular_mae": 12.360558417547903,
+            "per_half": {
+              "left": 0.8856449038742432,
+              "right": 0.8809236669825335,
+              "top": 0.8820184364389987,
+              "bottom": 0.8856517997275324
+            }
+          },
+          "across_r2": {
+            "point": 0.8789906630927502,
+            "ci": [
+              0.85624428417335,
+              0.8967641394498851
+            ],
+            "circular_mae": 12.53973608135109,
+            "per_half": {
+              "left": 0.8771078286257991,
+              "right": 0.881427980693876,
+              "top": 0.8782192382418632,
+              "bottom": 0.8792076048094627
+            }
+          },
+          "gap_r2": {
+            "point": 0.004569038663076785,
+            "ci": [
+              0.0034439542999003064,
+              0.0057860985456127684
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.8819945185695199,
+            "across_r2": 0.8765232666326334
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 4,
+          "site": "block_3",
+          "same_r2": {
+            "point": 0.8899920496764743,
+            "ci": [
+              0.8691847300477188,
+              0.9068276798446959
+            ],
+            "circular_mae": 11.554268666794705,
+            "per_half": {
+              "left": 0.8920614729107538,
+              "right": 0.8884928536303547,
+              "top": 0.8884359407541214,
+              "bottom": 0.8909779314106676
+            }
+          },
+          "across_r2": {
+            "point": 0.8836664122244791,
+            "ci": [
+              0.8622514571805785,
+              0.9008259086959335
+            ],
+            "circular_mae": 11.810511441088785,
+            "per_half": {
+              "left": 0.8795674288043849,
+              "right": 0.8854742100441904,
+              "top": 0.8849621418367777,
+              "bottom": 0.8846618682125635
+            }
+          },
+          "gap_r2": {
+            "point": 0.006325637451995214,
+            "ci": [
+              0.004902577831752628,
+              0.007836198046843778
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.8729421802119739,
+            "across_r2": 0.8655770905914602
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 5,
+          "site": "block_4",
+          "same_r2": {
+            "point": 0.9287350686636178,
+            "ci": [
+              0.9171685678584752,
+              0.9378289703702629
+            ],
+            "circular_mae": 8.246572945591863,
+            "per_half": {
+              "left": 0.927354891869141,
+              "right": 0.9306249999755631,
+              "top": 0.9261355869680756,
+              "bottom": 0.9308247958416918
+            }
+          },
+          "across_r2": {
+            "point": 0.9117131715390273,
+            "ci": [
+              0.8981919223260648,
+              0.9224568436965929
+            ],
+            "circular_mae": 9.27938631631035,
+            "per_half": {
+              "left": 0.9166228512323658,
+              "right": 0.9005219085818525,
+              "top": 0.9188641487058236,
+              "bottom": 0.9108437776360674
+            }
+          },
+          "gap_r2": {
+            "point": 0.017021897124590457,
+            "ci": [
+              0.014303984405037027,
+              0.020098207536009122
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9317415427241831,
+            "across_r2": 0.9192132360195266
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 6,
+          "site": "block_5",
+          "same_r2": {
+            "point": 0.9580603242039492,
+            "ci": [
+              0.9493337136742508,
+              0.9649333153379379
+            ],
+            "circular_mae": 5.906362331546188,
+            "per_half": {
+              "left": 0.9585858074498068,
+              "right": 0.957289520541106,
+              "top": 0.9583601331988458,
+              "bottom": 0.9580058356260377
+            }
+          },
+          "across_r2": {
+            "point": 0.9482764576717961,
+            "ci": [
+              0.9387850442274411,
+              0.955628344050416
+            ],
+            "circular_mae": 6.825653714683386,
+            "per_half": {
+              "left": 0.9410656711346767,
+              "right": 0.9531897634359139,
+              "top": 0.9504836250143663,
+              "bottom": 0.9483667711022277
+            }
+          },
+          "gap_r2": {
+            "point": 0.009783866532153018,
+            "ci": [
+              0.00832334641195874,
+              0.011430462152841206
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.955752308638742,
+            "across_r2": 0.9449263416341996
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 7,
+          "site": "block_6",
+          "same_r2": {
+            "point": 0.9551965789347151,
+            "ci": [
+              0.9457027132092334,
+              0.9625805619833194
+            ],
+            "circular_mae": 6.3026587110446135,
+            "per_half": {
+              "left": 0.9557947846564836,
+              "right": 0.954450637490867,
+              "top": 0.9548556219994302,
+              "bottom": 0.9556852715920798
+            }
+          },
+          "across_r2": {
+            "point": 0.9438670463007273,
+            "ci": [
+              0.9328456271378941,
+              0.9519508722558874
+            ],
+            "circular_mae": 7.382739145888387,
+            "per_half": {
+              "left": 0.9484295134888847,
+              "right": 0.9356970164783621,
+              "top": 0.9456413270688093,
+              "bottom": 0.9457003281668532
+            }
+          },
+          "gap_r2": {
+            "point": 0.011329532633987838,
+            "ci": [
+              0.009717390025139924,
+              0.013385392616285453
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9535819493716344,
+            "across_r2": 0.9419005580706243
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 8,
+          "site": "block_7",
+          "same_r2": {
+            "point": 0.9581084234083667,
+            "ci": [
+              0.9505655517959885,
+              0.9642233048441274
+            ],
+            "circular_mae": 6.117841673327778,
+            "per_half": {
+              "left": 0.9582652063907902,
+              "right": 0.9575024854537537,
+              "top": 0.9577811252985344,
+              "bottom": 0.9588848764903886
+            }
+          },
+          "across_r2": {
+            "point": 0.9274947744232183,
+            "ci": [
+              0.919175604441543,
+              0.9340057827767198
+            ],
+            "circular_mae": 8.565431466045464,
+            "per_half": {
+              "left": 0.9447955522765076,
+              "right": 0.9346263381690914,
+              "top": 0.8956313917815071,
+              "bottom": 0.9349258154657669
+            }
+          },
+          "gap_r2": {
+            "point": 0.0306136489851484,
+            "ci": [
+              0.028479163761180867,
+              0.03337954833465034
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9595587751347558,
+            "across_r2": 0.9267017460621485
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 9,
+          "site": "block_8",
+          "same_r2": {
+            "point": 0.9742610467426105,
+            "ci": [
+              0.9700595974990335,
+              0.9776508225882307
+            ],
+            "circular_mae": 4.608216765321064,
+            "per_half": {
+              "left": 0.973865925462237,
+              "right": 0.974358030593833,
+              "top": 0.9749719612019536,
+              "bottom": 0.9738482697124184
+            }
+          },
+          "across_r2": {
+            "point": 0.9566916333081334,
+            "ci": [
+              0.9520061621467366,
+              0.9603128858762581
+            ],
+            "circular_mae": 6.207473863486402,
+            "per_half": {
+              "left": 0.9543755618363019,
+              "right": 0.960922358883366,
+              "top": 0.9519545319895748,
+              "bottom": 0.9595140805232911
+            }
+          },
+          "gap_r2": {
+            "point": 0.017569413434477044,
+            "ci": [
+              0.016481987008295534,
+              0.01898820212986757
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9723435879606552,
+            "across_r2": 0.9536151687954186
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 10,
+          "site": "block_9",
+          "same_r2": {
+            "point": 0.9737018438872144,
+            "ci": [
+              0.9693496683982963,
+              0.9772249589768013
+            ],
+            "circular_mae": 4.761554887128518,
+            "per_half": {
+              "left": 0.9734329805176629,
+              "right": 0.9739154882141787,
+              "top": 0.9744594794477728,
+              "bottom": 0.9729994273692433
+            }
+          },
+          "across_r2": {
+            "point": 0.9446507228360839,
+            "ci": [
+              0.9391418214522509,
+              0.9488044736543977
+            ],
+            "circular_mae": 7.196413791272235,
+            "per_half": {
+              "left": 0.9206992856195049,
+              "right": 0.966410003184694,
+              "top": 0.9387336633982251,
+              "bottom": 0.9527599391419113
+            }
+          },
+          "gap_r2": {
+            "point": 0.029051121051130502,
+            "ci": [
+              0.027690175231929813,
+              0.030963023956391892
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9727483433684649,
+            "across_r2": 0.943983617061815
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 11,
+          "site": "block_10",
+          "same_r2": {
+            "point": 0.9718492572103224,
+            "ci": [
+              0.9672032301946711,
+              0.9755048889409342
+            ],
+            "circular_mae": 4.82662224267286,
+            "per_half": {
+              "left": 0.97126112209555,
+              "right": 0.9721128695851347,
+              "top": 0.9724419420989553,
+              "bottom": 0.9715810950616497
+            }
+          },
+          "across_r2": {
+            "point": 0.8982011017181043,
+            "ci": [
+              0.8904947547319908,
+              0.9036790429395162
+            ],
+            "circular_mae": 9.980404405307207,
+            "per_half": {
+              "left": 0.9172493911520896,
+              "right": 0.9498017255713902,
+              "top": 0.8092213051862385,
+              "bottom": 0.9165319849626989
+            }
+          },
+          "gap_r2": {
+            "point": 0.07364815549221815,
+            "ci": [
+              0.0700010934082706,
+              0.07903922120722275
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9719605835115734,
+            "across_r2": 0.8982418716994213
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 12,
+          "site": "block_11",
+          "same_r2": {
+            "point": 0.9752340126529586,
+            "ci": [
+              0.971194759914227,
+              0.9783872178499056
+            ],
+            "circular_mae": 4.4497443501918355,
+            "per_half": {
+              "left": 0.9747457132791011,
+              "right": 0.9758174316492936,
+              "top": 0.9758164937974604,
+              "bottom": 0.9745564118859792
+            }
+          },
+          "across_r2": {
+            "point": 0.9505538430250651,
+            "ci": [
+              0.945863967365289,
+              0.9540949097113453
+            ],
+            "circular_mae": 6.820809736696548,
+            "per_half": {
+              "left": 0.9537291830885197,
+              "right": 0.9384599652615536,
+              "top": 0.9491242875773298,
+              "bottom": 0.9609019361728575
+            }
+          },
+          "gap_r2": {
+            "point": 0.024680169627893545,
+            "ci": [
+              0.023288642757831844,
+              0.026631761361889543
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.971969075399123,
+            "across_r2": 0.9477631718732397
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 13,
+          "site": "block_12",
+          "same_r2": {
+            "point": 0.9797487871251134,
+            "ci": [
+              0.9766749979061996,
+              0.9821306147211794
+            ],
+            "circular_mae": 4.002555700157915,
+            "per_half": {
+              "left": 0.9792412389059588,
+              "right": 0.9802080311013004,
+              "top": 0.9801858107015282,
+              "bottom": 0.9793600677916665
+            }
+          },
+          "across_r2": {
+            "point": 0.9452910384524282,
+            "ci": [
+              0.9405358596596384,
+              0.9487947375947975
+            ],
+            "circular_mae": 7.100874455241918,
+            "per_half": {
+              "left": 0.9649218890569305,
+              "right": 0.8975957171196303,
+              "top": 0.9563237824746114,
+              "bottom": 0.9623227651585402
+            }
+          },
+          "gap_r2": {
+            "point": 0.03445774867268514,
+            "ci": [
+              0.03186417551677282,
+              0.038055842932703164
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9768338824205633,
+            "across_r2": 0.9417423471370931
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 14,
+          "site": "block_13",
+          "same_r2": {
+            "point": 0.9747045583097758,
+            "ci": [
+              0.9712355835940151,
+              0.9774177475262429
+            ],
+            "circular_mae": 4.579073162140846,
+            "per_half": {
+              "left": 0.9747121617633541,
+              "right": 0.97487100971315,
+              "top": 0.9754648455797299,
+              "bottom": 0.973770216182869
+            }
+          },
+          "across_r2": {
+            "point": 0.9368232252914047,
+            "ci": [
+              0.9328217833104566,
+              0.9395799742112478
+            ],
+            "circular_mae": 7.792746527810891,
+            "per_half": {
+              "left": 0.9307497203369346,
+              "right": 0.9476422269605962,
+              "top": 0.9358459609501016,
+              "bottom": 0.9330549929179863
+            }
+          },
+          "gap_r2": {
+            "point": 0.037881333018371044,
+            "ci": [
+              0.03683365966323961,
+              0.039670648804074164
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9737924457888026,
+            "across_r2": 0.9346123190070728
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 15,
+          "site": "block_14",
+          "same_r2": {
+            "point": 0.9696673403734923,
+            "ci": [
+              0.9655013921047605,
+              0.9728089171061725
+            ],
+            "circular_mae": 5.115704405050627,
+            "per_half": {
+              "left": 0.9700480089435237,
+              "right": 0.9698751867706903,
+              "top": 0.969094229515369,
+              "bottom": 0.9696519362643861
+            }
+          },
+          "across_r2": {
+            "point": 0.9216615375134867,
+            "ci": [
+              0.9160900347420659,
+              0.9254714322653599
+            ],
+            "circular_mae": 9.036435328600902,
+            "per_half": {
+              "left": 0.9315848884368572,
+              "right": 0.9363942256072568,
+              "top": 0.9114400562118491,
+              "bottom": 0.9072269797979835
+            }
+          },
+          "gap_r2": {
+            "point": 0.048005802860005664,
+            "ci": [
+              0.04634799060626621,
+              0.050778451936057456
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9694991443064074,
+            "across_r2": 0.9235034855877311
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 16,
+          "site": "block_15",
+          "same_r2": {
+            "point": 0.9662596034725779,
+            "ci": [
+              0.962430182796654,
+              0.969260042099722
+            ],
+            "circular_mae": 5.582872397742187,
+            "per_half": {
+              "left": 0.966935939823287,
+              "right": 0.9659578793993306,
+              "top": 0.9664543153452176,
+              "bottom": 0.9656902793224763
+            }
+          },
+          "across_r2": {
+            "point": 0.9141279820494648,
+            "ci": [
+              0.9082340146382503,
+              0.9181796505368491
+            ],
+            "circular_mae": 9.566152331608556,
+            "per_half": {
+              "left": 0.8869601289582436,
+              "right": 0.9325456654028612,
+              "top": 0.9312605109630623,
+              "bottom": 0.9057456228736915
+            }
+          },
+          "gap_r2": {
+            "point": 0.05213162142311312,
+            "ci": [
+              0.04964198920013889,
+              0.05573928799461427
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9643392884124603,
+            "across_r2": 0.9114976365030414
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 17,
+          "site": "block_16",
+          "same_r2": {
+            "point": 0.9593419180581748,
+            "ci": [
+              0.955405509667624,
+              0.9623842096269769
+            ],
+            "circular_mae": 6.163851407240328,
+            "per_half": {
+              "left": 0.9595873464655141,
+              "right": 0.9598592258776063,
+              "top": 0.9598633771884075,
+              "bottom": 0.9580577227011711
+            }
+          },
+          "across_r2": {
+            "point": 0.9022374959803912,
+            "ci": [
+              0.8959900505125767,
+              0.9066981401457471
+            ],
+            "circular_mae": 10.10641939052963,
+            "per_half": {
+              "left": 0.9137009821657623,
+              "right": 0.9138603446648164,
+              "top": 0.9236870595865873,
+              "bottom": 0.8577015975043984
+            }
+          },
+          "gap_r2": {
+            "point": 0.057104422077783656,
+            "ci": [
+              0.054506150075435494,
+              0.06076096773431078
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9581223302223977,
+            "across_r2": 0.8994730282708476
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 18,
+          "site": "block_17",
+          "same_r2": {
+            "point": 0.9576975523317832,
+            "ci": [
+              0.9535032729537024,
+              0.960953399805231
+            ],
+            "circular_mae": 6.491081471130377,
+            "per_half": {
+              "left": 0.9582645249559489,
+              "right": 0.958495016301173,
+              "top": 0.9588909331031825,
+              "bottom": 0.9551397349668289
+            }
+          },
+          "across_r2": {
+            "point": 0.8939824495404545,
+            "ci": [
+              0.8870194086623036,
+              0.8989233224937662
+            ],
+            "circular_mae": 10.905015438345261,
+            "per_half": {
+              "left": 0.876092123615443,
+              "right": 0.8791367696027187,
+              "top": 0.8967592764307415,
+              "bottom": 0.9239416285129148
+            }
+          },
+          "gap_r2": {
+            "point": 0.06371510279132875,
+            "ci": [
+              0.06061018140977241,
+              0.06830276889171402
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9572114768058402,
+            "across_r2": 0.8901086645085065
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 19,
+          "site": "block_18",
+          "same_r2": {
+            "point": 0.949266987079655,
+            "ci": [
+              0.9446856641345108,
+              0.9528158115647282
+            ],
+            "circular_mae": 7.135322871898345,
+            "per_half": {
+              "left": 0.9512092788341253,
+              "right": 0.9494603355299307,
+              "top": 0.9492100877521414,
+              "bottom": 0.9471882462024221
+            }
+          },
+          "across_r2": {
+            "point": 0.8646578490782444,
+            "ci": [
+              0.8569775534066124,
+              0.8701048716704963
+            ],
+            "circular_mae": 12.784801744138615,
+            "per_half": {
+              "left": 0.8781463426653547,
+              "right": 0.8183517626347536,
+              "top": 0.8846046084976413,
+              "bottom": 0.877528682515228
+            }
+          },
+          "gap_r2": {
+            "point": 0.08460913800141057,
+            "ci": [
+              0.08143408901481104,
+              0.0894677049940496
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9486652921407097,
+            "across_r2": 0.8615710252926603
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 20,
+          "site": "block_19",
+          "same_r2": {
+            "point": 0.9476404892882322,
+            "ci": [
+              0.9429547663386119,
+              0.9512372371841754
+            ],
+            "circular_mae": 7.381204358738199,
+            "per_half": {
+              "left": 0.9490791385655475,
+              "right": 0.9495692612284361,
+              "top": 0.9481506864554374,
+              "bottom": 0.9437628709035079
+            }
+          },
+          "across_r2": {
+            "point": 0.8190599316900191,
+            "ci": [
+              0.8079136702073529,
+              0.8266852021183042
+            ],
+            "circular_mae": 15.761539382074778,
+            "per_half": {
+              "left": 0.7737183120698462,
+              "right": 0.7556148365298132,
+              "top": 0.8623801622111631,
+              "bottom": 0.8845264159492539
+            }
+          },
+          "gap_r2": {
+            "point": 0.12858055759821307,
+            "ci": [
+              0.12285504746434273,
+              0.13722245006602027
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.945874093343924,
+            "across_r2": 0.8159485650921676
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 21,
+          "site": "block_20",
+          "same_r2": {
+            "point": 0.9443558018452614,
+            "ci": [
+              0.9393258827814172,
+              0.9482001605373592
+            ],
+            "circular_mae": 7.3873606364449875,
+            "per_half": {
+              "left": 0.945620350323445,
+              "right": 0.9462873917059713,
+              "top": 0.9461592914645767,
+              "bottom": 0.9393561738870522
+            }
+          },
+          "across_r2": {
+            "point": 0.860929610030571,
+            "ci": [
+              0.8522650637854979,
+              0.8670520441809613
+            ],
+            "circular_mae": 13.011002348965324,
+            "per_half": {
+              "left": 0.8459787367293097,
+              "right": 0.8451040714454443,
+              "top": 0.8783583003544037,
+              "bottom": 0.8742773315931263
+            }
+          },
+          "gap_r2": {
+            "point": 0.08342619181469035,
+            "ci": [
+              0.0797461230559668,
+              0.08851122175348071
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9409689080849619,
+            "across_r2": 0.8545387610909249
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 22,
+          "site": "block_21",
+          "same_r2": {
+            "point": 0.939695151704985,
+            "ci": [
+              0.9342209204831422,
+              0.9438478915205021
+            ],
+            "circular_mae": 7.677262009772565,
+            "per_half": {
+              "left": 0.9412672318190378,
+              "right": 0.9419470970618475,
+              "top": 0.9414336309739999,
+              "bottom": 0.9341326469650546
+            }
+          },
+          "across_r2": {
+            "point": 0.8299606550015428,
+            "ci": [
+              0.8208200500832942,
+              0.8361564503674346
+            ],
+            "circular_mae": 14.76915601675443,
+            "per_half": {
+              "left": 0.7984629675389292,
+              "right": 0.8114722807964299,
+              "top": 0.8392308145499037,
+              "bottom": 0.8706765571209084
+            }
+          },
+          "gap_r2": {
+            "point": 0.10973449670344215,
+            "ci": [
+              0.10617840970489129,
+              0.11495926102414267
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9325760958691999,
+            "across_r2": 0.8197682494430395
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 23,
+          "site": "block_22",
+          "same_r2": {
+            "point": 0.9355428337842235,
+            "ci": [
+              0.9291072635117579,
+              0.9403372992732617
+            ],
+            "circular_mae": 7.9950863752017085,
+            "per_half": {
+              "left": 0.9368292361333846,
+              "right": 0.9369623750074746,
+              "top": 0.9371077480705424,
+              "bottom": 0.9312719759254928
+            }
+          },
+          "across_r2": {
+            "point": 0.8486056645768734,
+            "ci": [
+              0.8393436859509963,
+              0.8551714427286277
+            ],
+            "circular_mae": 13.482772860592123,
+            "per_half": {
+              "left": 0.8492376761634599,
+              "right": 0.8428254200819112,
+              "top": 0.8561716179308285,
+              "bottom": 0.8461879441312938
+            }
+          },
+          "gap_r2": {
+            "point": 0.08693716920735017,
+            "ci": [
+              0.08417025061818072,
+              0.09130784088194266
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.927253652749362,
+            "across_r2": 0.8378693000604543
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        },
+        {
+          "index": 24,
+          "site": "block_23",
+          "same_r2": {
+            "point": 0.9317212803651083,
+            "ci": [
+              0.925409768581418,
+              0.9364721680460575
+            ],
+            "circular_mae": 8.369208148481938,
+            "per_half": {
+              "left": 0.9323028277668173,
+              "right": 0.9338931395414456,
+              "top": 0.9333657793672717,
+              "bottom": 0.9273233747848983
+            }
+          },
+          "across_r2": {
+            "point": 0.8287407070065773,
+            "ci": [
+              0.8191823629351462,
+              0.8351966365028948
+            ],
+            "circular_mae": 15.192609493376136,
+            "per_half": {
+              "left": 0.8276091120097153,
+              "right": 0.8212910221429187,
+              "top": 0.8504211770545277,
+              "bottom": 0.8156415168191471
+            }
+          },
+          "gap_r2": {
+            "point": 0.10298057335853095,
+            "ci": [
+              0.10011314670424419,
+              0.10766667605510775
+            ]
+          },
+          "val_unseen_mean": {
+            "same_r2": 0.9216301258640138,
+            "across_r2": 0.8160588792248885
+          },
+          "alpha_verdicts": {
+            "ok": 4
+          }
+        }
+      ],
+      "transition_on_across_curve": {
+        "transition_index": 1,
+        "transition_depth_fraction": 0.041666666666666664,
+        "rise_80_index": 1,
+        "largest_jump_index": 1,
+        "largest_jump": 0.8173405942442016,
+        "min": -0.006112970968141285,
+        "max": 0.9566916333081334,
+        "rise": 0.9628046042762748,
+        "clear_transition": true
+      },
+      "bootstrap_across_transition_index_counts": [
+        0,
+        10000,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "minutes_total": 7.9,
+      "artifact": {
+        "path": "artifacts/patches/spatial_generalization.npz",
+        "sha256": "1fea17513af694e769fb27cf735d42ae9a62df58e307cf8db782278f4494c543"
+      },
+      "passed": true
+    }
+  },
+  "position_baseline": {
+    "provenance": {
+      "utc": "2026-09-25T22:59:15+00:00",
+      "git_commit": "6e82ab18f3a90740d29048c3f23e6d60c10eec54",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "f81858b19b20464506e46c798b3568138a80495d3c737897d863cf0c3ff6ed25",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "ff963eb6aa3d212df13dd5a3a822cff23c667f17c7f3b9c619b3ea47d53e2e31",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_patches.py": "2c9ede8229748d8430bf170e062d66461891c9f6f110989c4955d8e6e2df672b"
+        },
+        "combined_sha256": "37462217fc348c9a2b5ad8e76606df1d01ec39b03d2cedfbafc9257e29509771"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "criteria": {
+        "code_committed": true,
+        "positions_finite": true,
+        "fit_on_train_only": true,
+        "linear_position_r2_below_threshold": true
+      },
+      "threshold": 0.5,
+      "baselines": {
+        "linear": {
+          "features": 2,
+          "n_fit": 813,
+          "val_seen": {
+            "r2": 0.196573789193005,
+            "circular_mae": 62.987238966966
+          },
+          "val_unseen": {
+            "r2": 0.2326917834781259,
+            "circular_mae": 62.01766925546513
+          }
+        },
+        "cubic": {
+          "features": 9,
+          "n_fit": 813,
+          "val_seen": {
+            "r2": 0.21106366464779563,
+            "circular_mae": 62.970161072133116
+          },
+          "val_unseen": {
+            "r2": 0.2551671231762445,
+            "circular_mae": 59.60322484745093
+          }
+        }
+      },
+      "off_path_val_seen_r2_mean": {
+        "embedding": -0.0034254573942243552,
+        "block_0": 0.6484115644130266,
+        "block_5": 0.9586556284341787,
+        "block_12": 0.9790692166528715,
+        "block_23": 0.9318733475405068
+      },
+      "passed": true
+    }
+  },
+  "patch_test_scores": {
+    "provenance": {
+      "utc": "2026-09-25T23:05:57+00:00",
+      "git_commit": "43ee0b6d63f833d945d3be5104d6b56085139f7c",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "f81858b19b20464506e46c798b3568138a80495d3c737897d863cf0c3ff6ed25",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "ff963eb6aa3d212df13dd5a3a822cff23c667f17c7f3b9c619b3ea47d53e2e31",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_patches.py": "1c45bda579331ddee6bb17cd0a1cecad0dc5fc3683b0d9e602ebf55807411855"
+        },
+        "combined_sha256": "b53911b04fa4e0ebcae7202fe7daf93d5911c5ba86e91425ad9d03fcc29f8f54"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "criteria": {
+        "code_committed": true,
+        "ids_aligned": true,
+        "per_patch_probes_reproduce_validation": true,
+        "shared_probes_reproduce_validation": true,
+        "count_bootstrap_equals_resampled_r2": true,
+        "only_test_rows_predicted": true,
+        "point_scores_finite": true,
+        "saved_equals_computed": true
+      },
+      "n_resamples": 10000,
+      "level": 0.95,
+      "seed": 0,
+      "max_reproduce_difference": {
+        "per_patch": 0.0,
+        "shared_relative": 0.0
+      },
+      "curves": {
+        "test_seen": [
+          {
+            "index": 0,
+            "site": "embedding",
+            "per_patch_mean_r2": {
+              "point": 0.004090131860789431,
+              "ci": [
+                -0.018957452668172815,
+                0.0066096780138369705
+              ]
+            },
+            "per_patch_mean_circular_mae": 86.62456123244729,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": -0.004978472661354583,
+              "ci": [
+                -0.029117261610801005,
+                -0.0035511999401219812
+              ]
+            },
+            "same_r2": {
+              "point": -0.0002876237296580708,
+              "ci": [
+                -0.02321081526532064,
+                0.0017154027150069135
+              ]
+            },
+            "across_r2": {
+              "point": -0.00763077453494973,
+              "ci": [
+                -0.030832123260372345,
+                -0.005502963691371132
+              ]
+            },
+            "gap_r2": {
+              "point": 0.007343150805291659,
+              "ci": [
+                0.005845394171159205,
+                0.008899758568905467
+              ]
+            }
+          },
+          {
+            "index": 1,
+            "site": "block_0",
+            "per_patch_mean_r2": {
+              "point": 0.534508000334849,
+              "ci": [
+                0.4836555226521526,
+                0.576566723165855
+              ]
+            },
+            "per_patch_mean_circular_mae": 28.057537390242345,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.6397935034598871,
+              "ci": [
+                0.5971557111917187,
+                0.6764762877202047
+              ]
+            },
+            "same_r2": {
+              "point": 0.8273208365588305,
+              "ci": [
+                0.7996591678376053,
+                0.8510017502725923
+              ]
+            },
+            "across_r2": {
+              "point": 0.8240846088930487,
+              "ci": [
+                0.796637889833559,
+                0.8475937210927471
+              ]
+            },
+            "gap_r2": {
+              "point": 0.003236227665781799,
+              "ci": [
+                0.0018944023539918876,
+                0.004589205948517809
+              ]
+            }
+          },
+          {
+            "index": 2,
+            "site": "block_1",
+            "per_patch_mean_r2": {
+              "point": 0.6637357405038132,
+              "ci": [
+                0.5548084605621854,
+                0.7382414788693777
+              ]
+            },
+            "per_patch_mean_circular_mae": 19.15047397838893,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.8125320700512403,
+              "ci": [
+                0.7760313943214124,
+                0.8401957478009953
+              ]
+            },
+            "same_r2": {
+              "point": 0.8771351617790129,
+              "ci": [
+                0.8474062815943814,
+                0.8993150798733525
+              ]
+            },
+            "across_r2": {
+              "point": 0.8748003182932006,
+              "ci": [
+                0.8450632015568131,
+                0.8969929114987175
+              ]
+            },
+            "gap_r2": {
+              "point": 0.0023348434858122546,
+              "ci": [
+                0.0016211855210689658,
+                0.0031019349833665056
+              ]
+            }
+          },
+          {
+            "index": 3,
+            "site": "block_2",
+            "per_patch_mean_r2": {
+              "point": 0.7471306563777762,
+              "ci": [
+                0.7084121061376174,
+                0.7768707352351407
+              ]
+            },
+            "per_patch_mean_circular_mae": 17.65407535729451,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.824216164590313,
+              "ci": [
+                0.7915655986000899,
+                0.849163931303225
+              ]
+            },
+            "same_r2": {
+              "point": 0.8703449856009751,
+              "ci": [
+                0.8426750298975918,
+                0.8914265318491943
+              ]
+            },
+            "across_r2": {
+              "point": 0.8653595375226942,
+              "ci": [
+                0.8373045780306219,
+                0.886549145037404
+              ]
+            },
+            "gap_r2": {
+              "point": 0.00498544807828083,
+              "ci": [
+                0.0038572700563362593,
+                0.006212296162856518
+              ]
+            }
+          },
+          {
+            "index": 4,
+            "site": "block_3",
+            "per_patch_mean_r2": {
+              "point": 0.7826431629659892,
+              "ci": [
+                0.7529129153130528,
+                0.8068672405107239
+              ]
+            },
+            "per_patch_mean_circular_mae": 15.579723287179327,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.8557867117521908,
+              "ci": [
+                0.829903889195924,
+                0.8765894910406952
+              ]
+            },
+            "same_r2": {
+              "point": 0.8789880256324999,
+              "ci": [
+                0.8532871043450992,
+                0.8986479572927658
+              ]
+            },
+            "across_r2": {
+              "point": 0.8711037241111308,
+              "ci": [
+                0.8449875368170794,
+                0.8909994762936823
+              ]
+            },
+            "gap_r2": {
+              "point": 0.007884301521369097,
+              "ci": [
+                0.006515667367577707,
+                0.009360188315907788
+              ]
+            }
+          },
+          {
+            "index": 5,
+            "site": "block_4",
+            "per_patch_mean_r2": {
+              "point": 0.8726762943219519,
+              "ci": [
+                0.8561552840298593,
+                0.8859509939403293
+              ]
+            },
+            "per_patch_mean_circular_mae": 9.69287835453672,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.921656213769557,
+              "ci": [
+                0.9076088907168615,
+                0.9328788441581466
+              ]
+            },
+            "same_r2": {
+              "point": 0.9244189966343066,
+              "ci": [
+                0.9120598472653515,
+                0.9344308250696386
+              ]
+            },
+            "across_r2": {
+              "point": 0.9097474417598681,
+              "ci": [
+                0.8958807230672527,
+                0.9208346936476823
+              ]
+            },
+            "gap_r2": {
+              "point": 0.014671554874438497,
+              "ci": [
+                0.012287342502985975,
+                0.017377054794353943
+              ]
+            }
+          },
+          {
+            "index": 6,
+            "site": "block_5",
+            "per_patch_mean_r2": {
+              "point": 0.9463475059965818,
+              "ci": [
+                0.934984174566347,
+                0.9551228500776207
+              ]
+            },
+            "per_patch_mean_circular_mae": 6.431157607413157,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9536500254293474,
+              "ci": [
+                0.941646458758352,
+                0.9629078625008475
+              ]
+            },
+            "same_r2": {
+              "point": 0.9522899276239739,
+              "ci": [
+                0.9414162701192432,
+                0.9605355457544941
+              ]
+            },
+            "across_r2": {
+              "point": 0.9419312872901678,
+              "ci": [
+                0.9304707007273453,
+                0.9506433616997405
+              ]
+            },
+            "gap_r2": {
+              "point": 0.010358640333806068,
+              "ci": [
+                0.00891232634504406,
+                0.0120147890480418
+              ]
+            }
+          },
+          {
+            "index": 7,
+            "site": "block_6",
+            "per_patch_mean_r2": {
+              "point": 0.9417300066373326,
+              "ci": [
+                0.9308993517858647,
+                0.9503268793747351
+              ]
+            },
+            "per_patch_mean_circular_mae": 6.813536633627975,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9515085123540659,
+              "ci": [
+                0.9402877085343347,
+                0.9604148772637178
+              ]
+            },
+            "same_r2": {
+              "point": 0.948929441476192,
+              "ci": [
+                0.9375881565969529,
+                0.9578066113509112
+              ]
+            },
+            "across_r2": {
+              "point": 0.9374697979784636,
+              "ci": [
+                0.925402799495819,
+                0.94687821374728
+              ]
+            },
+            "gap_r2": {
+              "point": 0.011459643497728322,
+              "ci": [
+                0.009931317039101478,
+                0.013249491612727034
+              ]
+            }
+          },
+          {
+            "index": 8,
+            "site": "block_7",
+            "per_patch_mean_r2": {
+              "point": 0.9487949654037626,
+              "ci": [
+                0.9414264538188213,
+                0.9548138118304766
+              ]
+            },
+            "per_patch_mean_circular_mae": 6.414207836647782,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9552245879305241,
+              "ci": [
+                0.9473208228486628,
+                0.9616513234825025
+              ]
+            },
+            "same_r2": {
+              "point": 0.9580882198246748,
+              "ci": [
+                0.9507051602181275,
+                0.9641441521811577
+              ]
+            },
+            "across_r2": {
+              "point": 0.9261366671563563,
+              "ci": [
+                0.9172421792985687,
+                0.9331223335337098
+              ]
+            },
+            "gap_r2": {
+              "point": 0.031951552668318506,
+              "ci": [
+                0.029607150688056146,
+                0.0351616645187451
+              ]
+            }
+          },
+          {
+            "index": 9,
+            "site": "block_8",
+            "per_patch_mean_r2": {
+              "point": 0.9700474788999189,
+              "ci": [
+                0.9650426287917961,
+                0.9741573783445329
+              ]
+            },
+            "per_patch_mean_circular_mae": 4.622090905661505,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9716896579790459,
+              "ci": [
+                0.9665561593959077,
+                0.97591783717908
+              ]
+            },
+            "same_r2": {
+              "point": 0.9727683702148497,
+              "ci": [
+                0.9681237017271451,
+                0.9765502386831687
+              ]
+            },
+            "across_r2": {
+              "point": 0.9548192021364463,
+              "ci": [
+                0.9493349097509719,
+                0.9591622508507922
+              ]
+            },
+            "gap_r2": {
+              "point": 0.01794916807840341,
+              "ci": [
+                0.016594413278903146,
+                0.019719352164807153
+              ]
+            }
+          },
+          {
+            "index": 10,
+            "site": "block_9",
+            "per_patch_mean_r2": {
+              "point": 0.9703863016487888,
+              "ci": [
+                0.9657878021195256,
+                0.9742195356928489
+              ]
+            },
+            "per_patch_mean_circular_mae": 4.828282182464511,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9728537525852905,
+              "ci": [
+                0.9681596273985887,
+                0.9767491145664114
+              ]
+            },
+            "same_r2": {
+              "point": 0.9729168920026097,
+              "ci": [
+                0.9683478679591403,
+                0.9767761520308119
+              ]
+            },
+            "across_r2": {
+              "point": 0.9430006470273771,
+              "ci": [
+                0.9371317036478376,
+                0.9475028859128031
+              ]
+            },
+            "gap_r2": {
+              "point": 0.029916244975232598,
+              "ci": [
+                0.02850222002475757,
+                0.03193586462293771
+              ]
+            }
+          },
+          {
+            "index": 11,
+            "site": "block_10",
+            "per_patch_mean_r2": {
+              "point": 0.9675543806694924,
+              "ci": [
+                0.9629597233560956,
+                0.9713167497189896
+              ]
+            },
+            "per_patch_mean_circular_mae": 5.1916439041306965,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9712117265919176,
+              "ci": [
+                0.9664725668173326,
+                0.9750890429641912
+              ]
+            },
+            "same_r2": {
+              "point": 0.970387262561365,
+              "ci": [
+                0.9656410063009712,
+                0.9743370719117943
+              ]
+            },
+            "across_r2": {
+              "point": 0.8981012493291164,
+              "ci": [
+                0.8899661831304694,
+                0.903789966702194
+              ]
+            },
+            "gap_r2": {
+              "point": 0.07228601323224859,
+              "ci": [
+                0.06826109335960663,
+                0.07800590341417998
+              ]
+            }
+          },
+          {
+            "index": 12,
+            "site": "block_11",
+            "per_patch_mean_r2": {
+              "point": 0.9691788653039284,
+              "ci": [
+                0.9650704534561717,
+                0.9724870695978849
+              ]
+            },
+            "per_patch_mean_circular_mae": 5.171169337290259,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.971878746956207,
+              "ci": [
+                0.967703694249926,
+                0.9752475001266095
+              ]
+            },
+            "same_r2": {
+              "point": 0.9725701568162743,
+              "ci": [
+                0.9686203103168246,
+                0.975792226594364
+              ]
+            },
+            "across_r2": {
+              "point": 0.9472306104765147,
+              "ci": [
+                0.942003462212314,
+                0.9511168365372551
+              ]
+            },
+            "gap_r2": {
+              "point": 0.025339546339759655,
+              "ci": [
+                0.023620468055192433,
+                0.027646808662372107
+              ]
+            }
+          },
+          {
+            "index": 13,
+            "site": "block_12",
+            "per_patch_mean_r2": {
+              "point": 0.9740361676097958,
+              "ci": [
+                0.970665985526017,
+                0.9767965366726691
+              ]
+            },
+            "per_patch_mean_circular_mae": 4.612245726173726,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9764256718127666,
+              "ci": [
+                0.9729807489631571,
+                0.979228103404675
+              ]
+            },
+            "same_r2": {
+              "point": 0.9773635941464875,
+              "ci": [
+                0.9741972133275953,
+                0.9799547748988134
+              ]
+            },
+            "across_r2": {
+              "point": 0.9404643062729124,
+              "ci": [
+                0.9349420436901869,
+                0.9446637711066296
+              ]
+            },
+            "gap_r2": {
+              "point": 0.036899287873575104,
+              "ci": [
+                0.033839462586325746,
+                0.04099033649862409
+              ]
+            }
+          },
+          {
+            "index": 14,
+            "site": "block_13",
+            "per_patch_mean_r2": {
+              "point": 0.9705411153705104,
+              "ci": [
+                0.967110823621062,
+                0.9733391500871986
+              ]
+            },
+            "per_patch_mean_circular_mae": 4.961168125505409,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9740748232506946,
+              "ci": [
+                0.9705301888025697,
+                0.9769308055336338
+              ]
+            },
+            "same_r2": {
+              "point": 0.9746304134399301,
+              "ci": [
+                0.9713653917235472,
+                0.9773155567205336
+              ]
+            },
+            "across_r2": {
+              "point": 0.9345727297457604,
+              "ci": [
+                0.9301264737414848,
+                0.9377216888277079
+              ]
+            },
+            "gap_r2": {
+              "point": 0.04005768369416962,
+              "ci": [
+                0.038698751629777886,
+                0.042331531261719645
+              ]
+            }
+          },
+          {
+            "index": 15,
+            "site": "block_14",
+            "per_patch_mean_r2": {
+              "point": 0.9652720394338192,
+              "ci": [
+                0.9620375069131796,
+                0.9678711455983997
+              ]
+            },
+            "per_patch_mean_circular_mae": 5.534503373256552,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9689906646580462,
+              "ci": [
+                0.965647569869547,
+                0.97162468185516
+              ]
+            },
+            "same_r2": {
+              "point": 0.9704232836724355,
+              "ci": [
+                0.9675292707064653,
+                0.9727446669281182
+              ]
+            },
+            "across_r2": {
+              "point": 0.9238230406367055,
+              "ci": [
+                0.9193293978117195,
+                0.9269208926073703
+              ]
+            },
+            "gap_r2": {
+              "point": 0.04660024303572996,
+              "ci": [
+                0.04486028771448108,
+                0.049381346294007755
+              ]
+            }
+          },
+          {
+            "index": 16,
+            "site": "block_15",
+            "per_patch_mean_r2": {
+              "point": 0.9599887524893926,
+              "ci": [
+                0.9562565997498653,
+                0.9629967771117904
+              ]
+            },
+            "per_patch_mean_circular_mae": 5.979863960017498,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9639039434160097,
+              "ci": [
+                0.9599484700151677,
+                0.966999275707808
+              ]
+            },
+            "same_r2": {
+              "point": 0.965482409785299,
+              "ci": [
+                0.9620101575589083,
+                0.9682463760586513
+              ]
+            },
+            "across_r2": {
+              "point": 0.9143066939209048,
+              "ci": [
+                0.9087386117115278,
+                0.9182809030138224
+              ]
+            },
+            "gap_r2": {
+              "point": 0.05117571586439418,
+              "ci": [
+                0.04883415279730415,
+                0.054598546449319066
+              ]
+            }
+          },
+          {
+            "index": 17,
+            "site": "block_16",
+            "per_patch_mean_r2": {
+              "point": 0.9540448046027863,
+              "ci": [
+                0.9498792191289933,
+                0.9573167160984255
+              ]
+            },
+            "per_patch_mean_circular_mae": 6.5541537147188675,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9573647403477792,
+              "ci": [
+                0.9530978719649785,
+                0.9607101562612314
+              ]
+            },
+            "same_r2": {
+              "point": 0.9590730383204513,
+              "ci": [
+                0.9550501817893258,
+                0.9623431183311973
+              ]
+            },
+            "across_r2": {
+              "point": 0.8995770201005052,
+              "ci": [
+                0.8928620392111546,
+                0.9043491465917085
+              ]
+            },
+            "gap_r2": {
+              "point": 0.0594960182199461,
+              "ci": [
+                0.05676893741023918,
+                0.06334114516863137
+              ]
+            }
+          },
+          {
+            "index": 18,
+            "site": "block_17",
+            "per_patch_mean_r2": {
+              "point": 0.9527649177608065,
+              "ci": [
+                0.9483382659736449,
+                0.9562417844846529
+              ]
+            },
+            "per_patch_mean_circular_mae": 6.679585740008624,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9557998518023911,
+              "ci": [
+                0.9511630020565089,
+                0.9594294158537093
+              ]
+            },
+            "same_r2": {
+              "point": 0.95706973170177,
+              "ci": [
+                0.9528795062422571,
+                0.9603119077879411
+              ]
+            },
+            "across_r2": {
+              "point": 0.8913817392504776,
+              "ci": [
+                0.883935365938213,
+                0.8964272246438559
+              ]
+            },
+            "gap_r2": {
+              "point": 0.06568799245129242,
+              "ci": [
+                0.06219770933475599,
+                0.07062149258601245
+              ]
+            }
+          },
+          {
+            "index": 19,
+            "site": "block_18",
+            "per_patch_mean_r2": {
+              "point": 0.9466849187695023,
+              "ci": [
+                0.9418962935687142,
+                0.950362799385137
+              ]
+            },
+            "per_patch_mean_circular_mae": 7.186777760175705,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9487526860549949,
+              "ci": [
+                0.9438016004733913,
+                0.9525257545487171
+              ]
+            },
+            "same_r2": {
+              "point": 0.9497630608262981,
+              "ci": [
+                0.9451364565268208,
+                0.9532065218315882
+              ]
+            },
+            "across_r2": {
+              "point": 0.8621564149739466,
+              "ci": [
+                0.8536356952013963,
+                0.8677170426769067
+              ]
+            },
+            "gap_r2": {
+              "point": 0.08760664585235156,
+              "ci": [
+                0.08396081013840348,
+                0.09319781302955134
+              ]
+            }
+          },
+          {
+            "index": 20,
+            "site": "block_19",
+            "per_patch_mean_r2": {
+              "point": 0.9455542426619163,
+              "ci": [
+                0.9408043467286575,
+                0.9492526475672345
+              ]
+            },
+            "per_patch_mean_circular_mae": 7.366116595902726,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9474196719224712,
+              "ci": [
+                0.9424007542522498,
+                0.9512655557885015
+              ]
+            },
+            "same_r2": {
+              "point": 0.9481971111776688,
+              "ci": [
+                0.9434356953965208,
+                0.9517472068777731
+              ]
+            },
+            "across_r2": {
+              "point": 0.8149523214747545,
+              "ci": [
+                0.8025344964242443,
+                0.823412659008327
+              ]
+            },
+            "gap_r2": {
+              "point": 0.1332447897029143,
+              "ci": [
+                0.12659187322668491,
+                0.14320256122918912
+              ]
+            }
+          },
+          {
+            "index": 21,
+            "site": "block_20",
+            "per_patch_mean_r2": {
+              "point": 0.9405969181566524,
+              "ci": [
+                0.9354878491442287,
+                0.9445054044957557
+              ]
+            },
+            "per_patch_mean_circular_mae": 7.7163408212486475,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9419272463009101,
+              "ci": [
+                0.9365042855692737,
+                0.945978567491603
+              ]
+            },
+            "same_r2": {
+              "point": 0.9439383099731309,
+              "ci": [
+                0.9388540828935855,
+                0.9478316584646798
+              ]
+            },
+            "across_r2": {
+              "point": 0.854986129691592,
+              "ci": [
+                0.8454295784916284,
+                0.8617052334563107
+              ]
+            },
+            "gap_r2": {
+              "point": 0.08895218028153884,
+              "ci": [
+                0.08469627355624443,
+                0.09527748549084267
+              ]
+            }
+          },
+          {
+            "index": 22,
+            "site": "block_21",
+            "per_patch_mean_r2": {
+              "point": 0.9370175681100079,
+              "ci": [
+                0.9319854008577116,
+                0.9407958209492675
+              ]
+            },
+            "per_patch_mean_circular_mae": 7.771309817401217,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9382444147612385,
+              "ci": [
+                0.9329579016540424,
+                0.942153437340735
+              ]
+            },
+            "same_r2": {
+              "point": 0.9380370254328999,
+              "ci": [
+                0.9324534396988173,
+                0.9422411488173701
+              ]
+            },
+            "across_r2": {
+              "point": 0.8218152776549542,
+              "ci": [
+                0.8120239522071697,
+                0.828529330497467
+              ]
+            },
+            "gap_r2": {
+              "point": 0.1162217477779457,
+              "ci": [
+                0.11213545057846534,
+                0.12231080029477095
+              ]
+            }
+          },
+          {
+            "index": 23,
+            "site": "block_22",
+            "per_patch_mean_r2": {
+              "point": 0.9337122832013651,
+              "ci": [
+                0.9284405318399626,
+                0.9376966917463265
+              ]
+            },
+            "per_patch_mean_circular_mae": 8.040969864834256,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9347835488443762,
+              "ci": [
+                0.9292357122539013,
+                0.9388578748844529
+              ]
+            },
+            "same_r2": {
+              "point": 0.9342959214726507,
+              "ci": [
+                0.9284896552112211,
+                0.9386775398263215
+              ]
+            },
+            "across_r2": {
+              "point": 0.842903406264073,
+              "ci": [
+                0.8342350978743126,
+                0.848905420491787
+              ]
+            },
+            "gap_r2": {
+              "point": 0.09139251520857772,
+              "ci": [
+                0.08847620086855447,
+                0.09611345013733294
+              ]
+            }
+          },
+          {
+            "index": 24,
+            "site": "block_23",
+            "per_patch_mean_r2": {
+              "point": 0.931077719517947,
+              "ci": [
+                0.9255672988513177,
+                0.9352674414809681
+              ]
+            },
+            "per_patch_mean_circular_mae": 8.284639351457773,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.931397742799882,
+              "ci": [
+                0.9254688349697362,
+                0.9357154539035135
+              ]
+            },
+            "same_r2": {
+              "point": 0.9316233019609192,
+              "ci": [
+                0.9261565948581415,
+                0.9357732157268024
+              ]
+            },
+            "across_r2": {
+              "point": 0.8277930296282001,
+              "ci": [
+                0.8189381533594764,
+                0.8336488444797429
+              ]
+            },
+            "gap_r2": {
+              "point": 0.10383027233271913,
+              "ci": [
+                0.10093313565665668,
+                0.10875458018137739
+              ]
+            }
+          }
+        ],
+        "test_unseen": [
+          {
+            "index": 0,
+            "site": "embedding",
+            "per_patch_mean_r2": {
+              "point": 0.005220987388879551,
+              "ci": [
+                -0.014994373037030039,
+                0.006081003569348661
+              ]
+            },
+            "per_patch_mean_circular_mae": 87.41893416645908,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": -0.003315990203666188,
+              "ci": [
+                -0.024879752105917616,
+                -0.003614484505130549
+              ]
+            },
+            "same_r2": {
+              "point": 0.0016365467256332644,
+              "ci": [
+                -0.018490443897851726,
+                0.0018089370962890371
+              ]
+            },
+            "across_r2": {
+              "point": -0.005759981343107068,
+              "ci": [
+                -0.026100863989078443,
+                -0.005581450936955301
+              ]
+            },
+            "gap_r2": {
+              "point": 0.007396528068740332,
+              "ci": [
+                0.005710989388069485,
+                0.009128231718029093
+              ]
+            }
+          },
+          {
+            "index": 1,
+            "site": "block_0",
+            "per_patch_mean_r2": {
+              "point": 0.5608054720775157,
+              "ci": [
+                0.5052072722446236,
+                0.6050318621986277
+              ]
+            },
+            "per_patch_mean_circular_mae": 24.198637420297764,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.6794825998006474,
+              "ci": [
+                0.6349629758700328,
+                0.7167453672439923
+              ]
+            },
+            "same_r2": {
+              "point": 0.8276179369220997,
+              "ci": [
+                0.799014632969565,
+                0.8517681197574906
+              ]
+            },
+            "across_r2": {
+              "point": 0.82393214957954,
+              "ci": [
+                0.795232912191197,
+                0.8482302940731696
+              ]
+            },
+            "gap_r2": {
+              "point": 0.0036857873425597543,
+              "ci": [
+                0.0024244142140684936,
+                0.005031627279950768
+              ]
+            }
+          },
+          {
+            "index": 2,
+            "site": "block_1",
+            "per_patch_mean_r2": {
+              "point": 0.6959172104165418,
+              "ci": [
+                0.599480350956109,
+                0.7596643655892428
+              ]
+            },
+            "per_patch_mean_circular_mae": 16.431975285245844,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.8401628224940623,
+              "ci": [
+                0.816239926035128,
+                0.859827960975811
+              ]
+            },
+            "same_r2": {
+              "point": 0.8965764871686578,
+              "ci": [
+                0.8798601411295307,
+                0.9100048029258743
+              ]
+            },
+            "across_r2": {
+              "point": 0.8948629230806422,
+              "ci": [
+                0.8780130755684514,
+                0.9085309217771698
+              ]
+            },
+            "gap_r2": {
+              "point": 0.0017135640880155956,
+              "ci": [
+                0.001059912688543996,
+                0.002400380439946081
+              ]
+            }
+          },
+          {
+            "index": 3,
+            "site": "block_2",
+            "per_patch_mean_r2": {
+              "point": 0.7455713328481297,
+              "ci": [
+                0.6941879265358759,
+                0.7826256533400002
+              ]
+            },
+            "per_patch_mean_circular_mae": 16.313609556045854,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.842612608815783,
+              "ci": [
+                0.8196769864658692,
+                0.861549308745469
+              ]
+            },
+            "same_r2": {
+              "point": 0.8962943141107069,
+              "ci": [
+                0.8808145070513691,
+                0.9093351140815096
+              ]
+            },
+            "across_r2": {
+              "point": 0.8920463600896567,
+              "ci": [
+                0.8766334985015095,
+                0.9050814556871889
+              ]
+            },
+            "gap_r2": {
+              "point": 0.004247954021050271,
+              "ci": [
+                0.003127925280476644,
+                0.005439314010681003
+              ]
+            }
+          },
+          {
+            "index": 4,
+            "site": "block_3",
+            "per_patch_mean_r2": {
+              "point": 0.7828537141253564,
+              "ci": [
+                0.7523738760070223,
+                0.8058879218022602
+              ]
+            },
+            "per_patch_mean_circular_mae": 15.155630844659257,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.8611292753763777,
+              "ci": [
+                0.8398345008574166,
+                0.8784866449254749
+              ]
+            },
+            "same_r2": {
+              "point": 0.8924099578030023,
+              "ci": [
+                0.8766767927812568,
+                0.9054118133312661
+              ]
+            },
+            "across_r2": {
+              "point": 0.8858546969228269,
+              "ci": [
+                0.8698234857796704,
+                0.8991656289929489
+              ]
+            },
+            "gap_r2": {
+              "point": 0.006555260880175329,
+              "ci": [
+                0.005240225168500848,
+                0.007985558362437164
+              ]
+            }
+          },
+          {
+            "index": 5,
+            "site": "block_4",
+            "per_patch_mean_r2": {
+              "point": 0.8718775232077565,
+              "ci": [
+                0.856467451595968,
+                0.8844217493409018
+              ]
+            },
+            "per_patch_mean_circular_mae": 9.660144951792581,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9236489596421649,
+              "ci": [
+                0.9127020475442033,
+                0.9325859695637715
+              ]
+            },
+            "same_r2": {
+              "point": 0.9276967207191982,
+              "ci": [
+                0.9179359757686948,
+                0.9355921436584734
+              ]
+            },
+            "across_r2": {
+              "point": 0.9129347243218882,
+              "ci": [
+                0.902206447827761,
+                0.9214939314516392
+              ]
+            },
+            "gap_r2": {
+              "point": 0.014761996397310018,
+              "ci": [
+                0.012201844898875843,
+                0.01758424507074634
+              ]
+            }
+          },
+          {
+            "index": 6,
+            "site": "block_5",
+            "per_patch_mean_r2": {
+              "point": 0.9444256296882847,
+              "ci": [
+                0.935356773524923,
+                0.9519441174198685
+              ]
+            },
+            "per_patch_mean_circular_mae": 6.605208074830896,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9528562927502957,
+              "ci": [
+                0.9434141627473102,
+                0.9607013274559201
+              ]
+            },
+            "same_r2": {
+              "point": 0.952661884541129,
+              "ci": [
+                0.9438864120158303,
+                0.9599133443259872
+              ]
+            },
+            "across_r2": {
+              "point": 0.9428697341314916,
+              "ci": [
+                0.933452034327168,
+                0.9505678487573332
+              ]
+            },
+            "gap_r2": {
+              "point": 0.009792150409637435,
+              "ci": [
+                0.008325270602162939,
+                0.01140906471454949
+              ]
+            }
+          },
+          {
+            "index": 7,
+            "site": "block_6",
+            "per_patch_mean_r2": {
+              "point": 0.9400287059981942,
+              "ci": [
+                0.9310378018855127,
+                0.9473225957193783
+              ]
+            },
+            "per_patch_mean_circular_mae": 7.111743519333546,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9503953173915594,
+              "ci": [
+                0.9410183517581191,
+                0.9579200371219583
+              ]
+            },
+            "same_r2": {
+              "point": 0.9497869380416399,
+              "ci": [
+                0.9411118459418597,
+                0.9568856548549375
+              ]
+            },
+            "across_r2": {
+              "point": 0.938932135734628,
+              "ci": [
+                0.9295551574868002,
+                0.9465744089053434
+              ]
+            },
+            "gap_r2": {
+              "point": 0.010854802307011968,
+              "ci": [
+                0.009326093085358395,
+                0.012563003339829593
+              ]
+            }
+          },
+          {
+            "index": 8,
+            "site": "block_7",
+            "per_patch_mean_r2": {
+              "point": 0.9476879118376156,
+              "ci": [
+                0.9401744284191594,
+                0.9538060898568981
+              ]
+            },
+            "per_patch_mean_circular_mae": 6.474693661740366,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9535364033033947,
+              "ci": [
+                0.9456766585965458,
+                0.9598721487667367
+              ]
+            },
+            "same_r2": {
+              "point": 0.9550704080068786,
+              "ci": [
+                0.9477701879886291,
+                0.9612075997794498
+              ]
+            },
+            "across_r2": {
+              "point": 0.9228634295376532,
+              "ci": [
+                0.9141827202488507,
+                0.9296916191238592
+              ]
+            },
+            "gap_r2": {
+              "point": 0.03220697846922538,
+              "ci": [
+                0.029859282534769722,
+                0.03531320137598815
+              ]
+            }
+          },
+          {
+            "index": 9,
+            "site": "block_8",
+            "per_patch_mean_r2": {
+              "point": 0.9684008382656856,
+              "ci": [
+                0.9634784515197298,
+                0.9725147689188711
+              ]
+            },
+            "per_patch_mean_circular_mae": 4.8775805845557105,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9698711528438144,
+              "ci": [
+                0.9646760017508477,
+                0.9741629916615636
+              ]
+            },
+            "same_r2": {
+              "point": 0.971645104403894,
+              "ci": [
+                0.9670288712220544,
+                0.9755696862402116
+              ]
+            },
+            "across_r2": {
+              "point": 0.9533935585692814,
+              "ci": [
+                0.9480160912017083,
+                0.9578136731248864
+              ]
+            },
+            "gap_r2": {
+              "point": 0.018251545834612526,
+              "ci": [
+                0.016878810577158555,
+                0.020017157669214594
+              ]
+            }
+          },
+          {
+            "index": 10,
+            "site": "block_9",
+            "per_patch_mean_r2": {
+              "point": 0.9692784510572183,
+              "ci": [
+                0.9644425563014738,
+                0.9732773774289668
+              ]
+            },
+            "per_patch_mean_circular_mae": 4.850304243060423,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9714577855055928,
+              "ci": [
+                0.9664809639763473,
+                0.9755903731536929
+              ]
+            },
+            "same_r2": {
+              "point": 0.9723083635172594,
+              "ci": [
+                0.9677882233104463,
+                0.9760871495849344
+              ]
+            },
+            "across_r2": {
+              "point": 0.9437134300075187,
+              "ci": [
+                0.9380317677207757,
+                0.9481433637226495
+              ]
+            },
+            "gap_r2": {
+              "point": 0.028594933509740628,
+              "ci": [
+                0.02713787897688453,
+                0.0305771960089812
+              ]
+            }
+          },
+          {
+            "index": 11,
+            "site": "block_10",
+            "per_patch_mean_r2": {
+              "point": 0.9663746803649201,
+              "ci": [
+                0.9611578587651789,
+                0.9705794164255583
+              ]
+            },
+            "per_patch_mean_circular_mae": 5.011345986708294,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9695644250707012,
+              "ci": [
+                0.96412348333307,
+                0.973938837972121
+              ]
+            },
+            "same_r2": {
+              "point": 0.9697580667485651,
+              "ci": [
+                0.9649621544009195,
+                0.9738516822782524
+              ]
+            },
+            "across_r2": {
+              "point": 0.8943666598557213,
+              "ci": [
+                0.8861505464415507,
+                0.9002620407870139
+              ]
+            },
+            "gap_r2": {
+              "point": 0.07539140689284385,
+              "ci": [
+                0.07148807148455555,
+                0.08091350112098276
+              ]
+            }
+          },
+          {
+            "index": 12,
+            "site": "block_11",
+            "per_patch_mean_r2": {
+              "point": 0.9687170221992183,
+              "ci": [
+                0.964031678608529,
+                0.9725158922181197
+              ]
+            },
+            "per_patch_mean_circular_mae": 4.779271326858974,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9712538035873914,
+              "ci": [
+                0.966243591116047,
+                0.9752762765407442
+              ]
+            },
+            "same_r2": {
+              "point": 0.9722572246062222,
+              "ci": [
+                0.9677403159701816,
+                0.9759773129029404
+              ]
+            },
+            "across_r2": {
+              "point": 0.9460963246827094,
+              "ci": [
+                0.9405503370132752,
+                0.9503582963644006
+              ]
+            },
+            "gap_r2": {
+              "point": 0.02616089992351278,
+              "ci": [
+                0.02433882577921085,
+                0.028577320711823326
+              ]
+            }
+          },
+          {
+            "index": 13,
+            "site": "block_12",
+            "per_patch_mean_r2": {
+              "point": 0.9752979519260371,
+              "ci": [
+                0.9721555632229693,
+                0.9778979157991763
+              ]
+            },
+            "per_patch_mean_circular_mae": 4.447886955602744,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9772700990429883,
+              "ci": [
+                0.9739727934584325,
+                0.97997556843861
+              ]
+            },
+            "same_r2": {
+              "point": 0.9782987536673617,
+              "ci": [
+                0.9751180284026805,
+                0.9809047317652869
+              ]
+            },
+            "across_r2": {
+              "point": 0.9413882794994525,
+              "ci": [
+                0.9362515946038132,
+                0.9451768552410714
+              ]
+            },
+            "gap_r2": {
+              "point": 0.03691047416790927,
+              "ci": [
+                0.03421999619243454,
+                0.04064875658982542
+              ]
+            }
+          },
+          {
+            "index": 14,
+            "site": "block_13",
+            "per_patch_mean_r2": {
+              "point": 0.9714507732301075,
+              "ci": [
+                0.968032650696744,
+                0.9742179226848735
+              ]
+            },
+            "per_patch_mean_circular_mae": 4.786931765330078,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.974337909388026,
+              "ci": [
+                0.9706933288782947,
+                0.9772609824342365
+              ]
+            },
+            "same_r2": {
+              "point": 0.9751558251196984,
+              "ci": [
+                0.9718748310570735,
+                0.9778627251781511
+              ]
+            },
+            "across_r2": {
+              "point": 0.9354059127060597,
+              "ci": [
+                0.9312132382484963,
+                0.9384235027601537
+              ]
+            },
+            "gap_r2": {
+              "point": 0.03974991241363879,
+              "ci": [
+                0.03859307030140356,
+                0.041739664860621584
+              ]
+            }
+          },
+          {
+            "index": 15,
+            "site": "block_14",
+            "per_patch_mean_r2": {
+              "point": 0.9651824607686263,
+              "ci": [
+                0.961071848697292,
+                0.9684711962862087
+              ]
+            },
+            "per_patch_mean_circular_mae": 5.435177651259451,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9681383506802286,
+              "ci": [
+                0.9637508249606884,
+                0.9716884997730338
+              ]
+            },
+            "same_r2": {
+              "point": 0.9703017690532139,
+              "ci": [
+                0.9665905500650472,
+                0.9733153937895033
+              ]
+            },
+            "across_r2": {
+              "point": 0.9210475471420361,
+              "ci": [
+                0.9156936317509368,
+                0.9249161393935739
+              ]
+            },
+            "gap_r2": {
+              "point": 0.04925422191117779,
+              "ci": [
+                0.047534026466149154,
+                0.052011060784470216
+              ]
+            }
+          },
+          {
+            "index": 16,
+            "site": "block_15",
+            "per_patch_mean_r2": {
+              "point": 0.960708981870274,
+              "ci": [
+                0.9563765661086135,
+                0.964149812916194
+              ]
+            },
+            "per_patch_mean_circular_mae": 5.731111914803062,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9640812125825399,
+              "ci": [
+                0.9593960632759136,
+                0.9678586855920052
+              ]
+            },
+            "same_r2": {
+              "point": 0.9663198438796391,
+              "ci": [
+                0.9622657303884873,
+                0.9696320265507465
+              ]
+            },
+            "across_r2": {
+              "point": 0.9134407297693943,
+              "ci": [
+                0.907198920852972,
+                0.9180188157176137
+              ]
+            },
+            "gap_r2": {
+              "point": 0.05287911411024482,
+              "ci": [
+                0.05038845516031311,
+                0.05654214009775301
+              ]
+            }
+          },
+          {
+            "index": 17,
+            "site": "block_16",
+            "per_patch_mean_r2": {
+              "point": 0.953767889771417,
+              "ci": [
+                0.9483367844294343,
+                0.9581272304033308
+              ]
+            },
+            "per_patch_mean_circular_mae": 6.509048857546993,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9564895397523062,
+              "ci": [
+                0.9505862421889535,
+                0.9612322628372638
+              ]
+            },
+            "same_r2": {
+              "point": 0.9589440305143035,
+              "ci": [
+                0.9537457171618499,
+                0.9631505512677799
+              ]
+            },
+            "across_r2": {
+              "point": 0.897969390451543,
+              "ci": [
+                0.8899471782163197,
+                0.9040127043288485
+              ]
+            },
+            "gap_r2": {
+              "point": 0.06097464006276054,
+              "ci": [
+                0.058124747413978765,
+                0.06495387953129383
+              ]
+            }
+          },
+          {
+            "index": 18,
+            "site": "block_17",
+            "per_patch_mean_r2": {
+              "point": 0.9527536955512982,
+              "ci": [
+                0.9477498038626855,
+                0.956700128196179
+              ]
+            },
+            "per_patch_mean_circular_mae": 6.626406798880018,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9553477817187153,
+              "ci": [
+                0.9498373615014376,
+                0.959688408807996
+              ]
+            },
+            "same_r2": {
+              "point": 0.956993803256499,
+              "ci": [
+                0.9522653868210238,
+                0.9607890160115528
+              ]
+            },
+            "across_r2": {
+              "point": 0.8916007853747621,
+              "ci": [
+                0.8840583618654073,
+                0.8970430405600543
+              ]
+            },
+            "gap_r2": {
+              "point": 0.0653930178817369,
+              "ci": [
+                0.06229316357502766,
+                0.06998778454670496
+              ]
+            }
+          },
+          {
+            "index": 19,
+            "site": "block_18",
+            "per_patch_mean_r2": {
+              "point": 0.9456966772523432,
+              "ci": [
+                0.9400946101529623,
+                0.9500783537627048
+              ]
+            },
+            "per_patch_mean_circular_mae": 7.171751218770127,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9474012857222195,
+              "ci": [
+                0.941318494719769,
+                0.9520808257012174
+              ]
+            },
+            "same_r2": {
+              "point": 0.948262496645749,
+              "ci": [
+                0.9429416396157022,
+                0.952581086499221
+              ]
+            },
+            "across_r2": {
+              "point": 0.8631778121040518,
+              "ci": [
+                0.8550607506664527,
+                0.868904813258347
+              ]
+            },
+            "gap_r2": {
+              "point": 0.08508468454169726,
+              "ci": [
+                0.08157316088738768,
+                0.09036219691700996
+              ]
+            }
+          },
+          {
+            "index": 20,
+            "site": "block_19",
+            "per_patch_mean_r2": {
+              "point": 0.943985072386349,
+              "ci": [
+                0.9380597239019428,
+                0.9486017757573878
+              ]
+            },
+            "per_patch_mean_circular_mae": 7.483858515835585,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9449420046901995,
+              "ci": [
+                0.9384503770464128,
+                0.9499027132911105
+              ]
+            },
+            "same_r2": {
+              "point": 0.9467336360752837,
+              "ci": [
+                0.941244398061681,
+                0.9510539253249257
+              ]
+            },
+            "across_r2": {
+              "point": 0.8168625770060569,
+              "ci": [
+                0.8047405808249248,
+                0.8253185469215052
+              ]
+            },
+            "gap_r2": {
+              "point": 0.1298710590692268,
+              "ci": [
+                0.12338298744927832,
+                0.13923488050073468
+              ]
+            }
+          },
+          {
+            "index": 21,
+            "site": "block_20",
+            "per_patch_mean_r2": {
+              "point": 0.9383661678330482,
+              "ci": [
+                0.9319493220026956,
+                0.9433423246611322
+              ]
+            },
+            "per_patch_mean_circular_mae": 7.844691622081427,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9386621831962992,
+              "ci": [
+                0.9315933667404713,
+                0.9440215628383332
+              ]
+            },
+            "same_r2": {
+              "point": 0.9405291188809879,
+              "ci": [
+                0.9344248305664327,
+                0.9454106956322508
+              ]
+            },
+            "across_r2": {
+              "point": 0.8521104075131817,
+              "ci": [
+                0.8413431880435549,
+                0.860016444470503
+              ]
+            },
+            "gap_r2": {
+              "point": 0.08841871136780621,
+              "ci": [
+                0.08359137278094023,
+                0.09496159227214081
+              ]
+            }
+          },
+          {
+            "index": 22,
+            "site": "block_21",
+            "per_patch_mean_r2": {
+              "point": 0.9330156317827443,
+              "ci": [
+                0.9259080702789103,
+                0.9383455296142892
+              ]
+            },
+            "per_patch_mean_circular_mae": 8.040384132731333,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.933389316010601,
+              "ci": [
+                0.9257842765983547,
+                0.9391279366421259
+              ]
+            },
+            "same_r2": {
+              "point": 0.9334944508932965,
+              "ci": [
+                0.9265307208562277,
+                0.9390326580646108
+              ]
+            },
+            "across_r2": {
+              "point": 0.821171895116644,
+              "ci": [
+                0.8099287190337262,
+                0.8290165637083998
+              ]
+            },
+            "gap_r2": {
+              "point": 0.11232255577665251,
+              "ci": [
+                0.10793894463865036,
+                0.11861746905273175
+              ]
+            }
+          },
+          {
+            "index": 23,
+            "site": "block_22",
+            "per_patch_mean_r2": {
+              "point": 0.9290038818297911,
+              "ci": [
+                0.921129306235123,
+                0.9350541762988074
+              ]
+            },
+            "per_patch_mean_circular_mae": 8.337516368701118,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.929086135002511,
+              "ci": [
+                0.9205899316435534,
+                0.9355314592680644
+              ]
+            },
+            "same_r2": {
+              "point": 0.9308269645612797,
+              "ci": [
+                0.9235387689156238,
+                0.9365098103210753
+              ]
+            },
+            "across_r2": {
+              "point": 0.8425460894776147,
+              "ci": [
+                0.83287066904676,
+                0.8492746277482836
+              ]
+            },
+            "gap_r2": {
+              "point": 0.088280875083665,
+              "ci": [
+                0.0854329787516528,
+                0.09278498427292492
+              ]
+            }
+          },
+          {
+            "index": 24,
+            "site": "block_23",
+            "per_patch_mean_r2": {
+              "point": 0.9254169381861278,
+              "ci": [
+                0.9171846620995814,
+                0.9318401234718808
+              ]
+            },
+            "per_patch_mean_circular_mae": 8.61699500580374,
+            "off_path_mean_r2": {
+              "patches": 256,
+              "point": 0.9248881778943998,
+              "ci": [
+                0.916010926338285,
+                0.9317365345699937
+              ]
+            },
+            "same_r2": {
+              "point": 0.9270040906180039,
+              "ci": [
+                0.9193278896297767,
+                0.9330138921286514
+              ]
+            },
+            "across_r2": {
+              "point": 0.8253077161857332,
+              "ci": [
+                0.8150123185138438,
+                0.8325532315774655
+              ]
+            },
+            "gap_r2": {
+              "point": 0.10169637443227075,
+              "ci": [
+                0.09902197808946804,
+                0.10641995239908184
+              ]
+            }
+          }
+        ]
+      },
+      "transitions": {
+        "test_seen": {
+          "per_patch_mean": {
+            "transition_index": 1,
+            "transition_depth_fraction": 0.041666666666666664,
+            "rise_80_index": 4,
+            "largest_jump_index": 1,
+            "largest_jump": 0.5304178684740596,
+            "min": 0.004090131860789431,
+            "max": 0.9740361676097958,
+            "rise": 0.9699460357490064,
+            "clear_transition": true
+          },
+          "off_path_mean": {
+            "transition_index": 1,
+            "transition_depth_fraction": 0.041666666666666664,
+            "rise_80_index": 2,
+            "largest_jump_index": 1,
+            "largest_jump": 0.6447719761212416,
+            "min": -0.004978472661354583,
+            "max": 0.9764256718127666,
+            "rise": 0.9814041444741212,
+            "clear_transition": true
+          },
+          "across_half": {
+            "transition_index": 1,
+            "transition_depth_fraction": 0.041666666666666664,
+            "rise_80_index": 1,
+            "largest_jump_index": 1,
+            "largest_jump": 0.8317153834279984,
+            "min": -0.00763077453494973,
+            "max": 0.9548192021364463,
+            "rise": 0.9624499766713961,
+            "clear_transition": true
+          }
+        },
+        "test_unseen": {
+          "per_patch_mean": {
+            "transition_index": 1,
+            "transition_depth_fraction": 0.041666666666666664,
+            "rise_80_index": 4,
+            "largest_jump_index": 1,
+            "largest_jump": 0.5555844846886362,
+            "min": 0.005220987388879551,
+            "max": 0.9752979519260371,
+            "rise": 0.9700769645371575,
+            "clear_transition": true
+          },
+          "off_path_mean": {
+            "transition_index": 1,
+            "transition_depth_fraction": 0.041666666666666664,
+            "rise_80_index": 2,
+            "largest_jump_index": 1,
+            "largest_jump": 0.6827985900043136,
+            "min": -0.003315990203666188,
+            "max": 0.9772700990429883,
+            "rise": 0.9805860892466546,
+            "clear_transition": true
+          },
+          "across_half": {
+            "transition_index": 1,
+            "transition_depth_fraction": 0.041666666666666664,
+            "rise_80_index": 1,
+            "largest_jump_index": 1,
+            "largest_jump": 0.829692130922647,
+            "min": -0.005759981343107068,
+            "max": 0.9533935585692814,
+            "rise": 0.9591535399123885,
+            "clear_transition": true
+          }
+        }
+      },
+      "minutes_total": 2.5,
+      "artifact": {
+        "path": "artifacts/patches/patch_test_scores.npz",
+        "sha256": "73cdea3b6d387bce306cc22ec561b965e10b93a57e0a27b2baf15293fd992901"
+      },
+      "passed": true
+    }
+  },
+  "figure_local_to_global": {
+    "provenance": {
+      "utc": "2026-09-25T23:12:23+00:00",
+      "git_commit": "43ee0b6d63f833d945d3be5104d6b56085139f7c",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        " M scripts/check_patches.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "f81858b19b20464506e46c798b3568138a80495d3c737897d863cf0c3ff6ed25",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "ff963eb6aa3d212df13dd5a3a822cff23c667f17c7f3b9c619b3ea47d53e2e31",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_patches.py": "98c676b77cfdcd0e2658c2450a24a6d91bfa07fd8adde3b43890b7cff07fecac"
+        },
+        "combined_sha256": "5a38d642e5986a700abf58fdbb4e1450ed0d1655998e707b09d342143d8bf491"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "figure": {
+        "path": "results/patches/local_to_global.png",
+        "sha256": "8815b0f7f0acb5aa625d095dfcf09507f4b2f872023f9af31387cbc578691233"
+      },
+      "passed": true
+    }
+  }
+}

@@ -397,7 +397,18 @@ what's next.
   R² linear 0.197 (circ MAE 63.0°), cubic 0.211; val-unseen 0.233 / 0.255; far below off-path 0.648 (idx 1) / 0.959
   (idx 6) → off-path readout is not explained by position. Also H-09's proposed test: position alone ≈ the
   time-averaged pixel floor (0.197 vs 0.202, F-97) → supports H-09 (not proof).
-- **Next:** 3.8g `patch_test_scores` (one-time test of per-patch mean, off-path, across-half; saved probes, no refit).
+- 3.8g `patch_test_scores` passed (8/8, 2.5 min, committed code `43ee0b6`; read from the saved file): saved probes
+  reproduce validation outputs exactly (difference 0.0); count bootstrap = `resampled_r2`. Test-seen / test-unseen:
+  transitions idx 1 for per-patch mean, off-path, across-half; 80 % rise idx 4 / 2 / 1 (= validation); peaks 0.974 /
+  0.975, 0.976 / 0.977, 0.955 / 0.953; gap ≤ ~0.03 to idx 10, 0.133 / 0.130 at idx 20, ~0.10 at idx 24. 3.8 findings
+  hold on test.
+- 3.8h `figure_local_to_global`: `results/patches/local_to_global.png` (heatmaps at idx 0/1/2/4/6/13/24; mean-pooled
+  vs per-patch mean vs off/on-path vs position-only; same vs other half with gap). Claude Code's first review: legend
+  collided with the position line, uneven heatmap spacing, tall colour bar → fixed; second review clean.
+  **Step 3.8 done.**
+- **Next:** 3.9 gate: (a) hash-check key in `check_evidence.py`; (b) re-run the keys it flags (expected:
+  `pixel_grams` → `pixel_floor` → `shuffled_labels` → `bootstrap`, plus any 3.8 key saved dirty); (c) full docs pass,
+  report, 1–2 slides, talk outline (8.3).
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each

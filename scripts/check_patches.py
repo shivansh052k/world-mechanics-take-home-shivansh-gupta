@@ -15,6 +15,7 @@ import time
 from pathlib import Path
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 from vjepa_physics.data import read_manifest, resolve
 from vjepa_physics.curves import LATE_RISE_FRACTION, TRANSITION_FRACTION, rise_index, transition_points
@@ -24,6 +25,9 @@ from vjepa_physics.geometry import DISK_RADIUS_PX, PATCH_GRID, PATCH_PX, distanc
 from vjepa_physics.joined import load_joined
 from vjepa_physics.metrics import (
     angles_from_sincos, bootstrap_indices, circular_errors, percentile_interval, r2, resampled_r2,
+)
+from vjepa_physics.plotting import (
+    AXIS, DATASET_COLOUR, INK, INK_MUTED, INK_SECONDARY, SURFACE, sequential_cmap, style_axes,
 )
 from vjepa_physics.model import load_model, weights_fingerprint
 from vjepa_physics.preprocess import preprocess_clip
@@ -77,6 +81,10 @@ SHOWN_OFF_PATH = (0, 1, 6, 13, 24)  # off-path curve indices printed next to the
 TEST_ROLES = ("test_seen", "test_unseen")
 REPRODUCE_TOLERANCE = 1e-10  # saved probe re-applied vs its saved validation output (absolute; relative for sums)
 TEST_SCORES = PATCH_DIR / "patch_test_scores.npz"
+
+FIGURE = REPO / "results/patches/local_to_global.png"
+HEATMAP_INDICES = (0, 1, 2, 4, 6, 13, 24)
+LAYER_CURVES_CHECKS = REPO / "results/layer_curves/checks.json"  # key "bootstrap": mean-pooled scores
 
 def array_sha256(a: np.ndarray) -> str:
     """SHA-256 of an array's bytes in C order."""
@@ -888,6 +896,92 @@ def check_patch_test_scores() -> dict:
         "passed": all(criteria.values()),
     }
 
+def check_figure_local_to_global() -> dict:
+    """Figure: where direction is readable inside the frame, from saved results only (no recomputation).
+
+    Top: per-patch val_seen R² heatmaps (16 x 16, frame layout, row 0 = top) at selected indices, one shared
+    0-1 scale (values below 0 drawn as 0, marked on the colour bar). Bottom left: over indices 0-24, the mean-pooled
+    probe, the per-patch mean (95% band), the off-path and on-path means, and the position-only baseline. Bottom
+    right: one probe per frame half, scored on the same and on the opposite half (95% bands), gap shaded.
+    Writes results/patches/local_to_global.png. A visual check: records the file hash; reviewed by eye.
+    """
+    results = json.loads(OUT.read_text())
+    per_patch = results["patch_bootstrap"]["result"]["curve"]
+    breakdown = results["patch_breakdown"]["result"]["curve"]
+    spatial = results["spatial_generalization"]["result"]["curve"]
+    position = results["position_baseline"]["result"]["baselines"]["linear"]["val_seen"]["r2"]
+    pooled = json.loads(LAYER_CURVES_CHECKS.read_text())["bootstrap"]["result"][VARIABLE]["val_seen"]["all"]["methods"]
+    with np.load(verified_artifact(OUT, "patch_probes")) as f:
+        grid = f["val_seen_r2"]
+    x = np.arange(len(PATCH_SITES))
+    colour = DATASET_COLOUR[VARIABLE]
+
+    fig = plt.figure(figsize=(15, 7.8), layout="constrained")
+    fig.patch.set_facecolor(SURFACE)
+    gs = fig.add_gridspec(2, 2, height_ratios=(1, 1.4), width_ratios=(4, 3))
+    top = gs[0, :].subgridspec(1, len(HEATMAP_INDICES))
+    heat_axes = [fig.add_subplot(top[0, k]) for k in range(len(HEATMAP_INDICES))]
+    for ax, i in zip(heat_axes, HEATMAP_INDICES):
+        image = ax.imshow(grid[i].reshape(PATCH_GRID, PATCH_GRID), cmap=sequential_cmap(), vmin=0, vmax=1,
+                          origin="upper")
+        ax.set_title(f"index {i}", fontsize=9, color=INK)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        for spine in ax.spines.values():
+            spine.set_color(AXIS)
+    bar = fig.colorbar(image, ax=heat_axes, fraction=0.02, shrink=0.8, extend="min")
+    bar.set_label("per-patch R², val-seen (below 0 drawn as 0)", fontsize=8, color=INK_SECONDARY)
+    bar.ax.tick_params(labelsize=8, colors=AXIS, labelcolor=INK_SECONDARY)
+    bar.outline.set_edgecolor(AXIS)
+
+    ax = fig.add_subplot(gs[1, 0])
+    style_axes(ax)
+    band = np.array([r["per_patch_mean_r2"]["ci"] for r in per_patch])
+    ax.fill_between(x, band[:, 0], band[:, 1], color=colour, alpha=0.2, linewidth=0)
+    ax.plot(x, [pooled[f"probe {s}"]["r2"]["point"] for s in PATCH_SITES], color=INK_SECONDARY, linewidth=2,
+            label="mean-pooled probe")
+    ax.plot(x, [r["per_patch_mean_r2"]["point"] for r in per_patch], color=colour, linewidth=2, marker="o",
+            markersize=3.5, label="per-patch probes, mean (95% band)")
+    ax.plot(x, [r["off_path"]["r2_mean"] for r in breakdown], "--", color=colour, linewidth=2,
+            label="off-path patches (disk never near)")
+    ax.plot(x, [r["on_path"]["r2_mean"] for r in breakdown], ":", color=colour, linewidth=2,
+            label="on-path patches (disk passed through)")
+    ax.axhline(position, color=INK_MUTED, linewidth=1, linestyle="-.")
+    ax.annotate("disk position only (linear)", (24, position), xytext=(0, 3), textcoords="offset points",
+                ha="right", va="bottom", fontsize=8, color=INK_SECONDARY)
+    ax.axvline(1, color=INK_SECONDARY, linewidth=1)
+    ax.annotate("index 1 (block 0)", (1.3, 0.33), fontsize=8, color=INK_SECONDARY, va="center")
+    ax.set_ylim(-0.7, 1.05)
+    ax.set_xlim(-0.5, 24.5)
+    ax.set_title("Direction: mean-pooled vs per-patch probes", fontsize=11, color=INK)
+    ax.set_xlabel("layer index (0 = patch embedding, 24 = block 23)", fontsize=9)
+    ax.set_ylabel("R² (val-seen)", fontsize=9)
+    ax.legend(loc="lower right", frameon=False, fontsize=8)
+
+    ax = fig.add_subplot(gs[1, 1])
+    style_axes(ax)
+    same = np.array([r["same_r2"]["point"] for r in spatial])
+    across = np.array([r["across_r2"]["point"] for r in spatial])
+    for name, line in (("same", "-"), ("across", "--")):
+        ci = np.array([r[f"{name}_r2"]["ci"] for r in spatial])
+        ax.fill_between(x, ci[:, 0], ci[:, 1], color=colour, alpha=0.2, linewidth=0)
+    ax.fill_between(x, across, same, color=INK_MUTED, alpha=0.25, linewidth=0, label="gap (same − other)")
+    ax.plot(x, same, "-", color=colour, linewidth=2, marker="o", markersize=3.5, label="scored on the same half")
+    ax.plot(x, across, "--", color=colour, linewidth=2, label="scored on the other half")
+    ax.axvline(1, color=INK_SECONDARY, linewidth=1)
+    ax.set_ylim(-0.05, 1.02)
+    ax.set_xlim(-0.5, 24.5)
+    ax.set_title("One probe per frame half: same vs other half", fontsize=11, color=INK)
+    ax.set_xlabel("layer index", fontsize=9)
+    ax.set_ylabel("R² (val-seen)", fontsize=9)
+    ax.legend(loc="lower right", frameon=False, fontsize=8)
+
+    FIGURE.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(FIGURE, dpi=200, facecolor=SURFACE)
+    plt.close(fig)
+    return {"figure": {"path": str(FIGURE.relative_to(REPO)), "sha256": file_sha256(FIGURE)},
+            "passed": FIGURE.exists() and FIGURE.stat().st_size > 0}
+
 
 CHECKS = {
     "extract_direction": check_extract_direction,
@@ -899,6 +993,7 @@ CHECKS = {
     "spatial_generalization": check_spatial_generalization,
     "position_baseline": check_position_baseline,
     "patch_test_scores": check_patch_test_scores,
+    "figure_local_to_global": check_figure_local_to_global,
 }
 
 

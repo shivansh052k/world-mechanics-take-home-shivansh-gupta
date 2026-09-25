@@ -6,6 +6,7 @@ Run from the repo root, with .venv active:
 Each check prints its result and stores it under its own key in results/evidence/checks.json.
 """
 import argparse
+import hashlib
 import json
 import os
 import subprocess
@@ -53,6 +54,11 @@ NOT_RERUN = {("extraction", key) for key in ("extract_direction", "extract_speed
 SUBSET_REEXTRACTION = ("extraction", "verify")
 # Result fields that describe the machine at run time, not the data or the code: left out of the comparison.
 VOLATILE_FIELDS = {("joined", "storage"): ("free_disk_bytes", "memory")}
+
+# Probing-stage checks judged by the code-hash rule: a key passes if some commit at or after its recorded commit
+# holds exactly the file hashes it recorded; otherwise it is re-run from committed code.
+HASH_CHECK_SUBJECTS = ("probes", "baselines", "layer_curves", "patches")
+CODE_PREFIXES = ("src/", "scripts/")  # the recorded code files live here
 
 
 def scratch_git(root: Path, *args: str) -> None:
@@ -252,11 +258,69 @@ def check_rerun_identical_splits_extraction() -> dict:
         "passed": all(criteria.values()),
     }
     
+def git_bytes(root: Path, *args: str) -> bytes:
+    """Raw stdout of git run against `root` (bytes, no newline translation)."""
+    return subprocess.run(["git", "-C", str(root), *args], capture_output=True, check=True).stdout
+
+
+def committed_code_hashes(root: Path, commit: str, blob_cache: dict[str, str]) -> dict[str, str]:
+    """SHA-256 of every file under CODE_PREFIXES in `commit`'s tree, by repo-relative path.
+
+    Contents come from git's object store (never the working tree); each distinct blob is hashed once.
+    """
+    hashes = {}
+    for line in git_bytes(root, "ls-tree", "-r", commit).decode().splitlines():
+        meta, path = line.split("\t", 1)
+        if not path.startswith(CODE_PREFIXES):
+            continue
+        blob = meta.split()[2]
+        if blob not in blob_cache:
+            blob_cache[blob] = hashlib.sha256(git_bytes(root, "cat-file", "blob", blob)).hexdigest()
+        hashes[path] = blob_cache[blob]
+    return hashes
+
+
+def check_code_hash_check() -> dict:
+    """Gate check: was the code behind every probing-stage result committed unchanged?
+
+    For every key in results/<subject>/checks.json (HASH_CHECK_SUBJECTS), walks from the key's recorded
+    git_commit forward to HEAD and looks for the first commit whose files carry exactly the SHA-256s the key
+    recorded (running script + every package module). Passes only if every key has such a commit; otherwise
+    `rerun_needed` lists the keys to re-run from committed code.
+    """
+    root = repo_root()
+    head = git(root, "rev-parse", "HEAD").strip()
+    blob_cache: dict[str, str] = {}
+    tree_cache: dict[str, dict[str, str]] = {}
+    keys = []
+    for subject in HASH_CHECK_SUBJECTS:
+        records = json.loads((REPO / "results" / subject / "checks.json").read_text())
+        for key, entry in records.items():
+            provenance = entry["provenance"]
+            recorded = provenance["git_commit"]
+            files = provenance["code"]["files"]
+            later = git(root, "rev-list", "--reverse", f"{recorded}..HEAD").split()
+            match = None
+            for commit in [recorded, *later]:
+                if commit not in tree_cache:
+                    tree_cache[commit] = committed_code_hashes(root, commit, blob_cache)
+                if all(tree_cache[commit].get(path) == digest for path, digest in files.items()):
+                    match = commit
+                    break
+            keys.append({
+                "subject": subject, "key": key, "recorded_commit": recorded,
+                "git_dirty": provenance.get("git_dirty"), "files": len(files), "matching_commit": match,
+            })
+    rerun = [f"{k['subject']}/{k['key']}" for k in keys if k["matching_commit"] is None]
+    return {"head": head, "keys_checked": len(keys), "commits_searched": len(tree_cache), "keys": keys,
+            "rerun_needed": rerun, "passed": not rerun}   
 
 CHECKS = {
     "dirty_flag": check_dirty_flag,
     "rerun_identical": check_rerun_identical,
     "rerun_identical_splits_extraction": check_rerun_identical_splits_extraction,
+    "code_hash_check": check_code_hash_check,
+}
 }
 
 def main() -> None:
