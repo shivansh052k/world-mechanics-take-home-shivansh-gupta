@@ -12,7 +12,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from vjepa_physics.evidence import code_changes, repo_root, save_result
+from vjepa_physics.evidence import code_changes, git, repo_root, save_result
 
 REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "results/evidence/checks.json"
@@ -35,6 +35,15 @@ SCENARIOS = {
     "lock_changed": ({"requirements.lock.txt": "changed\n"}, True),
 }
 
+# Data-audit result subjects, re-run from a clean tree before the audit report.
+AUDIT_SUBJECTS = ("data_files", "metadata", "design", "videos", "tracking")
+# Committed outputs the audit checks write besides their checks.json.
+AUDIT_OUTPUTS = (
+    "results/tracking/clip_flags.csv",
+    "results/videos/contact_sheet.png",
+    "results/design/design.png",
+    "results/tracking/tracking.png",
+)
 
 def scratch_git(root: Path, *args: str) -> None:
     """Git in the scratch repository, with a fixed identity and no commit signing."""
@@ -112,9 +121,61 @@ def check_dirty_flag() -> dict:
         ),
     }
 
+def check_rerun_identical() -> dict:
+    """A clean re-run of the data-audit checks reproduces the committed results exactly.
+
+    For every key of results/<subject>/checks.json (AUDIT_SUBJECTS) as committed at HEAD: the key must
+    be present in the working tree, its provenance must say it was produced at HEAD with no code
+    changes (git_dirty False), and its "result" must equal the committed one exactly (provenance may
+    differ). The committed outputs in AUDIT_OUTPUTS must be byte-identical to HEAD. Passes if all hold.
+    """
+    head = git(REPO, "rev-parse", "HEAD").strip()
+    per_subject, missing, not_clean, differing = {}, [], [], []
+    for subject in AUDIT_SUBJECTS:
+        path = f"results/{subject}/checks.json"
+        committed = json.loads(git(REPO, "show", f"HEAD:{path}"))
+        current = json.loads((REPO / path).read_text())
+        keys = {}
+        for key, entry in committed.items():
+            now = current.get(key)
+            if now is None:
+                missing.append(f"{subject}/{key}")
+                keys[key] = "missing"
+                continue
+            clean = now["provenance"].get("git_commit") == head and now["provenance"].get("git_dirty") is False
+            same = now["result"] == entry["result"]
+            keys[key] = {"rerun_from_clean_head": clean, "result_identical": same}
+            if not clean:
+                not_clean.append(f"{subject}/{key}")
+            if not same:
+                differing.append(f"{subject}/{key}")
+        per_subject[subject] = keys
+
+    changed_outputs = [p for p in AUDIT_OUTPUTS if git(REPO, "status", "--porcelain", "--", p).strip()]
+    compared = sum(len(k) for k in per_subject.values())
+    criteria = {
+        "keys_compared": compared > 0,
+        "no_key_missing": not missing,
+        "every_key_rerun_from_clean_head": not not_clean,
+        "every_result_identical": not differing,
+        "committed_outputs_unchanged": not changed_outputs,
+    }
+    return {
+        "criteria": criteria,
+        "head": head,
+        "keys_compared": compared,
+        "missing": missing,
+        "not_rerun_from_clean_head": not_clean,
+        "results_differing": differing,
+        "outputs_changed": changed_outputs,
+        "per_subject": per_subject,
+        "passed": all(criteria.values()),
+    }
+
 
 CHECKS = {
     "dirty_flag": check_dirty_flag,
+    "rerun_identical": check_rerun_identical,
 }
 
 
