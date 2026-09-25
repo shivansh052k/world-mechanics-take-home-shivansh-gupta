@@ -11,7 +11,7 @@ from pathlib import Path
 # (importing cv2 next to PyAV duplicates Objective-C classes on macOS).
 PACKAGES = (
     "av", "numpy", "scipy", "torch", "torchvision", "transformers",
-    "opencv-python-headless", "matplotlib",
+    "opencv-python-headless", "matplotlib", "scikit-learn",
 )
 
 # What produces results: the code and the pinned environment. Changes anywhere else
