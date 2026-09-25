@@ -23,7 +23,7 @@ def r2(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     t2, p2 = t.reshape(len(t), -1), p.reshape(len(p), -1)
     ss_res = ((t2 - p2) ** 2).sum(axis=0)
     ss_tot = ((t2 - t2.mean(axis=0)) ** 2).sum(axis=0)
-    if (ss_tot == 0).any():
+    if (t2 == t2[:1]).all(axis=0).any():  # compare values: a constant column's mean can be off by rounding
         raise ValueError("a target column is constant; R² is undefined")
     return float((1 - ss_res / ss_tot).mean())
 
@@ -67,3 +67,56 @@ def circular_errors(true_degrees: np.ndarray, pred_degrees: np.ndarray) -> np.nd
 def circular_mae(true_degrees: np.ndarray, pred_degrees: np.ndarray) -> float:
     """Mean circular error in degrees (DATA.md's direction metric); chance level for uniform angles is 90."""
     return float(circular_errors(true_degrees, pred_degrees).mean())
+
+
+
+def bootstrap_indices(n: int, n_resamples: int, seed: int) -> np.ndarray:
+    """(n_resamples, n) clip indices drawn with replacement from one generator seeded with `seed`.
+
+    Reuse the same matrix for every layer and method scored on the same clips: their resampled scores are then
+    paired, so a difference between two of them gets its own (usually much smaller) spread.
+    """
+    if n < 2 or n_resamples < 1:
+        raise ValueError(f"need n >= 2 and n_resamples >= 1, got {n}, {n_resamples}")
+    return np.random.default_rng(seed).integers(0, n, size=(n_resamples, n))
+
+
+def checked_indices(indices: np.ndarray, n: int) -> np.ndarray:
+    """Resample indices as an int array; raises ValueError unless 2-D with every entry in [0, n)."""
+    idx = np.asarray(indices)
+    if idx.ndim != 2 or idx.dtype.kind not in "iu" or idx.min() < 0 or idx.max() >= n:
+        raise ValueError(f"indices {idx.shape} {idx.dtype}: expected 2-D integers in [0, {n})")
+    return idx
+
+
+def resampled_r2(y_true: np.ndarray, y_pred: np.ndarray, indices: np.ndarray) -> np.ndarray:
+    """(B,) R² on each resample's rows, with r2's definition (evaluation mean; (n, k) -> mean of column scores).
+
+    Raises ValueError if a resample has a constant target column (R² undefined).
+    """
+    t, p = checked(y_true, y_pred)
+    idx = checked_indices(indices, len(t))
+    tb = t.reshape(len(t), -1)[idx]  # (B, n, k)
+    pb = p.reshape(len(p), -1)[idx]
+    ss_res = ((tb - pb) ** 2).sum(axis=1)
+    ss_tot = ((tb - tb.mean(axis=1, keepdims=True)) ** 2).sum(axis=1)
+    if (tb == tb[:, :1]).all(axis=1).any():  # compare values: a constant column's mean can be off by rounding
+        raise ValueError("a resample has a constant target column; R² is undefined")
+    return (1 - ss_res / ss_tot).mean(axis=1)
+
+
+def resampled_mean(values: np.ndarray, indices: np.ndarray) -> np.ndarray:
+    """(B,) mean of per-clip `values` (absolute or circular errors) over each resample's rows."""
+    v = np.asarray(values, dtype=np.float64)
+    if v.ndim != 1 or v.size == 0 or not np.isfinite(v).all():
+        raise ValueError(f"expected finite (n,) values, got {v.shape}")
+    return v[checked_indices(indices, len(v))].mean(axis=1)
+
+
+def percentile_interval(samples: np.ndarray, level: float = 0.95) -> tuple[float, float]:
+    """Percentile bootstrap interval: the (1 - level) / 2 and (1 + level) / 2 quantiles of the resampled statistic."""
+    s = np.asarray(samples, dtype=np.float64)
+    if s.ndim != 1 or s.size == 0 or not np.isfinite(s).all() or not 0 < level < 1:
+        raise ValueError("expected finite (B,) samples and 0 < level < 1")
+    low, high = np.percentile(s, [50 * (1 - level), 50 * (1 + level)])
+    return float(low), float(high)

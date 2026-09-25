@@ -108,7 +108,13 @@ post-hoc refinement H-08b untested; does not affect the pass).
 time-averaged 0.20 / 0.23 / 0.16, all far below block_0 (F-97; supports H-07; H-09 new).
 **3.4e done:** `physics_ceiling` passed; ceiling R² ≥ 0.997 (headline quadratic), design-informed variants tighter
 (F-98). **Step 3.4 complete.**
-**Next:** 3.5 bootstrap (layer curves, transition-index distribution, floors, ceiling); 3.6 figure; 3.7; 3.8 brief.
+**3.5a done:** bootstrap helpers in `metrics.py`; a constant-target guard bug (Claude Code's) found and fixed (F-99).
+**3.5b-1 done:** `src/vjepa_physics/curves.py` (D-43 rules; saved curves → transition index 1 for all three, F-100).
+**3.5b-2 done:** `check_layer_curves.py bootstrap` passed (F-101): transition index 1 in every resample, paired
+adjacent changes, direction with/without exit nearly identical.
+**3.6 done:** `results/layer_curves/layer_curves.png` reviewed and fixed (F-102).
+**Next:** commit + push; 3.7 (transition recorded from saved evidence; then `test_scores` once, from committed code);
+3.8 brief; gate.
 
 ---
 
@@ -226,6 +232,8 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/baselines/checks.json` + `artifacts/baselines/pixel_gram_*.npy` | `pixel_grams` | Exact pixel Gram matrices per variable (full RGB, time-averaged); decoded pixels = audit hashes for all 4,572 clips; symmetric, integer < 2^53, diagonal = int64 sum of squares; 6 file hashes recorded (git-ignored) | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-96; `scripts/check_baselines.py pixel_grams` |
 | `results/baselines/checks.json` + `artifacts/baselines/floor_predictions.npz` | `pixel_floor` | Ridge on raw pixels (full RGB headline, time-averaged secondary) via the saved Grams; train-only, alpha rule, validation rows only; val-seen R² full 0.48 / 0.63 / 0.49, time-averaged 0.20 / 0.23 / 0.16 | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-97; `scripts/check_baselines.py pixel_floor` |
 | `results/baselines/checks.json` + `artifacts/baselines/ceiling_estimates.npz` | `physics_ceiling` | Per-clip physics fit on tracked positions, validation rows only; exact on metadata positions (≤ 1.7e-13); headline quadratic R² ≥ 0.997; design-informed constant-velocity (speed) and from-rest (acceleration) reported labelled | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-98; `scripts/check_baselines.py physics_ceiling` |
+| `results/layer_curves/checks.json` | `bootstrap` | 10,000-resample clip bootstrap of probes, floors, ceiling on val_seen / val_unseen (direction also without exit); 178 point estimates = saved scores; transition index 1 in every resample; paired adjacent changes; per-value errors on val_unseen | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-101; `scripts/check_layer_curves.py bootstrap` |
+| `results/layer_curves/layer_curves.png` + `checks.json` | `figure_layer_curves` | R² and MAE / circular MAE per layer index with 95% bands, val-unseen, pixel floors, physics-fit ceiling, transition line | ℹ️ visual (reviewed) | F-102; `scripts/check_layer_curves.py figure_layer_curves` |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
@@ -323,7 +331,14 @@ what's next.
   above chance → H-09). **Step 3.4d done.**
 - 3.4e: `from_rest` model in `physics_fit`; `check_baselines.py physics_ceiling` passed as predicted (F-98).
   **Step 3.4 done.**
-- **Next:** commit and push, then 3.5.
+- Committed and pushed (user said). 3.5a: bootstrap helpers; smoke test caught a guard bug in `r2`/`resampled_r2`
+  (Claude Code's), fixed and re-tested (F-99). **Step 3.5a done.**
+- 3.5b-1: `curves.py`; unit tests and saved curves as worked out by hand (F-100). **Step 3.5b-1 done.**
+- 3.5b-2: `scripts/check_layer_curves.py bootstrap`; first run crashed in the print function (Claude Code's bug, nothing
+  saved), fixed; passed, predictions met (F-101). **Step 3.5 done (validation).**
+- 3.6: `figure_layer_curves` (dataviz method; project palette); Claude Code reviewed the PNG, found three defects
+  (label collision, log ticks, spine colour), fixed, re-reviewed clean (F-102). **Step 3.6 done.**
+- **Next:** commit and push, then 3.7.
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each
