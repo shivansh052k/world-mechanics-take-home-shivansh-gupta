@@ -45,6 +45,16 @@ AUDIT_OUTPUTS = (
     "results/tracking/tracking.png",
 )
 
+# Split, extraction and joined results, re-run from a clean tree before their report. The full extraction is not
+# re-run: `verify` re-extracts a seeded subset and requires it bit-identical to the stored activations instead.
+GATE_SUBJECTS = ("splits", "extraction", "joined")
+GATE_OUTPUTS = ("artifacts/manifests/splits.csv",)
+NOT_RERUN = {("extraction", key) for key in ("extract_direction", "extract_speed", "extract_acceleration")}
+SUBSET_REEXTRACTION = ("extraction", "verify")
+# Result fields that describe the machine at run time, not the data or the code: left out of the comparison.
+VOLATILE_FIELDS = {("joined", "storage"): ("free_disk_bytes", "memory")}
+
+
 def scratch_git(root: Path, *args: str) -> None:
     """Git in the scratch repository, with a fixed identity and no commit signing."""
     subprocess.run(
@@ -172,12 +182,82 @@ def check_rerun_identical() -> dict:
         "passed": all(criteria.values()),
     }
 
+def without(result: dict, fields: tuple[str, ...]) -> dict:
+    """`result` minus the top-level `fields`."""
+    return {key: value for key, value in result.items() if key not in fields}
+
+
+def check_rerun_identical_splits_extraction() -> dict:
+    """A clean re-run of the split, extraction and joined checks reproduces the committed results.
+
+    For every key of results/<subject>/checks.json (GATE_SUBJECTS) as committed at HEAD:
+    - keys in NOT_RERUN must be present and exactly equal to the committed entry, provenance included (they are
+      deliberately not re-run, so they must not have been touched);
+    - every other key must be present, produced at HEAD with no code changes (git_dirty False), and its result
+      must equal the committed one exactly, except the fields in VOLATILE_FIELDS, which are listed per key.
+    The subset re-extraction (SUBSET_REEXTRACTION) must be among the re-run keys, and the committed outputs in
+    GATE_OUTPUTS must be byte-identical to HEAD. Passes if all hold.
+    """
+    head = git(REPO, "rev-parse", "HEAD").strip()
+    per_subject, missing, touched, not_clean, differing, rerun = {}, [], [], [], [], []
+    for subject in GATE_SUBJECTS:
+        path = f"results/{subject}/checks.json"
+        committed = json.loads(git(REPO, "show", f"HEAD:{path}"))
+        current = json.loads((REPO / path).read_text())
+        keys = {}
+        for key, entry in committed.items():
+            name = f"{subject}/{key}"
+            now = current.get(key)
+            if now is None:
+                missing.append(name)
+                keys[key] = "missing"
+                continue
+            if (subject, key) in NOT_RERUN:
+                unchanged = now == entry
+                keys[key] = {"not_rerun_by_design": True, "unchanged": unchanged}
+                if not unchanged:
+                    touched.append(name)
+                continue
+            ignored = VOLATILE_FIELDS.get((subject, key), ())
+            clean = now["provenance"].get("git_commit") == head and now["provenance"].get("git_dirty") is False
+            same = without(now["result"], ignored) == without(entry["result"], ignored)
+            keys[key] = {"rerun_from_clean_head": clean, "result_identical": same, "fields_ignored": list(ignored)}
+            rerun.append((subject, key))
+            if not clean:
+                not_clean.append(name)
+            if not same:
+                differing.append(name)
+        per_subject[subject] = keys
+
+    changed_outputs = [p for p in GATE_OUTPUTS if git(REPO, "status", "--porcelain", "--", p).strip()]
+    criteria = {
+        "keys_compared": bool(rerun),
+        "subset_reextraction_rerun": SUBSET_REEXTRACTION in rerun,
+        "no_key_missing": not missing,
+        "not_rerun_keys_untouched": not touched,
+        "every_rerun_key_from_clean_head": not not_clean,
+        "every_rerun_result_identical": not differing,
+        "committed_outputs_unchanged": not changed_outputs,
+    }
+    return {
+        "criteria": criteria,
+        "head": head,
+        "keys_rerun": len(rerun),
+        "missing": missing,
+        "not_rerun_but_changed": touched,
+        "not_rerun_from_clean_head": not_clean,
+        "results_differing": differing,
+        "outputs_changed": changed_outputs,
+        "per_subject": per_subject,
+        "passed": all(criteria.values()),
+    }
+    
 
 CHECKS = {
     "dirty_flag": check_dirty_flag,
     "rerun_identical": check_rerun_identical,
+    "rerun_identical_splits_extraction": check_rerun_identical_splits_extraction,
 }
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
