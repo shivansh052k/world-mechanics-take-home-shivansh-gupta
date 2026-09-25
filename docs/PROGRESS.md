@@ -76,7 +76,8 @@ the planning chat (one seen direction angle without a test_seen clip; direction 
 pool, repeat bit-exact, F-80). **2.4b done:** `scripts/check_extraction.py` committed, `pipeline` passed (F-81).
 **2.5 done:** all 4,572 clips extracted, every criterion passed, test clip reproduced bit for bit, ~106 min (F-82).
 **2.6 done:** `verify` passed — hash-guarded, ids = splits, 48 seeded clips re-extracted live bit-identical (F-83).
-**Next:** 2.7 joined dataset artifacts (`joined.py`, `check_joined.py build`).
+**2.7a done:** `src/vjepa_physics/joined.py` (`build_table`, `load_joined`); in-memory tables reproduce F-72's flag
+counts and F-70's pixel errors (F-84). **Next:** 2.7b `scripts/check_joined.py build`.
 
 ---
 
@@ -280,7 +281,9 @@ what's next.
   `artifacts/activations/` (git-ignored; only recovery is a ~1 h 45 min re-extraction; hashes prove a restored copy).
 - 2.6: `verify` passed (48/48 live clips bit-identical, ids = splits, weights unchanged). Claude Code's prediction that
   site std grows with depth was wrong: it peaks at block_8 (≈ 8.1) and falls to 3.3 at block_23 (F-83). **Step 2.6 done.**
-- **Next:** 2.7.
+- 2.7a: `src/vjepa_physics/joined.py`; smoke test (terminal, not saved): all three tables built from hash-guarded
+  sources, flag counts = F-72, tracked-vs-predicted max px = F-70 per dataset (F-84). **Step 2.7a done.**
+- **Next:** 2.7b `check_joined.py build`.
 
 ### 2026-09-24 — Phase 1 started (data audit)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (directly, after each step);

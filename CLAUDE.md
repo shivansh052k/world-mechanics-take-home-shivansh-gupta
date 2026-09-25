@@ -193,6 +193,9 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   from metadata + seed only; speed/acceleration share one assignment by id),
   `extraction` (`SITES` = embedding, block_0–23, final_norm; `pool_time_steps`, `pooled_activations` → (B, 26, 8, 1024)
   fp32 CPU; `all_token_mean`; `plot_index` = hidden_states index, D-40),
+  `joined` (`build_table`; `load_joined(variable)` = **the one loader for Phases 3–7**: per-clip labels, role, flags,
+  tracked disk, theta/speed/acceleration/motion, direction group/octant, plus key "activations" (clips, 26, 8, 1024)
+  memory-mapped; every file hash-guarded, activation hash pinned in the table),
   `plotting` (`DATASET_COLOUR`, ink/grid colours, `sequential_cmap`, `style_axes`: use for every figure; open and
   review each PNG after rendering).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
