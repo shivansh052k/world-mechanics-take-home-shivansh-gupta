@@ -20,15 +20,19 @@ from vjepa_physics.data import read_manifest, resolve
 from vjepa_physics.curves import LATE_RISE_FRACTION, TRANSITION_FRACTION, rise_index, transition_points
 from vjepa_physics.evidence import code_changes, file_sha256, repo_root, save_result, verified_artifact
 from vjepa_physics.extraction import PATCHES, PATCH_SITES, patch_activations
-from vjepa_physics.geometry import DISK_RADIUS_PX, PATCH_PX, distance_to_patches
+from vjepa_physics.geometry import DISK_RADIUS_PX, PATCH_GRID, PATCH_PX, distance_to_patches
 from vjepa_physics.joined import load_joined
-from vjepa_physics.metrics import bootstrap_indices, percentile_interval, r2, resampled_r2
+from vjepa_physics.metrics import (
+    angles_from_sincos, bootstrap_indices, circular_errors, percentile_interval, r2, resampled_r2,
+)
 from vjepa_physics.model import load_model, weights_fingerprint
 from vjepa_physics.preprocess import preprocess_clip
 from sklearn.linear_model import RidgeCV
 from sklearn.preprocessing import StandardScaler
 
-from vjepa_physics.probes import ALPHAS, alpha_verdict, fit_probe, probe_scores, probe_targets
+from vjepa_physics.probes import (
+    ALPHAS, alpha_verdict, clip_folds, fit_probe, grouped_cv_ridge, probe_scores, probe_targets,
+)
 from vjepa_physics.reproducibility import SEED, set_seeds
 from vjepa_physics.video import load_clip
 
@@ -58,6 +62,13 @@ OFF_PATH_MARGIN_PX = PATCH_PX  # off-path: the disk centre never came within rad
 BREAKDOWN = PATCH_DIR / "patch_breakdown.npz"
 N_RESAMPLES = 10_000  # clip resamples (bootstrap settings decision)
 LEVEL = 0.95
+
+HALF_NAMES = ("left", "right", "top", "bottom")
+OPPOSITE = {"left": "right", "right": "left", "top": "bottom", "bottom": "top"}
+N_FOLDS = 5  # clip-grouped CV folds for the shared probe's alpha
+SAMPLES_PER_CLIP = 128  # patches in one half
+SUMS_TOLERANCE = 1e-10  # R² from per-clip sums vs directly from the samples
+SPATIAL = PATCH_DIR / "spatial_generalization.npz"
 
 def array_sha256(a: np.ndarray) -> str:
     """SHA-256 of an array's bytes in C order."""
@@ -494,6 +505,170 @@ def check_patch_bootstrap() -> dict:
         "passed": all(criteria.values()),
     }
 
+
+def half_patches(half: str) -> np.ndarray:
+    """The 128 patch indices (row * 16 + col) of one half of the frame."""
+    row, col = np.divmod(np.arange(PATCHES), PATCH_GRID)
+    mask = {"left": col < 8, "right": col >= 8, "top": row < 8, "bottom": row >= 8}[half]
+    return np.flatnonzero(mask)
+
+
+def half_samples(block: np.ndarray, clips: np.ndarray, patches: np.ndarray) -> np.ndarray:
+    """(clips * 128, 1024) float64 samples from one index's (clips, 256, 1024) block, clip-major."""
+    return block[np.ix_(clips, patches)].reshape(-1, block.shape[-1]).astype(np.float64)
+
+
+def clip_sums(labels: np.ndarray, y: np.ndarray, pred: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Per clip: squared residual sums per output (clips, 2) and circular-error sums in degrees (clips,)."""
+    n = len(labels)
+    residual = (np.repeat(y, SAMPLES_PER_CLIP, axis=0) - pred) ** 2
+    errors = circular_errors(np.repeat(labels, SAMPLES_PER_CLIP), angles_from_sincos(pred))
+    return residual.reshape(n, SAMPLES_PER_CLIP, -1).sum(axis=1), errors.reshape(n, SAMPLES_PER_CLIP).sum(axis=1)
+
+
+def pooled_scores(y: np.ndarray, sse: np.ndarray, error_sum: np.ndarray,
+                  idx: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
+    """R² (mean over sin, cos) and circular MAE over all samples of the chosen clips, from per-clip sums.
+
+    idx (B, n) resamples clips (each brings its 128 samples); None = every clip once. Returns (B,) arrays.
+    """
+    idx = np.arange(len(y))[None] if idx is None else idx
+    count = idx.shape[1] * SAMPLES_PER_CLIP
+    yb = y[idx]  # (B, n, 2); a clip's target is the same for all its samples
+    ss_tot = (yb**2).sum(axis=1) * SAMPLES_PER_CLIP - (yb.sum(axis=1) * SAMPLES_PER_CLIP) ** 2 / count
+    r2_b = (1 - sse[idx].sum(axis=1) / ss_tot).mean(axis=-1)
+    return r2_b, error_sum[idx].sum(axis=1) / count
+
+
+def check_spatial_generalization() -> dict:
+    """One shared probe per layer index and frame half, scored on the same and the opposite half of val_seen clips.
+
+    Samples = (clip, patch) pairs of one half (128 patches); train samples z-scored with the half's train scaler;
+    alpha by 5-fold CV grouped by clip (seeded). Scores pool all samples: R² on (sin, cos), circular MAE; gap =
+    same - across. Headline, averaged over the 4 halves, with a clip bootstrap (all 128 samples of a clip move
+    together; one index matrix, so same, across and the gap are paired). val_unseen: point scores. Writes
+    artifacts/patches/spatial_generalization.npz (fitted probes, CV curves, per-clip sums). Passes if: the code is
+    committed; ids align; no clip in two folds; every fit used exactly the train clips' samples; scored clips are
+    val_seen only; no alpha failure (alpha rule on the same-half val_seen R²); R² from per-clip sums equals R²
+    from the samples within 1e-10; scores finite; the saved file equals what was computed.
+    """
+    committed = not code_changes(repo_root())
+    table = load_joined(VARIABLE)
+    roles, labels = table["role"], table["label"]
+    y = probe_targets(VARIABLE, labels)
+    train = np.flatnonzero(roles == "train")
+    seen = np.flatnonzero(roles == "val_seen")
+    unseen = np.flatnonzero(roles == "val_unseen")
+    patches = np.load(verified_artifact(OUT, "extract_direction"), mmap_mode="r")
+    ids = np.load(verified_artifact(OUT, "extract_direction", "ids"))
+    halves = {h: half_patches(h) for h in HALF_NAMES}
+
+    groups = np.repeat(table["id"][train], SAMPLES_PER_CLIP)
+    folds = clip_folds(groups, N_FOLDS, SEED)
+    first_fold = folds[::SAMPLES_PER_CLIP]  # fold of each train clip's first sample
+    folds_grouped = bool((folds.reshape(-1, SAMPLES_PER_CLIP) == first_fold[:, None]).all())
+    y_train = np.repeat(y[train], SAMPLES_PER_CLIP, axis=0)
+
+    n_index, n_half = len(PATCH_SITES), len(HALF_NAMES)
+    scaler_mean = np.zeros((n_index, n_half, HIDDEN))
+    scaler_scale = np.zeros((n_index, n_half, HIDDEN))
+    coef = np.zeros((n_index, n_half, 2, HIDDEN))
+    intercept = np.zeros((n_index, n_half, 2))
+    alpha = np.zeros((n_index, n_half))
+    cv_mse = np.zeros((n_index, n_half, len(ALPHAS)))
+    verdict = np.empty((n_index, n_half), dtype="U9")
+    n_fit = np.zeros((n_index, n_half), dtype=np.int64)
+    sse = np.zeros((n_index, n_half, 2, len(seen), 2))  # axis 2: 0 = same half, 1 = opposite half
+    error_sum = np.zeros((n_index, n_half, 2, len(seen)))
+    unseen_scores = np.zeros((n_index, n_half, 2, 2))  # last axis: R², circular MAE
+    sums_ok = []
+
+    start = time.perf_counter()
+    for i in range(n_index):
+        block = np.asarray(patches[:, i])  # (clips, 256, 1024) float32, one index read once
+        for h, half in enumerate(HALF_NAMES):
+            x = half_samples(block, train, halves[half])
+            scaler = StandardScaler().fit(x)
+            x = scaler.transform(x, copy=False)
+            fit = grouped_cv_ridge(x, y_train, folds)
+            del x
+            scaler_mean[i, h], scaler_scale[i, h] = scaler.mean_, scaler.scale_
+            coef[i, h], intercept[i, h], alpha[i, h] = fit.coef, fit.intercept, fit.alpha
+            cv_mse[i, h], n_fit[i, h] = fit.cv_mse, fit.n_fit
+            for w, target in enumerate((half, OPPOSITE[half])):
+                pred = fit.predict(scaler.transform(half_samples(block, seen, halves[target]), copy=False))
+                sse[i, h, w], error_sum[i, h, w] = clip_sums(labels[seen], y[seen], pred)
+                from_sums = pooled_scores(y[seen], sse[i, h, w], error_sum[i, h, w])[0][0]
+                sums_ok.append(abs(from_sums - r2(np.repeat(y[seen], SAMPLES_PER_CLIP, axis=0), pred)) <= SUMS_TOLERANCE)
+                pu = fit.predict(scaler.transform(half_samples(block, unseen, halves[target]), copy=False))
+                s = probe_scores(VARIABLE, np.repeat(labels[unseen], SAMPLES_PER_CLIP), pu)
+                unseen_scores[i, h, w] = s["r2"], s["circular_mae"]
+            same_r2 = pooled_scores(y[seen], sse[i, h, 0], error_sum[i, h, 0])[0][0]
+            verdict[i, h] = alpha_verdict(fit.alpha_edge, same_r2)
+        del block
+        print(f"index {i:2d} ({PATCH_SITES[i]}): {(time.perf_counter() - start) / 60:.1f} min", flush=True)
+
+    idx = bootstrap_indices(len(seen), N_RESAMPLES, SEED)
+    curve, across_curves = [], np.zeros((N_RESAMPLES, n_index))
+    for i in range(n_index):
+        stats = {}
+        for w, name in enumerate(("same", "across")):
+            per_half = [pooled_scores(y[seen], sse[i, h, w], error_sum[i, h, w]) for h in range(n_half)]
+            per_half_b = [pooled_scores(y[seen], sse[i, h, w], error_sum[i, h, w], idx) for h in range(n_half)]
+            stats[name] = {
+                "point": float(np.mean([p[0][0] for p in per_half])),
+                "samples": np.mean([p[0] for p in per_half_b], axis=0),
+                "circular_mae": float(np.mean([p[1][0] for p in per_half])),
+                "per_half_r2": {HALF_NAMES[h]: float(per_half[h][0][0]) for h in range(n_half)},
+            }
+        across_curves[:, i] = stats["across"]["samples"]
+        gap = stats["same"]["samples"] - stats["across"]["samples"]
+        curve.append({
+            "index": i, "site": PATCH_SITES[i],
+            **{f"{name}_r2": {"point": stats[name]["point"], "ci": list(percentile_interval(stats[name]["samples"], LEVEL)),
+                              "circular_mae": stats[name]["circular_mae"], "per_half": stats[name]["per_half_r2"]}
+               for name in ("same", "across")},
+            "gap_r2": {"point": stats["same"]["point"] - stats["across"]["point"],
+                       "ci": list(percentile_interval(gap, LEVEL))},
+            "val_unseen_mean": {"same_r2": float(unseen_scores[i, :, 0, 0].mean()),
+                                "across_r2": float(unseen_scores[i, :, 1, 0].mean())},
+            "alpha_verdicts": dict(Counter(verdict[i].tolist())),
+        })
+    across_point = np.array([row["across_r2"]["point"] for row in curve])
+
+    arrays = {
+        "sites": np.array(PATCH_SITES), "halves": np.array(HALF_NAMES), "val_seen_ids": table["id"][seen],
+        "scaler_mean": scaler_mean, "scaler_scale": scaler_scale, "coef": coef, "intercept": intercept,
+        "alpha": alpha, "alpha_verdict": verdict, "cv_mse": cv_mse, "n_fit": n_fit,
+        "val_seen_sse": sse, "val_seen_circular_error_sum": error_sum, "val_unseen_scores": unseen_scores,
+    }
+    np.savez_compressed(SPATIAL, **arrays)
+    with np.load(SPATIAL) as saved:
+        saved_ok = set(saved.files) == set(arrays) and all(
+            np.array_equal(saved[k], v, equal_nan=v.dtype.kind == "f") for k, v in arrays.items())
+    criteria = {
+        "code_committed": committed,
+        "ids_aligned": bool(np.array_equal(ids, table["id"])),
+        "no_clip_in_two_folds": folds_grouped,
+        "fits_used_exactly_train_samples": bool((n_fit == len(train) * SAMPLES_PER_CLIP).all()),
+        "scored_clips_val_seen_only": bool(set(seen).isdisjoint(train) and (roles[seen] == "val_seen").all()),
+        "no_alpha_failure": bool((verdict != "failure").all()),
+        "sums_match_direct_r2": len(sums_ok) == n_index * n_half * 2 and all(sums_ok),
+        "scores_finite": bool(np.isfinite(sse).all() and np.isfinite(error_sum).all() and np.isfinite(unseen_scores).all()),
+        "saved_equals_computed": saved_ok,
+    }
+    return {
+        "criteria": criteria, "n_resamples": N_RESAMPLES, "level": LEVEL, "seed": SEED, "folds": N_FOLDS,
+        "curve": curve,
+        "transition_on_across_curve": transition_points(across_point),
+        "bootstrap_across_transition_index_counts":
+            np.bincount(rise_index(across_curves, TRANSITION_FRACTION), minlength=n_index).tolist(),
+        "minutes_total": round((time.perf_counter() - start) / 60, 1),
+        "artifact": {"path": str(SPATIAL.relative_to(REPO)), "sha256": file_sha256(SPATIAL)},
+        "passed": all(criteria.values()),
+    }
+
+
 CHECKS = {
     "extract_direction": check_extract_direction,
     "verify": check_verify,
@@ -501,6 +676,7 @@ CHECKS = {
     "patch_alpha_diagnostic": check_patch_alpha_diagnostic,
     "patch_breakdown": check_patch_breakdown,
     "patch_bootstrap": check_patch_bootstrap,
+    "spatial_generalization": check_spatial_generalization,
 }
 
 

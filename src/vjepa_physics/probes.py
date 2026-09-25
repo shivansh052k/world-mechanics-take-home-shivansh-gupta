@@ -95,3 +95,82 @@ def probe_scores(variable: str, labels: np.ndarray, pred: np.ndarray) -> dict[st
             "circular_mae": circular_mae(labels, angles_from_sincos(pred)),
         }
     return {"r2": r2(labels, pred), "mae": mae(labels, pred)}
+
+
+
+def clip_folds(groups: np.ndarray, n_folds: int, seed: int) -> np.ndarray:
+    """Fold label per sample: every group (clip) goes to exactly one fold.
+
+    The sorted distinct groups are put in a seeded random order and dealt round robin, so fold sizes (in groups)
+    differ by at most one and the result depends only on the groups and the seed.
+    """
+    groups = np.asarray(groups)
+    unique = np.unique(groups)
+    if len(unique) < n_folds:
+        raise ValueError(f"{len(unique)} groups cannot fill {n_folds} folds")
+    fold_of_group = np.empty(len(unique), dtype=np.int64)
+    fold_of_group[np.random.default_rng(seed).permutation(len(unique))] = np.arange(len(unique)) % n_folds
+    return fold_of_group[np.searchsorted(unique, groups)]
+
+
+@dataclass(frozen=True)
+class GroupedRidge:
+    """A ridge fit whose alpha was chosen by grouped K-fold CV: weights (k, d), intercept (k,), CV curve."""
+
+    alpha: float
+    alpha_edge: str | None
+    coef: np.ndarray
+    intercept: np.ndarray
+    cv_mse: np.ndarray  # mean squared held-out error per alpha
+    n_fit: int
+
+    def predict(self, x: np.ndarray) -> np.ndarray:
+        return np.asarray(x, dtype=np.float64) @ self.coef.T + self.intercept
+
+
+def centred_solution(n, sx, sy, xtx, xty):
+    """Means and the eigendecomposition of a ridge problem, from sums: n, sum x, sum y, XᵀX, Xᵀy (uncentred)."""
+    mx, my = sx / n, sy / n
+    gram = xtx - n * np.outer(mx, mx)
+    cross = xty - n * np.outer(mx, my)
+    lam, v = np.linalg.eigh(gram)
+    return mx, my, np.clip(lam, 0.0, None), v, v.T @ cross
+
+
+def grouped_cv_ridge(x: np.ndarray, y: np.ndarray, folds: np.ndarray, alphas: np.ndarray = ALPHAS) -> GroupedRidge:
+    """Ridge regression with an unpenalised intercept; alpha by K-fold CV over the given fold labels.
+
+    CV score = mean squared error over all held-out samples and outputs (as RidgeCV's), ties to the smaller
+    alpha; then a final fit on all rows with that alpha. Exact: each fold's training problem is the total minus
+    that fold (per-fold sums), centred on its own training mean, and one eigendecomposition serves every alpha.
+    `x` is used as given (standardise it first). y may be (n,) or (n, k); coef is always (k, d).
+    """
+    x = np.asarray(x, dtype=np.float64)
+    y2 = np.asarray(y, dtype=np.float64).reshape(len(x), -1)
+    folds = np.asarray(folds)
+    labels = np.unique(folds)
+    if len(labels) < 2 or len(folds) != len(x):
+        raise ValueError("need at least two folds and one fold label per row")
+
+    parts = []
+    for f in labels:
+        rows = folds == f
+        xf, yf = x[rows], y2[rows]
+        parts.append((rows, int(rows.sum()), xf.sum(axis=0), yf.sum(axis=0), xf.T @ xf, xf.T @ yf))
+    total = [sum(p[i] for p in parts) for i in range(1, 6)]
+
+    alphas = np.asarray(alphas, dtype=np.float64)
+    sse = np.zeros(len(alphas))
+    for rows, *stats in parts:
+        mx, my, lam, v, vb = centred_solution(*[t - s for t, s in zip(total, stats)])
+        projected = (x[rows] - mx) @ v
+        for j, alpha in enumerate(alphas):
+            residual = y2[rows] - (projected @ (vb / (lam + alpha)[:, None]) + my)
+            sse[j] += float((residual**2).sum())
+    cv_mse = sse / y2.size
+    best = int(np.argmin(cv_mse))  # first minimum: ties go to the smaller alpha
+
+    mx, my, lam, v, vb = centred_solution(*total)
+    w = v @ (vb / (lam + alphas[best])[:, None])  # (d, k)
+    edge = "lower" if best == 0 else "upper" if best == len(alphas) - 1 else None
+    return GroupedRidge(float(alphas[best]), edge, w.T, my - mx @ w, cv_mse, len(x))
