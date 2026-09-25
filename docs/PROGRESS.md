@@ -353,7 +353,10 @@ what's next.
 - 3.8b: `scripts/check_patches.py` given; `extract_direction` started (~40 min).
 - Lean-mode review: Claude Code found the literal hash rule would fail every key; precise rule, Phase 5 clip counts,
   fallback layer, centroid clips, Phase 8 list and doc cadence settled with the planning chat (D-48, F-106).
-- **Next:** `verify`, then 3.8c.
+- 3.8b `extract_direction` passed: 39,321,600,128 B, patch mean = all-token mean ≤ 6.5e-8, 36.1 min, ids = F-82's
+  (SHA-256 `bc414b66…`); code committed (user said; hash rule, D-48).
+- 3.8b `verify` passed: 16 seeded clips re-extracted bit-identical, ids = joined table, weights unchanged.
+- **Next:** 3.8c `patch_probes`.
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each

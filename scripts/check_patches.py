@@ -7,6 +7,7 @@ Each check prints its result and stores it under its own key in results/patches/
 """
 import argparse
 import hashlib
+from collections import Counter
 import json
 import os
 import shutil
@@ -16,11 +17,13 @@ from pathlib import Path
 import numpy as np
 
 from vjepa_physics.data import read_manifest, resolve
-from vjepa_physics.evidence import file_sha256, save_result, verified_artifact
+from vjepa_physics.curves import transition_points
+from vjepa_physics.evidence import code_changes, file_sha256, repo_root, save_result, verified_artifact
 from vjepa_physics.extraction import PATCHES, PATCH_SITES, patch_activations
 from vjepa_physics.joined import load_joined
 from vjepa_physics.model import load_model, weights_fingerprint
 from vjepa_physics.preprocess import preprocess_clip
+from vjepa_physics.probes import alpha_verdict, fit_probe, probe_scores, probe_targets
 from vjepa_physics.reproducibility import SEED, set_seeds
 from vjepa_physics.video import load_clip
 
@@ -40,6 +43,10 @@ MEAN_TOLERANCE = 1e-6  # mean over the 256 patch vectors vs the stored all-token
 PROGRESS_EVERY = 100
 SPOT_CLIPS = 16  # clips re-extracted live and compared bit for bit (also the reproducibility gate)
 
+EVAL_ROLES = ("val_seen", "val_unseen")  # scored here; test is scored once, after the findings are recorded
+EXPECTED_FIT = 813  # direction train clips (split decision)
+PATCH_PROBES = PATCH_DIR / "patch_probes.npz"  # fitted probes + validation predictions (regenerable, git-ignored)
+PROBES_CHECKS = REPO / "results/probes/checks.json"  # key "layer_curves": mean-pooled scores, printed for comparison
 
 def array_sha256(a: np.ndarray) -> str:
     """SHA-256 of an array's bytes in C order."""
@@ -183,9 +190,110 @@ def check_verify() -> dict:
     }
 
 
+def check_patch_probes() -> dict:
+    """One ridge probe per patch position and layer index (25 x 256), fit on train, scored on validation clips.
+
+    Features: each clip's time-averaged vector at that patch and index (the per-patch array, read through its
+    recorded hash, one index at a time). Probes as for the mean-pooled curves (z-score on train, RidgeCV
+    leave-one-out, alpha rule). Writes artifacts/patches/patch_probes.npz: every probe's scaler mean and scale,
+    weights and intercept, alpha, and the validation predictions (NaN on every other row), so later analyses and
+    the one-time test scoring need no refit. Curve per index: mean and median of the per-patch val_seen R²; the
+    transition rule is applied to the mean curve (reported, not selected on). Passes if: the code is committed;
+    ids align with the joined table; every probe saw exactly the 813 train clips; no alpha verdict is "failure";
+    all scores finite; only validation rows predicted; one seeded patch per index refits bit-identically; the
+    saved file equals what was computed.
+    """
+    committed = not code_changes(repo_root())
+    table = load_joined(VARIABLE)
+    roles, labels = table["role"], table["label"]
+    y = probe_targets(VARIABLE, labels)
+    validation = np.isin(roles, EVAL_ROLES)
+    patches = np.load(verified_artifact(OUT, "extract_direction"), mmap_mode="r")
+    ids = np.load(verified_artifact(OUT, "extract_direction", "ids"))
+    n_index, n_patch = len(PATCH_SITES), PATCHES
+
+    grid = (n_index, n_patch)
+    alpha = np.zeros(grid)
+    verdict = np.empty(grid, dtype="U9")
+    n_fit = np.zeros(grid, dtype=np.int64)
+    scores = {f"{role}_{m}": np.zeros(grid) for role in EVAL_ROLES for m in ("r2", "circular_mae")}
+    scaler_mean = np.zeros((*grid, HIDDEN))
+    scaler_scale = np.zeros((*grid, HIDDEN))
+    coef = np.zeros((*grid, 2, HIDDEN))
+    intercept = np.zeros((*grid, 2))
+    predictions = np.full((len(y), *grid, 2), np.nan)
+    spot = np.random.default_rng(SEED).integers(n_patch, size=n_index)
+    refit_ok = []
+
+    start = time.perf_counter()
+    for i in range(n_index):
+        block = np.asarray(patches[:, i])  # (clips, 256, 1024) float32: one index, read once
+        for p in range(n_patch):
+            x = block[:, p].astype(np.float64)
+            probe = fit_probe(x, y, roles)
+            predictions[validation, i, p] = probe.predict(x[validation])
+            for role in EVAL_ROLES:
+                s = probe_scores(VARIABLE, labels[roles == role], predictions[roles == role, i, p])
+                scores[f"{role}_r2"][i, p] = s["r2"]
+                scores[f"{role}_circular_mae"][i, p] = s["circular_mae"]
+            alpha[i, p] = probe.alpha
+            verdict[i, p] = alpha_verdict(probe.alpha_edge, scores["val_seen_r2"][i, p])
+            n_fit[i, p] = probe.n_fit
+            scaler_mean[i, p], scaler_scale[i, p] = probe.scaler.mean_, probe.scaler.scale_
+            coef[i, p], intercept[i, p] = probe.ridge.coef_, probe.ridge.intercept_
+            if p == spot[i]:
+                again = fit_probe(x, y, roles)
+                refit_ok.append(again.alpha == probe.alpha and np.array_equal(again.ridge.coef_, probe.ridge.coef_))
+        del block
+        print(f"index {i:2d} ({PATCH_SITES[i]}): mean val_seen R2 {scores['val_seen_r2'][i].mean():.3f},"
+              f" {(time.perf_counter() - start) / 60:.1f} min", flush=True)
+
+    arrays = {
+        "sites": np.array(PATCH_SITES), "ids": table["id"], "roles": roles, "alpha": alpha, "alpha_verdict": verdict,
+        "n_fit": n_fit, "scaler_mean": scaler_mean, "scaler_scale": scaler_scale, "coef": coef,
+        "intercept": intercept, "validation_predictions": predictions, **scores,
+    }
+    np.savez_compressed(PATCH_PROBES, **arrays)
+    with np.load(PATCH_PROBES) as saved:
+        saved_ok = set(saved.files) == set(arrays) and all(
+            np.array_equal(saved[key], value, equal_nan=value.dtype.kind == "f") for key, value in arrays.items()
+        )
+
+    mean_curve = scores["val_seen_r2"].mean(axis=1)
+    curve = [
+        {"index": i, "site": PATCH_SITES[i],
+         "val_seen_r2_mean": float(mean_curve[i]), "val_seen_r2_median": float(np.median(scores["val_seen_r2"][i])),
+         "val_seen_r2_max": float(scores["val_seen_r2"][i].max()),
+         "val_unseen_r2_mean": float(scores["val_unseen_r2"][i].mean()),
+         "val_seen_circular_mae_mean": float(scores["val_seen_circular_mae"][i].mean()),
+         "alpha_verdicts": dict(Counter(verdict[i].tolist()))}
+        for i in range(n_index)
+    ]
+    criteria = {
+        "code_committed": committed,
+        "ids_aligned": bool(np.array_equal(ids, table["id"])),
+        "n_fit_equals_train_count": bool((n_fit == EXPECTED_FIT).all()),
+        "no_alpha_failure": bool((verdict != "failure").all()),
+        "scores_finite": all(bool(np.isfinite(v).all()) for v in scores.values()),
+        "only_validation_rows_predicted": bool(np.isfinite(predictions[validation]).all()
+                                               and np.isnan(predictions[~validation]).all()),
+        "spot_refit_identical": len(refit_ok) == n_index and all(refit_ok),
+        "saved_equals_computed": saved_ok,
+    }
+    return {
+        "criteria": criteria,
+        "curve": curve,
+        "transition_on_mean_curve": transition_points(mean_curve),
+        "minutes_total": round((time.perf_counter() - start) / 60, 1),
+        "artifact": {"path": str(PATCH_PROBES.relative_to(REPO)), "sha256": file_sha256(PATCH_PROBES)},
+        "passed": all(criteria.values()),
+    }
+
+
 CHECKS = {
     "extract_direction": check_extract_direction,
     "verify": check_verify,
+    "patch_probes": check_patch_probes,
 }
 
 
