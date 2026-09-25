@@ -1,0 +1,89 @@
+{
+  "pipeline": {
+    "provenance": {
+      "utc": "2026-09-25T05:20:04+00:00",
+      "git_commit": "2641ead8caac786947394b903a4f90044455e4ca",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "066f2c8d8c18f78ad15b7c8facc6f97037e13cc4fa3eee0a2da94a233affb104",
+          "src/vjepa_physics/extraction.py": "42edcc8e78f6e93fccf7b08f225d6a66f33d49a532204c96637cab203588278a",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "dc98690f3728587a7fff205b75f8c91db1eee154bc635d95fe6f64dfe1d229bd",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_extraction.py": "f95d1c8920ea7a28a7922798dce2a263a038ae2509f4908237d2cde0fec8f718"
+        },
+        "combined_sha256": "a4eaf207d369e621e79cc31a02879390f25fb44dfca2f10e8f911967eb50263e"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "clip": "speed/1000",
+      "device": "mps",
+      "sites": [
+        "embedding",
+        "block_0",
+        "block_1",
+        "block_2",
+        "block_3",
+        "block_4",
+        "block_5",
+        "block_6",
+        "block_7",
+        "block_8",
+        "block_9",
+        "block_10",
+        "block_11",
+        "block_12",
+        "block_13",
+        "block_14",
+        "block_15",
+        "block_16",
+        "block_17",
+        "block_18",
+        "block_19",
+        "block_20",
+        "block_21",
+        "block_22",
+        "block_23",
+        "final_norm"
+      ],
+      "criteria": {
+        "shape_and_dtype": true,
+        "repeat_bit_exact": true,
+        "pool_matches_float64": true,
+        "derived_mean_matches_float64": true,
+        "final_norm_differs_from_block_23": true,
+        "weights_unchanged": true
+      },
+      "tolerance": 1e-06,
+      "pool_rel_error_vs_float64": 5.293e-08,
+      "derived_mean_rel_error_vs_float64": 5.132e-08,
+      "pooled_sha256": "29997d28f67486e8eeb540513710bc13b76d2accd21ca0d07f95274167b47bde",
+      "passed": true
+    }
+  }
+}

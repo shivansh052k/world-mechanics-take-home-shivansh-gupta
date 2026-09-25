@@ -73,8 +73,8 @@ byte-identical writes (F-77). **2.2b done:** `scripts/check_splits.py build` pas
 `artifacts/manifests/splits.csv` (SHA-256 `bb64b6ae…`, F-78). **2.2c done:** `balance` diagnostics (F-79); two notes for
 the planning chat (one seen direction angle without a test_seen clip; direction exit clips val_seen 8 vs test_seen 20).
 **2.4a done:** `src/vjepa_physics/extraction.py` (26 sites, per-time-step pooling; test clip within 5.3e-8 of a float64
-pool, repeat bit-exact, F-80). **Next:** 2.4b `scripts/check_extraction.py` (saved pipeline check + extraction keys),
-committed before the real run (D-41).
+pool, repeat bit-exact, F-80). **2.4b done:** `scripts/check_extraction.py` committed, `pipeline` passed (F-81).
+**Next:** 2.5 full extraction (`extract_direction`, `extract_speed`, `extract_acceleration`).
 
 ---
 
@@ -179,6 +179,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/tracking/tracking.png` + `checks.json` | `figure_tracking` | Tracked-vs-predicted distance histograms (max ≤ 0.783 px); flag counts per dataset | ℹ️ visual (reviewed) | F-73; `scripts/check_tracking.py figure_tracking` |
 | `results/evidence/checks.json` | `rerun_identical` | All 21 audit keys re-run from clean HEAD `7869969`; every result identical to the committed one; flags table and PNGs unchanged | ✅ passed | F-74; `scripts/check_evidence.py rerun_identical` |
 | `results/splits/checks.json` + `artifacts/manifests/splits.csv` | `build` | Splits from metadata + seed 0 (D-38): every clip once, counts = D-38, unseen values as decided and absent from seen roles, 16/4/4 per seen value, speed = acceleration roles by id, rebuild byte-identical; file SHA-256 `bb64b6ae…` | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-78; `scripts/check_splits.py build` |
+| `results/extraction/checks.json` | `pipeline` | Test clip through the extraction code: (1, 26, 8, 1024) fp32, repeat bit-exact, 5.3e-8 vs float64 pool, weights unchanged; pooled SHA-256 `29997d28…` for the full run to reproduce | ✅ passed | F-81; `scripts/check_extraction.py pipeline` |
 | `results/splits/checks.json` | `balance` | Flags, mean cos/sin θ per role; direction group × octant per role; clips per seen angle (test_seen: one angle with 0) | ℹ️ diagnostic | F-79; `scripts/check_splits.py balance` |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
@@ -267,7 +268,9 @@ what's next.
 - 2.4a: `src/vjepa_physics/extraction.py`; smoke test on the test clip: shape/dtype/device right, repeat bit-exact,
   rel. error 5.29e-8 vs a float64 pool, derived mean 5.13e-8, final_norm ≠ block_23, plot indices 0/1/24 (F-80).
   **Step 2.4a done.**
-- **Next:** 2.4b `check_extraction.py`.
+- 2.4b: `scripts/check_extraction.py` (`pipeline`, `extract_<dataset>`) committed before any run (D-41); `pipeline`
+  passed, errors identical to the smoke test, pooled SHA-256 `29997d28…` recorded (F-81). **Step 2.4 done.**
+- **Next:** 2.5 full extraction.
 
 ### 2026-09-24 — Phase 1 started (data audit)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (directly, after each step);
