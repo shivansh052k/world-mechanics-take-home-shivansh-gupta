@@ -107,3 +107,24 @@ def load_dataset(data_dir: str | Path, dataset: str) -> list[dict]:
             raise ValueError(f"{dataset}: manifest id {row['id']} but metadata id {meta.get('id')!r}")
         clips.append(meta)
     return clips
+
+def motion_group(meta: dict) -> str:
+    """Direction-set motion group: motion type and its magnitude, e.g. "velocity 3 m/s", "acceleration 4 m/s^2".
+
+    Raises ValueError for any motion other than "velocity" or "acceleration".
+    """
+    if meta["motion"] == "velocity":
+        return f"velocity {meta['speed_mps']:g} m/s"
+    if meta["motion"] == "acceleration":
+        return f"acceleration {meta['acceleration_mps2']:g} m/s^2"
+    raise ValueError(f"unknown motion {meta['motion']!r}")
+
+
+def angle_octant(theta_degrees: float) -> int:
+    """45-degree sector of a direction: 0 for [0, 45), 1 for [45, 90), ..., 7 for [315, 360).
+
+    Raises ValueError if theta is outside [0, 360).
+    """
+    if not 0 <= theta_degrees < 360:
+        raise ValueError(f"theta {theta_degrees} outside [0, 360)")
+    return int(theta_degrees // 45)

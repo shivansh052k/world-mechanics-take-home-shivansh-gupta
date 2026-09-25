@@ -1,6 +1,6 @@
 # CLAUDE.md — World Mechanics take-home (V-JEPA physics)
 
-Last updated: 2026-09-25 (Phase 1 passed; next: step 2.1). Read this fully at the start of every session.
+Last updated: 2026-09-25 (Phase 2 started; step 2.1 with the planning chat). Read this fully at the start of every session.
 
 ---
 
@@ -181,7 +181,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `activations` (`capture_encoder`, `GRID`, `as_grid`), `intervention` (`edit_encoder`, `encoder_sites`),
   `forecast` (`encode`, `predict`, `training_target`), `decoders` (`load_clip_opencv`, `compare_decoders`),
   `data` (`DATASETS`, `LABEL_FIELD`, `read_manifest`, `resolve`, `read_metadata`, `load_dataset`: strict readers; paths must stay inside
-  `data/<variable>/`; take labels from the dataset name, never `primary_label`, which direction lacks),
+  `data/<variable>/`; take labels from the dataset name, never `primary_label`, which direction lacks; `motion_group`,
+  `angle_octant` for the direction set's stratification, F-75),
   `geometry` (`frame_times`, `distance_travelled`, `speed_at`: s = v t + a t²/2, frame k at t = k/fps;
   `world_to_pixel`, `disk_centres`, `distance_outside_image`: 32 px/m, origin 128, y flipped), `video` also has
   `probe_clip` (stream facts, exact-fraction timestamps), `tracking` (`disk_mask`, `count_objects`, `track_disk`;
