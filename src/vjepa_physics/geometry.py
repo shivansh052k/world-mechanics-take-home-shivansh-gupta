@@ -71,3 +71,25 @@ def distance_outside_image(
     dx = np.maximum(0.0, np.maximum(-0.5 - col, col - (size - 0.5)))
     dy = np.maximum(0.0, np.maximum(-0.5 - row, row - (size - 0.5)))
     return np.asarray(np.hypot(dx, dy))
+
+
+# Patch grid (16 x 16 patches of 16 px, patch index = row * 16 + col) and the rendered disk's radius:
+# a disk of 350 px area (measured 346-353 px on fully visible frames) has radius sqrt(350 / pi) = 10.56 px.
+PATCH_PX = 16
+PATCH_GRID = IMAGE_SIZE // PATCH_PX  # 16
+DISK_RADIUS_PX = float(np.sqrt(350 / np.pi))
+
+
+def distance_to_patches(col: np.ndarray, row: np.ndarray) -> np.ndarray:
+    """(...,) points in pixel-index coordinates -> (..., 256) distance in px from each point to each patch square.
+
+    Patch (r, c) covers pixel indices 16r ... 16r + 15 (rows) and 16c ... 16c + 15 (cols), i.e. the square
+    16c - 0.5 ... 16c + 15.5 (cols) and likewise for rows; the distance is 0 inside it. Axis -1 is the patch
+    index r * 16 + c, the token layout's order.
+    """
+    col, row = np.asarray(col, dtype=float), np.asarray(row, dtype=float)
+    low = np.arange(PATCH_GRID) * PATCH_PX - 0.5
+    high = low + PATCH_PX
+    dx = np.maximum(0.0, np.maximum(low - col[..., None], col[..., None] - high))  # (..., 16) per patch column
+    dy = np.maximum(0.0, np.maximum(low - row[..., None], row[..., None] - high))  # (..., 16) per patch row
+    return np.hypot(dy[..., :, None], dx[..., None, :]).reshape(*col.shape, PATCH_GRID * PATCH_GRID)

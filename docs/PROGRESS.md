@@ -356,7 +356,18 @@ what's next.
 - 3.8b `extract_direction` passed: 39,321,600,128 B, patch mean = all-token mean ≤ 6.5e-8, 36.1 min, ids = F-82's
   (SHA-256 `bc414b66…`); code committed (user said; hash rule, D-48).
 - 3.8b `verify` passed: 16 seeded clips re-extracted bit-identical, ids = joined table, weights unchanged.
-- **Next:** 3.8c `patch_probes`.
+- 3.8c `patch_probes` **failed `no_alpha_failure`** (20 lower-edge alphas, all at index 0; all other criteria passed;
+  indices 1–24 all ok). Mean per-patch val-seen R² 0.006 → 0.535 (idx 1) → 0.951 (idx 6) → peak 0.977 (idx 13) →
+  0.932 (idx 24); transition idx 1, 80% rise idx 4. `patch_alpha_diagnostic`: pre-set tie rule **failed** (LOO spread
+  0.2–1.2%, 4–21 distinct train vectors) → H-10 not supported; post-hoc H-10b (few-clip support at outer patches;
+  optimum below the grid). Failure kept on record; note to the planning chat.
+- Planning chat: option A (failure and failed diagnostic kept on record; index 0 reported with caveat; H-10b stays a
+  hypothesis; no extended-grid refit). Robustness from saved numbers (Claude Code's arithmetic): 80 % threshold
+  0.782755; idx 3 margin −0.0614, idx 4 +0.0129; 50 % threshold 0.491420, idx 1 +0.0439; the 20 failing probes shift
+  idx 0's mean by ≤ 0.0027 → threshold by ≤ 0.0005. All margins > 0.005 → no transition result depends on the failure.
+- 3.8d-1: `geometry.distance_to_patches`, `PATCH_PX`, `PATCH_GRID`, `DISK_RADIUS_PX` (= √(350/π) = 10.555 px);
+  hand-worked cases matched (Claude Code's expected radius 10.563 was an arithmetic slip; code right).
+- **Next:** 3.8d-2 `patch_breakdown` + `patch_bootstrap`, then 3.8e spatial generalization.
 
 ### 2026-09-25 — Phase 2 started (splits and extraction)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (updated directly after each

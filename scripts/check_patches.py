@@ -17,13 +17,18 @@ from pathlib import Path
 import numpy as np
 
 from vjepa_physics.data import read_manifest, resolve
-from vjepa_physics.curves import transition_points
+from vjepa_physics.curves import LATE_RISE_FRACTION, TRANSITION_FRACTION, rise_index, transition_points
 from vjepa_physics.evidence import code_changes, file_sha256, repo_root, save_result, verified_artifact
 from vjepa_physics.extraction import PATCHES, PATCH_SITES, patch_activations
+from vjepa_physics.geometry import DISK_RADIUS_PX, PATCH_PX, distance_to_patches
 from vjepa_physics.joined import load_joined
+from vjepa_physics.metrics import bootstrap_indices, percentile_interval, r2, resampled_r2
 from vjepa_physics.model import load_model, weights_fingerprint
 from vjepa_physics.preprocess import preprocess_clip
-from vjepa_physics.probes import alpha_verdict, fit_probe, probe_scores, probe_targets
+from sklearn.linear_model import RidgeCV
+from sklearn.preprocessing import StandardScaler
+
+from vjepa_physics.probes import ALPHAS, alpha_verdict, fit_probe, probe_scores, probe_targets
 from vjepa_physics.reproducibility import SEED, set_seeds
 from vjepa_physics.video import load_clip
 
@@ -47,6 +52,12 @@ EVAL_ROLES = ("val_seen", "val_unseen")  # scored here; test is scored once, aft
 EXPECTED_FIT = 813  # direction train clips (split decision)
 PATCH_PROBES = PATCH_DIR / "patch_probes.npz"  # fitted probes + validation predictions (regenerable, git-ignored)
 PROBES_CHECKS = REPO / "results/probes/checks.json"  # key "layer_curves": mean-pooled scores, printed for comparison
+
+MIN_CATEGORY_CLIPS = 20  # a patch is reported for a category only with at least this many val_seen clips in it
+OFF_PATH_MARGIN_PX = PATCH_PX  # off-path: the disk centre never came within radius + one patch of the patch
+BREAKDOWN = PATCH_DIR / "patch_breakdown.npz"
+N_RESAMPLES = 10_000  # clip resamples (bootstrap settings decision)
+LEVEL = 0.95
 
 def array_sha256(a: np.ndarray) -> str:
     """SHA-256 of an array's bytes in C order."""
@@ -289,11 +300,207 @@ def check_patch_probes() -> dict:
         "passed": all(criteria.values()),
     }
 
+TIE_TOLERANCE = 1e-12  # relative spread of the mean leave-one-out error across the alpha grid that counts as a tie
+
+
+def check_patch_alpha_diagnostic() -> dict:
+    """Diagnostic of patch_probes' alpha failures: are they ties on constant features?
+
+    For every probe whose alpha verdict was "failure", refits the train scaler and RidgeCV on exactly the same
+    train features with store_cv_results, and records the mean leave-one-out error per alpha. Rule fixed before
+    running: the failures are explained (the grid edge carries no information) only if, for every failing probe,
+    the mean leave-one-out error is identical across the whole grid within TIE_TOLERANCE relative (sklearn then
+    keeps the first, smallest alpha). Also records per probe: position, edge, distinct train feature vectors,
+    max train feature std, and val_seen clips whose vector differs from the train one. Diagnostic: no pass/fail
+    of the data, only whether the explanation holds.
+    """
+    table = load_joined(VARIABLE)
+    roles, labels = table["role"], table["label"]
+    y = probe_targets(VARIABLE, labels)
+    train, seen = roles == "train", roles == "val_seen"
+    patches = np.load(verified_artifact(OUT, "extract_direction"), mmap_mode="r")
+    with np.load(verified_artifact(OUT, "patch_probes")) as saved:
+        verdict, alpha = saved["alpha_verdict"], saved["alpha"]
+    failing = [(int(i), int(p)) for i, p in zip(*np.nonzero(verdict == "failure"))]
+
+    probes, ties = [], []
+    for i, p in failing:
+        x = np.asarray(patches[:, i, p], dtype=np.float64)
+        xs = StandardScaler().fit(x[train]).transform(x[train])
+        ridge = RidgeCV(alphas=ALPHAS, store_cv_results=True).fit(xs, y[train])
+        loo = ridge.cv_results_.mean(axis=tuple(range(ridge.cv_results_.ndim - 1)))  # mean error per alpha
+        spread = float((loo.max() - loo.min()) / loo.mean())
+        reference = x[train][0]
+        ties.append(spread <= TIE_TOLERANCE)
+        probes.append({
+            "index": i, "site": PATCH_SITES[i], "patch": p, "row": p // 16, "col": p % 16,
+            "alpha": float(alpha[i, p]),
+            "edge": "lower" if alpha[i, p] == ALPHAS[0] else "upper" if alpha[i, p] == ALPHAS[-1] else None,
+            "loo_relative_spread_over_grid": spread,
+            "distinct_train_vectors": int(len(np.unique(x[train], axis=0))),
+            "max_train_feature_std": float(x[train].std(axis=0).max()),
+            "val_seen_clips_differing_from_train": int((~(x[seen] == reference).all(axis=1)).sum()),
+        })
+    return {
+        "diagnostic": "patch_probes alpha failures",
+        "rule": "explained only if every failing probe's mean LOO error is identical across the grid within 1e-12 relative",
+        "failing_probes": len(failing),
+        "explanation_holds": bool(failing) and all(ties),
+        "probes": probes,
+    }
+
+def path_categories(table: dict) -> tuple[np.ndarray, np.ndarray]:
+    """(clips, 256) on-path and off-path masks from the tracked disk, over frames with disk pixels.
+
+    On-path: the disk overlapped the patch in at least one frame (nearest centre-to-square distance <= radius).
+    Off-path: the disk centre never came within radius + one patch. Clips in between are in neither.
+    """
+    centre, present = table["centre"], table["area"] > 0
+    distance = distance_to_patches(centre[..., 0], centre[..., 1])  # (clips, 16, 256); NaN where no disk
+    nearest = np.where(present[..., None], distance, np.inf).min(axis=1)
+    return nearest <= DISK_RADIUS_PX, nearest > DISK_RADIUS_PX + OFF_PATH_MARGIN_PX
+
+
+def check_patch_breakdown() -> dict:
+    """Per-patch val_seen scores split by on-path / off-path clips (no new fits), from the saved probe predictions.
+
+    Writes artifacts/patches/patch_breakdown.npz (masks, val_seen counts per patch, R² and circular MAE per index,
+    patch and category; NaN where fewer than MIN_CATEGORY_CLIPS clips). Summary per index: mean and median over
+    the reported patches and their number; the transition rule on the off-path mean curve. Passes if: the code is
+    committed; the saved predictions align with the joined table; on and off never overlap; every clip is on-path
+    somewhere; both categories have reported patches; reported scores are finite; the saved file equals what was
+    computed.
+    """
+    committed = not code_changes(repo_root())
+    table = load_joined(VARIABLE)
+    roles, labels = table["role"], table["label"]
+    seen = roles == "val_seen"
+    with np.load(verified_artifact(OUT, "patch_probes")) as saved:
+        predictions, ids = saved["validation_predictions"], saved["ids"]
+    on, off = path_categories(table)
+    masks = {"on_path": on, "off_path": off}
+    grid = (len(PATCH_SITES), PATCHES)
+
+    arrays: dict[str, np.ndarray] = {"on_path_mask": on, "off_path_mask": off}
+    for category, mask in masks.items():
+        counts = (seen[:, None] & mask).sum(axis=0)
+        r2_grid, mae_grid = np.full(grid, np.nan), np.full(grid, np.nan)
+        for p in np.flatnonzero(counts >= MIN_CATEGORY_CLIPS):
+            rows = seen & mask[:, p]
+            for i in range(len(PATCH_SITES)):
+                s = probe_scores(VARIABLE, labels[rows], predictions[rows, i, p])
+                r2_grid[i, p], mae_grid[i, p] = s["r2"], s["circular_mae"]
+        arrays |= {f"{category}_val_seen_counts": counts, f"{category}_r2": r2_grid,
+                   f"{category}_circular_mae": mae_grid}
+
+    summary = []
+    for i in range(len(PATCH_SITES)):
+        row = {"index": i, "site": PATCH_SITES[i]}
+        for category in masks:
+            values = arrays[f"{category}_r2"][i]
+            reported = values[np.isfinite(values)]
+            row[category] = {"patches": int(reported.size),
+                             "r2_mean": float(reported.mean()) if reported.size else None,
+                             "r2_median": float(np.median(reported)) if reported.size else None}
+        summary.append(row)
+    off_curve = np.array([r["off_path"]["r2_mean"] for r in summary], dtype=float)
+
+    np.savez_compressed(BREAKDOWN, **arrays)
+    with np.load(BREAKDOWN) as saved:
+        saved_ok = set(saved.files) == set(arrays) and all(
+            np.array_equal(saved[k], v, equal_nan=v.dtype.kind == "f") for k, v in arrays.items())
+    reported_finite = all(bool(np.isfinite(arrays[f"{c}_circular_mae"][np.isfinite(arrays[f"{c}_r2"])]).all())
+                          for c in masks)
+    criteria = {
+        "code_committed": committed,
+        "ids_aligned": bool(np.array_equal(ids, table["id"])),
+        "categories_disjoint": bool(not (on & off).any()),
+        "every_clip_on_path_somewhere": bool(on.any(axis=1).all()),
+        "both_categories_reported": all(summary[0][c]["patches"] > 0 for c in masks),
+        "reported_scores_finite": reported_finite,
+        "saved_equals_computed": saved_ok,
+    }
+    return {
+        "criteria": criteria,
+        "disk_radius_px": DISK_RADIUS_PX, "off_path_margin_px": OFF_PATH_MARGIN_PX,
+        "min_category_clips": MIN_CATEGORY_CLIPS,
+        "curve": summary,
+        "transition_on_off_path_mean_curve":
+            transition_points(off_curve) if np.isfinite(off_curve).all() else None,
+        "artifact": {"path": str(BREAKDOWN.relative_to(REPO)), "sha256": file_sha256(BREAKDOWN)},
+        "passed": all(criteria.values()),
+    }
+
+
+def check_patch_bootstrap() -> dict:
+    """Headline intervals: mean per-patch val_seen R² per index, its transition, and its gap to the mean-pooled probe.
+
+    Clip bootstrap (N_RESAMPLES, seed SEED, percentile LEVEL) over the val_seen clips, one index matrix shared by
+    all 256 patches and the mean-pooled probe (so the gap is paired; same n and seed as the layer-curve bootstrap).
+    Per resample, the mean over patches of per-patch R² gives a curve (indices 0-24); the transition rule is applied
+    to every resampled curve. Passes if: the code is committed; both prediction files align with the joined table;
+    every point estimate equals the saved score (per patch, and the mean-pooled one).
+    """
+    committed = not code_changes(repo_root())
+    table = load_joined(VARIABLE)
+    roles, labels = table["role"], table["label"]
+    seen = roles == "val_seen"
+    y = probe_targets(VARIABLE, labels)[seen]
+    with np.load(verified_artifact(OUT, "patch_probes")) as saved:
+        patch_pred, patch_ids, saved_r2 = saved["validation_predictions"][seen], saved["ids"], saved["val_seen_r2"]
+    with np.load(verified_artifact(PROBES_CHECKS, "layer_curves")) as saved:
+        pooled_pred = saved[f"{VARIABLE}_predictions"][seen][:, :len(PATCH_SITES)]
+        pooled_ids = saved[f"{VARIABLE}_ids"]
+    saved_pooled = json.loads(PROBES_CHECKS.read_text())["layer_curves"]["result"][VARIABLE]["sites"]
+
+    idx = bootstrap_indices(int(seen.sum()), N_RESAMPLES, SEED)
+    n_index = len(PATCH_SITES)
+    point = np.zeros((n_index, PATCHES))
+    patch_curves = np.zeros((N_RESAMPLES, n_index))
+    pooled_point = np.zeros(n_index)
+    pooled_curves = np.zeros((N_RESAMPLES, n_index))
+    for i in range(n_index):
+        for p in range(PATCHES):
+            point[i, p] = r2(y, patch_pred[:, i, p])
+            patch_curves[:, i] += resampled_r2(y, patch_pred[:, i, p], idx)
+        patch_curves[:, i] /= PATCHES
+        pooled_point[i] = r2(y, pooled_pred[:, i])
+        pooled_curves[:, i] = resampled_r2(y, pooled_pred[:, i], idx)
+
+    mean_point = point.mean(axis=1)
+    curve = [
+        {"index": i, "site": PATCH_SITES[i],
+         "per_patch_mean_r2": {"point": float(mean_point[i]),
+                               "ci": list(percentile_interval(patch_curves[:, i], LEVEL))},
+         "gap_mean_pooled_minus_per_patch": {"point": float(pooled_point[i] - mean_point[i]),
+                                             "ci": list(percentile_interval(pooled_curves[:, i] - patch_curves[:, i], LEVEL))}}
+        for i in range(n_index)
+    ]
+    criteria = {
+        "code_committed": committed,
+        "inputs_aligned": bool(np.array_equal(patch_ids, table["id"]) and np.array_equal(pooled_ids, table["id"])),
+        "per_patch_points_equal_saved": bool(np.array_equal(point, saved_r2)),
+        "mean_pooled_points_equal_saved": all(
+            pooled_point[i] == saved_pooled[PATCH_SITES[i]]["val_seen"]["r2"] for i in range(n_index)),
+    }
+    return {
+        "criteria": criteria, "n_resamples": N_RESAMPLES, "level": LEVEL, "seed": SEED,
+        "curve": curve,
+        "transition_headline": transition_points(mean_point),
+        "bootstrap_transition_index_counts":
+            np.bincount(rise_index(patch_curves, TRANSITION_FRACTION), minlength=n_index).tolist(),
+        "bootstrap_rise_80_index_counts":
+            np.bincount(rise_index(patch_curves, LATE_RISE_FRACTION), minlength=n_index).tolist(),
+        "passed": all(criteria.values()),
+    }
 
 CHECKS = {
     "extract_direction": check_extract_direction,
     "verify": check_verify,
     "patch_probes": check_patch_probes,
+    "patch_alpha_diagnostic": check_patch_alpha_diagnostic,
+    "patch_breakdown": check_patch_breakdown,
+    "patch_bootstrap": check_patch_bootstrap,
 }
 
 
