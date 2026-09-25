@@ -23,6 +23,8 @@ If you are ever unsure whether something counts as "acting", it does. Ask.
 **How the user wants to work (D-21, user said):**
 - **One small step at a time.** Give exactly one step, then wait for the user's output before the next.
   **Ask the user before moving to any new step or sub-step** (user said, 2026-09-24).
+- **Phase 1 criteria (D-37):** criteria taken directly from DATA.md or the plan may be set without asking; bring
+  only own additions, failed checks, contradictions with F-21–F-36, or results affecting splits/flags to the planning chat.
 - **Save tokens: don't re-read files the user saved from a given step** unless there is an error or a
   suspicious result (user said, 2026-09-24).
 - **Files:** give the **exact path and full content** (or the exact lines to add/replace).
@@ -183,7 +185,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `geometry` (`frame_times`, `distance_travelled`, `speed_at`: s = v t + a t²/2, frame k at t = k/fps;
   `world_to_pixel`, `disk_centres`, `distance_outside_image`: 32 px/m, origin 128, y flipped), `video` also has
   `probe_clip` (stream facts, exact-fraction timestamps), `tracking` (`disk_mask`, `count_objects`, `track_disk`;
-  tracked positions for all clips in `artifacts/tracking/tracked_disk.npz`, hash in `results/tracking/checks.json`).
+  tracked positions for all clips in `artifacts/tracking/tracked_disk.npz`, hash in `results/tracking/checks.json`),
+  `flags` (`clip_flags`: exit, clipped, sub_patch_motion, frozen_start; table `results/tracking/clip_flags.csv`, D-36).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.

@@ -473,5 +473,293 @@
       },
       "passed": false
     }
+  },
+  "flags": {
+    "provenance": {
+      "utc": "2026-09-25T03:30:46+00:00",
+      "git_commit": "a771ade29cc8861a80f2876b7fff417aa28326eb",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        " M scripts/check_tracking.py",
+        "?? src/vjepa_physics/flags.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/data.py": "b1ddff4412bc5dbdf630dd1a98bbdf01cccc6a3b15fadbc8811da5d534b61972",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "dc98690f3728587a7fff205b75f8c91db1eee154bc635d95fe6f64dfe1d229bd",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_tracking.py": "0e6a80353ca5a08548518ec48ee7a24936bc66022535c17d701160ade2a2c241"
+        },
+        "combined_sha256": "2c34045ddd0c9d1015bbe3083002ff94bb65f49b556d2d9e9f36d4362414704c"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "criteria": {
+        "artifact_matches_track": true,
+        "metadata_aligned": true,
+        "all_clips_flagged": true,
+        "exit_consistent_with_format": true,
+        "exit_implies_clipped": true,
+        "tracked_matches_predicted_displacement": true
+      },
+      "flags_table": {
+        "path": "results/tracking/clip_flags.csv",
+        "rows": 4572,
+        "sha256": "f4809f7dcb069327de51d87f379987e73ab8f36b6e9efcee2d6239fdb2ea824a"
+      },
+      "format_counts": {
+        "exit_clips": 113,
+        "frames_without_disk": 347
+      },
+      "displacement_gap_px_clean_clips": {
+        "clips": 4373,
+        "max": 1.269,
+        "p99": 0.97,
+        "median": 0.281
+      },
+      "per_dataset": {
+        "direction": {
+          "clips": 1500,
+          "flags": {
+            "exit": {
+              "clips": 113,
+              "label_min_max": [
+                0.0,
+                354.375
+              ],
+              "distinct_labels": 57,
+              "label_ranges_do_not_overlap": false
+            },
+            "clipped": {
+              "clips": 199,
+              "label_min_max": [
+                0.0,
+                354.375
+              ],
+              "distinct_labels": 64,
+              "label_ranges_do_not_overlap": false
+            },
+            "sub_patch_motion": {
+              "clips": 150,
+              "label_min_max": [
+                0.0,
+                354.375
+              ],
+              "distinct_labels": 64,
+              "label_ranges_do_not_overlap": false
+            },
+            "frozen_start": {
+              "clips": 92,
+              "label_min_max": [
+                0.0,
+                354.375
+              ],
+              "distinct_labels": 53,
+              "label_ranges_do_not_overlap": false
+            }
+          },
+          "exit_and_clipped": 113,
+          "clipped_without_exit": 86,
+          "still_frames_histogram": {
+            "0": 890,
+            "1": 366,
+            "2": 152,
+            "3": 68,
+            "4": 24
+          },
+          "flags_by_motion_group": {
+            "velocity 1 m/s": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 0,
+              "frozen_start": 0
+            },
+            "velocity 2 m/s": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 0,
+              "frozen_start": 0
+            },
+            "velocity 3 m/s": {
+              "exit": 0,
+              "clipped": 3,
+              "sub_patch_motion": 0,
+              "frozen_start": 0
+            },
+            "velocity 4 m/s": {
+              "exit": 1,
+              "clipped": 14,
+              "sub_patch_motion": 0,
+              "frozen_start": 0
+            },
+            "velocity 5 m/s": {
+              "exit": 21,
+              "clipped": 45,
+              "sub_patch_motion": 0,
+              "frozen_start": 0
+            },
+            "velocity 6 m/s": {
+              "exit": 32,
+              "clipped": 53,
+              "sub_patch_motion": 0,
+              "frozen_start": 0
+            },
+            "velocity 7 m/s": {
+              "exit": 59,
+              "clipped": 79,
+              "sub_patch_motion": 0,
+              "frozen_start": 0
+            },
+            "acceleration 2 m/s^2": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 150,
+              "frozen_start": 85
+            },
+            "acceleration 4 m/s^2": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 0,
+              "frozen_start": 7
+            },
+            "acceleration 6 m/s^2": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 0,
+              "frozen_start": 0
+            },
+            "acceleration 8 m/s^2": {
+              "exit": 0,
+              "clipped": 0,
+              "sub_patch_motion": 0,
+              "frozen_start": 0
+            },
+            "acceleration 10 m/s^2": {
+              "exit": 0,
+              "clipped": 5,
+              "sub_patch_motion": 0,
+              "frozen_start": 0
+            }
+          }
+        },
+        "speed": {
+          "clips": 1536,
+          "flags": {
+            "exit": {
+              "clips": 0,
+              "label_min_max": null,
+              "distinct_labels": 0,
+              "label_ranges_do_not_overlap": false
+            },
+            "clipped": {
+              "clips": 0,
+              "label_min_max": null,
+              "distinct_labels": 0,
+              "label_ranges_do_not_overlap": false
+            },
+            "sub_patch_motion": {
+              "clips": 240,
+              "label_min_max": [
+                0.25,
+                0.7857142857142857
+              ],
+              "distinct_labels": 10,
+              "label_ranges_do_not_overlap": true
+            },
+            "frozen_start": {
+              "clips": 1,
+              "label_min_max": [
+                0.25,
+                0.25
+              ],
+              "distinct_labels": 1,
+              "label_ranges_do_not_overlap": false
+            }
+          },
+          "exit_and_clipped": 0,
+          "clipped_without_exit": 0,
+          "still_frames_histogram": {
+            "0": 1467,
+            "1": 58,
+            "2": 10,
+            "3": 1
+          }
+        },
+        "acceleration": {
+          "clips": 1536,
+          "flags": {
+            "exit": {
+              "clips": 0,
+              "label_min_max": null,
+              "distinct_labels": 0,
+              "label_ranges_do_not_overlap": false
+            },
+            "clipped": {
+              "clips": 0,
+              "label_min_max": null,
+              "distinct_labels": 0,
+              "label_ranges_do_not_overlap": false
+            },
+            "sub_patch_motion": {
+              "clips": 360,
+              "label_min_max": [
+                0.25,
+                2.416666666666667
+              ],
+              "distinct_labels": 15,
+              "label_ranges_do_not_overlap": true
+            },
+            "frozen_start": {
+              "clips": 267,
+              "label_min_max": [
+                0.25,
+                4.119047619047619
+              ],
+              "distinct_labels": 25,
+              "label_ranges_do_not_overlap": false
+            }
+          },
+          "exit_and_clipped": 0,
+          "clipped_without_exit": 0,
+          "still_frames_histogram": {
+            "0": 270,
+            "1": 668,
+            "2": 331,
+            "3": 127,
+            "4": 63,
+            "5": 39,
+            "6": 19,
+            "7": 7,
+            "8": 4,
+            "9": 1,
+            "10": 3,
+            "11": 4
+          }
+        }
+      },
+      "passed": true
+    }
   }
 }

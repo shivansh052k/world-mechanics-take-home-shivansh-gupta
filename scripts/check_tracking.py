@@ -6,6 +6,7 @@ Run one check at a time from the repo root, with .venv active:
 Each check prints its result and stores it under its own key in results/tracking/checks.json.
 """
 import argparse
+import csv
 import json
 from collections import Counter
 from pathlib import Path
@@ -13,8 +14,9 @@ from pathlib import Path
 import numpy as np
 from scipy import ndimage
 
-from vjepa_physics.data import DATASETS, load_dataset, read_manifest, resolve
+from vjepa_physics.data import DATASETS, LABEL_FIELD, load_dataset, read_manifest, resolve
 from vjepa_physics.evidence import file_sha256, save_result
+from vjepa_physics.flags import clip_flags
 from vjepa_physics.geometry import disk_centres, distance_travelled, frame_times, world_to_pixel
 from vjepa_physics.tracking import disk_mask, track_disk
 from vjepa_physics.video import load_clip
@@ -36,6 +38,14 @@ SAMPLE = 20  # problem lists are saved as a count plus the first few entries
 MAPPING_TOLERANCE_PX = 1.0
 # The displacement-angle diagnostic only uses clips whose disk moves at least this far while fully visible.
 MIN_DISPLACEMENT_PX = 5.0
+
+# Per-clip flags table (small, committed) and the video checks it is cross-checked against.
+FLAGS_TABLE = REPO / "results/tracking/clip_flags.csv"
+VIDEO_CHECKS = REPO / "results/videos/checks.json"
+FLAG_NAMES = ("exit", "clipped", "sub_patch_motion", "frozen_start")
+# Tracked vs predicted total displacement on clips that neither exit nor get clipped: two frames' worth
+# of the 1 px mapping tolerance (the first and the last frame).
+DISPLACEMENT_TOLERANCE_PX = 2.0
 
 def sample(items) -> dict:
     """Count and the first SAMPLE entries, so failures are diagnosable without huge JSON."""
@@ -278,10 +288,119 @@ def check_documented_colour() -> dict:
         "passed": all(criteria.values()),
     }
 
+def motion_group(meta: dict) -> str:
+    """Direction-set motion group, e.g. 'velocity 3 m/s' or 'acceleration 4 m/s^2'."""
+    if meta["motion"] == "velocity":
+        return f"velocity {meta['speed_mps']:g} m/s"
+    return f"acceleration {meta['acceleration_mps2']:g} m/s^2"
+
+
+def check_flags() -> dict:
+    """Flag every clip (exit, clipped, sub-patch motion, frozen start) and save the table.
+
+    Reads the positions saved by `track` (hash-checked) and the metadata; flags come from
+    vjepa_physics.flags.clip_flags. Writes results/tracking/clip_flags.csv (one row per clip:
+    dataset, id, label, the four flags, and the values behind them). Passes if: the positions file
+    matches `track`'s hash and follows the metadata order; all 4,572 clips are flagged; the exit clips
+    and disk-less frames match the counts saved by the `format` video check; every exit clip is also
+    clipped (a disk cannot vanish without first touching the border, as its step per frame is smaller
+    than its diameter); and on clips that neither exit nor get clipped, tracked and predicted total
+    displacement differ by at most 2 px. Flag counts, overlaps, and how each flag relates to the label
+    are diagnostics.
+    """
+    recorded = json.loads(OUT.read_text())["track"]["result"]["artifact"]["sha256"]
+    with np.load(ARTIFACT) as tracked:
+        dataset_of, id_of = tracked["dataset"], tracked["id"]
+        centre, area, border = tracked["centre"], tracked["area"], tracked["touches_border"]
+
+    metas = [(dataset, meta) for dataset in DATASETS for meta in load_dataset(DATA, dataset)]
+    aligned = [(d, m["id"]) for d, m in metas] == list(zip(dataset_of.tolist(), id_of.tolist()))
+
+    rows = []
+    for i, (dataset, meta) in enumerate(metas):
+        rows.append({
+            "dataset": dataset,
+            "id": meta["id"],
+            "label": meta[LABEL_FIELD[dataset]],
+            "group": motion_group(meta) if dataset == "direction" else None,
+            **clip_flags(meta, centre[i], area[i], border[i]),
+        })
+
+    FLAGS_TABLE.parent.mkdir(parents=True, exist_ok=True)
+    with FLAGS_TABLE.open("w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            "dataset", "id", "label", *FLAG_NAMES, "frames_without_disk", "frames_touching_border",
+            "predicted_displacement_px", "tracked_displacement_px", "still_frames",
+            *(f"within_tubelet_{j}_px" for j in range(8)),
+        ])
+        for r in rows:
+            writer.writerow([
+                r["dataset"], r["id"], r["label"], *(int(r[name]) for name in FLAG_NAMES),
+                r["frames_without_disk"], r["frames_touching_border"],
+                round(r["predicted_displacement_px"], 4), round(r["tracked_displacement_px"], 4), r["still_frames"],
+                *(round(v, 4) for v in r["within_tubelet_px"]),
+            ])
+
+    video_format = json.loads(VIDEO_CHECKS.read_text())["format"]["result"]["per_dataset"]
+    format_exit_clips = sum(d["diagnostics"]["clips_with_frames_without_disk"]["count"] for d in video_format.values())
+    format_disk_less_frames = sum(d["diagnostics"]["frames_without_disk_pixels"] for d in video_format.values())
+    exits = [r for r in rows if r["exit"]]
+    clean = [r for r in rows if not r["exit"] and not r["clipped"]]
+    gaps = np.array([abs(r["tracked_displacement_px"] - r["predicted_displacement_px"]) for r in clean])
+
+    per_dataset = {}
+    for dataset in DATASETS:
+        mine = [r for r in rows if r["dataset"] == dataset]
+        relation = {}
+        for name in FLAG_NAMES:
+            flagged = [r["label"] for r in mine if r[name]]
+            other = [r["label"] for r in mine if not r[name]]
+            relation[name] = {
+                "clips": len(flagged),
+                "label_min_max": [min(flagged), max(flagged)] if flagged else None,
+                "distinct_labels": len(set(flagged)),
+                "label_ranges_do_not_overlap": bool(flagged and other and (max(flagged) < min(other) or min(flagged) > max(other))),
+            }
+        entry = {
+            "clips": len(mine),
+            "flags": relation,
+            "exit_and_clipped": sum(r["exit"] and r["clipped"] for r in mine),
+            "clipped_without_exit": sum(r["clipped"] and not r["exit"] for r in mine),
+            "still_frames_histogram": {str(k): v for k, v in sorted(Counter(r["still_frames"] for r in mine).items())},
+        }
+        if dataset == "direction":
+            entry["flags_by_motion_group"] = {
+                group: {name: sum(r[name] for r in mine if r["group"] == group) for name in FLAG_NAMES}
+                for group in sorted({r["group"] for r in mine}, key=lambda g: (not g.startswith("velocity"), float(g.split()[1])))
+            }
+        per_dataset[dataset] = entry
+
+    criteria = {
+        "artifact_matches_track": file_sha256(ARTIFACT) == recorded,
+        "metadata_aligned": aligned,
+        "all_clips_flagged": len(rows) == EXPECTED_CLIPS,
+        "exit_consistent_with_format": (
+            len(exits) == format_exit_clips and sum(r["frames_without_disk"] for r in rows) == format_disk_less_frames
+        ),
+        "exit_implies_clipped": all(r["clipped"] for r in exits),
+        "tracked_matches_predicted_displacement": bool(gaps.size and gaps.max() <= DISPLACEMENT_TOLERANCE_PX),
+    }
+    return {
+        "criteria": criteria,
+        "flags_table": {"path": str(FLAGS_TABLE.relative_to(REPO)), "rows": len(rows), "sha256": file_sha256(FLAGS_TABLE)},
+        "format_counts": {"exit_clips": format_exit_clips, "frames_without_disk": format_disk_less_frames},
+        "displacement_gap_px_clean_clips": {"clips": int(gaps.size), **stats(gaps)} if gaps.size else None,
+        "per_dataset": per_dataset,
+        "passed": all(criteria.values()),
+    }
+
+
 CHECKS = {
     "track": check_track,
     "mapping": check_mapping,
     "documented_colour": check_documented_colour,
+    "flags": check_flags,
 }
 
 
