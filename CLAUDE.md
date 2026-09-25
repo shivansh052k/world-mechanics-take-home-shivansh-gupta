@@ -140,6 +140,8 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   (1–7 m/s), 50% accelerating from rest (2–10 m/s²); starts within ±2 m.
   113 clips lose the disk for 1–7 frames; 199 are clipped or lose it (mostly 5–7 m/s).
 - **[scouting]** Speed and acceleration sets: disk never leaves the frame.
+- **[verified]** The background is one flat colour (29, 32, 29): frames the disk has left can be perfectly uniform
+  (52 direction clips), and 149 exit frames keep faint codec residue. A uniform frame is not a decode fault. (F-66)
 - **[scouting] Confound:** acceleration clips start from rest, so within a dataset the magnitude
   label is perfectly correlated (r = 1.0) with distance travelled (and mean speed).
 - **[scouting]** Tiny motion: 48 acceleration clips move < 3 px in total; some are frozen
@@ -177,7 +179,9 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `forecast` (`encode`, `predict`, `training_target`), `decoders` (`load_clip_opencv`, `compare_decoders`),
   `data` (`DATASETS`, `LABEL_FIELD`, `read_manifest`, `resolve`, `read_metadata`, `load_dataset`: strict readers; paths must stay inside
   `data/<variable>/`; take labels from the dataset name, never `primary_label`, which direction lacks),
-  `geometry` (`frame_times`, `distance_travelled`, `speed_at`: s = v t + a t²/2, frame k at t = k/fps).
+  `geometry` (`frame_times`, `distance_travelled`, `speed_at`: s = v t + a t²/2, frame k at t = k/fps;
+  `world_to_pixel`, `disk_centres`, `distance_outside_image`: 32 px/m, origin 128, y flipped), `video` also has
+  `probe_clip` (stream facts, exact-fraction timestamps).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.

@@ -45,8 +45,12 @@ across angles and octants) (F-63). **1.5 done:** `start_positions` and `label_in
 p < 1e-4, D-33): start positions distinct and uniform; 0 of 70 label-dependence tests flagged (F-64). **1.6 done:**
 `src/vjepa_physics/geometry.py` (`frame_times`, `distance_travelled`, `speed_at`) and `distance_confound`: labels
 exactly proportional to distance within speed/acceleration sets; overlap window 0.156–1.953 m (1,176 / 1,440 clips);
-direction motion type vs distance r = −0.565 (F-65). **Next: 1.7 (video format and duplicate check, all clips)** —
-waiting for the user's go.
+direction motion type vs distance r = −0.565 (F-65). **1.7 run:** `probe_clip` in `video.py`; pixel mapping
+(`world_to_pixel`, `disk_centres`, `distance_outside_image`) in `geometry.py`; `scripts/check_videos.py`: `format`
+failed only on `no_uniform_frames` (185 uniform exit frames in 52 direction clips; kept on record), `uniform_frames`
+diagnostic shows they are clean exit frames but its pre-stated rule failed narrowly on 3 frames (kept on record),
+`duplicates` passed (no duplicate clips; `artifacts/` ignore rule verified) (F-66, F-67, D-34). **Waiting on the
+planning chat** for the `format` re-score. **Next: 1.8 (two-decoder cross-check)** — waiting for the user's go.
 
 ---
 
@@ -55,7 +59,7 @@ waiting for the user's go.
 | Phase | Status | Notes |
 |---|---|---|
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
-| 1 — Data audit | 🟨 In progress | 1.1–1.6 done (`documented_fields` failed as predicted, kept on record) |
+| 1 — Data audit | 🟨 In progress | 1.1–1.7 run (`documented_fields` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
@@ -138,6 +142,9 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/design/checks.json` | `start_positions` | Diagnostic: start positions distinct in every dataset, within ±2 m (direction) / ±1.2 m (speed, acceleration), uniform by KS (p ≥ 0.26), x–y uncorrelated, quadrants even; no flags | ℹ️ diagnostic | F-64, D-33; `scripts/check_design.py start_positions` |
 | `results/design/checks.json` | `label_independence` | Diagnostic: 0 of 70 tests flagged (p < 1e-4) — start position vs magnitude and cos/sin θ, along/across-motion projections (no starts placed behind the motion), ANOVA across label values | ℹ️ diagnostic | F-64, D-33; `scripts/check_design.py label_independence` |
 | `results/design/checks.json` | `distance_confound` | Diagnostic (from metadata): distance = 0.625 × speed and 0.1953 × acceleration exactly, corr with distance / mean / final speed 1.0; overlap window [0.15625, 1.953125] m, 1,176 speed + 1,440 acceleration clips, nearest-value distance gap ≤ 0.018 m (0.58 px); direction distance per group, motion type vs distance r = −0.565 | ℹ️ diagnostic | F-65; `scripts/check_design.py distance_confound` |
+| `results/videos/checks.json` | `format` | All clips decode; 256×256, 24 fps, constant 1/24 s step (from t = 0); no black frames; frame medians all (29, 32, 29); 113 direction clips with disk-less frames | ❌ failed: `no_uniform_frames` — 185 uniform frames in 52 direction clips (disk has left); kept on record; re-score pending the planning chat | F-66, D-34; `scripts/check_videos.py format` |
+| `results/videos/checks.json` | `uniform_frames` | Diagnostic of the `format` failure: all 185 uniform frames = background, no disk pixels, at clip end; no disk pixels anywhere with the disk predicted fully outside; 149 exit frames keep faint residue | ⚠️ `explanation_holds: false` — pre-stated rule (c) missed 3 frames by 0.39–0.55 px (within mapping error + pixel-centre offset); kept on record | F-66; `scripts/check_videos.py uniform_frames` |
+| `results/videos/checks.json` | `duplicates` | 4,572 distinct whole-clip hashes across datasets; test clip hash = Phase 0 `repeat`; per-clip hashes in `artifacts/videos/decoded_hashes.csv` (git-ignored, verified) | ✅ passed | F-67, D-34; `scripts/check_videos.py duplicates` |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
 = uncommitted or untracked changes in code/environment paths only, `git_dirty_paths`, `code` (SHA-256 per file
@@ -157,7 +164,10 @@ No blockers.
 
 Awaiting the planning chat (not blocking): (1) `documented_fields` failure — DATA.md lists `primary_label` for every
 file, the direction set has none; proposal: keep on record, labels from the dataset name, mention in the audit report
-(F-61, D-32). (2) D-29's limitation can be narrowed (the HF conversion asserts parity at atol 1e-3, F-58).
+(F-61, D-32). (2) D-29's limitation can be narrowed (the HF conversion asserts parity at atol 1e-3, F-58). (3) Step 1.7 `format` / `uniform_frames` failures: proposed
+re-score (uniform frame allowed only if it equals the background, lies at the clip end, and the disk is predicted
+outside by more than r − 1 px — or defer to tracked positions after 1.9); exit-frame residue (149 frames) for O-02
+(F-66).
 
 To confirm later:
 - **Phase 0 gate (0.18):** re-run every check once from a clean, committed tree, so the whole evidence set has
@@ -166,9 +176,8 @@ To confirm later:
 - **Batch size at extraction (2.4):** `batch` proved per-token bit-exactness for batch size 2; `benchmark` showed
   pooled outputs bit-exact at 2/4/8 and no speed gain from batching (F-59), so batch size 1 is suggested. If 2.4 uses
   any batch size > 1, re-run `batch` with it.
-- **`.gitignore` for `artifacts/`** — the dry-run proved `artifacts/manifests/` is committed; that other
-  files in `artifacts/` are ignored is untested until the first one is written. Check with
-  `git status` / `git check-ignore -v` then.
+- ~~**`.gitignore` for `artifacts/`**~~ — verified at step 1.7: `artifacts/videos/decoded_hashes.csv` is ignored by
+  `.gitignore:9:artifacts/*`, and `git status --short artifacts/` is empty (F-67).
 
 Known decision points the plan cannot remove in advance (each has a planned fallback):
 - **Phase 1 may overturn scouting facts** (F-21–F-36); D-14's split counts are provisional until step 1.12.
@@ -212,7 +221,13 @@ what's next.
 - 1.6: `src/vjepa_physics/geometry.py` (motion formula; functions typed to always return ndarrays after a Pylance
   return-type warning); `distance_confound` diagnostic added to `check_design.py` (F-65). All predictions matched.
   **Step 1.6 done.**
-- **Next:** 1.7 (video format and duplicate check, all clips) — waiting for the user's go.
+- 1.7: criteria adjusted by the user before the run (D-34). `probe_clip` added (first attempt went into `model.py` by
+  mistake and was removed; `model.py` verified clean). `format` failed on `no_uniform_frames`: Claude Code's premise
+  (noisy background) was wrong — the background is flat, so exit frames are uniform. Pixel mapping added to
+  `geometry.py`; `uniform_frames` diagnostic (rule fixed before the run) narrowly failed on 3 frames; exit-frame residue
+  found. `duplicates` passed; first `artifacts/` write confirmed git-ignored. Planning-chat note drafted (re-score
+  proposal, residue → O-02). **Step 1.7 run; re-score pending.**
+- **Next:** 1.8 (two-decoder cross-check) — waiting for the user's go.
 
 ### 2026-09-24 — Step 0.8d started in Claude Code
 - Claude Code permissions set: `Bash`, `NotebookEdit` denied; edits denied everywhere except `docs/` and

@@ -1,0 +1,774 @@
+{
+  "format": {
+    "provenance": {
+      "utc": "2026-09-25T02:37:49+00:00",
+      "git_commit": "0b9d0ca884240b25f7eee4564764d46adced3aab",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        " M src/vjepa_physics/video.py",
+        "?? scripts/check_videos.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/data.py": "b1ddff4412bc5dbdf630dd1a98bbdf01cccc6a3b15fadbc8811da5d534b61972",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "99cbcf8031e57c44c2ca7a1a1cd3191ed6cacaa48873907ed48f5f4d2e6b782e",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_videos.py": "128a8bf8068f736eaa5eeee5572fea5f511fa6ed0ed0931a19f6a7db01932e29"
+        },
+        "combined_sha256": "a4d69398a4655820a3ba8776cc011c15015330c10a60fca1571ddfdfe7a999a1"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "criteria": {
+        "all_clips_checked": true
+      },
+      "clips": 4572,
+      "per_dataset": {
+        "direction": {
+          "criteria": {
+            "decodes": true,
+            "stream_format": true,
+            "timestamps": true,
+            "no_uniform_frames": false
+          },
+          "clips": 1500,
+          "problems": {
+            "decodes": {
+              "count": 0,
+              "first": []
+            },
+            "stream_format": {
+              "count": 0,
+              "first": []
+            },
+            "timestamps": {
+              "count": 0,
+              "first": []
+            },
+            "no_uniform_frames": {
+              "count": 52,
+              "first": [
+                "id 6: frames [13, 14, 15]",
+                "id 34: frames [12, 13, 14, 15]",
+                "id 68: frames [14, 15]",
+                "id 104: frames [12, 13, 14, 15]",
+                "id 146: frames [12, 13, 14, 15]",
+                "id 216: frames [12, 13, 14, 15]",
+                "id 264: frames [12, 13, 14, 15]",
+                "id 284: frames [15]",
+                "id 328: frames [12, 13, 14, 15]",
+                "id 342: frames [12, 13, 14, 15]",
+                "id 356: frames [12, 13, 14, 15]",
+                "id 390: frames [14, 15]",
+                "id 398: frames [12, 13, 14, 15]",
+                "id 404: frames [10, 11, 12, 13, 14, 15]",
+                "id 412: frames [14, 15]",
+                "id 446: frames [12, 13, 14, 15]",
+                "id 454: frames [12, 13, 14, 15]",
+                "id 510: frames [12, 13, 14, 15]",
+                "id 524: frames [12, 13, 14, 15]",
+                "id 608: frames [12, 13, 14, 15]"
+              ]
+            }
+          },
+          "diagnostics": {
+            "codecs": {
+              "mpeg4": 1500
+            },
+            "pixel_formats": {
+              "yuv420p": 1500
+            },
+            "reported_frame_counts": {
+              "16": 1500
+            },
+            "first_frame_not_at_zero": {
+              "count": 0,
+              "first": []
+            },
+            "all_black_frames": 0,
+            "frame_median_colour_typical": [
+              29.0,
+              32.0,
+              29.0
+            ],
+            "frame_median_colour_min_max": [
+              [
+                29.0,
+                32.0,
+                29.0
+              ],
+              [
+                29.0,
+                32.0,
+                29.0
+              ]
+            ],
+            "frames_with_median_colour_outlier": {
+              "count": 0,
+              "first": []
+            },
+            "frames_without_disk_pixels": 347,
+            "clips_with_frames_without_disk": {
+              "count": 113,
+              "first": [
+                6,
+                20,
+                32,
+                34,
+                46,
+                48,
+                68,
+                76,
+                88,
+                90,
+                104,
+                116,
+                130,
+                132,
+                146,
+                160,
+                188,
+                216,
+                236,
+                242
+              ]
+            },
+            "clips_with_identical_consecutive_frames": {
+              "count": 752,
+              "first": [
+                1,
+                3,
+                5,
+                6,
+                7,
+                9,
+                11,
+                13,
+                15,
+                17,
+                20,
+                21,
+                23,
+                25,
+                27,
+                31,
+                32,
+                33,
+                34,
+                35
+              ]
+            }
+          }
+        },
+        "speed": {
+          "criteria": {
+            "decodes": true,
+            "stream_format": true,
+            "timestamps": true,
+            "no_uniform_frames": true
+          },
+          "clips": 1536,
+          "problems": {
+            "decodes": {
+              "count": 0,
+              "first": []
+            },
+            "stream_format": {
+              "count": 0,
+              "first": []
+            },
+            "timestamps": {
+              "count": 0,
+              "first": []
+            },
+            "no_uniform_frames": {
+              "count": 0,
+              "first": []
+            }
+          },
+          "diagnostics": {
+            "codecs": {
+              "mpeg4": 1536
+            },
+            "pixel_formats": {
+              "yuv420p": 1536
+            },
+            "reported_frame_counts": {
+              "16": 1536
+            },
+            "first_frame_not_at_zero": {
+              "count": 0,
+              "first": []
+            },
+            "all_black_frames": 0,
+            "frame_median_colour_typical": [
+              29.0,
+              32.0,
+              29.0
+            ],
+            "frame_median_colour_min_max": [
+              [
+                29.0,
+                32.0,
+                29.0
+              ],
+              [
+                29.0,
+                32.0,
+                29.0
+              ]
+            ],
+            "frames_with_median_colour_outlier": {
+              "count": 0,
+              "first": []
+            },
+            "frames_without_disk_pixels": 0,
+            "clips_with_frames_without_disk": {
+              "count": 0,
+              "first": []
+            },
+            "clips_with_identical_consecutive_frames": {
+              "count": 164,
+              "first": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19
+              ]
+            }
+          }
+        },
+        "acceleration": {
+          "criteria": {
+            "decodes": true,
+            "stream_format": true,
+            "timestamps": true,
+            "no_uniform_frames": true
+          },
+          "clips": 1536,
+          "problems": {
+            "decodes": {
+              "count": 0,
+              "first": []
+            },
+            "stream_format": {
+              "count": 0,
+              "first": []
+            },
+            "timestamps": {
+              "count": 0,
+              "first": []
+            },
+            "no_uniform_frames": {
+              "count": 0,
+              "first": []
+            }
+          },
+          "diagnostics": {
+            "codecs": {
+              "mpeg4": 1536
+            },
+            "pixel_formats": {
+              "yuv420p": 1536
+            },
+            "reported_frame_counts": {
+              "16": 1536
+            },
+            "first_frame_not_at_zero": {
+              "count": 0,
+              "first": []
+            },
+            "all_black_frames": 0,
+            "frame_median_colour_typical": [
+              29.0,
+              32.0,
+              29.0
+            ],
+            "frame_median_colour_min_max": [
+              [
+                29.0,
+                32.0,
+                29.0
+              ],
+              [
+                29.0,
+                32.0,
+                29.0
+              ]
+            ],
+            "frames_with_median_colour_outlier": {
+              "count": 0,
+              "first": []
+            },
+            "frames_without_disk_pixels": 0,
+            "clips_with_frames_without_disk": {
+              "count": 0,
+              "first": []
+            },
+            "clips_with_identical_consecutive_frames": {
+              "count": 1373,
+              "first": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19
+              ]
+            }
+          }
+        }
+      },
+      "passed": false
+    }
+  },
+  "uniform_frames": {
+    "provenance": {
+      "utc": "2026-09-25T02:45:52+00:00",
+      "git_commit": "0b9d0ca884240b25f7eee4564764d46adced3aab",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        " M src/vjepa_physics/geometry.py",
+        " M src/vjepa_physics/video.py",
+        "?? scripts/check_videos.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/data.py": "b1ddff4412bc5dbdf630dd1a98bbdf01cccc6a3b15fadbc8811da5d534b61972",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "dc98690f3728587a7fff205b75f8c91db1eee154bc635d95fe6f64dfe1d229bd",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_videos.py": "92ac23eab8a9774c148d9cffb5cd1177832064b1c48efaf1c0c64791031d9acf"
+        },
+        "combined_sha256": "8c77a9b6f42cb2f3ee40a193eb7ddd860bf5e7ea7e22a9207b0c23e7f658ac53"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "background_colour": [
+        29,
+        32,
+        29
+      ],
+      "disk_radius_px": 10.56,
+      "explanation_holds": false,
+      "per_dataset": {
+        "direction": {
+          "explanation_holds": false,
+          "uniform_frames": {
+            "count": 185,
+            "first": [
+              "id 6 frame 13",
+              "id 6 frame 14",
+              "id 6 frame 15",
+              "id 34 frame 12",
+              "id 34 frame 13",
+              "id 34 frame 14",
+              "id 34 frame 15",
+              "id 68 frame 14",
+              "id 68 frame 15",
+              "id 104 frame 12",
+              "id 104 frame 13",
+              "id 104 frame 14",
+              "id 104 frame 15",
+              "id 146 frame 12",
+              "id 146 frame 13",
+              "id 146 frame 14",
+              "id 146 frame 15",
+              "id 216 frame 12",
+              "id 216 frame 13",
+              "id 216 frame 14"
+            ]
+          },
+          "clips_with_uniform_frames": 52,
+          "explanation_broken_by": {
+            "not_background_colour": {
+              "count": 0,
+              "first": []
+            },
+            "has_disk_pixels": {
+              "count": 0,
+              "first": []
+            },
+            "disk_not_fully_outside": {
+              "count": 3,
+              "first": [
+                "id 68 frame 14: centre 10.17 px outside",
+                "id 390 frame 14: centre 10.11 px outside",
+                "id 608 frame 12: centre 10.01 px outside"
+              ]
+            }
+          },
+          "uniform_frames_not_at_clip_end": {
+            "count": 0,
+            "first": []
+          },
+          "fully_outside_but_not_uniform": {
+            "count": 149,
+            "first": [
+              "id 20 frame 13: centre 18.92 px outside, 120 px off background, 0 disk px",
+              "id 20 frame 14: centre 28.25 px outside, 120 px off background, 0 disk px",
+              "id 20 frame 15: centre 37.59 px outside, 120 px off background, 0 disk px",
+              "id 32 frame 14: centre 17.19 px outside, 224 px off background, 0 disk px",
+              "id 32 frame 15: centre 23.82 px outside, 224 px off background, 0 disk px",
+              "id 46 frame 13: centre 15.34 px outside, 240 px off background, 0 disk px",
+              "id 46 frame 14: centre 21.98 px outside, 240 px off background, 0 disk px",
+              "id 46 frame 15: centre 28.61 px outside, 240 px off background, 0 disk px",
+              "id 48 frame 15: centre 15.71 px outside, 672 px off background, 0 disk px",
+              "id 76 frame 15: centre 17.47 px outside, 688 px off background, 0 disk px",
+              "id 88 frame 15: centre 13.42 px outside, 12 px off background, 0 disk px",
+              "id 90 frame 13: centre 16.49 px outside, 236 px off background, 0 disk px",
+              "id 90 frame 14: centre 25.42 px outside, 236 px off background, 0 disk px",
+              "id 90 frame 15: centre 34.35 px outside, 236 px off background, 0 disk px",
+              "id 104 frame 11: centre 17.96 px outside, 2336 px off background, 0 disk px",
+              "id 116 frame 15: centre 11.58 px outside, 324 px off background, 0 disk px",
+              "id 130 frame 13: centre 11.25 px outside, 244 px off background, 0 disk px",
+              "id 130 frame 14: centre 17.13 px outside, 244 px off background, 0 disk px",
+              "id 130 frame 15: centre 23.01 px outside, 244 px off background, 0 disk px",
+              "id 132 frame 15: centre 14.43 px outside, 684 px off background, 0 disk px"
+            ]
+          },
+          "fully_outside_but_not_uniform_max_off_background_px": 2844,
+          "fully_outside_but_not_uniform_max_centre_distance_px": 37.59,
+          "no_disk_pixels_but_disk_predicted_inside": {
+            "count": 16,
+            "first": [
+              "id 32 frame 13: centre 10.55 px outside",
+              "id 68 frame 14: centre 10.17 px outside",
+              "id 146 frame 11: centre 10.45 px outside",
+              "id 342 frame 11: centre 10.16 px outside",
+              "id 390 frame 14: centre 10.11 px outside",
+              "id 566 frame 14: centre 10.01 px outside",
+              "id 608 frame 12: centre 10.01 px outside",
+              "id 802 frame 14: centre 10.09 px outside",
+              "id 804 frame 9: centre 10.33 px outside",
+              "id 846 frame 11: centre 9.61 px outside",
+              "id 866 frame 14: centre 10.23 px outside",
+              "id 930 frame 15: centre 10.47 px outside",
+              "id 936 frame 14: centre 10.40 px outside",
+              "id 1048 frame 13: centre 10.35 px outside",
+              "id 1152 frame 15: centre 10.52 px outside",
+              "id 1454 frame 14: centre 10.39 px outside"
+            ]
+          },
+          "disk_pixels_but_disk_predicted_fully_outside": {
+            "count": 0,
+            "first": []
+          }
+        },
+        "speed": {
+          "explanation_holds": true,
+          "uniform_frames": {
+            "count": 0,
+            "first": []
+          },
+          "clips_with_uniform_frames": 0,
+          "explanation_broken_by": {
+            "not_background_colour": {
+              "count": 0,
+              "first": []
+            },
+            "has_disk_pixels": {
+              "count": 0,
+              "first": []
+            },
+            "disk_not_fully_outside": {
+              "count": 0,
+              "first": []
+            }
+          },
+          "uniform_frames_not_at_clip_end": {
+            "count": 0,
+            "first": []
+          },
+          "fully_outside_but_not_uniform": {
+            "count": 0,
+            "first": []
+          },
+          "fully_outside_but_not_uniform_max_off_background_px": 0,
+          "fully_outside_but_not_uniform_max_centre_distance_px": 0.0,
+          "no_disk_pixels_but_disk_predicted_inside": {
+            "count": 0,
+            "first": []
+          },
+          "disk_pixels_but_disk_predicted_fully_outside": {
+            "count": 0,
+            "first": []
+          }
+        },
+        "acceleration": {
+          "explanation_holds": true,
+          "uniform_frames": {
+            "count": 0,
+            "first": []
+          },
+          "clips_with_uniform_frames": 0,
+          "explanation_broken_by": {
+            "not_background_colour": {
+              "count": 0,
+              "first": []
+            },
+            "has_disk_pixels": {
+              "count": 0,
+              "first": []
+            },
+            "disk_not_fully_outside": {
+              "count": 0,
+              "first": []
+            }
+          },
+          "uniform_frames_not_at_clip_end": {
+            "count": 0,
+            "first": []
+          },
+          "fully_outside_but_not_uniform": {
+            "count": 0,
+            "first": []
+          },
+          "fully_outside_but_not_uniform_max_off_background_px": 0,
+          "fully_outside_but_not_uniform_max_centre_distance_px": 0.0,
+          "no_disk_pixels_but_disk_predicted_inside": {
+            "count": 0,
+            "first": []
+          },
+          "disk_pixels_but_disk_predicted_fully_outside": {
+            "count": 0,
+            "first": []
+          }
+        }
+      }
+    }
+  },
+  "duplicates": {
+    "provenance": {
+      "utc": "2026-09-25T02:50:36+00:00",
+      "git_commit": "0b9d0ca884240b25f7eee4564764d46adced3aab",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        " M src/vjepa_physics/geometry.py",
+        " M src/vjepa_physics/video.py",
+        "?? scripts/check_videos.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/data.py": "b1ddff4412bc5dbdf630dd1a98bbdf01cccc6a3b15fadbc8811da5d534b61972",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "e7f9dc50cac91a3b26bd9c060b322c5d1df81ff9f59d362c4195c847423676ae",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "dc98690f3728587a7fff205b75f8c91db1eee154bc635d95fe6f64dfe1d229bd",
+          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_videos.py": "8e2a7965e03d4fe6d399cecaaefd8f84e74a8f86460bfb21c40e114618936e44"
+        },
+        "combined_sha256": "6568dc2f53024abcc5fa2833f9a5e4599031d1f6adf6a0f2a7eae138ffc0f183"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2"
+      }
+    },
+    "result": {
+      "criteria": {
+        "all_clips_hashed": true,
+        "no_duplicate_clips": true,
+        "test_clip_hash_matches_repeat_check": true
+      },
+      "clips_hashed": 4572,
+      "distinct_clip_hashes": 4572,
+      "duplicate_clip_groups": {
+        "count": 0,
+        "first": []
+      },
+      "test_clip": {
+        "clip": "speed/1000",
+        "sha256": "03285f4cf9ffc6ecf90541b47e7f08c217eab4e4809d42f7042baf29ab9d95c0",
+        "expected": "03285f4cf9ffc6ecf90541b47e7f08c217eab4e4809d42f7042baf29ab9d95c0"
+      },
+      "artifact": {
+        "path": "artifacts/videos/decoded_hashes.csv",
+        "rows": 4572,
+        "sha256": "926df1df831a2d86676eef0e9479bf9060a31d56fd61dc31a1e9fa699ab9dca7"
+      },
+      "diagnostics": {
+        "frames_hashed": 73152,
+        "distinct_frame_hashes": 65355,
+        "frame_hashes_shared_by_several_clips": 1886,
+        "clips_sharing_the_background_frame": 52,
+        "other_frames_shared_between_clips": {
+          "count": 1885,
+          "first": [
+            [
+              "acceleration/0",
+              "speed/220"
+            ],
+            [
+              "acceleration/1",
+              "speed/1122"
+            ],
+            [
+              "acceleration/1",
+              "speed/134"
+            ],
+            [
+              "acceleration/10",
+              "speed/979"
+            ],
+            [
+              "acceleration/100",
+              "speed/266"
+            ],
+            [
+              "acceleration/1000",
+              "acceleration/296"
+            ],
+            [
+              "acceleration/1000",
+              "acceleration/296"
+            ],
+            [
+              "acceleration/1001",
+              "speed/1053"
+            ],
+            [
+              "acceleration/1002",
+              "acceleration/668"
+            ],
+            [
+              "acceleration/1002",
+              "direction/1336"
+            ],
+            [
+              "acceleration/1003",
+              "acceleration/1204",
+              "direction/519"
+            ],
+            [
+              "acceleration/1004",
+              "speed/615",
+              "speed/919"
+            ],
+            [
+              "acceleration/1005",
+              "acceleration/1011",
+              "acceleration/191"
+            ],
+            [
+              "acceleration/1006",
+              "acceleration/1230"
+            ],
+            [
+              "acceleration/1007",
+              "acceleration/1257",
+              "direction/485"
+            ],
+            [
+              "acceleration/1008",
+              "acceleration/581"
+            ],
+            [
+              "acceleration/1009",
+              "acceleration/1044",
+              "acceleration/1177",
+              "acceleration/437",
+              "speed/1205"
+            ],
+            [
+              "acceleration/101",
+              "acceleration/322"
+            ],
+            [
+              "acceleration/1010",
+              "speed/10",
+              "speed/294"
+            ],
+            [
+              "acceleration/1011",
+              "acceleration/191"
+            ]
+          ]
+        }
+      },
+      "passed": true
+    }
+  }
+}

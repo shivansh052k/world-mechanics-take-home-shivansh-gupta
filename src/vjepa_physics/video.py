@@ -1,4 +1,5 @@
 """Decode video clips into raw RGB frames with PyAV."""
+from fractions import Fraction
 from pathlib import Path
 
 import av
@@ -33,3 +34,29 @@ def load_clip(path: str | Path, n_frames: int = N_FRAMES, size: int = SIZE) -> n
     if clip.shape != (n_frames, size, size, 3) or clip.dtype != np.uint8:
         raise ValueError(f"{path}: got {clip.shape} {clip.dtype}, expected ({n_frames}, {size}, {size}, 3) uint8")
     return clip
+
+
+
+def probe_clip(path: str | Path) -> dict:
+    """Container and stream facts for one clip; frames are decoded but not converted to RGB.
+
+    Returns codec, pixel format and size from the stream, the frame count the stream reports and
+    the number actually decoded, each decoded frame's size, the stream's average rate, and each
+    frame's timestamp in seconds as an exact Fraction (pts x time_base; None if either is missing).
+    """
+    with av.open(str(path)) as container:
+        stream = container.streams.video[0]
+        frames = list(container.decode(video=0))
+        return {
+            "codec": stream.codec_context.name,
+            "pix_fmt": stream.codec_context.pix_fmt,
+            "size": (stream.codec_context.width, stream.codec_context.height),
+            "reported_frames": stream.frames,
+            "decoded_frames": len(frames),
+            "frame_sizes": sorted({(f.width, f.height) for f in frames}),
+            "average_rate": stream.average_rate,
+            "times_s": [
+                None if f.pts is None or f.time_base is None else Fraction(f.pts) * f.time_base
+                for f in frames
+            ],
+        }
