@@ -58,8 +58,10 @@ origin 128 fitted from data; frame 0 = start everywhere), `documented_colour` fa
 (F-69–F-71, D-35). **1.10 done:** `src/vjepa_physics/flags.py` (`clip_flags`) and `check_tracking.py flags`: all six
 integrity criteria passed; flags table `results/tracking/clip_flags.csv` committed (F-72, D-36). **1.11 done:**
 `src/vjepa_physics/plotting.py`; figures `results/videos/contact_sheet.png`, `results/design/design.png`,
-`results/tracking/tracking.png`, each reviewed and fixed (F-73). **Next: 1.12 (compare results against DECISIONS.md)**
-— waiting for the user's go.
+`results/tracking/tracking.png`, each reviewed and fixed (F-73). **1.12 done:** every scouting fact F-21–F-36 has a
+final status (summary under DECISIONS §1.3): 10 verified as stated, 4 verified with precision-level corrections, 2 partly
+verified, no material contradiction; D-14's counts confirmed. **Next: 1.13 (Phase 1 report and gate)** — waiting for the
+user's go.
 
 ---
 
@@ -68,7 +70,7 @@ integrity criteria passed; flags table `results/tracking/clip_flags.csv` committ
 | Phase | Status | Notes |
 |---|---|---|
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
-| 1 — Data audit | 🟨 In progress | 1.1–1.11 done (`documented_fields`, `documented_colour` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
+| 1 — Data audit | 🟨 In progress | 1.1–1.12 done (`documented_fields`, `documented_colour` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
 | 2 — Splits and activation extraction | ⬜ Not started | |
 | 3 — Part 1a: Layer-wise probing | ⬜ Not started | |
 | 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
@@ -259,7 +261,11 @@ what's next.
   exit example showed no residue → rule changed to "most residue" (id 1152, caveat recorded); design heatmap tick labels
   collided and "m/s^2" → fixed; tracking figure first run failed on a mask-shape bug (Claude Code's) → fixed. **Step 1.11
   done.**
-- **Next:** 1.12 (compare results against DECISIONS.md) — waiting for the user's go.
+- 1.12 (docs only, Claude Code): F-21–F-36 reviewed one by one against F-60–F-73; F-33's "1–7 frames, 40 ≥ 4" counted
+  in `clip_flags.csv` (Grep on the committed table); F-34's two threshold counts derived from the verified formula;
+  unverified remnants recorded (F-34 "≤ 3 distinct positions", F-36 default-preprocessing counts); status tags in
+  DECISIONS §1.3/§1.4 and CLAUDE.md §5 updated; D-14 annotated. **Step 1.12 done.**
+- **Next:** 1.13 (Phase 1 report and gate) — waiting for the user's go.
 
 ### 2026-09-24 — Step 0.8d started in Claude Code
 - Claude Code permissions set: `Bash`, `NotebookEdit` denied; edits denied everywhere except `docs/` and

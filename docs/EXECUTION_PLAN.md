@@ -40,7 +40,7 @@ Last updated: 2026-09-24.
 - [x] **1.9 Full disk tracking and mapping verification (all clips)** — Track the disk in every frame, confirm the pixel/metre, angle, and timing mapping holds everywhere, and save the tracked per-frame positions for reuse in later phases.
 - [x] **1.10 Flag problem clips** — Frame-exit, clipped, tiny-motion, and frozen-start clips, with counts and identifiers saved for later use.
 - [x] **1.11 Build contact sheets and audit figures** — Visual evidence for the presentation.
-- [ ] **1.12 Compare results against DECISIONS.md and update it** — Confirm or correct every scouting fact (F-21–F-36) with full-data results; update status tags.
+- [x] **1.12 Compare results against DECISIONS.md and update it** — Confirm or correct every scouting fact (F-21–F-36) with full-data results; update status tags.
 - [ ] **1.13 Phase 1 report and gate** — Save the audit report and figures to `results/`, update `PROGRESS.md`, and confirm Phase 1 has passed.
 
 ## Phase 2 — Splits and activation extraction

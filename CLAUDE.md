@@ -138,16 +138,16 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
 - **[verified, all clips, F-70]** Exact mapping (≤ 0.783 px on every fully visible frame; frame 0 = start): pixel x = 128 + 32·x_world, pixel row = 128 − 32·y_world
   (32 px/m, visible area ±4 m, **y flipped**). Frame k is at t = k/24 s (clip spans 15/24 s).
 - **[verified, all clips, F-70]** Angles use the math convention: 0° = right, **90° = up on screen**.
-- **[scouting]** All three manifests are **sorted by label** → naive head/tail splits are invalid.
-- **[scouting]** Direction set: no `primary_label`/`magnitude` fields; 50% constant velocity
+- **[verified, F-61]** All three manifests are **sorted by label** → naive head/tail splits are invalid.
+- **[verified, F-61/F-63/F-72]** Direction set: no `primary_label`/`magnitude` fields; 50% constant velocity
   (1–7 m/s), 50% accelerating from rest (2–10 m/s²); starts within ±2 m.
   113 clips lose the disk for 1–7 frames; 199 are clipped or lose it (mostly 5–7 m/s).
-- **[scouting]** Speed and acceleration sets: disk never leaves the frame.
+- **[verified, F-69]** Speed and acceleration sets: disk never leaves the frame or touches the border.
 - **[verified]** The background is one flat colour (29, 32, 29): frames the disk has left can be perfectly uniform
   (52 direction clips), and 149 exit frames keep faint codec residue. A uniform frame is not a decode fault. (F-66)
-- **[scouting] Confound:** acceleration clips start from rest, so within a dataset the magnitude
+- **[verified, F-65] Confound:** acceleration clips start from rest, so within a dataset the magnitude
   label is perfectly correlated (r = 1.0) with distance travelled (and mean speed).
-- **[scouting]** Tiny motion: 48 acceleration clips move < 3 px in total; some are frozen
+- **[verified, F-65/F-72]** Tiny motion: 48 acceleration clips move < 3 px in total; some are frozen
   for up to 11 frames after frame 0.
 
 ---
