@@ -423,6 +423,24 @@ what's next.
   off-distribution; (6) covariance arm's idx-9 reduction next to K−1's. Provisional headline: same-layer result
   reproduced (0.92–0.95 at K−1, 0.11–0.55 at n = 1, random nothing), downstream barely reached (0.03 / 0.13 / 0.14);
   the paper tests the same layer only (C.12, P-06). Phase 6 note: score both methods over the idx 9 → 18 profile.
+- 5.3b `steering_propagation` (post hoc, no model) **passed** (6/6) but saved **dirty** (`plot_index` import fix not
+  committed before the run; `M scripts/check_steering.py`, commit `03ad13c`) → re-run at the gate. Profile readouts at
+  idx 9–18: interior alphas, train R² 0.969–0.987; idx-9/18 refits = setup maps; readouts from saved fp32 features =
+  runs; direct + blocks = total. **Decomposition at idx 18, n = K−1 (output-space gain, 95 % CI):** direction total
+  0.068 = direct 0.189 [0.158, 0.220] + blocks −0.122 [−0.151, −0.091]; speed 0.128 = 0.463 [0.435, 0.493] − 0.336
+  [−0.365, −0.307]; acceleration 0.136 = 0.262 [0.251, 0.274] − 0.126 [−0.138, −0.113]; covariance alike (direct 0.18 /
+  0.29 / 0.24, blocks −0.11 / −0.17 / −0.12) → **both mechanisms**: the carried δ reaches the idx-18 readout only
+  partly (ii), and block updates cancel about half to two-thirds of that (i). **Profile (total gain, K−1, idx 9 → 18):**
+  direction 0.98 / 0.90 / 0.69 / 0.24 / 0.11 / 0.14 / 0.12 / 0.10 / 0.075 / 0.068; speed 0.99 / 0.94 / 0.78 / 0.42 /
+  0.28 / 0.24 / 0.19 / 0.19 / 0.13 / 0.13; acceleration 0.96 / 0.86 / 0.62 / 0.25 / 0.24 / 0.20 / 0.13 / 0.16 / 0.13 /
+  0.12; the drop happens in blocks 9–11 (idx 10–12), where blocks start cancelling (e.g. speed idx 12 direct 0.79,
+  blocks −0.37). Random K−1 |gain| ≤ 0.03 everywhere. Idx-9 reduction covariance vs K−1: 0.956 / 0.955, 0.938 / 0.940,
+  0.904 / 0.918 (comparable → the "many directions" need is a property of the probe sequence). Gain vs shift size
+  (probes + covariance, in-distribution bins): direction 0.016–0.071, speed 0.075–0.124, acceleration 0.061–0.139,
+  rising from the smallest bin; off-distribution speed bin ≥ 2 gain 0.58 with direct −2.25 / blocks +2.79 (n = K
+  breakage). Claude Code's predictions: hard expectations ✓; direct 0.3–1.0 and blocks −0.2…−0.9 met for speed only
+  (direction, acceleration smaller); most of the drop by idx 12 ✓; random < 0.05 ✓ (K−1 arms checked); flat within
+  ±0.05 ✓ (with a rising trend). **Step 5.3b done.**
 
 ### 2026-09-25 — Phase 4 started (nullspace probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically), asks before

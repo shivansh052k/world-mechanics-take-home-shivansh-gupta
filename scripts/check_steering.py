@@ -18,7 +18,7 @@ import torch
 from vjepa_physics.activations import capture_encoder
 from vjepa_physics.data import DATASETS, read_manifest, resolve
 from vjepa_physics.evidence import file_sha256, save_result, verified_artifact
-from vjepa_physics.extraction import SITES, pool_time_steps
+from vjepa_physics.extraction import SITES, plot_index, pool_time_steps
 from vjepa_physics.intervention import edit_encoder, run_blocks
 from vjepa_physics.joined import FLAG_NAMES, load_joined
 from vjepa_physics.model import load_model, weights_fingerprint
