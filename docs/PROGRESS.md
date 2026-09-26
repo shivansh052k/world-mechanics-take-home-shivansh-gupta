@@ -49,8 +49,7 @@ direction motion type vs distance r = −0.565 (F-65). **1.7 run:** `probe_clip`
 (`world_to_pixel`, `disk_centres`, `distance_outside_image`) in `geometry.py`; `scripts/check_videos.py`: `format`
 failed only on `no_uniform_frames` (185 uniform exit frames in 52 direction clips; kept on record), `uniform_frames`
 diagnostic shows they are clean exit frames but its pre-stated rule failed narrowly on 3 frames (kept on record),
-`duplicates` passed (no duplicate clips; `artifacts/` ignore rule verified) (F-66, F-67, D-34). **Waiting on the
-planning chat** for the `format` re-score. **1.8 done:** `check_videos.py decoders` — PyAV vs OpenCV verdict ok on
+`duplicates` passed (no duplicate clips; `artifacts/` ignore rule verified) (F-66, F-67, D-34). **1.8 done:** `check_videos.py decoders` — PyAV vs OpenCV verdict ok on
 all 4,572 clips under D-05 (F-68). **1.9 done:** `src/vjepa_physics/tracking.py` (`disk_mask`, `count_objects`,
 `track_disk`) and `scripts/check_tracking.py`: `track` passed (one disk per frame; positions in
 `artifacts/tracking/tracked_disk.npz`), `mapping` passed (≤ 0.783 px on all fully visible frames; scale 32 px/m and
@@ -118,9 +117,8 @@ adjacent changes, direction with/without exit nearly identical.
 **3.8 design settled (D-47, per-patch).** **3.8a done:** `pool_patches`, `patch_activations` (F-105).
 **Lean mode adopted (D-48):** hash-check gates, commit before each saved run, no full re-runs, docs once per phase
 (one log line per step), Phase 4–8 designs and cuts fixed; Goodfire quotations F-106.
-**Now:** 3.8b per-patch `extract_direction` running. **Next:** `verify`; 3.8c per-patch probes (save fitted probes),
-on/off-path, 3.8e spatial generalization; test once; 3.9 gate (four re-runs: `pixel_grams` → `pixel_floor` →
-`shuffled_labels` → `bootstrap`); talk outline (8.3).
+**Phase 3 passed (F-115).** **Phase 4 started:** design approved by the planning chat (recorded as D-49 at the
+phase docs pass). **Next:** 4.3a core `nullspace.py` + terminal smoke test.
 
 ---
 
@@ -129,10 +127,10 @@ on/off-path, 3.8e spatial generalization; test once; 3.9 gate (four re-runs: `pi
 | Phase | Status | Notes |
 |---|---|---|
 | 0 — Environment and model setup | ✅ Passed gate | 0.1–0.16, 0.18 done; 0.17 skipped (D-29); report `results/setup/report.md` (open items listed there) |
-| 1 — Data audit | ✅ Passed gate | 1.1–1.13 done; report `results/data_audit/report.md`; clean re-run identical (`documented_fields`, `documented_colour` failed as predicted; `format` / `uniform_frames` failed, re-score pending the planning chat) |
-| 2 — Splits and activation extraction | ✅ Passed gate | 2.1–2.9 done (D-38–D-41, F-75–F-87); report `results/splits_and_extraction/report.md`; clean re-run identical; two balance notes await the planning chat |
+| 1 — Data audit | ✅ Passed gate | 1.1–1.13 done; report `results/data_audit/report.md`; clean re-run identical (`documented_fields`, `documented_colour` failed as predicted; `format` / `uniform_frames` failed, closed without re-score, D-34) |
+| 2 — Splits and activation extraction | ✅ Passed gate | 2.1–2.9 done (D-38–D-41, F-75–F-87); report `results/splits_and_extraction/report.md`; clean re-run identical; balance notes closed (D-44) |
 | 3 — Part 1a: Layer-wise probing | ✅ Passed gate (2026-09-25) | 3.1–3.9 done (F-88–F-115; D-42–D-48); transition idx 1 for all three (mean-pooled) and for per-patch direction; test once (F-104, F-113); hash-check gate (F-115); report `results/layer_probing/report.md`, slide log `results/slide_log.md`, talk outline `slides/talk_outline.md` |
-| 4 — Part 1b: Iterative nullspace probing | ⬜ Not started | |
+| 4 — Part 1b: Iterative nullspace probing | 🟨 In progress | Design approved by the planning chat (D-49, recorded at the phase docs pass) |
 | 5 — Part 1c: Multi-probe subspace steering | ⬜ Not started | |
 | 6 — Part 2: Spline steering | ⬜ Not started | |
 | 7 — Confounds and robustness | ⬜ Not started | |
@@ -202,7 +200,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/forecast/checks.json` | `forecast` | 96 clips (32 per dataset, ids saved): predictor beats copy-last-step and mean-context-token baselines in every dataset (all 95% CIs < 0); margin over the mean token ~3% of L1 (→ D-30); H-06 fields, per-step L1s, timings recorded | ✅ passed | F-57; `scripts/check_forecast.py forecast` |
 | `results/benchmark/checks.json` | `benchmark` | Time and memory per clip on MPS at batch sizes 1/2/4/8 (no batching gain; batch 1 suggested by the pre-set rule); batched pooled outputs = single bit-for-bit at 2/4/8; extraction ~65 min; storage estimates | ℹ️ diagnostic | F-59; `scripts/check_benchmark.py benchmark` |
 | `results/setup/report.md` | — | Setup report: what was verified (with check keys), failures kept on record, skipped parity, clean re-run and diff, open items with the step each blocks | ✅ gate passed | 0.18; user-written from saved evidence |
-| `results/data_files/checks.json` | `manifests` | All 3 manifests: lines parse, rows 1,500 / 1,536 / 1,536 = DATA.md, ids 0 … N − 1, paths inside `data/<dataset>/`, distinct, non-empty regular files, video + metadata same folder, no orphan files/folders; 9,147 files = fingerprint count, file set = manifests ∪ referenced. Diagnostics: `scene_{id:04d}` naming everywhere, line order = id order. Saved with `git_dirty` true (new code uncommitted); clean re-run at the Phase 1 gate | ✅ passed | F-60, D-31; `scripts/check_data_files.py manifests` |
+| `results/data_files/checks.json` | `manifests` | All 3 manifests: lines parse, rows 1,500 / 1,536 / 1,536 = DATA.md, ids 0 … N − 1, paths inside `data/<dataset>/`, distinct, non-empty regular files, video + metadata same folder, no orphan files/folders; 9,147 files = fingerprint count, file set = manifests ∪ referenced. Diagnostics: `scene_{id:04d}` naming everywhere, line order = id order. Saved with `git_dirty` true (new code uncommitted); clean re-run identical at the Phase 1 gate (F-74) | ✅ passed | F-60, D-31; `scripts/check_data_files.py manifests` |
 | `results/metadata/checks.json` | `consistency` | All 4,572 metadata files: strict parse, id = manifest id, fps 24 / frames 16, finite typed fields, speed/acceleration ≥ 0, direction θ in [0, 360), `primary_label`/`magnitude` per DATA.md in speed/acceleration, motion consistent with values and dataset. Diagnostics: acceleration set all from rest; direction 750 + 750; start ranges ±1.2 / ±2 m | ✅ passed | F-61, D-32; `scripts/check_metadata.py consistency` |
 | `results/metadata/checks.json` | `documented_fields` | Every file has DATA.md's documented fields | ❌ failed as predicted: all 1,500 direction files lack `primary_label` (speed/acceleration complete); kept on record; labels come from the dataset name | F-61, D-32, F-25; `scripts/check_metadata.py documented_fields` |
 | `results/metadata/checks.json` | `sorted_by_label` | Diagnostic: label never decreases with id in all three manifests; 64 runs (64 × 24; direction 36 × 23 + 28 × 24); Spearman 0.999878 | ℹ️ diagnostic | F-61, F-22; `scripts/check_metadata.py sorted_by_label` |
@@ -224,7 +222,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/design/design.png` + `checks.json` | `figure_design` | Distance vs label (speed, acceleration) with overlap window; direction octant × group heatmap | ℹ️ visual (reviewed) | F-73; `scripts/check_design.py figure_design` |
 | `results/tracking/tracking.png` + `checks.json` | `figure_tracking` | Tracked-vs-predicted distance histograms (max ≤ 0.783 px); flag counts per dataset | ℹ️ visual (reviewed) | F-73; `scripts/check_tracking.py figure_tracking` |
 | `results/evidence/checks.json` | `rerun_identical` | All 21 audit keys re-run from clean HEAD `7869969`; every result identical to the committed one; flags table and PNGs unchanged | ✅ passed | F-74; `scripts/check_evidence.py rerun_identical` |
-| `results/splits/checks.json` + `artifacts/manifests/splits.csv` | `build` | Splits from metadata + seed 0 (D-38): every clip once, counts = D-38, unseen values as decided and absent from seen roles, 16/4/4 per seen value, speed = acceleration roles by id, rebuild byte-identical; file SHA-256 `bb64b6ae…` | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-78; `scripts/check_splits.py build` |
+| `results/splits/checks.json` + `artifacts/manifests/splits.csv` | `build` | Splits from metadata + seed 0 (D-38): every clip once, counts = D-38, unseen values as decided and absent from seen roles, 16/4/4 per seen value, speed = acceleration roles by id, rebuild byte-identical; file SHA-256 `bb64b6ae…` | ✅ passed (saved with `git_dirty` true; clean re-run identical, F-87) | F-78; `scripts/check_splits.py build` |
 | `results/extraction/checks.json` | `pipeline` | Test clip through the extraction code: (1, 26, 8, 1024) fp32, repeat bit-exact, 5.3e-8 vs float64 pool, weights unchanged; pooled SHA-256 `29997d28…` for the full run to reproduce | ✅ passed | F-81; `scripts/check_extraction.py pipeline` |
 | `results/extraction/checks.json` + `artifacts/activations/*.npy` | `extract_direction`, `extract_speed`, `extract_acceleration` | Pooled activations (clips, 26, 8, 1024) fp32 for all 4,572 clips; read-back = computed, finite, non-zero, distinct, weights unchanged, speed test clip = `pipeline`; SHA-256 direction `0d36d025…`, speed `0c57023e…`, acceleration `067aad46…` (git-ignored, verified) | ✅ passed | F-82; `scripts/check_extraction.py extract_<dataset>` |
 | `results/extraction/checks.json` | `verify` | Arrays, ids, split file hash-guarded; shapes; ids = split ids in order; 16 seeded clips per dataset re-extracted live bit-identical (also the gate test, D-41); site scale and nearest-pair diagnostics | ✅ passed | F-83; `scripts/check_extraction.py verify` |
@@ -233,12 +231,12 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/evidence/checks.json` | `rerun_identical_splits_extraction` | 6 split/extraction/joined keys re-run from clean HEAD `910a798`, results identical (only `storage` machine-state fields excluded); `extract_*` untouched (D-41); `verify` re-run; split file unchanged | ✅ passed | F-87; `scripts/check_evidence.py rerun_identical_splits_extraction` |
 | `results/splits_and_extraction/report.md` | — | Splits and extraction report: splits, how representations are extracted and pooled, joined tables, storage, clean re-run, notes, open items | ✅ gate passed | F-87; user-written from saved evidence |
 | `results/splits/checks.json` | `balance` | Flags, mean cos/sin θ per role; direction group × octant per role; clips per seen angle (test_seen: one angle with 0) | ℹ️ diagnostic | F-79; `scripts/check_splits.py balance` |
-| `results/probes/checks.json` + `artifacts/probes/layer_predictions.npz` | `layer_curves` | Ridge probe per site (26) and variable on train, scored on val_seen / val_unseen; n_fit 813 / 832; alpha rule; only validation rows predicted; refit identical; predictions saved (SHA-256 `b7261ed0…`, git-ignored) | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-92; `scripts/check_probes.py layer_curves` |
-| `results/probes/checks.json` | `shuffled_labels` | 20 train-label permutations × 26 sites × 3 variables, scored on val_seen with true labels: max R² ≤ 0.087 < 0.1; direction mean circular MAE 87–92° > 80; no alpha failure; n_fit exact | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-94; `scripts/check_probes.py shuffled_labels` |
-| `results/baselines/checks.json` + `artifacts/baselines/pixel_gram_*.npy` | `pixel_grams` | Exact pixel Gram matrices per variable (full RGB, time-averaged); decoded pixels = audit hashes for all 4,572 clips; symmetric, integer < 2^53, diagonal = int64 sum of squares; 6 file hashes recorded (git-ignored) | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-96; `scripts/check_baselines.py pixel_grams` |
-| `results/baselines/checks.json` + `artifacts/baselines/floor_predictions.npz` | `pixel_floor` | Ridge on raw pixels (full RGB headline, time-averaged secondary) via the saved Grams; train-only, alpha rule, validation rows only; val-seen R² full 0.48 / 0.63 / 0.49, time-averaged 0.20 / 0.23 / 0.16 | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-97; `scripts/check_baselines.py pixel_floor` |
-| `results/baselines/checks.json` + `artifacts/baselines/ceiling_estimates.npz` | `physics_ceiling` | Per-clip physics fit on tracked positions, validation rows only; exact on metadata positions (≤ 1.7e-13); headline quadratic R² ≥ 0.997; design-informed constant-velocity (speed) and from-rest (acceleration) reported labelled | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-98; `scripts/check_baselines.py physics_ceiling` |
-| `results/layer_curves/checks.json` | `bootstrap` | 10,000-resample clip bootstrap of probes, floors, ceiling on val_seen / val_unseen (direction also without exit); 178 point estimates = saved scores; transition index 1 in every resample; paired adjacent changes; per-value errors on val_unseen | ✅ passed (saved with `git_dirty` true; clean re-run at the gate) | F-101; `scripts/check_layer_curves.py bootstrap` |
+| `results/probes/checks.json` + `artifacts/probes/layer_predictions.npz` | `layer_curves` | Ridge probe per site (26) and variable on train, scored on val_seen / val_unseen; n_fit 813 / 832; alpha rule; only validation rows predicted; refit identical; predictions saved (SHA-256 `b7261ed0…`, git-ignored) | ✅ passed (saved with `git_dirty` true; hash-checked, F-115) | F-92; `scripts/check_probes.py layer_curves` |
+| `results/probes/checks.json` | `shuffled_labels` | 20 train-label permutations × 26 sites × 3 variables, scored on val_seen with true labels: max R² ≤ 0.087 < 0.1; direction mean circular MAE 87–92° > 80; no alpha failure; n_fit exact | ✅ passed (saved with `git_dirty` true; hash-checked, F-115) | F-94; `scripts/check_probes.py shuffled_labels` |
+| `results/baselines/checks.json` + `artifacts/baselines/pixel_gram_*.npy` | `pixel_grams` | Exact pixel Gram matrices per variable (full RGB, time-averaged); decoded pixels = audit hashes for all 4,572 clips; symmetric, integer < 2^53, diagonal = int64 sum of squares; 6 file hashes recorded (git-ignored) | ✅ passed (saved with `git_dirty` true; hash-checked, F-115) | F-96; `scripts/check_baselines.py pixel_grams` |
+| `results/baselines/checks.json` + `artifacts/baselines/floor_predictions.npz` | `pixel_floor` | Ridge on raw pixels (full RGB headline, time-averaged secondary) via the saved Grams; train-only, alpha rule, validation rows only; val-seen R² full 0.48 / 0.63 / 0.49, time-averaged 0.20 / 0.23 / 0.16 | ✅ passed (saved with `git_dirty` true; hash-checked, F-115) | F-97; `scripts/check_baselines.py pixel_floor` |
+| `results/baselines/checks.json` + `artifacts/baselines/ceiling_estimates.npz` | `physics_ceiling` | Per-clip physics fit on tracked positions, validation rows only; exact on metadata positions (≤ 1.7e-13); headline quadratic R² ≥ 0.997; design-informed constant-velocity (speed) and from-rest (acceleration) reported labelled | ✅ passed (saved with `git_dirty` true; hash-checked, F-115) | F-98; `scripts/check_baselines.py physics_ceiling` |
+| `results/layer_curves/checks.json` | `bootstrap` | 10,000-resample clip bootstrap of probes, floors, ceiling on val_seen / val_unseen (direction also without exit); 178 point estimates = saved scores; transition index 1 in every resample; paired adjacent changes; per-value errors on val_unseen | ✅ passed (saved with `git_dirty` true; hash-checked, F-115) | F-101; `scripts/check_layer_curves.py bootstrap` |
 | `results/layer_curves/layer_curves.png` + `checks.json` | `figure_layer_curves` | R² and MAE / circular MAE per layer index with 95% bands, val-unseen, pixel floors, physics-fit ceiling, transition line | ℹ️ visual (reviewed) | F-102; `scripts/check_layer_curves.py figure_layer_curves` |
 | `results/layer_curves/checks.json` + `artifacts/probes/test_predictions.npz` | `test_scores` | One-time test scores (test_seen / test_unseen, direction also without exit) for all probe sites, floors, ceiling, with 95% CIs and per-value errors; 84 refits reproduce saved alphas and validation predictions; code committed | ✅ passed (from committed code) | F-104; `scripts/check_layer_curves.py test_scores` |
 | `results/patches/checks.json` + `artifacts/patches/direction.npy` | `extract_direction`, `verify` | Per-patch time-averaged direction activations (1500, 25, 256, 1024), 39.3 GB, patch mean = all-token mean ≤ 6.5e-8; 16 clips re-extracted bit-identical | ✅ passed | F-107 |
@@ -271,34 +269,16 @@ crop of `frames.png` would read better (disk ≈ 21 px of 256).
 
 No blockers.
 
-**Inputs for step 2.1 (planning chat):** D-14 counts confirmed (speed/acceleration 64 × 24; direction 36 × 23 + 28 × 24,
-the 24-clip angles are 0°–151.875°); O-02 exit (113) / clipped (199) clips, direction only, velocity 3–7 m/s plus 5 clips
-at 10 m/s², 149 exit frames with residue; O-03 `sub_patch_motion` and `frozen_start` are label-driven (a label range, not
-data quality); flags table `results/tracking/clip_flags.csv`; stratification cells 13–20 clips (F-63, F-72, D-36).
-
 **Settled by the planning chat (2026-09-25):** 2.1 and 2.3 — D-38 (held-out values, shared 16/4/4 assignment, direction
 stratification, 2.2 pass criteria), D-39 (keep and flag; direction headlines with and without exit clips), D-40
 (per-time-step pooling, 26 sites, index convention, batch 1, fp32, free disk ≥ 10 GB), D-41 (layout; gate = seeded
 16-clip-per-dataset re-extraction, extraction code committed before the real run); D-37 extended to Phase 2. Joined
 files stay small, pinning the activation `.npy` hash and memory-mapping it (Claude Code design, within D-41).
 
-Awaiting the planning chat (not blocking): DATA.md's "blue disk" is wrong — the disk is orange in every clip
-(`documented_colour` failed, kept on record, F-71).
-
 Settled by the planning chat (2026-09-24): `documented_fields` stays failed on record, labels from the dataset name
 (D-32); D-29's limitation narrowed (F-58); `format` / `uniform_frames` closed without re-score, failures kept on record,
 149 residue frames → O-02 at 2.1 (D-34); 1.10 flag definitions (D-36); Claude Code may set Phase 1 criteria taken
 directly from DATA.md or the plan without asking (D-37).
-
-To confirm later:
-- **Phase 0 gate (0.18):** re-run every check once from a clean, committed tree, so the whole evidence set has
-  clean provenance (D-27); compare with `git diff results/` (deterministic checks: only provenance fields may change).
-  The gate may pass with open items if the Phase 0 report lists each one and the step it blocks (planning chat).
-- **Batch size at extraction (2.4):** `batch` proved per-token bit-exactness for batch size 2; `benchmark` showed
-  pooled outputs bit-exact at 2/4/8 and no speed gain from batching (F-59), so batch size 1 is suggested. If 2.4 uses
-  any batch size > 1, re-run `batch` with it.
-- ~~**`.gitignore` for `artifacts/`**~~ — verified at step 1.7: `artifacts/videos/decoded_hashes.csv` is ignored by
-  `.gitignore:9:artifacts/*`, and `git status --short artifacts/` is empty (F-67).
 
 Known decision points the plan cannot remove in advance (each has a planned fallback):
 - **Phase 1 may overturn scouting facts** (F-21–F-36); D-14's split counts are provisional until step 1.12.
@@ -316,6 +296,25 @@ Known decision points the plan cannot remove in advance (each has a planned fall
 
 Newest entry on top. One entry per work session: what was done, what passed, what didn't,
 what's next.
+
+### 2026-09-25 — Phase 4 started (nullspace probing)
+- Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically), asks before
+  every step, reads files only for bugs or suspicious results. Phase 4 layout (`nullspace.py`, `check_nullspace.py`)
+  and design brief drafted (layers idx 1 / 9 / 18; 3 planner questions: non-monotone curve, cap hit, alpha rule near
+  0.1). **Next:** brief to the planning chat; 4.3a core `nullspace.py` + terminal smoke test.
+- Planning chat approved the brief with changes (→ D-49 at the phase docs pass): headline layer idx 9 (contrasts
+  idx 1, 18); all 150 rounds; K = first val-seen R² < 0.1, cap → "> 150" / 150 probes; paper thresholds and secondary
+  rules reported; alpha rule: upper edge with R² < 0.1 = `no_signal`; random control in the train span; top-PC
+  control; K-vs-depth profile at idx 0–24 (stop R² < 0.05 or 150); report caveat revised. Doc cleanup applied
+  (Phase 2 re-run rows cite F-87, not F-115; report line 29 already fixed).
+- 4.3a: `src/vjepa_physics/nullspace.py` (`train_scaler`, `project_out`, `extend_basis`, `run_rounds`,
+  `composite_maps`, `train_span`, `random_span_basis`, `nullspace_alpha_verdict`). Smoke test at block_8 (terminal, not
+  saved): round 1 = `layer_curves` bit-identical (alpha 56.23 speed / 17.78 direction); orthonormal err ≤ 6.7e-16; leak
+  ≤ 2.8e-15; composite = round-by-round ≤ 4.7e-15; span rank 831 / 812; random and PC round 1 = real; 0.13–0.15 s per
+  fit. Val-seen R² real speed 0.989 → 0.420 (5 rounds), direction 0.981 → 0.926 (3); random flat; **top PCs drop
+  fastest** (speed 0.132 after 2 PCs, direction 0.071 after 4). Claude Code's predictions wrong on speed redundancy
+  (> 0.9 at round 5) and on PC ordering (predicted between random and real). **Step 4.3a done.**
+- Plan 4.1 and 4.2 ticked: both are decision steps, settled by the brief + planning chat (D-49) before any code.
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),

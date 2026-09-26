@@ -23,7 +23,7 @@ If you are ever unsure whether something counts as "acting", it does. Ask.
 **How the user wants to work (D-21, user said):**
 - **One small step at a time.** Give exactly one step, then wait for the user's output before the next.
   **Ask the user before moving to any new step or sub-step** (user said, 2026-09-24).
-- **Phase 1 criteria (D-37):** criteria taken directly from DATA.md or the plan may be set without asking; bring
+- **Criteria, all phases (D-37, D-48):** criteria taken directly from DATA.md or the plan may be set without asking; bring
   only own additions, failed checks, contradictions with F-21–F-36, or results affecting splits/flags to the planning chat.
 - **Save tokens: don't re-read files the user saved from a given step** unless there is an error or a
   suspicious result (user said, 2026-09-24).
