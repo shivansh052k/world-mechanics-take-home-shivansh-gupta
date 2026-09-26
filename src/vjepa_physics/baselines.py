@@ -96,6 +96,7 @@ class KernelFit:
     alpha_edge: str | None
     n_fit: int
     predictions: np.ndarray  # (clips, k); NaN on rows that were not asked for
+    loo_mse: float = float("nan")  # exact leave-one-out mean squared error at the chosen alpha (train rows)
 
 
 def kernel_ridge(
@@ -140,4 +141,55 @@ def kernel_ridge(
     predictions = np.full((len(roles), y_train.shape[1]), np.nan)
     predictions[predict] = y_mean + centred[predict] @ dual
     edge = "lower" if best == 0 else "upper" if best == len(alphas) - 1 else None
-    return KernelFit(alpha, edge, len(train), predictions.reshape((len(roles), *np.shape(y)[1:])))
+    return KernelFit(alpha, edge, len(train), predictions.reshape((len(roles), *np.shape(y)[1:])), -best_score)
+
+
+GAMMA_FACTORS = (0.25, 0.5, 1.0, 2.0, 4.0)  # RBF width grid: multiples of the median-distance gamma
+
+
+def squared_distances(x: np.ndarray) -> np.ndarray:
+    """(n, d) rows -> (n, n) squared Euclidean distances in float64 (|a|² + |b|² - 2 a·b, round-off negatives
+    clipped to 0, exact zeros on the diagonal)."""
+    x = np.asarray(x, dtype=np.float64)
+    sq = (x**2).sum(axis=1)
+    d2 = sq[:, None] + sq[None, :] - 2.0 * (x @ x.T)
+    np.maximum(d2, 0.0, out=d2)
+    np.fill_diagonal(d2, 0.0)
+    return d2
+
+
+def median_gamma(d2_train: np.ndarray) -> float:
+    """Median heuristic: 1 / (2 σ²), σ = median distance between distinct train rows."""
+    upper = d2_train[np.triu_indices(len(d2_train), k=1)]
+    return float(1.0 / (2.0 * np.median(np.sqrt(upper)) ** 2))
+
+
+@dataclass(frozen=True)
+class RBFFit:
+    """RBF kernel ridge: the chosen fit, its gamma, the median-heuristic gamma, and the LOO error per gamma factor."""
+
+    fit: KernelFit
+    gamma: float
+    gamma_median: float
+    gamma_edge: str | None
+    loo_mse: np.ndarray  # (len(gamma_factors),), each at its own best alpha
+
+
+def rbf_kernel_ridge(
+    x: np.ndarray, y: np.ndarray, roles: np.ndarray, predict: np.ndarray,
+    gamma_factors: tuple[float, ...] = GAMMA_FACTORS, relative_alphas: np.ndarray = FLOOR_ALPHAS,
+) -> RBFFit:
+    """Kernel ridge with an RBF kernel exp(-gamma |a - b|²) and an unpenalised intercept (kernel_ridge on its Gram).
+
+    gamma = factor x the median-distance gamma of the train rows; gamma and alpha both by exact leave-one-out on
+    train only (lowest LOO error; ties to the earlier factor). Predictions only for rows where `predict` is True.
+    """
+    roles = np.asarray(roles)
+    d2 = squared_distances(x)
+    train = roles == FIT_ROLE
+    base = median_gamma(d2[np.ix_(train, train)])
+    fits = [kernel_ridge(np.exp(-f * base * d2), y, roles, predict, relative_alphas) for f in gamma_factors]
+    loo = np.array([f.loo_mse for f in fits])
+    best = int(np.argmin(loo))
+    edge = "lower" if best == 0 else "upper" if best == len(fits) - 1 else None
+    return RBFFit(fits[best], gamma_factors[best] * base, base, edge, loo)

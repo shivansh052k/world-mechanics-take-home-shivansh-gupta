@@ -9,7 +9,8 @@ import argparse
 import json
 import time
 from collections import Counter
-from sklearn.linear_model import Ridge
+from sklearn.linear_model import Ridge, RidgeCV
+from sklearn.metrics.pairwise import rbf_kernel
 from pathlib import Path
 
 import numpy as np
@@ -20,12 +21,13 @@ from vjepa_physics.extraction import SITES, plot_index
 from vjepa_physics.joined import load_joined
 from vjepa_physics.metrics import mae
 from vjepa_physics.nullspace import (
-    EXHAUSTION_RATIO, NULL_R2, RANK_TOLERANCE, composite_maps, curve_summary, first_true, grid_edge,
-    nullspace_alpha_verdict, project_out, random_span_basis, redundancy_counts, round_scores, run_rounds,
+    EXHAUSTION_RATIO, NULL_R2, RANK_TOLERANCE, composite_maps, covariance_basis, curve_summary, first_true,
+    grid_edge, nullspace_alpha_verdict, project_out, random_span_basis, redundancy_counts, round_scores, run_rounds,
     train_ridge, train_scaler, train_span,
 )
 from vjepa_physics.probes import ALPHAS, nested_cv_predictions, probe_scores, probe_targets, site_features
 from vjepa_physics.reproducibility import SEED
+from vjepa_physics.baselines import FLOOR_ALPHAS, GAMMA_FACTORS, kernel_ridge, rbf_kernel_ridge, squared_distances
 
 REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "results/nullspace/checks.json"
@@ -58,6 +60,7 @@ REFIT_TOLERANCE = 1e-9  # relative: nullspace arm vs saved round K + 1; nested C
 
 SWEEP_SITE = "block_8"  # headline layer (index 9)
 SWEEP_ALPHAS = (1e-3, 1e-1, 1e1, 1e3, 1e5, 1e7)  # fixed ridge penalty per run (standardized space, same units as ALPHAS)
+RBF_CHECK_ROWS = 200  # clips used to compare our RBF Gram with sklearn's
 
 
 def secondary_rule(variable: str, scores: list[dict], baseline_mae: float | None) -> dict:
@@ -641,11 +644,139 @@ def print_alpha_sweep(result: dict) -> None:
                   f"  max leak {r['max_leak_observation']:.1e}  {r['seconds']:.0f} s")
     print(f"\nguard not after K (exceptions): {result['guard_not_after_k_exceptions']}")            
 
+
+def check_kernel_erasure() -> dict:
+    """Does the variable survive linear erasure nonlinearly? RBF kernel ridge on the projected features.
+
+    Per variable and site (idx 1 / 9 / 18) and arm (none; train cross-covariance directions, m dims; nullspace basis
+    at K, K·m dims; random train-span, m dims, N_RANDOM_SEEDS seeds, the same bases as fresh_probe_erasure): RBF kernel
+    ridge fit on train (gamma = factor x median-distance gamma, alpha from the floor's relative grid, both by exact
+    LOO), scored on val_seen and val_unseen. Passes if: the RBF Gram equals sklearn's; kernel_ridge on a linear Gram
+    equals RidgeCV (alpha, LOO error, predictions); every fit saw exactly the train clips; only validation rows were
+    predicted; scores finite; no alpha failure. Gamma on a grid edge is reported, not judged.
+    """
+    records = json.loads(OUT.read_text())
+    saved_rounds = records["nullspace_rounds"]["result"]
+    linear = records["fresh_probe_erasure"]["result"]
+    with np.load(verified_artifact(OUT, "nullspace_rounds")) as f:
+        bases = {key: f[key] for key in f.files if key.endswith("_basis")}
+
+    result: dict = {}
+    ok: dict[str, list[bool]] = {name: [] for name in ("rbf", "linear", "n_fit", "rows", "finite", "alpha")}
+    for variable in DATASETS:
+        table = load_joined(variable)
+        roles, labels = table["role"], table["label"]
+        y = probe_targets(variable, labels)
+        evaluated = np.isin(roles, EVAL_ROLES)
+        train = roles == "train"
+        error_name = "circular_mae" if variable == "direction" else "mae"
+        sites = {}
+        for site in NULLSPACE_SITES:
+            start = time.perf_counter()
+            x = site_features(table["activations"], site)
+            z = train_scaler(x, roles).transform(x)
+            summary = saved_rounds[variable]["sites"][site]
+            m, k = summary["dims_per_round"], summary["summary"]["k"]
+            span = train_span(z, roles)
+            arms: dict[str, tuple[np.ndarray, int]] = {
+                "none": (np.empty((z.shape[1], 0)), 0),
+                "covariance": (covariance_basis(z, y, roles), m),
+                "nullspace_k": (bases[f"{variable}_{site}_basis"], k * m),
+            }
+            arms |= {f"random_m_seed{s}": (random_span_basis(span, k * m, SEED + s)[:, :m], m)
+                     for s in range(N_RANDOM_SEEDS)}
+
+            entries = {}
+            for arm, (basis, n_cols) in arms.items():
+                zp = project_out(z, basis, n_cols)
+                rbf = rbf_kernel_ridge(zp, y, roles, evaluated)
+                pred = rbf.fit.predictions
+                scores = {role: probe_scores(variable, labels[roles == role], pred[roles == role]) for role in EVAL_ROLES}
+                verdict = nullspace_alpha_verdict(rbf.fit.alpha_edge, scores["val_seen"]["r2"])
+                ok["n_fit"].append(rbf.fit.n_fit == EXPECTED_FIT[variable])
+                ok["rows"].append(bool(np.isfinite(pred[evaluated]).all() and np.isnan(pred[~evaluated]).all()))
+                ok["finite"].append(all(np.isfinite(v) for s in scores.values() for v in s.values()))
+                ok["alpha"].append(verdict != "failure")
+                entry = {
+                    "dims_removed": n_cols, "gamma": rbf.gamma, "gamma_median": rbf.gamma_median,
+                    "gamma_factor": rbf.gamma / rbf.gamma_median, "gamma_edge": rbf.gamma_edge,
+                    "loo_mse_per_gamma": rbf.loo_mse.tolist(), "alpha": rbf.fit.alpha,
+                    "alpha_edge": rbf.fit.alpha_edge, "alpha_verdict": verdict, **scores,
+                    "linear_train_fit_val_seen_r2": linear[variable]["sites"][site]["arms"][arm]["train_fit"]["val_seen"]["r2"],
+                }
+                if arm == "none":
+                    rows = slice(0, RBF_CHECK_ROWS)
+                    ours = np.exp(-rbf.gamma * squared_distances(zp[rows]))
+                    rbf_diff = float(np.abs(ours - rbf_kernel(zp[rows], gamma=rbf.gamma)).max())
+                    lin = kernel_ridge(zp @ zp.T, y, roles, evaluated)
+                    centred = zp[train] - zp[train].mean(axis=0)
+                    ridge = RidgeCV(alphas=FLOOR_ALPHAS * (centred**2).sum() / train.sum(),
+                                    store_cv_results=True).fit(zp[train], y[train])
+                    ridge_loo = float(ridge.cv_results_.reshape(int(train.sum()), -1, len(FLOOR_ALPHAS))
+                                      .mean(axis=(0, 1)).min())
+                    checks = {
+                        "rbf_gram_max_abs_diff": rbf_diff,
+                        "linear_alpha_relative_diff": abs(lin.alpha - float(ridge.alpha_)) / float(ridge.alpha_),
+                        "linear_loo_relative_diff": abs(lin.loo_mse - ridge_loo) / ridge_loo,
+                        "linear_prediction_relative_diff": relative_diff(
+                            lin.predictions[evaluated], np.reshape(ridge.predict(zp[evaluated]), lin.predictions[evaluated].shape)),
+                    }
+                    entry["implementation_checks"] = checks
+                    ok["rbf"].append(rbf_diff <= 1e-10)
+                    ok["linear"].append(checks["linear_alpha_relative_diff"] <= 1e-12
+                                        and checks["linear_loo_relative_diff"] <= 1e-8
+                                        and checks["linear_prediction_relative_diff"] <= 1e-8)
+                entries[arm] = entry
+
+            random_r2 = [entries[f"random_m_seed{s}"]["val_seen"]["r2"] for s in range(N_RANDOM_SEEDS)]
+            sites[site] = {
+                "plot_index": plot_index(site), "k": k, "dims_per_round": m, "seconds": time.perf_counter() - start,
+                "arms": entries,
+                "random_m": {"val_seen_r2_mean": float(np.mean(random_r2)), "val_seen_r2_min": min(random_r2),
+                             "val_seen_r2_max": max(random_r2)},
+            }
+        result[variable] = {"error_metric": error_name, "sites": sites}
+
+    criteria = {
+        "rbf_gram_matches_sklearn": all(ok["rbf"]),
+        "kernel_loo_matches_ridgecv": all(ok["linear"]),
+        "n_fit_equals_train_count": all(ok["n_fit"]),
+        "only_validation_rows_predicted": all(ok["rows"]),
+        "scores_finite": all(ok["finite"]),
+        "no_alpha_failure": all(ok["alpha"]),
+    }
+    return {
+        "criteria": criteria, "gamma_factors": list(GAMMA_FACTORS), "relative_alphas": FLOOR_ALPHAS.tolist(),
+        "source": {"key": "nullspace_rounds", "artifact_sha256": saved_rounds["artifact"]["sha256"]},
+        **result, "passed": all(criteria.values()),
+    }
+
+
+def print_kernel_erasure(result: dict) -> None:
+    """Per variable and site: linear train-fit val-seen R² vs RBF kernel val-seen R² per arm, gamma factor, verdict."""
+    for variable in DATASETS:
+        other = result[variable]["error_metric"]
+        print(f"\n{variable}  (linear val-seen R2 | kernel val-seen R2 | kernel {other} | gamma factor | alpha verdict)")
+        for site, r in result[variable]["sites"].items():
+            print(f"  {site} idx {r['plot_index']}  K {r['k']}  ({r['seconds']:.0f} s)")
+            for arm in ("none", "covariance", "nullspace_k", "random_m_seed0"):
+                e = r["arms"][arm]
+                print(f"    {arm:14s} dims {e['dims_removed']:3d}  {e['linear_train_fit_val_seen_r2']:7.3f} | "
+                      f"{e['val_seen']['r2']:7.3f} | {e['val_seen'][other]:7.3f} | {e['gamma_factor']:4g}"
+                      f"{' (edge)' if e['gamma_edge'] else ''} | {e['alpha_verdict']}")
+            rm = r["random_m"]
+            print(f"    random_m (5)   kernel val-seen R2 mean {rm['val_seen_r2_mean']:.3f} "
+                  f"(min {rm['val_seen_r2_min']:.3f}, max {rm['val_seen_r2_max']:.3f})")
+            print(f"    implementation checks {r['arms']['none']['implementation_checks']}")
+            
+
 CHECKS = {
     "nullspace_rounds": (check_nullspace_rounds, print_nullspace_rounds),
     "leak_diagnostic": (check_leak_diagnostic, print_leak_diagnostic),
     "covariance_exhaustion": (check_covariance_exhaustion, print_covariance_exhaustion),
     "fresh_probe_erasure": (check_fresh_probe_erasure, print_fresh_probe_erasure),
+    "alpha_sweep": (check_alpha_sweep, print_alpha_sweep),
+    "kernel_erasure": (check_kernel_erasure, print_kernel_erasure),
 }
 
 

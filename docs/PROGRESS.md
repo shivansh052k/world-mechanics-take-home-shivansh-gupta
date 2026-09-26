@@ -355,6 +355,22 @@ what's next.
   removal) **wrong**: β = Σₓₓ⁻¹Σₓᵧ = 0 when Σₓᵧ = 0, and the train cross-covariance ≈ the population one → linear
   readout erased with m dims for held-out fresh probes too (LEACE, from memory). K counts procedure steps, not
   dimensionality (interpretation → planning chat together with the alpha sweep).
+- 4.3e `alpha_sweep` **passed** (4/4; first run failed at argparse: `CHECKS` entry missing, fixed and re-committed;
+  nothing saved by the failed call). idx 9, fixed alpha 1e-3 / 1e-1 / 1e1 / 1e3 / 1e5 / 1e7: round-1 R² 0.94 / 0.95–0.96 /
+  0.98–0.99 / 0.97–0.98 / 0.64–0.68 / 0.02; K direction 12 / >150 / 56 / 7 / 2 / 1, speed 7 / >150 / 83 / 9 / 2 / 1,
+  acceleration 7 / >150 / 88 / 10 / 2 / 1 (LOO 6 / 7 / 7); guard never ≤ K. K spans 7 to >150 among good probes.
+  Claude Code's predictions: 3 met, 3 wrong (monotonicity; 1e-3 vs LOO; LOO between 1e1 and 1e3). Non-monotone at 1e-3
+  and pre-guard leaks up to 5.5e-2 at 1e3: observations. Erasure + sweep interpretation → planning chat.
+- Planning chat (→ D-49 addendum): m-dim linear erasure = math property (cross-covariance rank m), never "stored in m
+  dims"; empirical content = (a) train covariance direction generalizes (fresh probes at chance, random removal incl.
+  K·m changes nothing), (b) K 7 to >150 across well-fitting ridge probes → procedure-dependent; paper's counts
+  consistent with weak regularization (hypothesis); "erased" = undetectable by a probe on ~240 clips/fold; 1e-3
+  non-monotonicity = observation. Redundancy = procedure steps. **New key:** RBF kernel ridge after erasure
+  (`kernel_ridge`, exact LOO; gamma grid around median heuristic, alpha relative grid; arms none / covariance /
+  nullspace K / random m ×5; idx 1/9/18; val-seen). H-01 reframed (manifold PCA dim vs K and m). Test adds the erasure
+  headline. Depth profile every third index (or dropped, user decides); random control kept, PC optional. One
+  multi-panel figure; message "the nullspace count measures the probe procedure, not the representation". Phase 5 K
+  6 / 7 / 7 unchanged; notes for Phase 5 (covariance steering arm) and 7.5 (covariance principal angles).
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),

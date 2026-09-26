@@ -251,3 +251,15 @@ def train_ridge(z: np.ndarray, y: np.ndarray, roles: np.ndarray, alphas: np.ndar
         raise ValueError("no train rows to fit on")
     z = np.asarray(z, dtype=np.float64)
     return RidgeCV(alphas=alphas, fit_intercept=True).fit(z[fit_rows], np.asarray(y, dtype=np.float64)[fit_rows])
+
+
+def covariance_basis(z: np.ndarray, y: np.ndarray, roles: np.ndarray) -> np.ndarray:
+    """(d, m) orthonormal basis of the train cross-covariance Zᵀ(y - ȳ) (m = 1, or 2 for (sin, cos)).
+
+    Projecting it out makes the train cross-covariance zero, so every ridge probe fit on train is exactly 0.
+    """
+    fit_rows = np.asarray(roles) == FIT_ROLE
+    targets = np.asarray(y, dtype=np.float64)[fit_rows]
+    cross = np.asarray(z, dtype=np.float64)[fit_rows].T @ (targets - targets.mean(axis=0))
+    q, _ = np.linalg.qr(cross.reshape(len(cross), -1))
+    return q
