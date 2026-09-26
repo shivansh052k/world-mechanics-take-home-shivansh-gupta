@@ -16,17 +16,18 @@ from pathlib import Path
 import numpy as np
 
 from vjepa_physics.data import DATASETS
-from vjepa_physics.evidence import file_sha256, save_result, verified_artifact
+from vjepa_physics.evidence import code_changes, file_sha256, repo_root, save_result, verified_artifact
 from vjepa_physics.extraction import SITES, plot_index
 from vjepa_physics.joined import load_joined
-from vjepa_physics.metrics import mae
+from vjepa_physics.metrics import bootstrap_indices, mae, percentile_interval, resampled_r2
 from vjepa_physics.nullspace import (
     EXHAUSTION_RATIO, NULL_R2, RANK_TOLERANCE, composite_maps, covariance_basis, curve_summary, first_true,
     grid_edge, nullspace_alpha_verdict, project_out, random_span_basis, redundancy_counts, round_scores, run_rounds,
     train_ridge, train_scaler, train_span,
 )
 from vjepa_physics.probes import (
-    ALPHAS, label_permutations, nested_cv_predictions, probe_scores, probe_targets, site_features,
+    ALPHAS, clip_folds, grouped_cv_ridge, label_permutations, nested_cv_predictions, probe_scores, probe_targets,
+    site_features,
 )
 from vjepa_physics.reproducibility import SEED
 from vjepa_physics.baselines import FLOOR_ALPHAS, GAMMA_FACTORS, kernel_ridge, rbf_kernel_ridge, squared_distances
@@ -79,6 +80,11 @@ SPAN_TOLERANCE_CHECK = 1e-10  # control bases must lie in the train span to this
 
 PROFILE_INDICES = tuple(range(0, 25, 3))  # every third hidden_states index: 0, 3, ..., 24
 PROFILE_STOP_R2 = 0.05  # the profile's curve is reported up to the first val-seen R² below this
+
+TEST_ROLES = ("test_seen", "test_unseen")
+LAYER_TESTS = REPO / "results/layer_curves/checks.json"  # key "test_scores": round 1 must match its probe scores
+HEADLINE_SITE = "block_8"  # headline layer (index 9): bootstrap intervals here only
+N_BOOTSTRAP = 10_000
 
 
 def secondary_rule(variable: str, scores: list[dict], baseline_mae: float | None) -> dict:
@@ -1248,6 +1254,179 @@ def print_depth_profile(result: dict) -> None:
                   f"  guard {r['guard_round']}{note}")
     print(f"\nguard not after K (exceptions): {result['guard_not_after_k_exceptions']}")
     
+    
+def check_nullspace_test_scores() -> dict:
+    """One-time test of the frozen nullspace findings, from committed code (scope fixed before any test row was read).
+
+    Per variable and site (idx 1 / 9 / 18): (1) nullspace curves from the saved composite maps, rounds up to the
+    guard round; first the maps must reproduce the saved validation predictions (<= COMPOSITE_TOLERANCE relative, two
+    computation paths) and round 1 must match the layer-curve test scores; then test_seen / test_unseen R² and error
+    per round, K and crossings (reported, never selected on). (2) Erasure headline: train cross-covariance direction(s)
+    removed (and "none"), fresh linear probe on the validation clips: the nested CV must reproduce the saved
+    validation score, then one probe fit on all validation clips (alpha by grouped CV there) scores test. (3) Kernel
+    arms none / covariance: original-grid refits (train only) must reproduce the saved val-seen R², then score test;
+    quoting mode from kernel_hat_gap. Headline intervals (clip bootstrap) at idx 9 only. Passes if: code committed;
+    the reproduce checks hold; round 1 matches; scores finite; no alpha failure; saved file = computed.
+    """
+    records = json.loads(OUT.read_text())
+    saved_rounds = records["nullspace_rounds"]["result"]
+    exhaustion = records["covariance_exhaustion"]["result"]
+    fresh_saved = records["fresh_probe_erasure"]["result"]
+    kernel_saved = records["kernel_erasure"]["result"]
+    hat = records["kernel_hat_gap"]["result"]
+    layer_tests = json.loads(LAYER_TESTS.read_text())["test_scores"]["result"]
+    with np.load(verified_artifact(OUT, "nullspace_rounds")) as f:
+        saved = {key: f[key] for key in f.files}
+    committed = not code_changes(repo_root())
+
+    arrays: dict[str, np.ndarray] = {"sites": np.array(NULLSPACE_SITES)}
+    result: dict = {}
+    ok: dict[str, list[bool]] = {name: [] for name in ("maps", "round1", "fresh", "kernel", "finite", "alpha")}
+    for variable in DATASETS:
+        table = load_joined(variable)
+        roles, labels, ids = table["role"], table["label"], table["id"]
+        y = probe_targets(variable, labels)
+        evaluated = np.isin(roles, EVAL_ROLES)
+        tested = np.isin(roles, TEST_ROLES)
+        error_name = "circular_mae" if variable == "direction" else "mae"
+        arrays[f"{variable}_test_ids"] = ids[tested]
+        arrays[f"{variable}_test_roles"] = roles[tested]
+        sites = {}
+        for site in NULLSPACE_SITES:
+            prefix = f"{variable}_{site}"
+            x = site_features(table["activations"], site)
+            guard = exhaustion[variable]["sites"][site]["guarded_run_exhausted_round"]
+
+            # (1) nullspace curves from the saved composite maps
+            composite = x @ saved[f"{prefix}_maps"][:guard] + saved[f"{prefix}_offsets"][:guard][:, None, :]
+            maps_diff = relative_diff(composite[:, evaluated],
+                                      saved[f"{prefix}_predictions"][evaluated, :guard].transpose(1, 0, 2))
+            ok["maps"].append(maps_diff <= COMPOSITE_TOLERANCE)
+            curves, round1 = {}, {}
+            for role in TEST_ROLES:
+                rows = roles == role
+                scores = round_scores(variable, labels[rows], composite[:, rows])
+                r2 = np.array([s["r2"] for s in scores])
+                ok["finite"].append(bool(np.isfinite(r2).all()))
+                layer_r2 = layer_tests[variable][role]["all"]["methods"][f"probe {site}"]["r2"]["point"]
+                round1[role] = {"r2": float(r2[0]), "layer_test_r2": layer_r2, "diff": abs(float(r2[0]) - layer_r2)}
+                ok["round1"].append(round1[role]["diff"] <= 1e-9)
+                curves[role] = {
+                    "k": first_true(r2 < NULL_R2), "crossings": {str(t): first_true(r2 < t) for t in THRESHOLDS},
+                    "r2": r2.tolist(), error_name: [s[error_name] for s in scores],
+                }
+            arrays[f"{prefix}_nullspace_test_predictions"] = composite[:, tested]
+
+            # (2) erasure headline: fresh linear probe fit on validation, scored on test
+            z = train_scaler(x, roles).transform(x)
+            basis = covariance_basis(z, y, roles)
+            arms = {"none": (np.empty((z.shape[1], 0)), 0), "covariance": (basis, basis.shape[1])}
+            fresh, kernel, predictions = {}, {}, {}
+            for arm, (b, n_cols) in arms.items():
+                zp = project_out(z, b, n_cols)
+                nested = nested_cv_predictions(zp[evaluated], y[evaluated], ids[evaluated], ERASURE_FOLDS, SEED)
+                cv_r2 = validation_scores(variable, labels[evaluated], roles[evaluated], nested.predictions)["validation"]["r2"]
+                saved_cv = fresh_saved[variable]["sites"][site]["arms"][arm]["fresh"]["validation"]["r2"]
+                ok["fresh"].append(abs(cv_r2 - saved_cv) <= 1e-12)
+                final = grouped_cv_ridge(zp[evaluated], y[evaluated], clip_folds(ids[evaluated], ERASURE_FOLDS, SEED))
+                verdict = nullspace_alpha_verdict(final.alpha_edge, cv_r2)
+                ok["alpha"].append(verdict != "failure")
+                fresh_pred = np.full((len(y), *y.shape[1:]), np.nan)
+                fresh_pred[tested] = flat(final.predict(zp[tested]))
+                fresh[arm] = {
+                    "dims_removed": n_cols, "validation_cv_r2": cv_r2, "alpha": final.alpha,
+                    "alpha_edge": final.alpha_edge, "alpha_verdict": verdict,
+                    **{role: probe_scores(variable, labels[roles == role], fresh_pred[roles == role]) for role in TEST_ROLES},
+                }
+
+                # (3) kernel arm: original-grid refit on train, reproduce val-seen, then score test
+                rbf = rbf_kernel_ridge(zp, y, roles, evaluated | tested)
+                seen = roles == "val_seen"
+                val_r2 = probe_scores(variable, labels[seen], rbf.fit.predictions[seen])["r2"]
+                saved_kernel = kernel_saved[variable]["sites"][site]["arms"][arm]["val_seen"]["r2"]
+                ok["kernel"].append(abs(val_r2 - saved_kernel) <= 1e-12)
+                kernel[arm] = {
+                    "dims_removed": n_cols, "val_seen_r2": val_r2,
+                    "quote": hat[variable]["sites"][site]["arms"][arm]["quote"],
+                    "alpha_edge": rbf.fit.alpha_edge,
+                    **{role: probe_scores(variable, labels[roles == role], rbf.fit.predictions[roles == role])
+                       for role in TEST_ROLES},
+                }
+                ok["finite"].append(all(np.isfinite(v) for role in TEST_ROLES
+                                        for s in (fresh[arm][role], kernel[arm][role]) for v in s.values()))
+                predictions[("fresh", arm)] = fresh_pred
+                predictions[("kernel", arm)] = rbf.fit.predictions
+                arrays[f"{prefix}_fresh_{arm}_test_predictions"] = fresh_pred[tested]
+                arrays[f"{prefix}_kernel_{arm}_test_predictions"] = rbf.fit.predictions[tested]
+
+            entry = {"plot_index": plot_index(site), "guard_round": guard,
+                     "validation_k": saved_rounds[variable]["sites"][site]["summary"]["k"],
+                     "round1": round1, "maps_max_relative_diff": maps_diff, "nullspace": curves,
+                     "fresh_probe": fresh, "kernel": kernel}
+
+            if site == HEADLINE_SITE:  # clip bootstrap for the headline numbers only
+                intervals = {}
+                for role in TEST_ROLES:
+                    rows = np.flatnonzero(roles == role)
+                    idx = bootstrap_indices(len(rows), N_BOOTSTRAP, SEED)
+                    per_round = np.stack([resampled_r2(y[rows], flat(composite[r, rows]), idx) for r in range(guard)])
+                    below = per_round < NULL_R2
+                    k_samples = np.where(below.any(axis=0), below.argmax(axis=0) + 1, 0)  # 0 = never below
+                    intervals[role] = {
+                        "round1_r2": percentile_interval(per_round[0]),
+                        "k_distribution": {str(k): int(c) for k, c in sorted(Counter(k_samples.tolist()).items())},
+                        "fresh_covariance_r2": percentile_interval(
+                            resampled_r2(y[rows], predictions[("fresh", "covariance")][rows], idx)),
+                        "kernel_covariance_r2": percentile_interval(
+                            resampled_r2(y[rows], predictions[("kernel", "covariance")][rows], idx)),
+                    }
+                entry["bootstrap"] = {"n_resamples": N_BOOTSTRAP, "seed": SEED, "level": 0.95, **intervals}
+            sites[site] = entry
+        result[variable] = {"error_metric": error_name, "sites": sites}
+
+    ARTIFACTS.mkdir(parents=True, exist_ok=True)
+    path = ARTIFACTS / "test_predictions.npz"
+    np.savez(path, **arrays)
+    with np.load(path) as saved_file:
+        saved_ok = set(saved_file.files) == set(arrays) and all(
+            np.array_equal(saved_file[key], value, equal_nan=value.dtype.kind == "f") for key, value in arrays.items())
+    criteria = {
+        "code_committed": committed,
+        "maps_reproduce_validation": all(ok["maps"]),
+        "round1_matches_layer_test_scores": all(ok["round1"]),
+        "fresh_probe_reproduces_saved": all(ok["fresh"]),
+        "kernel_refits_reproduce_saved": all(ok["kernel"]),
+        "scores_finite": all(ok["finite"]),
+        "no_alpha_failure": all(ok["alpha"]),
+        "saved_equals_computed": saved_ok,
+    }
+    return {
+        "criteria": criteria, "roles": list(TEST_ROLES), "stop_r2": NULL_R2, **result,
+        "artifact": {"path": str(path.relative_to(REPO)), "sha256": file_sha256(path)},
+        "passed": all(criteria.values()),
+    }
+
+
+def print_nullspace_test_scores(result: dict) -> None:
+    """Per variable and site: validation K vs test K, round-1 test R², fresh and kernel test R² (none / covariance)."""
+    for variable in DATASETS:
+        print(f"\n{variable}  (test_seen / test_unseen)")
+        for site, r in result[variable]["sites"].items():
+            n, fr, ke = r["nullspace"], r["fresh_probe"], r["kernel"]
+            print(f"  {site:9s} idx {r['plot_index']:2d}  K val {r['validation_k']}  K test "
+                  f"{n['test_seen']['k']} / {n['test_unseen']['k']}  round-1 R2 "
+                  f"{r['round1']['test_seen']['r2']:.3f} / {r['round1']['test_unseen']['r2']:.3f}")
+            for arm in ("none", "covariance"):
+                print(f"    {arm:10s} fresh linear {fr[arm]['test_seen']['r2']:7.3f} / {fr[arm]['test_unseen']['r2']:7.3f}"
+                      f"   kernel {ke[arm]['test_seen']['r2']:7.3f} / {ke[arm]['test_unseen']['r2']:7.3f} ({ke[arm]['quote']})")
+            if "bootstrap" in r:
+                for role in ("test_seen", "test_unseen"):
+                    b = r["bootstrap"][role]
+                    print(f"    {role:11s} round-1 R2 CI {np.round(b['round1_r2'], 3).tolist()}  K dist {b['k_distribution']}"
+                          f"  fresh cov CI {np.round(b['fresh_covariance_r2'], 3).tolist()}"
+                          f"  kernel cov CI {np.round(b['kernel_covariance_r2'], 3).tolist()}")
+                    
+                    
 
 CHECKS = {
     "nullspace_rounds": (check_nullspace_rounds, print_nullspace_rounds),
@@ -1262,6 +1441,7 @@ CHECKS = {
     "random_subspaces": (check_random_subspaces, print_control_run),
     "pc_subspaces": (check_pc_subspaces, print_control_run),
     "depth_profile": (check_depth_profile, print_depth_profile),
+    "nullspace_test_scores": (check_nullspace_test_scores, print_nullspace_test_scores),
 }
 
 

@@ -414,6 +414,12 @@ what's next.
   (idx 1 / 9 / 18); one top axis erases speed (idx 1, 18) and acceleration (idx 1) (observation). Claude Code's
   "PC K ≤ 5 at idx 9" wrong for acceleration (7). Artifacts `random_subspaces.npz` `75795bef…`, `pc_subspaces.npz`
   `9e1807e0…`. **Step 4.4 done.**
+- 4.3j `depth_profile` **passed** (6/6, ~1–2 min; idx 9 and 18 bit-identical to the full runs; no guard ≤ K). K (R² <
+  0.1) at idx 0/3/6/9/12/15/18/21/24: direction 2/9/7/6/7/6/8/8/8, speed 1/12/8/7/8/9/9/9/9, acceleration
+  1/11/9/7/8/9/9/9/9 (idx 0 = no signal); 0.05 stop adds ≤ 1 round. Mild U (max idx 3, min idx 9), no growth with depth
+  (paper: 40–136+ / 400, P-02). Procedure count. **Step 4.3 done** (validation).
+- Validation findings frozen in DECISIONS §1.10 before any test row is read: F-116–F-125, test scope F-126; H-12
+  added, H-01 reframed. Next: `nullspace_test_scores` (once, committed code).
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),
