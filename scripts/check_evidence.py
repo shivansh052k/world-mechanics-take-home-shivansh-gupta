@@ -65,6 +65,9 @@ CODE_PREFIXES = ("src/", "scripts/")  # the recorded code files live here
 PROBING_RERUNS = (("baselines", "pixel_grams"), ("baselines", "pixel_floor"), ("probes", "shuffled_labels"),
                   ("layer_curves", "bootstrap"), ("patches", "patch_alpha_diagnostic"))
 
+# Keys re-run at the nullspace gate: saved while their code was uncommitted, and no later commit holds exactly it.
+NULLSPACE_RERUNS = (("nullspace", "alpha_sweep"), ("nullspace", "kernel_hat_gap"))
+
 
 def scratch_git(root: Path, *args: str) -> None:
     """Git in the scratch repository, with a fixed identity and no commit signing."""
@@ -330,20 +333,23 @@ def without_machine_state(subject: str, key: str, result: dict) -> dict:
             r[variable].pop("decode_seconds", None)
             for gram in r[variable]["grams"].values():
                 gram.pop("gram_seconds", None)
+    if (subject, key) == ("nullspace", "alpha_sweep"):
+        for variable in ("direction", "speed", "acceleration"):
+            for run in r[variable]["runs"].values():
+                run.pop("seconds", None)
     return r
 
 
-def check_rerun_identical_probing() -> dict:
-    """The probing-stage keys re-run from committed code reproduce their committed results exactly.
+def compare_reruns(reruns: tuple[tuple[str, str], ...]) -> dict:
+    """Re-run keys vs the results committed at HEAD (read with git show), minus machine-state fields.
 
-    For every key in PROBING_RERUNS, compares the result now on disk with the one committed at HEAD (read with
-    git show), minus machine-state fields. Passes if every result is identical, every re-run was saved from
-    committed code (git_dirty false) and at a different commit than the committed result.
+    Passes if every result is identical, every re-run was saved from committed code (git_dirty false) and at a
+    different commit than the committed result.
     """
     root = repo_root()
     head = git(root, "rev-parse", "HEAD").strip()
     rows = []
-    for subject, key in PROBING_RERUNS:
+    for subject, key in reruns:
         path = f"results/{subject}/checks.json"
         committed = json.loads(git(root, "show", f"HEAD:{path}"))[key]
         current = json.loads((REPO / path).read_text())[key]
@@ -363,12 +369,22 @@ def check_rerun_identical_probing() -> dict:
     return {"head": head, "criteria": criteria, "keys": rows, "passed": all(criteria.values())}
 
 
+def check_rerun_identical_probing() -> dict:
+    """The probing-stage keys re-run from committed code reproduce their committed results exactly."""
+    return compare_reruns(PROBING_RERUNS)
+
+
+def check_rerun_identical_nullspace() -> dict:
+    """The nullspace keys re-run from committed code reproduce their committed results exactly."""
+    return compare_reruns(NULLSPACE_RERUNS)
+
 CHECKS = {
     "dirty_flag": check_dirty_flag,
     "rerun_identical": check_rerun_identical,
     "rerun_identical_splits_extraction": check_rerun_identical_splits_extraction,
     "code_hash_check": check_code_hash_check,
     "rerun_identical_probing": check_rerun_identical_probing,
+    "rerun_identical_nullspace": check_rerun_identical_nullspace,
 }
 
 def main() -> None:

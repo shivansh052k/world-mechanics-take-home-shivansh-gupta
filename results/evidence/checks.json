@@ -361,15 +361,15 @@
   },
   "code_hash_check": {
     "provenance": {
-      "utc": "2026-09-25T23:35:46+00:00",
-      "git_commit": "afb5c356435407966d86efb471b21ea24cc5d398",
+      "utc": "2026-09-26T03:13:39+00:00",
+      "git_commit": "aaf70414918df8654ae2ce924a25fda0b5bf477b",
       "git_dirty": false,
       "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
           "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
-          "src/vjepa_physics/baselines.py": "f81858b19b20464506e46c798b3568138a80495d3c737897d863cf0c3ff6ed25",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
           "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
           "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
           "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
@@ -383,16 +383,17 @@
           "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
           "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
           "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
           "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
           "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
-          "src/vjepa_physics/probes.py": "ff963eb6aa3d212df13dd5a3a822cff23c667f17c7f3b9c619b3ea47d53e2e31",
+          "src/vjepa_physics/probes.py": "7453d72556febab8c62a45d1f101c7f98b47e7f29df5fee8f0e33827fc2f3316",
           "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
           "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
           "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
           "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
-          "scripts/check_evidence.py": "5cc8f510ec632537598dae471d38bc0022277a7572d119d88043269fa38d8ade"
+          "scripts/check_evidence.py": "6087b58f7c968164e8eae537167ac9bc9d0695b12aa9cd1a7c69efe9e20ec59c"
         },
-        "combined_sha256": "13cd81194c542f16d7d0aa48f8f246292b4d9c30c18f9d14cf4b3c913651ff21"
+        "combined_sha256": "bf3e8ee3ae7dbee608dfcc26d6b2346b2b74c5e77fd1055737573127a6e4b499"
       },
       "versions": {
         "av": "18.1.0",
@@ -407,9 +408,9 @@
       }
     },
     "result": {
-      "head": "afb5c356435407966d86efb471b21ea24cc5d398",
-      "keys_checked": 18,
-      "commits_searched": 15,
+      "head": "aaf70414918df8654ae2ce924a25fda0b5bf477b",
+      "keys_checked": 33,
+      "commits_searched": 33,
       "keys": [
         {
           "subject": "probes",
@@ -554,10 +555,133 @@
           "git_dirty": true,
           "files": 24,
           "matching_commit": "16ad174dd29b027a13cbf9030a9c8ab0275d2ef5"
+        },
+        {
+          "subject": "nullspace",
+          "key": "nullspace_rounds",
+          "recorded_commit": "fa158e766d28952eb0b2e1778c77aadcbe0ffdb1",
+          "git_dirty": false,
+          "files": 25,
+          "matching_commit": "fa158e766d28952eb0b2e1778c77aadcbe0ffdb1"
+        },
+        {
+          "subject": "nullspace",
+          "key": "leak_diagnostic",
+          "recorded_commit": "2d25bcbc25a87d630c59e5d3efcdd9794bae4d91",
+          "git_dirty": false,
+          "files": 25,
+          "matching_commit": "2d25bcbc25a87d630c59e5d3efcdd9794bae4d91"
+        },
+        {
+          "subject": "nullspace",
+          "key": "covariance_exhaustion",
+          "recorded_commit": "55d6ef321019bce4694ed99cde15d9cdbc06a710",
+          "git_dirty": false,
+          "files": 25,
+          "matching_commit": "55d6ef321019bce4694ed99cde15d9cdbc06a710"
+        },
+        {
+          "subject": "nullspace",
+          "key": "fresh_probe_erasure",
+          "recorded_commit": "a585478b456b424f503af41e4b860e538c1b78c1",
+          "git_dirty": false,
+          "files": 25,
+          "matching_commit": "a585478b456b424f503af41e4b860e538c1b78c1"
+        },
+        {
+          "subject": "nullspace",
+          "key": "alpha_sweep",
+          "recorded_commit": "feebbd0aa708899a6b6f3e06cebb50725ed80ea8",
+          "git_dirty": true,
+          "files": 25,
+          "matching_commit": null
+        },
+        {
+          "subject": "nullspace",
+          "key": "kernel_erasure",
+          "recorded_commit": "3a79c2537f644ef7f06641501e69481b17fb671e",
+          "git_dirty": false,
+          "files": 25,
+          "matching_commit": "3a79c2537f644ef7f06641501e69481b17fb671e"
+        },
+        {
+          "subject": "nullspace",
+          "key": "kernel_shuffled_labels",
+          "recorded_commit": "8373ea158c05e57ef81c687abb25063747230296",
+          "git_dirty": false,
+          "files": 25,
+          "matching_commit": "8373ea158c05e57ef81c687abb25063747230296"
+        },
+        {
+          "subject": "nullspace",
+          "key": "kernel_grid_diagnostic",
+          "recorded_commit": "bea5f6a5b23a97efa14a4cd3f3c3de8c15de885c",
+          "git_dirty": true,
+          "files": 25,
+          "matching_commit": "8a0eb3cc08f415afa92cb4a4b6f832291441ef16"
+        },
+        {
+          "subject": "nullspace",
+          "key": "kernel_hat_gap",
+          "recorded_commit": "8a0eb3cc08f415afa92cb4a4b6f832291441ef16",
+          "git_dirty": true,
+          "files": 25,
+          "matching_commit": null
+        },
+        {
+          "subject": "nullspace",
+          "key": "random_subspaces",
+          "recorded_commit": "a0939dd49e50635f98cd9b8ce61c4c3396f9ac85",
+          "git_dirty": false,
+          "files": 25,
+          "matching_commit": "a0939dd49e50635f98cd9b8ce61c4c3396f9ac85"
+        },
+        {
+          "subject": "nullspace",
+          "key": "pc_subspaces",
+          "recorded_commit": "a0939dd49e50635f98cd9b8ce61c4c3396f9ac85",
+          "git_dirty": false,
+          "files": 25,
+          "matching_commit": "a0939dd49e50635f98cd9b8ce61c4c3396f9ac85"
+        },
+        {
+          "subject": "nullspace",
+          "key": "depth_profile",
+          "recorded_commit": "19700d0922cd984b24bbb9370bbe886584806f49",
+          "git_dirty": false,
+          "files": 25,
+          "matching_commit": "19700d0922cd984b24bbb9370bbe886584806f49"
+        },
+        {
+          "subject": "nullspace",
+          "key": "nullspace_test_scores",
+          "recorded_commit": "609299e9274d87af47bf6aacd9ceff7961489fd0",
+          "git_dirty": false,
+          "files": 25,
+          "matching_commit": "609299e9274d87af47bf6aacd9ceff7961489fd0"
+        },
+        {
+          "subject": "nullspace",
+          "key": "figure_nullspace",
+          "recorded_commit": "cecba6527baae48a4418fd5629ddd43853fb6199",
+          "git_dirty": false,
+          "files": 25,
+          "matching_commit": "cecba6527baae48a4418fd5629ddd43853fb6199"
+        },
+        {
+          "subject": "nullspace",
+          "key": "figure_erasure",
+          "recorded_commit": "c8519ae77c00902948f0dfc8e703e9dcb0b9109e",
+          "git_dirty": false,
+          "files": 25,
+          "matching_commit": "c8519ae77c00902948f0dfc8e703e9dcb0b9109e"
         }
       ],
-      "rerun_needed": [],
-      "passed": true
+      "rerun_needed": [
+        "nullspace/alpha_sweep",
+        "nullspace/kernel_hat_gap"
+      ],
+      "passed": false
     }
   },
   "rerun_identical_probing": {
