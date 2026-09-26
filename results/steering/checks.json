@@ -8468,5 +8468,3390 @@
       },
       "passed": true
     }
+  },
+  "steering_kernel": {
+    "provenance": {
+      "utc": "2026-09-26T20:54:04+00:00",
+      "git_commit": "2e95a6ca8d10f5df9333ea0a905a1f6f8efe4917",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "279ec58d6ffe8ecb6f42454e4b5998464e0910a86fdf2ec8df13f87c8bb4566a",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_steering.py": "92564dbdaf62d346ec07c677c553b167206ac9b4e33f3071387b379a2b568d74"
+        },
+        "combined_sha256": "8b1092b921669c143bc18ac105e6bdf9096bc4c97d8e2b8aed34a7580b0642e2"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "post_hoc": true,
+      "variables": {
+        "direction": {
+          "train_clip_distance_median": 44.40839090418788,
+          "block_8": {
+            "gamma": 0.00012582249054569281,
+            "gamma_median": 0.00025164498109138563,
+            "gamma_edge": null,
+            "alpha": 2.2399500416749735e-06,
+            "alpha_edge": null,
+            "min_one_minus_hat": 9.622356921257236e-06,
+            "hat_gap_flag": false,
+            "train_scores": {
+              "r2": 0.975172922687285,
+              "circular_mae": 4.527043007752793
+            },
+            "unedited_scores": {
+              "r2": 0.977643970179569,
+              "circular_mae": 3.7492293035906035
+            },
+            "arms": {
+              "probes_1": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.04666666666666667,
+                  "nearest_original": 0.92,
+                  "nearest_mean": 0.03333333333333333,
+                  "kernel_gain": 0.1466874653310084,
+                  "linear_gain": 0.19529147935671393
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.04666666666666667,
+                  "nearest_original": 0.92,
+                  "nearest_mean": 0.03333333333333333,
+                  "kernel_gain": 0.1466874653310084,
+                  "linear_gain": 0.19529147935671393
+                },
+                "0.0-0.25": {
+                  "runs": 150,
+                  "nearest_target": 0.04666666666666667,
+                  "nearest_original": 0.92,
+                  "nearest_mean": 0.03333333333333333,
+                  "kernel_gain": 0.1466874653310084,
+                  "linear_gain": 0.19529147935671393
+                },
+                "0.25-0.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.5-0.75": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_3": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.9933333333333333,
+                  "nearest_original": 0.006666666666666667,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9699364202915705,
+                  "linear_gain": 0.998095726657319
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.9933333333333333,
+                  "nearest_original": 0.006666666666666667,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9699364202915705,
+                  "linear_gain": 0.998095726657319
+                },
+                "0.0-0.25": {
+                  "runs": 40,
+                  "nearest_target": 0.975,
+                  "nearest_original": 0.025,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9445945338477689,
+                  "linear_gain": 0.9547089821046952
+                },
+                "0.25-0.5": {
+                  "runs": 57,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9696549545922056,
+                  "linear_gain": 0.9844426235881202
+                },
+                "0.5-0.75": {
+                  "runs": 53,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9713405178057529,
+                  "linear_gain": 1.0075567535896537
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_5": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.9933333333333333,
+                  "nearest_original": 0.006666666666666667,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9919028455768306,
+                  "linear_gain": 0.9803062769919589
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.9933333333333333,
+                  "nearest_original": 0.006666666666666667,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9919028455768306,
+                  "linear_gain": 0.9803062769919589
+                },
+                "0.0-0.25": {
+                  "runs": 16,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9566960100963868,
+                  "linear_gain": 0.9859090644780544
+                },
+                "0.25-0.5": {
+                  "runs": 52,
+                  "nearest_target": 0.9807692307692307,
+                  "nearest_original": 0.019230769230769232,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 1.0032091562310237,
+                  "linear_gain": 0.9872395711076167
+                },
+                "0.5-0.75": {
+                  "runs": 74,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9954113953851527,
+                  "linear_gain": 0.9774717603600105
+                },
+                "0.75-1.0": {
+                  "runs": 8,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9563704206238285,
+                  "linear_gain": 0.9902421241959769
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_6": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.9733333333333334,
+                  "nearest_original": 0.02666666666666667,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9293352097501347,
+                  "linear_gain": 1.0192996440317306
+                },
+                "in_distribution": {
+                  "runs": 79,
+                  "nearest_target": 0.9620253164556962,
+                  "nearest_original": 0.0379746835443038,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9315654483499227,
+                  "linear_gain": 0.9962679673370324
+                },
+                "0.0-0.25": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.25-0.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.5-0.75": {
+                  "runs": 13,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.7959682252889565,
+                  "linear_gain": 0.9439191163932976
+                },
+                "0.75-1.0": {
+                  "runs": 66,
+                  "nearest_target": 0.9545454545454546,
+                  "nearest_original": 0.045454545454545456,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.936650748704392,
+                  "linear_gain": 0.9981240337088604
+                },
+                "1.0-1.5": {
+                  "runs": 71,
+                  "nearest_target": 0.9859154929577465,
+                  "nearest_original": 0.014084507042253521,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9281831032879009,
+                  "linear_gain": 1.0313481343238915
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "covariance": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.9933333333333333,
+                  "nearest_original": 0.006666666666666667,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9847963492460468,
+                  "linear_gain": 0.9856179775289793
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.9933333333333333,
+                  "nearest_original": 0.006666666666666667,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9847963492460468,
+                  "linear_gain": 0.9856179775289793
+                },
+                "0.0-0.25": {
+                  "runs": 38,
+                  "nearest_target": 0.9736842105263158,
+                  "nearest_original": 0.02631578947368421,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9132245268994076,
+                  "linear_gain": 0.8930373344958701
+                },
+                "0.25-0.5": {
+                  "runs": 46,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.977207391948542,
+                  "linear_gain": 0.9758037432879012
+                },
+                "0.5-0.75": {
+                  "runs": 66,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9897758462452126,
+                  "linear_gain": 0.9922208768820471
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "random_5": {
+                "all": {
+                  "runs": 450,
+                  "nearest_target": 0.044444444444444446,
+                  "nearest_original": 0.9533333333333334,
+                  "nearest_mean": 0.0022222222222222222,
+                  "kernel_gain": 0.04675356979266672,
+                  "linear_gain": 0.0009078156194209988
+                },
+                "in_distribution": {
+                  "runs": 450,
+                  "nearest_target": 0.044444444444444446,
+                  "nearest_original": 0.9533333333333334,
+                  "nearest_mean": 0.0022222222222222222,
+                  "kernel_gain": 0.04675356979266672,
+                  "linear_gain": 0.0009078156194209988
+                },
+                "0.0-0.25": {
+                  "runs": 48,
+                  "nearest_target": 0.16666666666666666,
+                  "nearest_original": 0.8333333333333334,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.032483456476764386,
+                  "linear_gain": 0.04138651314395434
+                },
+                "0.25-0.5": {
+                  "runs": 156,
+                  "nearest_target": 0.07692307692307693,
+                  "nearest_original": 0.9230769230769231,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.015851219260567248,
+                  "linear_gain": -0.002907152740116344
+                },
+                "0.5-0.75": {
+                  "runs": 222,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.9954954954954955,
+                  "nearest_mean": 0.0045045045045045045,
+                  "kernel_gain": 0.04936964817490343,
+                  "linear_gain": 0.0017479054803070456
+                },
+                "0.75-1.0": {
+                  "runs": 24,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.06895754556773882,
+                  "linear_gain": -0.002369090808768449
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "random_6": {
+                "all": {
+                  "runs": 450,
+                  "nearest_target": 0.06444444444444444,
+                  "nearest_original": 0.8377777777777777,
+                  "nearest_mean": 0.09777777777777778,
+                  "kernel_gain": 0.1307784832635701,
+                  "linear_gain": 0.022343350044809966
+                },
+                "in_distribution": {
+                  "runs": 237,
+                  "nearest_target": 0.10126582278481013,
+                  "nearest_original": 0.8481012658227848,
+                  "nearest_mean": 0.05063291139240506,
+                  "kernel_gain": 0.08721503568944862,
+                  "linear_gain": 0.01212000821164889
+                },
+                "0.0-0.25": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.25-0.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.5-0.75": {
+                  "runs": 39,
+                  "nearest_target": 0.23076923076923078,
+                  "nearest_original": 0.7435897435897436,
+                  "nearest_mean": 0.02564102564102564,
+                  "kernel_gain": 0.002567616530760939,
+                  "linear_gain": -0.06671547441570685
+                },
+                "0.75-1.0": {
+                  "runs": 198,
+                  "nearest_target": 0.07575757575757576,
+                  "nearest_original": 0.8686868686868687,
+                  "nearest_mean": 0.05555555555555555,
+                  "kernel_gain": 0.0903895664131274,
+                  "linear_gain": 0.014915177266433764
+                },
+                "1.0-1.5": {
+                  "runs": 213,
+                  "nearest_target": 0.023474178403755867,
+                  "nearest_original": 0.8262910798122066,
+                  "nearest_mean": 0.15023474178403756,
+                  "kernel_gain": 0.15328268055981095,
+                  "linear_gain": 0.027691455459064696
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              }
+            }
+          },
+          "block_17": {
+            "gamma": 6.322809771401872e-05,
+            "gamma_median": 0.0002529123908560749,
+            "gamma_edge": "lower",
+            "alpha": 0.001204445086315766,
+            "alpha_edge": null,
+            "min_one_minus_hat": 0.016220523297979184,
+            "hat_gap_flag": false,
+            "train_scores": {
+              "r2": 0.9844686774978599,
+              "circular_mae": 3.706239743647628
+            },
+            "unedited_scores": {
+              "r2": 0.9876461320099469,
+              "circular_mae": 3.128262794723376
+            },
+            "arms": {
+              "probes_1": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.04,
+                  "nearest_original": 0.96,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.007967840576206387,
+                  "linear_gain": 0.009547628467396412
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.04,
+                  "nearest_original": 0.96,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.007967840576206387,
+                  "linear_gain": 0.009547628467396412
+                },
+                "0.0-0.25": {
+                  "runs": 150,
+                  "nearest_target": 0.04,
+                  "nearest_original": 0.96,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.007967840576206387,
+                  "linear_gain": 0.009547628467396412
+                },
+                "0.25-0.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.5-0.75": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_3": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.04,
+                  "nearest_original": 0.96,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.06803788377905655,
+                  "linear_gain": 0.07479414812233162
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.04,
+                  "nearest_original": 0.96,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.06803788377905655,
+                  "linear_gain": 0.07479414812233162
+                },
+                "0.0-0.25": {
+                  "runs": 40,
+                  "nearest_target": 0.15,
+                  "nearest_original": 0.85,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.07323738911998025,
+                  "linear_gain": 0.07504369199651059
+                },
+                "0.25-0.5": {
+                  "runs": 57,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.06580262294209621,
+                  "linear_gain": 0.07193777374577476
+                },
+                "0.5-0.75": {
+                  "runs": 53,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.06904416707693029,
+                  "linear_gain": 0.07637837142338444
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_5": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.04,
+                  "nearest_original": 0.96,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.06458871045950593,
+                  "linear_gain": 0.06789086281407083
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.04,
+                  "nearest_original": 0.96,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.06458871045950593,
+                  "linear_gain": 0.06789086281407083
+                },
+                "0.0-0.25": {
+                  "runs": 16,
+                  "nearest_target": 0.125,
+                  "nearest_original": 0.875,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.060777518703118184,
+                  "linear_gain": 0.05673116902909318
+                },
+                "0.25-0.5": {
+                  "runs": 52,
+                  "nearest_target": 0.07692307692307693,
+                  "nearest_original": 0.9230769230769231,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.0697634208965091,
+                  "linear_gain": 0.07059001737717627
+                },
+                "0.5-0.75": {
+                  "runs": 74,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.06366396869558617,
+                  "linear_gain": 0.06714661664842424
+                },
+                "0.75-1.0": {
+                  "runs": 8,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.06449288644285124,
+                  "linear_gain": 0.07020404861886785
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_6": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.04666666666666667,
+                  "nearest_original": 0.9533333333333334,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.0599221613165,
+                  "linear_gain": 0.05721702678473778
+                },
+                "in_distribution": {
+                  "runs": 79,
+                  "nearest_target": 0.0759493670886076,
+                  "nearest_original": 0.9240506329113924,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.05879192494192536,
+                  "linear_gain": 0.05872494066034378
+                },
+                "0.0-0.25": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.25-0.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.5-0.75": {
+                  "runs": 13,
+                  "nearest_target": 0.23076923076923078,
+                  "nearest_original": 0.7692307692307693,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.05208240875819215,
+                  "linear_gain": 0.06718543284824244
+                },
+                "0.75-1.0": {
+                  "runs": 66,
+                  "nearest_target": 0.045454545454545456,
+                  "nearest_original": 0.9545454545454546,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.05902514355353645,
+                  "linear_gain": 0.05843501312450264
+                },
+                "1.0-1.5": {
+                  "runs": 71,
+                  "nearest_target": 0.014084507042253521,
+                  "nearest_original": 0.9859154929577465,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.06050402927256552,
+                  "linear_gain": 0.05644492826744283
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "covariance": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.04,
+                  "nearest_original": 0.96,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.06461217100087596,
+                  "linear_gain": 0.06893890370329801
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.04,
+                  "nearest_original": 0.96,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.06461217100087596,
+                  "linear_gain": 0.06893890370329801
+                },
+                "0.0-0.25": {
+                  "runs": 38,
+                  "nearest_target": 0.15789473684210525,
+                  "nearest_original": 0.8421052631578947,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.06422758285123115,
+                  "linear_gain": 0.06242219015221998
+                },
+                "0.25-0.5": {
+                  "runs": 46,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.0638905650517439,
+                  "linear_gain": 0.06909691584764793
+                },
+                "0.5-0.75": {
+                  "runs": 66,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.064848609035805,
+                  "linear_gain": 0.06913279621311127
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "random_5": {
+                "all": {
+                  "runs": 450,
+                  "nearest_target": 0.04,
+                  "nearest_original": 0.96,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.0027182840859586855,
+                  "linear_gain": 0.0013297209225023295
+                },
+                "in_distribution": {
+                  "runs": 450,
+                  "nearest_target": 0.04,
+                  "nearest_original": 0.96,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.0027182840859586855,
+                  "linear_gain": 0.0013297209225023295
+                },
+                "0.0-0.25": {
+                  "runs": 48,
+                  "nearest_target": 0.125,
+                  "nearest_original": 0.875,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.0003988193907297607,
+                  "linear_gain": -0.003760600249107637
+                },
+                "0.25-0.5": {
+                  "runs": 156,
+                  "nearest_target": 0.07692307692307693,
+                  "nearest_original": 0.9230769230769231,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": -0.001916827608270763,
+                  "linear_gain": -0.0028241604298485205
+                },
+                "0.5-0.75": {
+                  "runs": 222,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.003290164724269713,
+                  "linear_gain": 0.002402023796127894
+                },
+                "0.75-1.0": {
+                  "runs": 24,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.0049480960229629145,
+                  "linear_gain": -0.00031884434233545814
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "random_6": {
+                "all": {
+                  "runs": 450,
+                  "nearest_target": 0.044444444444444446,
+                  "nearest_original": 0.9555555555555556,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.007679425683423152,
+                  "linear_gain": 0.0036185738275744043
+                },
+                "in_distribution": {
+                  "runs": 237,
+                  "nearest_target": 0.07172995780590717,
+                  "nearest_original": 0.9282700421940928,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.0064762952663342315,
+                  "linear_gain": 0.003726482241630325
+                },
+                "0.0-0.25": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.25-0.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.5-0.75": {
+                  "runs": 39,
+                  "nearest_target": 0.20512820512820512,
+                  "nearest_original": 0.7948717948717948,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": -0.006225651803546415,
+                  "linear_gain": -0.005225864741923642
+                },
+                "0.75-1.0": {
+                  "runs": 198,
+                  "nearest_target": 0.045454545454545456,
+                  "nearest_original": 0.9545454545454546,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.0069178070503846155,
+                  "linear_gain": 0.0040332648546618916
+                },
+                "1.0-1.5": {
+                  "runs": 213,
+                  "nearest_target": 0.014084507042253521,
+                  "nearest_original": 0.9859154929577465,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.00829882092889582,
+                  "linear_gain": 0.003563321383887763
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              }
+            }
+          },
+          "h12_reading_idx9": {
+            "arm": "probes_5",
+            "bin": "in_distribution",
+            "verdict": "not supported"
+          }
+        },
+        "speed": {
+          "train_clip_distance_median": 44.830575088329745,
+          "block_8": {
+            "gamma": 6.154037801062592e-05,
+            "gamma_median": 0.00024616151204250367,
+            "gamma_edge": "lower",
+            "alpha": 0.0037172747384335014,
+            "alpha_edge": null,
+            "min_one_minus_hat": 0.10187754864330223,
+            "hat_gap_flag": false,
+            "train_scores": {
+              "r2": 0.9842919911592667,
+              "mae": 0.1123111657691441
+            },
+            "unedited_scores": {
+              "r2": 0.9831283909917028,
+              "mae": 0.10640994132313697
+            },
+            "arms": {
+              "probes_1": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.24666666666666667,
+                  "nearest_original": 0.2866666666666667,
+                  "nearest_mean": 0.4666666666666667,
+                  "kernel_gain": 0.4711718984995003,
+                  "linear_gain": 0.5512485328633229
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.24666666666666667,
+                  "nearest_original": 0.2866666666666667,
+                  "nearest_mean": 0.4666666666666667,
+                  "kernel_gain": 0.4711718984995003,
+                  "linear_gain": 0.5512485328633229
+                },
+                "0.0-0.25": {
+                  "runs": 144,
+                  "nearest_target": 0.2569444444444444,
+                  "nearest_original": 0.2986111111111111,
+                  "nearest_mean": 0.4444444444444444,
+                  "kernel_gain": 0.47067186333393884,
+                  "linear_gain": 0.5504226716977283
+                },
+                "0.25-0.5": {
+                  "runs": 6,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 1.0,
+                  "kernel_gain": 0.4735963175761948,
+                  "linear_gain": 0.5552364453632422
+                },
+                "0.5-0.75": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_3": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.94,
+                  "nearest_original": 0.02,
+                  "nearest_mean": 0.04,
+                  "kernel_gain": 0.9879610423279953,
+                  "linear_gain": 1.009874211287767
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.94,
+                  "nearest_original": 0.02,
+                  "nearest_mean": 0.04,
+                  "kernel_gain": 0.9879610423279953,
+                  "linear_gain": 1.009874211287767
+                },
+                "0.0-0.25": {
+                  "runs": 86,
+                  "nearest_target": 0.9302325581395349,
+                  "nearest_original": 0.03488372093023256,
+                  "nearest_mean": 0.03488372093023256,
+                  "kernel_gain": 0.9820721203338774,
+                  "linear_gain": 0.9964286662440632
+                },
+                "0.25-0.5": {
+                  "runs": 52,
+                  "nearest_target": 0.9423076923076923,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.057692307692307696,
+                  "kernel_gain": 0.9886987245212514,
+                  "linear_gain": 1.0094122375444798
+                },
+                "0.5-0.75": {
+                  "runs": 12,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9889989643915423,
+                  "linear_gain": 1.0165457706260632
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_6": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.9466666666666667,
+                  "nearest_original": 0.013333333333333334,
+                  "nearest_mean": 0.04,
+                  "kernel_gain": 0.9762930106920724,
+                  "linear_gain": 1.0110550407950991
+                },
+                "in_distribution": {
+                  "runs": 148,
+                  "nearest_target": 0.9459459459459459,
+                  "nearest_original": 0.013513513513513514,
+                  "nearest_mean": 0.04054054054054054,
+                  "kernel_gain": 0.9752589904618528,
+                  "linear_gain": 1.009339815790732
+                },
+                "0.0-0.25": {
+                  "runs": 26,
+                  "nearest_target": 0.8461538461538461,
+                  "nearest_original": 0.038461538461538464,
+                  "nearest_mean": 0.11538461538461539,
+                  "kernel_gain": 0.9237434020861812,
+                  "linear_gain": 0.9195929140356056
+                },
+                "0.25-0.5": {
+                  "runs": 41,
+                  "nearest_target": 0.9024390243902439,
+                  "nearest_original": 0.024390243902439025,
+                  "nearest_mean": 0.07317073170731707,
+                  "kernel_gain": 0.9832230675573589,
+                  "linear_gain": 0.9895466543400281
+                },
+                "0.5-0.75": {
+                  "runs": 55,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9863766210197767,
+                  "linear_gain": 1.0147304670304458
+                },
+                "0.75-1.0": {
+                  "runs": 26,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9678396774438947,
+                  "linear_gain": 1.0174669940431025
+                },
+                "1.0-1.5": {
+                  "runs": 2,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9957195123605187,
+                  "linear_gain": 1.044668162916985
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_7": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.48,
+                  "nearest_original": 0.25333333333333335,
+                  "nearest_mean": 0.26666666666666666,
+                  "kernel_gain": 0.42149867091026916,
+                  "linear_gain": 1.0091020751968638
+                },
+                "in_distribution": {
+                  "runs": 30,
+                  "nearest_target": 0.9,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.1,
+                  "kernel_gain": 0.9732916957874815,
+                  "linear_gain": 0.9779955655455397
+                },
+                "0.0-0.25": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.25-0.5": {
+                  "runs": 8,
+                  "nearest_target": 0.75,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.25,
+                  "kernel_gain": 0.9634335723744663,
+                  "linear_gain": 0.9389618244830856
+                },
+                "0.5-0.75": {
+                  "runs": 11,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.981352254625579,
+                  "linear_gain": 0.9951438332808518
+                },
+                "0.75-1.0": {
+                  "runs": 11,
+                  "nearest_target": 0.9090909090909091,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.09090909090909091,
+                  "kernel_gain": 0.9699305673532731,
+                  "linear_gain": 0.9775333090000426
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 120,
+                  "nearest_target": 0.375,
+                  "nearest_original": 0.31666666666666665,
+                  "nearest_mean": 0.30833333333333335,
+                  "kernel_gain": 0.3716347469095533,
+                  "linear_gain": 1.011908555171269
+                }
+              },
+              "covariance": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.9,
+                  "nearest_original": 0.03333333333333333,
+                  "nearest_mean": 0.06666666666666667,
+                  "kernel_gain": 0.9657035716872923,
+                  "linear_gain": 0.9768639544593816
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.9,
+                  "nearest_original": 0.03333333333333333,
+                  "nearest_mean": 0.06666666666666667,
+                  "kernel_gain": 0.9657035716872923,
+                  "linear_gain": 0.9768639544593816
+                },
+                "0.0-0.25": {
+                  "runs": 79,
+                  "nearest_target": 0.8734177215189873,
+                  "nearest_original": 0.06329113924050633,
+                  "nearest_mean": 0.06329113924050633,
+                  "kernel_gain": 0.9503368805167496,
+                  "linear_gain": 0.9565865315313514
+                },
+                "0.25-0.5": {
+                  "runs": 46,
+                  "nearest_target": 0.8913043478260869,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.10869565217391304,
+                  "kernel_gain": 0.9680410263250807,
+                  "linear_gain": 0.9765996263173852
+                },
+                "0.5-0.75": {
+                  "runs": 25,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9667347834853527,
+                  "linear_gain": 0.9807069056970004
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "random_6": {
+                "all": {
+                  "runs": 450,
+                  "nearest_target": 0.09333333333333334,
+                  "nearest_original": 0.8177777777777778,
+                  "nearest_mean": 0.08888888888888889,
+                  "kernel_gain": 0.02884256460494211,
+                  "linear_gain": 0.005296759995266058
+                },
+                "in_distribution": {
+                  "runs": 444,
+                  "nearest_target": 0.0945945945945946,
+                  "nearest_original": 0.8153153153153153,
+                  "nearest_mean": 0.09009009009009009,
+                  "kernel_gain": 0.024912318121407154,
+                  "linear_gain": 0.006739344052288817
+                },
+                "0.0-0.25": {
+                  "runs": 78,
+                  "nearest_target": 0.038461538461538464,
+                  "nearest_original": 0.8846153846153846,
+                  "nearest_mean": 0.07692307692307693,
+                  "kernel_gain": 0.013861704318954771,
+                  "linear_gain": 0.01022891721764737
+                },
+                "0.25-0.5": {
+                  "runs": 123,
+                  "nearest_target": 0.1951219512195122,
+                  "nearest_original": 0.7886178861788617,
+                  "nearest_mean": 0.016260162601626018,
+                  "kernel_gain": 0.02148379861215049,
+                  "linear_gain": 0.010827063438082788
+                },
+                "0.5-0.75": {
+                  "runs": 165,
+                  "nearest_target": 0.09090909090909091,
+                  "nearest_original": 0.7818181818181819,
+                  "nearest_mean": 0.12727272727272726,
+                  "kernel_gain": 0.006904097028419216,
+                  "linear_gain": -0.005836168847594115
+                },
+                "0.75-1.0": {
+                  "runs": 78,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.8589743589743589,
+                  "nearest_mean": 0.14102564102564102,
+                  "kernel_gain": 0.041174103001986706,
+                  "linear_gain": 0.015445129528014192
+                },
+                "1.0-1.5": {
+                  "runs": 6,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.10268148732464832,
+                  "linear_gain": -0.022973440098795966
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "random_7": {
+                "all": {
+                  "runs": 450,
+                  "nearest_target": 0.2777777777777778,
+                  "nearest_original": 0.4822222222222222,
+                  "nearest_mean": 0.24,
+                  "kernel_gain": 0.28730790335126744,
+                  "linear_gain": 0.03614142828937326
+                },
+                "in_distribution": {
+                  "runs": 90,
+                  "nearest_target": 0.044444444444444446,
+                  "nearest_original": 0.8888888888888888,
+                  "nearest_mean": 0.06666666666666667,
+                  "kernel_gain": 0.05733794365174665,
+                  "linear_gain": -0.010205400096377515
+                },
+                "0.0-0.25": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.25-0.5": {
+                  "runs": 24,
+                  "nearest_target": 0.041666666666666664,
+                  "nearest_original": 0.8333333333333334,
+                  "nearest_mean": 0.125,
+                  "kernel_gain": 0.009398471905203192,
+                  "linear_gain": 0.0025934598477300418
+                },
+                "0.5-0.75": {
+                  "runs": 33,
+                  "nearest_target": 0.06060606060606061,
+                  "nearest_original": 0.9090909090909091,
+                  "nearest_mean": 0.030303030303030304,
+                  "kernel_gain": 0.04889596664085376,
+                  "linear_gain": 0.012202258509643162
+                },
+                "0.75-1.0": {
+                  "runs": 33,
+                  "nearest_target": 0.030303030303030304,
+                  "nearest_original": 0.9090909090909091,
+                  "nearest_mean": 0.06060606060606061,
+                  "kernel_gain": 0.07953616356198333,
+                  "linear_gain": -0.032452599402340875
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 360,
+                  "nearest_target": 0.33611111111111114,
+                  "nearest_original": 0.38055555555555554,
+                  "nearest_mean": 0.2833333333333333,
+                  "kernel_gain": 0.30808961692123576,
+                  "linear_gain": 0.04032291464704474
+                }
+              }
+            }
+          },
+          "block_17": {
+            "gamma": 6.298828219021628e-05,
+            "gamma_median": 0.0002519531287608651,
+            "gamma_edge": "lower",
+            "alpha": 0.0011990340460064722,
+            "alpha_edge": null,
+            "min_one_minus_hat": 0.04138159225924565,
+            "hat_gap_flag": false,
+            "train_scores": {
+              "r2": 0.9884972395351213,
+              "mae": 0.09123746577148939
+            },
+            "unedited_scores": {
+              "r2": 0.9888192371461378,
+              "mae": 0.08650885380654463
+            },
+            "arms": {
+              "probes_1": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.06666666666666667,
+                  "nearest_original": 0.8733333333333333,
+                  "nearest_mean": 0.06,
+                  "kernel_gain": 0.04634656636878295,
+                  "linear_gain": 0.0533566352509423
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.06666666666666667,
+                  "nearest_original": 0.8733333333333333,
+                  "nearest_mean": 0.06,
+                  "kernel_gain": 0.04634656636878295,
+                  "linear_gain": 0.0533566352509423
+                },
+                "0.0-0.25": {
+                  "runs": 144,
+                  "nearest_target": 0.06944444444444445,
+                  "nearest_original": 0.8680555555555556,
+                  "nearest_mean": 0.0625,
+                  "kernel_gain": 0.04587895796410148,
+                  "linear_gain": 0.053123208054925694
+                },
+                "0.25-0.5": {
+                  "runs": 6,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.04862817377565478,
+                  "linear_gain": 0.05450087309867806
+                },
+                "0.5-0.75": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_3": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.07333333333333333,
+                  "nearest_original": 0.8266666666666667,
+                  "nearest_mean": 0.1,
+                  "kernel_gain": 0.10179061751892655,
+                  "linear_gain": 0.1113595410100602
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.07333333333333333,
+                  "nearest_original": 0.8266666666666667,
+                  "nearest_mean": 0.1,
+                  "kernel_gain": 0.10179061751892655,
+                  "linear_gain": 0.1113595410100602
+                },
+                "0.0-0.25": {
+                  "runs": 86,
+                  "nearest_target": 0.12790697674418605,
+                  "nearest_original": 0.813953488372093,
+                  "nearest_mean": 0.05813953488372093,
+                  "kernel_gain": 0.09679891509446674,
+                  "linear_gain": 0.1071627915881501
+                },
+                "0.25-0.5": {
+                  "runs": 52,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.8076923076923077,
+                  "nearest_mean": 0.19230769230769232,
+                  "kernel_gain": 0.10321553063448866,
+                  "linear_gain": 0.11297178233400323
+                },
+                "0.5-0.75": {
+                  "runs": 12,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.1012251230686345,
+                  "linear_gain": 0.11006837918106113
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_6": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.07333333333333333,
+                  "nearest_original": 0.8066666666666666,
+                  "nearest_mean": 0.12,
+                  "kernel_gain": 0.11930215054648259,
+                  "linear_gain": 0.12753713239981843
+                },
+                "in_distribution": {
+                  "runs": 148,
+                  "nearest_target": 0.07432432432432433,
+                  "nearest_original": 0.8040540540540541,
+                  "nearest_mean": 0.12162162162162163,
+                  "kernel_gain": 0.1197160974170568,
+                  "linear_gain": 0.12758418695446785
+                },
+                "0.0-0.25": {
+                  "runs": 26,
+                  "nearest_target": 0.11538461538461539,
+                  "nearest_original": 0.8846153846153846,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.10297897931267644,
+                  "linear_gain": 0.11264501653226343
+                },
+                "0.25-0.5": {
+                  "runs": 41,
+                  "nearest_target": 0.0975609756097561,
+                  "nearest_original": 0.8048780487804879,
+                  "nearest_mean": 0.0975609756097561,
+                  "kernel_gain": 0.10980372435646321,
+                  "linear_gain": 0.12122470499233029
+                },
+                "0.5-0.75": {
+                  "runs": 55,
+                  "nearest_target": 0.07272727272727272,
+                  "nearest_original": 0.7818181818181819,
+                  "nearest_mean": 0.14545454545454545,
+                  "kernel_gain": 0.12357207625112882,
+                  "linear_gain": 0.131809777415741
+                },
+                "0.75-1.0": {
+                  "runs": 26,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.7692307692307693,
+                  "nearest_mean": 0.23076923076923078,
+                  "kernel_gain": 0.1204723672549134,
+                  "linear_gain": 0.126987893903502
+                },
+                "1.0-1.5": {
+                  "runs": 2,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.11197359874953558,
+                  "linear_gain": 0.1266859004268737
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_7": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.36,
+                  "nearest_original": 0.44,
+                  "nearest_mean": 0.2,
+                  "kernel_gain": 0.3638046440838193,
+                  "linear_gain": 0.5389235208717458
+                },
+                "in_distribution": {
+                  "runs": 30,
+                  "nearest_target": 0.1,
+                  "nearest_original": 0.8333333333333334,
+                  "nearest_mean": 0.06666666666666667,
+                  "kernel_gain": 0.0990290259045498,
+                  "linear_gain": 0.10819166058373654
+                },
+                "0.0-0.25": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.25-0.5": {
+                  "runs": 8,
+                  "nearest_target": 0.125,
+                  "nearest_original": 0.75,
+                  "nearest_mean": 0.125,
+                  "kernel_gain": 0.08858190494554909,
+                  "linear_gain": 0.09247012284764117
+                },
+                "0.5-0.75": {
+                  "runs": 11,
+                  "nearest_target": 0.09090909090909091,
+                  "nearest_original": 0.8181818181818182,
+                  "nearest_mean": 0.09090909090909091,
+                  "kernel_gain": 0.08368403741846707,
+                  "linear_gain": 0.08436748341256532
+                },
+                "0.75-1.0": {
+                  "runs": 11,
+                  "nearest_target": 0.09090909090909091,
+                  "nearest_original": 0.9090909090909091,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.11391188632285328,
+                  "linear_gain": 0.13160647179633994
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 120,
+                  "nearest_target": 0.425,
+                  "nearest_original": 0.3416666666666667,
+                  "nearest_mean": 0.23333333333333334,
+                  "kernel_gain": 0.3870425789541529,
+                  "linear_gain": 0.5769181510792244
+                }
+              },
+              "covariance": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.08,
+                  "nearest_original": 0.8133333333333334,
+                  "nearest_mean": 0.10666666666666667,
+                  "kernel_gain": 0.11145728182674478,
+                  "linear_gain": 0.11912529134900886
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.08,
+                  "nearest_original": 0.8133333333333334,
+                  "nearest_mean": 0.10666666666666667,
+                  "kernel_gain": 0.11145728182674478,
+                  "linear_gain": 0.11912529134900886
+                },
+                "0.0-0.25": {
+                  "runs": 79,
+                  "nearest_target": 0.1518987341772152,
+                  "nearest_original": 0.7974683544303798,
+                  "nearest_mean": 0.05063291139240506,
+                  "kernel_gain": 0.10658163199442172,
+                  "linear_gain": 0.11507810113013592
+                },
+                "0.25-0.5": {
+                  "runs": 46,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.782608695652174,
+                  "nearest_mean": 0.21739130434782608,
+                  "kernel_gain": 0.11104853405527808,
+                  "linear_gain": 0.11963135594720907
+                },
+                "0.5-0.75": {
+                  "runs": 25,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.92,
+                  "nearest_mean": 0.08,
+                  "kernel_gain": 0.11266096899832574,
+                  "linear_gain": 0.119501026573115
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "random_6": {
+                "all": {
+                  "runs": 450,
+                  "nearest_target": 0.06888888888888889,
+                  "nearest_original": 0.8977777777777778,
+                  "nearest_mean": 0.03333333333333333,
+                  "kernel_gain": 0.0004553726495527571,
+                  "linear_gain": 0.0006545008242574145
+                },
+                "in_distribution": {
+                  "runs": 444,
+                  "nearest_target": 0.06981981981981981,
+                  "nearest_original": 0.8963963963963963,
+                  "nearest_mean": 0.033783783783783786,
+                  "kernel_gain": -0.00026511436089930143,
+                  "linear_gain": -0.00012249197619140832
+                },
+                "0.0-0.25": {
+                  "runs": 78,
+                  "nearest_target": 0.08974358974358974,
+                  "nearest_original": 0.9102564102564102,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.0004431465141645592,
+                  "linear_gain": 0.0008684374370463487
+                },
+                "0.25-0.5": {
+                  "runs": 123,
+                  "nearest_target": 0.0975609756097561,
+                  "nearest_original": 0.8861788617886179,
+                  "nearest_mean": 0.016260162601626018,
+                  "kernel_gain": 0.002076508756821181,
+                  "linear_gain": 0.0018133946233457232
+                },
+                "0.5-0.75": {
+                  "runs": 165,
+                  "nearest_target": 0.07272727272727272,
+                  "nearest_original": 0.8909090909090909,
+                  "nearest_mean": 0.03636363636363636,
+                  "kernel_gain": -0.0031342079807538665,
+                  "linear_gain": -0.002727454793978617
+                },
+                "0.75-1.0": {
+                  "runs": 78,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.9102564102564102,
+                  "nearest_mean": 0.08974358974358974,
+                  "kernel_gain": 0.0013191287344804445,
+                  "linear_gain": 0.0013411464357257852
+                },
+                "1.0-1.5": {
+                  "runs": 6,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.013210938038418404,
+                  "linear_gain": 0.014710549583358875
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "random_7": {
+                "all": {
+                  "runs": 450,
+                  "nearest_target": 0.14888888888888888,
+                  "nearest_original": 0.5755555555555556,
+                  "nearest_mean": 0.27555555555555555,
+                  "kernel_gain": 0.0948691813557172,
+                  "linear_gain": 0.02153657141624186
+                },
+                "in_distribution": {
+                  "runs": 90,
+                  "nearest_target": 0.03333333333333333,
+                  "nearest_original": 0.9222222222222223,
+                  "nearest_mean": 0.044444444444444446,
+                  "kernel_gain": -0.003146728471791109,
+                  "linear_gain": -0.004702639385960725
+                },
+                "0.0-0.25": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.25-0.5": {
+                  "runs": 24,
+                  "nearest_target": 0.041666666666666664,
+                  "nearest_original": 0.875,
+                  "nearest_mean": 0.08333333333333333,
+                  "kernel_gain": 0.010520609280900522,
+                  "linear_gain": 0.009638776805095102
+                },
+                "0.5-0.75": {
+                  "runs": 33,
+                  "nearest_target": 0.06060606060606061,
+                  "nearest_original": 0.9090909090909091,
+                  "nearest_mean": 0.030303030303030304,
+                  "kernel_gain": 0.0022938822282937764,
+                  "linear_gain": 7.22172553951784e-05
+                },
+                "0.75-1.0": {
+                  "runs": 33,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.9696969696969697,
+                  "nearest_mean": 0.030303030303030304,
+                  "kernel_gain": -0.010780684590838844,
+                  "linear_gain": -0.01210385071231672
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 360,
+                  "nearest_target": 0.17777777777777778,
+                  "nearest_original": 0.4888888888888889,
+                  "nearest_mean": 0.3333333333333333,
+                  "kernel_gain": 0.10347151167786181,
+                  "linear_gain": 0.023851118361292924
+                }
+              }
+            }
+          },
+          "h12_reading_idx9": {
+            "arm": "probes_6",
+            "bin": "in_distribution",
+            "verdict": "not supported"
+          }
+        },
+        "acceleration": {
+          "train_clip_distance_median": 44.41171056168747,
+          "block_8": {
+            "gamma": 0.00012467326876231593,
+            "gamma_median": 0.00024934653752463185,
+            "gamma_edge": null,
+            "alpha": 0.003955947980608098,
+            "alpha_edge": null,
+            "min_one_minus_hat": 0.028706843899197643,
+            "hat_gap_flag": false,
+            "train_scores": {
+              "r2": 0.9724946181980076,
+              "mae": 0.36991796021537415
+            },
+            "unedited_scores": {
+              "r2": 0.9736078997925819,
+              "mae": 0.3597368231828909
+            },
+            "arms": {
+              "probes_1": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.12,
+                  "nearest_original": 0.5,
+                  "nearest_mean": 0.38,
+                  "kernel_gain": 0.29256100611716795,
+                  "linear_gain": 0.3573394106730098
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.12,
+                  "nearest_original": 0.5,
+                  "nearest_mean": 0.38,
+                  "kernel_gain": 0.29256100611716795,
+                  "linear_gain": 0.3573394106730098
+                },
+                "0.0-0.25": {
+                  "runs": 150,
+                  "nearest_target": 0.12,
+                  "nearest_original": 0.5,
+                  "nearest_mean": 0.38,
+                  "kernel_gain": 0.29256100611716795,
+                  "linear_gain": 0.3573394106730098
+                },
+                "0.25-0.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.5-0.75": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_3": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.8666666666666667,
+                  "nearest_original": 0.06,
+                  "nearest_mean": 0.07333333333333333,
+                  "kernel_gain": 0.9782758446563284,
+                  "linear_gain": 1.0153154109676157
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.8666666666666667,
+                  "nearest_original": 0.06,
+                  "nearest_mean": 0.07333333333333333,
+                  "kernel_gain": 0.9782758446563284,
+                  "linear_gain": 1.0153154109676157
+                },
+                "0.0-0.25": {
+                  "runs": 91,
+                  "nearest_target": 0.8021978021978022,
+                  "nearest_original": 0.0989010989010989,
+                  "nearest_mean": 0.0989010989010989,
+                  "kernel_gain": 0.9484529531013253,
+                  "linear_gain": 0.9890950257064136
+                },
+                "0.25-0.5": {
+                  "runs": 52,
+                  "nearest_target": 0.9615384615384616,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.038461538461538464,
+                  "kernel_gain": 0.9856054791150783,
+                  "linear_gain": 1.0176473397552834
+                },
+                "0.5-0.75": {
+                  "runs": 7,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9776523881288265,
+                  "linear_gain": 1.0288471087077387
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_6": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.8666666666666667,
+                  "nearest_original": 0.06666666666666667,
+                  "nearest_mean": 0.06666666666666667,
+                  "kernel_gain": 0.9575671496909985,
+                  "linear_gain": 0.9934354222735179
+                },
+                "in_distribution": {
+                  "runs": 145,
+                  "nearest_target": 0.8620689655172413,
+                  "nearest_original": 0.06896551724137931,
+                  "nearest_mean": 0.06896551724137931,
+                  "kernel_gain": 0.957036549695817,
+                  "linear_gain": 0.9918958003914445
+                },
+                "0.0-0.25": {
+                  "runs": 27,
+                  "nearest_target": 0.5555555555555556,
+                  "nearest_original": 0.1111111111111111,
+                  "nearest_mean": 0.3333333333333333,
+                  "kernel_gain": 0.9502848868957977,
+                  "linear_gain": 0.9632179254784013
+                },
+                "0.25-0.5": {
+                  "runs": 43,
+                  "nearest_target": 0.8837209302325582,
+                  "nearest_original": 0.09302325581395349,
+                  "nearest_mean": 0.023255813953488372,
+                  "kernel_gain": 0.9581140909197513,
+                  "linear_gain": 0.9691856073091397
+                },
+                "0.5-0.75": {
+                  "runs": 47,
+                  "nearest_target": 0.9361702127659575,
+                  "nearest_original": 0.06382978723404255,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.971984861503274,
+                  "linear_gain": 0.99631536640971
+                },
+                "0.75-1.0": {
+                  "runs": 28,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9455813158930728,
+                  "linear_gain": 0.9982235357539639
+                },
+                "1.0-1.5": {
+                  "runs": 5,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9612425248257126,
+                  "linear_gain": 1.0039928158898148
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_7": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.43333333333333335,
+                  "nearest_original": 0.15333333333333332,
+                  "nearest_mean": 0.41333333333333333,
+                  "kernel_gain": 0.6225950640729119,
+                  "linear_gain": 1.0047333349887864
+                },
+                "in_distribution": {
+                  "runs": 30,
+                  "nearest_target": 0.6,
+                  "nearest_original": 0.1,
+                  "nearest_mean": 0.3,
+                  "kernel_gain": 0.9761058719742999,
+                  "linear_gain": 0.9781424160628642
+                },
+                "0.0-0.25": {
+                  "runs": 12,
+                  "nearest_target": 0.5,
+                  "nearest_original": 0.25,
+                  "nearest_mean": 0.25,
+                  "kernel_gain": 0.9345926432159924,
+                  "linear_gain": 0.9393199009027376
+                },
+                "0.25-0.5": {
+                  "runs": 15,
+                  "nearest_target": 0.6666666666666666,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.3333333333333333,
+                  "kernel_gain": 0.9855853495933097,
+                  "linear_gain": 0.9764008329078405
+                },
+                "0.5-0.75": {
+                  "runs": 3,
+                  "nearest_target": 0.6666666666666666,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.3333333333333333,
+                  "kernel_gain": 0.9798123497736722,
+                  "linear_gain": 1.0078077454901078
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 47,
+                  "nearest_target": 0.723404255319149,
+                  "nearest_original": 0.1276595744680851,
+                  "nearest_mean": 0.14893617021276595,
+                  "kernel_gain": 0.8556388006590694,
+                  "linear_gain": 0.9965187493071216
+                },
+                "1.5-2.0": {
+                  "runs": 13,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.8942115590927633,
+                  "linear_gain": 1.0031871079492214
+                },
+                "2.0-inf": {
+                  "runs": 60,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.23333333333333334,
+                  "nearest_mean": 0.7666666666666667,
+                  "kernel_gain": 0.4554907283353367,
+                  "linear_gain": 1.0118910125581015
+                }
+              },
+              "covariance": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.8933333333333333,
+                  "nearest_original": 0.04666666666666667,
+                  "nearest_mean": 0.06,
+                  "kernel_gain": 0.9428095994695442,
+                  "linear_gain": 0.9568867190125147
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.8933333333333333,
+                  "nearest_original": 0.04666666666666667,
+                  "nearest_mean": 0.06,
+                  "kernel_gain": 0.9428095994695442,
+                  "linear_gain": 0.9568867190125147
+                },
+                "0.0-0.25": {
+                  "runs": 82,
+                  "nearest_target": 0.8292682926829268,
+                  "nearest_original": 0.08536585365853659,
+                  "nearest_mean": 0.08536585365853659,
+                  "kernel_gain": 0.9233052354994963,
+                  "linear_gain": 0.9346125605264877
+                },
+                "0.25-0.5": {
+                  "runs": 50,
+                  "nearest_target": 0.96,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.04,
+                  "kernel_gain": 0.9374107251686943,
+                  "linear_gain": 0.9495083917332567
+                },
+                "0.5-0.75": {
+                  "runs": 18,
+                  "nearest_target": 1.0,
+                  "nearest_original": 0.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.9543705017737028,
+                  "linear_gain": 0.9715164986007251
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "random_6": {
+                "all": {
+                  "runs": 450,
+                  "nearest_target": 0.06444444444444444,
+                  "nearest_original": 0.8133333333333334,
+                  "nearest_mean": 0.12222222222222222,
+                  "kernel_gain": 0.046449146027136706,
+                  "linear_gain": -0.005592700068522742
+                },
+                "in_distribution": {
+                  "runs": 435,
+                  "nearest_target": 0.06666666666666667,
+                  "nearest_original": 0.8137931034482758,
+                  "nearest_mean": 0.11954022988505747,
+                  "kernel_gain": 0.03424387242243463,
+                  "linear_gain": -0.006599622707354647
+                },
+                "0.0-0.25": {
+                  "runs": 81,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.8518518518518519,
+                  "nearest_mean": 0.14814814814814814,
+                  "kernel_gain": 0.017358407752063543,
+                  "linear_gain": 0.0027701956351656033
+                },
+                "0.25-0.5": {
+                  "runs": 129,
+                  "nearest_target": 0.13178294573643412,
+                  "nearest_original": 0.7984496124031008,
+                  "nearest_mean": 0.06976744186046512,
+                  "kernel_gain": 0.03609298205225607,
+                  "linear_gain": 0.008142328592733422
+                },
+                "0.5-0.75": {
+                  "runs": 141,
+                  "nearest_target": 0.0851063829787234,
+                  "nearest_original": 0.7801418439716312,
+                  "nearest_mean": 0.1347517730496454,
+                  "kernel_gain": 0.01686307878536254,
+                  "linear_gain": -0.014196760257835915
+                },
+                "0.75-1.0": {
+                  "runs": 84,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.8571428571428571,
+                  "nearest_mean": 0.14285714285714285,
+                  "kernel_gain": 0.048942995293331654,
+                  "linear_gain": -0.006154573266607331
+                },
+                "1.0-1.5": {
+                  "runs": 15,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.8,
+                  "nearest_mean": 0.2,
+                  "kernel_gain": 0.13099298230020123,
+                  "linear_gain": 0.0013119034338615568
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "random_7": {
+                "all": {
+                  "runs": 450,
+                  "nearest_target": 0.09777777777777778,
+                  "nearest_original": 0.4888888888888889,
+                  "nearest_mean": 0.41333333333333333,
+                  "kernel_gain": 0.19349455398388576,
+                  "linear_gain": -0.007058260110944139
+                },
+                "in_distribution": {
+                  "runs": 90,
+                  "nearest_target": 0.06666666666666667,
+                  "nearest_original": 0.9,
+                  "nearest_mean": 0.03333333333333333,
+                  "kernel_gain": 0.028862064726074457,
+                  "linear_gain": -0.007255227927483693
+                },
+                "0.0-0.25": {
+                  "runs": 36,
+                  "nearest_target": 0.1111111111111111,
+                  "nearest_original": 0.8055555555555556,
+                  "nearest_mean": 0.08333333333333333,
+                  "kernel_gain": 0.00701735954318537,
+                  "linear_gain": -0.003744728138068423
+                },
+                "0.25-0.5": {
+                  "runs": 45,
+                  "nearest_target": 0.044444444444444446,
+                  "nearest_original": 0.9555555555555556,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.004825719608091451,
+                  "linear_gain": -0.017787838237079766
+                },
+                "0.5-0.75": {
+                  "runs": 9,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.10317018114373247,
+                  "linear_gain": 0.016283248217797006
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 141,
+                  "nearest_target": 0.19858156028368795,
+                  "nearest_original": 0.44680851063829785,
+                  "nearest_mean": 0.3546099290780142,
+                  "kernel_gain": 0.2167190143135046,
+                  "linear_gain": 0.0064971140060108455
+                },
+                "1.5-2.0": {
+                  "runs": 39,
+                  "nearest_target": 0.15384615384615385,
+                  "nearest_original": 0.4358974358974359,
+                  "nearest_mean": 0.41025641025641024,
+                  "kernel_gain": 0.1529533659016123,
+                  "linear_gain": 0.030797807858809634
+                },
+                "2.0-inf": {
+                  "runs": 180,
+                  "nearest_target": 0.022222222222222223,
+                  "nearest_original": 0.3277777777777778,
+                  "nearest_mean": 0.65,
+                  "kernel_gain": 0.2115589783880185,
+                  "linear_gain": -0.016385766628490825
+                }
+              }
+            }
+          },
+          "block_17": {
+            "gamma": 6.22878536475542e-05,
+            "gamma_median": 0.0002491514145902168,
+            "gamma_edge": "lower",
+            "alpha": 0.002113103575647549,
+            "alpha_edge": null,
+            "min_one_minus_hat": 0.06339146832234555,
+            "hat_gap_flag": false,
+            "train_scores": {
+              "r2": 0.984782675756443,
+              "mae": 0.2690323106960996
+            },
+            "unedited_scores": {
+              "r2": 0.9904295902861567,
+              "mae": 0.21881634970157604
+            },
+            "arms": {
+              "probes_1": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.07333333333333333,
+                  "nearest_original": 0.8333333333333334,
+                  "nearest_mean": 0.09333333333333334,
+                  "kernel_gain": 0.02770088220147278,
+                  "linear_gain": 0.031324755884092156
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.07333333333333333,
+                  "nearest_original": 0.8333333333333334,
+                  "nearest_mean": 0.09333333333333334,
+                  "kernel_gain": 0.02770088220147278,
+                  "linear_gain": 0.031324755884092156
+                },
+                "0.0-0.25": {
+                  "runs": 150,
+                  "nearest_target": 0.07333333333333333,
+                  "nearest_original": 0.8333333333333334,
+                  "nearest_mean": 0.09333333333333334,
+                  "kernel_gain": 0.02770088220147278,
+                  "linear_gain": 0.031324755884092156
+                },
+                "0.25-0.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.5-0.75": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_3": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.09333333333333334,
+                  "nearest_original": 0.8,
+                  "nearest_mean": 0.10666666666666667,
+                  "kernel_gain": 0.10231675082841786,
+                  "linear_gain": 0.10846426650165618
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.09333333333333334,
+                  "nearest_original": 0.8,
+                  "nearest_mean": 0.10666666666666667,
+                  "kernel_gain": 0.10231675082841786,
+                  "linear_gain": 0.10846426650165618
+                },
+                "0.0-0.25": {
+                  "runs": 91,
+                  "nearest_target": 0.15384615384615385,
+                  "nearest_original": 0.7582417582417582,
+                  "nearest_mean": 0.08791208791208792,
+                  "kernel_gain": 0.10074556554040251,
+                  "linear_gain": 0.1077605398631492
+                },
+                "0.25-0.5": {
+                  "runs": 52,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.8461538461538461,
+                  "nearest_mean": 0.15384615384615385,
+                  "kernel_gain": 0.10457052419365938,
+                  "linear_gain": 0.10992876357261044
+                },
+                "0.5-0.75": {
+                  "runs": 7,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.09601261519137645,
+                  "linear_gain": 0.10413124236543816
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_6": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.09333333333333334,
+                  "nearest_original": 0.7733333333333333,
+                  "nearest_mean": 0.13333333333333333,
+                  "kernel_gain": 0.12639604157215986,
+                  "linear_gain": 0.1358210408732536
+                },
+                "in_distribution": {
+                  "runs": 145,
+                  "nearest_target": 0.09655172413793103,
+                  "nearest_original": 0.7655172413793103,
+                  "nearest_mean": 0.13793103448275862,
+                  "kernel_gain": 0.12560785604815344,
+                  "linear_gain": 0.13458443315199206
+                },
+                "0.0-0.25": {
+                  "runs": 27,
+                  "nearest_target": 0.07407407407407407,
+                  "nearest_original": 0.8148148148148148,
+                  "nearest_mean": 0.1111111111111111,
+                  "kernel_gain": 0.09020534989562518,
+                  "linear_gain": 0.09950153091467828
+                },
+                "0.25-0.5": {
+                  "runs": 43,
+                  "nearest_target": 0.13953488372093023,
+                  "nearest_original": 0.7674418604651163,
+                  "nearest_mean": 0.09302325581395349,
+                  "kernel_gain": 0.11038080593059128,
+                  "linear_gain": 0.1227420308965217
+                },
+                "0.5-0.75": {
+                  "runs": 47,
+                  "nearest_target": 0.0851063829787234,
+                  "nearest_original": 0.7659574468085106,
+                  "nearest_mean": 0.14893617021276595,
+                  "kernel_gain": 0.13022130867323523,
+                  "linear_gain": 0.13706037508948685
+                },
+                "0.75-1.0": {
+                  "runs": 28,
+                  "nearest_target": 0.07142857142857142,
+                  "nearest_original": 0.7142857142857143,
+                  "nearest_mean": 0.21428571428571427,
+                  "kernel_gain": 0.1306616967139032,
+                  "linear_gain": 0.1401148892984622
+                },
+                "1.0-1.5": {
+                  "runs": 5,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.1319870623730402,
+                  "linear_gain": 0.14443275310432943
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "probes_7": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.1,
+                  "nearest_original": 0.7066666666666667,
+                  "nearest_mean": 0.19333333333333333,
+                  "kernel_gain": 0.16963766962980298,
+                  "linear_gain": 0.13304819951334082
+                },
+                "in_distribution": {
+                  "runs": 30,
+                  "nearest_target": 0.03333333333333333,
+                  "nearest_original": 0.9,
+                  "nearest_mean": 0.06666666666666667,
+                  "kernel_gain": 0.10470135176575218,
+                  "linear_gain": 0.11477856266026702
+                },
+                "0.0-0.25": {
+                  "runs": 12,
+                  "nearest_target": 0.08333333333333333,
+                  "nearest_original": 0.75,
+                  "nearest_mean": 0.16666666666666666,
+                  "kernel_gain": 0.094508533019719,
+                  "linear_gain": 0.10209614495060594
+                },
+                "0.25-0.5": {
+                  "runs": 15,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.09936527022174761,
+                  "linear_gain": 0.10701907668801502
+                },
+                "0.5-0.75": {
+                  "runs": 3,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": 0.1293765327218528,
+                  "linear_gain": 0.14720278087400956
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 47,
+                  "nearest_target": 0.1276595744680851,
+                  "nearest_original": 0.723404255319149,
+                  "nearest_mean": 0.14893617021276595,
+                  "kernel_gain": 0.14422670307639254,
+                  "linear_gain": 0.10667117795211063
+                },
+                "1.5-2.0": {
+                  "runs": 13,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.8461538461538461,
+                  "nearest_mean": 0.15384615384615385,
+                  "kernel_gain": 0.10372900327204104,
+                  "linear_gain": 0.09848876171440214
+                },
+                "2.0-inf": {
+                  "runs": 60,
+                  "nearest_target": 0.13333333333333333,
+                  "nearest_original": 0.5666666666666667,
+                  "nearest_mean": 0.3,
+                  "kernel_gain": 0.19721213825613654,
+                  "linear_gain": 0.150262227503387
+                }
+              },
+              "covariance": {
+                "all": {
+                  "runs": 150,
+                  "nearest_target": 0.08666666666666667,
+                  "nearest_original": 0.8066666666666666,
+                  "nearest_mean": 0.10666666666666667,
+                  "kernel_gain": 0.1095219755196839,
+                  "linear_gain": 0.11863771515051341
+                },
+                "in_distribution": {
+                  "runs": 150,
+                  "nearest_target": 0.08666666666666667,
+                  "nearest_original": 0.8066666666666666,
+                  "nearest_mean": 0.10666666666666667,
+                  "kernel_gain": 0.1095219755196839,
+                  "linear_gain": 0.11863771515051341
+                },
+                "0.0-0.25": {
+                  "runs": 82,
+                  "nearest_target": 0.15853658536585366,
+                  "nearest_original": 0.7560975609756098,
+                  "nearest_mean": 0.08536585365853659,
+                  "kernel_gain": 0.10530099830370201,
+                  "linear_gain": 0.11478452596758877
+                },
+                "0.25-0.5": {
+                  "runs": 50,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.84,
+                  "nearest_mean": 0.16,
+                  "kernel_gain": 0.11152373841619499,
+                  "linear_gain": 0.12014958941103758
+                },
+                "0.5-0.75": {
+                  "runs": 18,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.9444444444444444,
+                  "nearest_mean": 0.05555555555555555,
+                  "kernel_gain": 0.10837360171501675,
+                  "linear_gain": 0.11794594258686168
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "random_6": {
+                "all": {
+                  "runs": 450,
+                  "nearest_target": 0.06444444444444444,
+                  "nearest_original": 0.8422222222222222,
+                  "nearest_mean": 0.09333333333333334,
+                  "kernel_gain": -0.0026182433399584183,
+                  "linear_gain": -0.00398620194320891
+                },
+                "in_distribution": {
+                  "runs": 435,
+                  "nearest_target": 0.06666666666666667,
+                  "nearest_original": 0.8367816091954023,
+                  "nearest_mean": 0.09655172413793103,
+                  "kernel_gain": -0.001642067713148752,
+                  "linear_gain": -0.0020719585916155747
+                },
+                "0.0-0.25": {
+                  "runs": 81,
+                  "nearest_target": 0.037037037037037035,
+                  "nearest_original": 0.8271604938271605,
+                  "nearest_mean": 0.13580246913580246,
+                  "kernel_gain": -0.003023725060042178,
+                  "linear_gain": -0.0029099714160345613
+                },
+                "0.25-0.5": {
+                  "runs": 129,
+                  "nearest_target": 0.11627906976744186,
+                  "nearest_original": 0.8217054263565892,
+                  "nearest_mean": 0.06201550387596899,
+                  "kernel_gain": 1.3550217038236996e-05,
+                  "linear_gain": 0.0009906689081659748
+                },
+                "0.5-0.75": {
+                  "runs": 141,
+                  "nearest_target": 0.07092198581560284,
+                  "nearest_original": 0.8156028368794326,
+                  "nearest_mean": 0.11347517730496454,
+                  "kernel_gain": -0.005259347495118898,
+                  "linear_gain": -0.005624006499110346
+                },
+                "0.75-1.0": {
+                  "runs": 84,
+                  "nearest_target": 0.011904761904761904,
+                  "nearest_original": 0.9047619047619048,
+                  "nearest_mean": 0.08333333333333333,
+                  "kernel_gain": 0.0008564599382730371,
+                  "linear_gain": -0.00014938200235260822
+                },
+                "1.0-1.5": {
+                  "runs": 15,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": -0.009542778323882692,
+                  "linear_gain": -0.017316955585402496
+                },
+                "1.5-2.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "2.0-inf": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                }
+              },
+              "random_7": {
+                "all": {
+                  "runs": 450,
+                  "nearest_target": 0.07111111111111111,
+                  "nearest_original": 0.8155555555555556,
+                  "nearest_mean": 0.11333333333333333,
+                  "kernel_gain": 0.004689261084318059,
+                  "linear_gain": -0.005166347067527719
+                },
+                "in_distribution": {
+                  "runs": 90,
+                  "nearest_target": 0.022222222222222223,
+                  "nearest_original": 0.9,
+                  "nearest_mean": 0.07777777777777778,
+                  "kernel_gain": -0.0018853043513333422,
+                  "linear_gain": -0.003490708861429217
+                },
+                "0.0-0.25": {
+                  "runs": 36,
+                  "nearest_target": 0.05555555555555555,
+                  "nearest_original": 0.75,
+                  "nearest_mean": 0.19444444444444445,
+                  "kernel_gain": -0.0010479064827752286,
+                  "linear_gain": -0.00019587364765941855
+                },
+                "0.25-0.5": {
+                  "runs": 45,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": -0.002208506460936202,
+                  "linear_gain": -0.00519752184034163
+                },
+                "0.5-0.75": {
+                  "runs": 9,
+                  "nearest_target": 0.0,
+                  "nearest_original": 1.0,
+                  "nearest_mean": 0.0,
+                  "kernel_gain": -0.001526682278893035,
+                  "linear_gain": -0.0009859259554786852
+                },
+                "0.75-1.0": {
+                  "runs": 0,
+                  "nearest_target": null,
+                  "nearest_original": null,
+                  "nearest_mean": null,
+                  "kernel_gain": null,
+                  "linear_gain": null
+                },
+                "1.0-1.5": {
+                  "runs": 141,
+                  "nearest_target": 0.07092198581560284,
+                  "nearest_original": 0.8439716312056738,
+                  "nearest_mean": 0.0851063829787234,
+                  "kernel_gain": 0.01194725446341567,
+                  "linear_gain": 0.009372231573121071
+                },
+                "1.5-2.0": {
+                  "runs": 39,
+                  "nearest_target": 0.0,
+                  "nearest_original": 0.7692307692307693,
+                  "nearest_mean": 0.23076923076923078,
+                  "kernel_gain": -0.002635982585354318,
+                  "linear_gain": -0.0014483498740949664
+                },
+                "2.0-inf": {
+                  "runs": 180,
+                  "nearest_target": 0.1111111111111111,
+                  "nearest_original": 0.7611111111111111,
+                  "nearest_mean": 0.12777777777777777,
+                  "kernel_gain": 0.0035639404113500745,
+                  "linear_gain": -0.011689795055055336
+                }
+              }
+            }
+          },
+          "h12_reading_idx9": {
+            "arm": "probes_6",
+            "bin": "in_distribution",
+            "verdict": "not supported"
+          }
+        }
+      },
+      "reading_rule": {
+        "linear_gain": 0.9,
+        "nearest_original": 0.5,
+        "nearest_mean": 0.5,
+        "site": "block_8"
+      },
+      "criteria": {
+        "no_lower_alpha": true,
+        "kernel_quality": true,
+        "finite": true
+      },
+      "passed": true
+    }
+  },
+  "figure_steering": {
+    "provenance": {
+      "utc": "2026-09-26T21:10:20+00:00",
+      "git_commit": "fd9d84f2c4c793fed97ca192ca88433b1aaf4b01",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "279ec58d6ffe8ecb6f42454e4b5998464e0910a86fdf2ec8df13f87c8bb4566a",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_steering.py": "a281ccee291d4367274dd8c36d8130c67802037e881d53e0e6aea34c91b47068"
+        },
+        "combined_sha256": "6171241124653fd3c9317f8ed35b542a4baf7f4b79077e51d2433eac8405bfad"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "figures": {
+        "reduction": {
+          "path": "results/steering/steering_reduction.png",
+          "sha256": "cd3fb8f77f9ba24e055a003d309846ea7c23acfc5c703251338a36b5ddc20cb8"
+        },
+        "propagation": {
+          "path": "results/steering/steering_propagation.png",
+          "sha256": "df3090e1125808e441f6ffcf06b22c0222aa503feffc2c7449f4d247b3c078e4"
+        }
+      },
+      "sources": {
+        "steering_scores": "f1b1889ff08e705e45e579f01c7a89eca0e59ad9",
+        "steering_propagation": "03ad13c33d61a3178928285835202398cc76cced"
+      },
+      "values_plotted": 217,
+      "criteria": {
+        "written": true,
+        "finite": true
+      },
+      "passed": true
+    }
   }
 }

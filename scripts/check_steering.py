@@ -1091,7 +1091,7 @@ def check_figure_steering() -> dict:
     fig.legend(handles=handles, loc="lower center", ncol=3, frameon=False, fontsize=8.5, labelcolor=INK_SECONDARY)
     fig.suptitle("Steering at idx 9: the steering-layer readout follows, the readout 9 blocks later barely moves",
                  color=INK, fontsize=12)
-    fig.text(0.5, 0.905, "n = K: shift 1–4 × the typical clip-to-clip distance (off-distribution)",
+    fig.text(0.5, 0.905, "n = K: shift ≈ 1–4 × the typical clip-to-clip distance (off-distribution)",
              ha="center", fontsize=8.5, color=INK_MUTED)
     fig.subplots_adjust(bottom=0.27, top=0.83, wspace=0.08)
     fig.savefig(FIGURE_REDUCTION, dpi=FIGURE_DPI, facecolor=SURFACE)
@@ -1106,11 +1106,15 @@ def check_figure_steering() -> dict:
         ax = axes[0, col]
         for name, style, line_colour, width, marker in (
             (f"probes_{k - 1}", "-", colour, 2.2, "o"), ("probes_1", "--", colour, 1.4, None),
-            ("covariance", ":", colour, 1.8, None), (f"random_{k - 1}", "-", INK_MUTED, 1.2, None),
+            (f"random_{k - 1}", "-", INK_MUTED, 1.2, None),
         ):
             ys = [record["profile"][str(i)]["arms"][name]["gain"] for i in indices]
             plotted += ys
             ax.plot(indices, ys, style, color=line_colour, linewidth=width, marker=marker, markersize=4, zorder=3)
+        covariance = [record["profile"][str(i)]["arms"]["covariance"]["gain"] for i in indices]
+        plotted += covariance
+        ax.plot(indices, covariance, linestyle="none", marker="D", markersize=5, markerfacecolor=SURFACE,
+                markeredgecolor=colour, markeredgewidth=1.2, zorder=4)  # on top: it overlaps the K-1 curve
         ax.axhline(0, color=AXIS, linewidth=1, zorder=1)
         ax.set_ylim(-0.1, 1.08)
         ax.set_xticks(indices)
@@ -1148,7 +1152,8 @@ def check_figure_steering() -> dict:
     axes[0, 2].legend(handles=[
         Line2D([], [], color=INK_SECONDARY, linestyle="-", marker="o", label="probes, n = K−1 (headline)"),
         Line2D([], [], color=INK_SECONDARY, linestyle="--", label="1 probe"),
-        Line2D([], [], color=INK_SECONDARY, linestyle=":", label="covariance direction(s)"),
+        Line2D([], [], color=INK_SECONDARY, marker="D", markerfacecolor=SURFACE, linestyle="none",
+               label="covariance direction(s)"),
         Line2D([], [], color=INK_MUTED, label="random, same length as K−1"),
     ], loc="upper right", frameon=False, fontsize=8.5, labelcolor=INK_SECONDARY)
     fig.legend(handles=[
