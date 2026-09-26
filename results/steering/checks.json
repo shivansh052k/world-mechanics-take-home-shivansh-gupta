@@ -7885,5 +7885,588 @@
       },
       "passed": true
     }
+  },
+  "steering_specificity": {
+    "provenance": {
+      "utc": "2026-09-26T20:47:08+00:00",
+      "git_commit": "28171cea119823928630204afcc6182d721ccd6b",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "279ec58d6ffe8ecb6f42454e4b5998464e0910a86fdf2ec8df13f87c8bb4566a",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_steering.py": "9ab7a86e1f64f509248e255aba6771d3947e0e1eb86babb04dcb5651569237c3"
+        },
+        "combined_sha256": "7a7a46aaee542050f8808b3082d21df29ff0646d88b8fdc2291648c0bdae312d"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "post_hoc": true,
+      "pairs": {
+        "speed_to_acceleration": {
+          "block_8": {
+            "probes_1": {
+              "slope_on_own_change": {
+                "point": 0.8948664578949168,
+                "ci": [
+                  0.8948664499038583,
+                  0.8948664654005544
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.4932938223416817,
+                "ci": [
+                  0.48408045933757654,
+                  0.501803023591191
+                ]
+              },
+              "mean_abs_own_change_m": 0.43578504877940144,
+              "mean_abs_cross_change_m": 0.3899694223753813
+            },
+            "probes_3": {
+              "slope_on_own_change": {
+                "point": 0.9080144014269513,
+                "ci": [
+                  0.9066126792940015,
+                  0.9093210055675552
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.9171206898235117,
+                "ci": [
+                  0.9017581222974682,
+                  0.9311793108489879
+                ]
+              },
+              "mean_abs_own_change_m": 0.7988714839133166,
+              "mean_abs_cross_change_m": 0.7250835568949306
+            },
+            "probes_6": {
+              "slope_on_own_change": {
+                "point": 0.9043764832894472,
+                "ci": [
+                  0.9009981367036606,
+                  0.9075035306161013
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.9147131352821367,
+                "ci": [
+                  0.8988468578987394,
+                  0.9292184058648146
+                ]
+              },
+              "mean_abs_own_change_m": 0.8008419137283387,
+              "mean_abs_cross_change_m": 0.7229805970268296
+            },
+            "probes_7": {
+              "slope_on_own_change": {
+                "point": 1.2226005832648195,
+                "ci": [
+                  1.1894729441210705,
+                  1.2614899152504075
+                ]
+              },
+              "slope_on_intended": {
+                "point": 1.2288353786757,
+                "ci": [
+                  1.1875661593233955,
+                  1.2752732048110713
+                ]
+              },
+              "mean_abs_own_change_m": 0.7991069455909202,
+              "mean_abs_cross_change_m": 1.025730383771529
+            },
+            "covariance": {
+              "slope_on_own_change": {
+                "point": 0.928921879546586,
+                "ci": [
+                  0.9289218746352619,
+                  0.9289218844479473
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.9074303006762413,
+                "ci": [
+                  0.8904820110082176,
+                  0.9230832552994753
+                ]
+              },
+              "mean_abs_own_change_m": 0.7722518583771788,
+              "mean_abs_cross_change_m": 0.7173616474842345
+            },
+            "random_6": {
+              "slope_on_own_change": {
+                "point": 0.5557653434768487,
+                "ci": [
+                  0.4822156161987079,
+                  0.6307781653018119
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.0004892049950922837,
+                "ci": [
+                  -0.0147041370864229,
+                  0.01582353005912203
+                ]
+              },
+              "mean_abs_own_change_m": 0.09137380697771094,
+              "mean_abs_cross_change_m": 0.07698791639570857
+            },
+            "random_7": {
+              "slope_on_own_change": {
+                "point": 0.5738103367647253,
+                "ci": [
+                  0.475652929692209,
+                  0.6749547937524224
+                ]
+              },
+              "slope_on_intended": {
+                "point": -0.006770536388630833,
+                "ci": [
+                  -0.12125400912044619,
+                  0.10256917246643904
+                ]
+              },
+              "mean_abs_own_change_m": 0.7674249878010045,
+              "mean_abs_cross_change_m": 0.7032858401862104
+            }
+          },
+          "block_17": {
+            "probes_1": {
+              "slope_on_own_change": {
+                "point": 0.9344230472158152,
+                "ci": [
+                  0.8983823048507892,
+                  0.9734201863159554
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.050174606354337736,
+                "ci": [
+                  0.04789086532892984,
+                  0.05255699503845507
+                ]
+              },
+              "mean_abs_own_change_m": 0.041772490488500985,
+              "mean_abs_cross_change_m": 0.03953612233631142
+            },
+            "probes_3": {
+              "slope_on_own_change": {
+                "point": 1.0861764060101702,
+                "ci": [
+                  1.054032117771348,
+                  1.1234121619982802
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.12162955557469675,
+                "ci": [
+                  0.11750990219758616,
+                  0.12592861955422524
+                ]
+              },
+              "mean_abs_own_change_m": 0.0875482026925132,
+              "mean_abs_cross_change_m": 0.09652607228296299
+            },
+            "probes_6": {
+              "slope_on_own_change": {
+                "point": 1.004481224665271,
+                "ci": [
+                  0.9689352510549583,
+                  1.043377962105403
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.12941137374544082,
+                "ci": [
+                  0.12427075792341469,
+                  0.134883990958602
+                ]
+              },
+              "mean_abs_own_change_m": 0.10188088986055308,
+              "mean_abs_cross_change_m": 0.10359804800278727
+            },
+            "probes_7": {
+              "slope_on_own_change": {
+                "point": 0.7093406581898553,
+                "ci": [
+                  0.6729621878008567,
+                  0.7415540285611664
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.3546625137583126,
+                "ci": [
+                  0.23876635454222495,
+                  0.4709881177964832
+                ]
+              },
+              "mean_abs_own_change_m": 0.6458595837923394,
+              "mean_abs_cross_change_m": 0.47158858351073035
+            },
+            "covariance": {
+              "slope_on_own_change": {
+                "point": 1.050420460030245,
+                "ci": [
+                  1.0152178486727714,
+                  1.088344008262699
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.12578813563815042,
+                "ci": [
+                  0.12098430550628021,
+                  0.13071207232295218
+                ]
+              },
+              "mean_abs_own_change_m": 0.09388215057425411,
+              "mean_abs_cross_change_m": 0.09985289184634384
+            },
+            "random_6": {
+              "slope_on_own_change": {
+                "point": 0.771866326840908,
+                "ci": [
+                  0.6961898994218019,
+                  0.8406483487576212
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.0003650963843060017,
+                "ci": [
+                  -0.005486049058805571,
+                  0.006409258969527648
+                ]
+              },
+              "mean_abs_own_change_m": 0.028852270420054657,
+              "mean_abs_cross_change_m": 0.030606217668250942
+            },
+            "random_7": {
+              "slope_on_own_change": {
+                "point": 0.716885347152984,
+                "ci": [
+                  0.6574927439248308,
+                  0.7797292004533208
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.022691882286895757,
+                "ci": [
+                  -0.06955061838829164,
+                  0.11288102174671934
+                ]
+              },
+              "mean_abs_own_change_m": 0.4949103079250112,
+              "mean_abs_cross_change_m": 0.39827727355525744
+            }
+          }
+        },
+        "acceleration_to_speed": {
+          "block_8": {
+            "probes_1": {
+              "slope_on_own_change": {
+                "point": 1.0148264283119108,
+                "ci": [
+                  1.014826407005255,
+                  1.0148264496792117
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.3626374782106491,
+                "ci": [
+                  0.3553615555758105,
+                  0.370734241213453
+                ]
+              },
+              "mean_abs_own_change_m": 0.23323855904485613,
+              "mean_abs_cross_change_m": 0.23669665508891466
+            },
+            "probes_3": {
+              "slope_on_own_change": {
+                "point": 1.0215932581889087,
+                "ci": [
+                  1.0211946860130285,
+                  1.0219832628752579
+                ]
+              },
+              "slope_on_intended": {
+                "point": 1.0372613939051203,
+                "ci": [
+                  1.0206456878121117,
+                  1.0552858085311578
+                ]
+              },
+              "mean_abs_own_change_m": 0.6618623598523045,
+              "mean_abs_cross_change_m": 0.6761557744810701
+            },
+            "probes_6": {
+              "slope_on_own_change": {
+                "point": 1.009083963894456,
+                "ci": [
+                  1.0060905576229522,
+                  1.0118065366801574
+                ]
+              },
+              "slope_on_intended": {
+                "point": 1.0027009004592848,
+                "ci": [
+                  0.986258887889241,
+                  1.020265039406729
+                ]
+              },
+              "mean_abs_own_change_m": 0.6478072946533302,
+              "mean_abs_cross_change_m": 0.6526853650465748
+            },
+            "probes_7": {
+              "slope_on_own_change": {
+                "point": 0.9667180346946891,
+                "ci": [
+                  0.9581068464732602,
+                  0.9740273376926621
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.97230204300983,
+                "ci": [
+                  0.9548721067831258,
+                  0.9906052098841029
+                ]
+              },
+              "mean_abs_own_change_m": 0.6562633510580159,
+              "mean_abs_cross_change_m": 0.6326413761854728
+            },
+            "covariance": {
+              "slope_on_own_change": {
+                "point": 1.026361055564991,
+                "ci": [
+                  1.0263610500030615,
+                  1.0263610614548684
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.9821112632521525,
+                "ci": [
+                  0.9624062724962387,
+                  1.0040392760002206
+                ]
+              },
+              "mean_abs_own_change_m": 0.624568332511296,
+              "mean_abs_cross_change_m": 0.641032613729201
+            },
+            "random_6": {
+              "slope_on_own_change": {
+                "point": 0.6170802632781391,
+                "ci": [
+                  0.5276395364665172,
+                  0.7050258215034394
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.00021275725112244586,
+                "ci": [
+                  -0.014212923590882741,
+                  0.014143900863254061
+                ]
+              },
+              "mean_abs_own_change_m": 0.07790075953444979,
+              "mean_abs_cross_change_m": 0.07758545849859799
+            },
+            "random_7": {
+              "slope_on_own_change": {
+                "point": 0.7232084102899429,
+                "ci": [
+                  0.6291360949323506,
+                  0.8111634842663548
+                ]
+              },
+              "slope_on_intended": {
+                "point": -0.01959888304992069,
+                "ci": [
+                  -0.063395013762158,
+                  0.02551312175148202
+                ]
+              },
+              "mean_abs_own_change_m": 0.23055710472691968,
+              "mean_abs_cross_change_m": 0.2540944966294363
+            }
+          },
+          "block_17": {
+            "probes_1": {
+              "slope_on_own_change": {
+                "point": 0.9072924284103958,
+                "ci": [
+                  0.8535930953902154,
+                  0.9673788079993483
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.029077313208015744,
+                "ci": [
+                  0.027231330878524116,
+                  0.031113285508376585
+                ]
+              },
+              "mean_abs_own_change_m": 0.0213929441949463,
+              "mean_abs_cross_change_m": 0.019664020835916927
+            },
+            "probes_3": {
+              "slope_on_own_change": {
+                "point": 0.9514234781702505,
+                "ci": [
+                  0.9159012714872679,
+                  0.9888922577552891
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.10401624166871126,
+                "ci": [
+                  0.0987222009801976,
+                  0.11019110840264322
+                ]
+              },
+              "mean_abs_own_change_m": 0.07359809213380489,
+              "mean_abs_cross_change_m": 0.07017675103067057
+            },
+            "probes_6": {
+              "slope_on_own_change": {
+                "point": 0.9396164519831153,
+                "ci": [
+                  0.8845773228983422,
+                  0.9970554275308661
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.12828231948598987,
+                "ci": [
+                  0.11963044019384897,
+                  0.13881923796960727
+                ]
+              },
+              "mean_abs_own_change_m": 0.09371109769787257,
+              "mean_abs_cross_change_m": 0.08917356847442884
+            },
+            "probes_7": {
+              "slope_on_own_change": {
+                "point": 1.1615544230668793,
+                "ci": [
+                  1.0271223539522953,
+                  1.3105259767607471
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.19080830890585615,
+                "ci": [
+                  0.16661700569237095,
+                  0.2211508373212537
+                ]
+              },
+              "mean_abs_own_change_m": 0.10373137399292172,
+              "mean_abs_cross_change_m": 0.14868959930593206
+            },
+            "covariance": {
+              "slope_on_own_change": {
+                "point": 0.9176226148570426,
+                "ci": [
+                  0.872119061251097,
+                  0.9635544428229051
+                ]
+              },
+              "slope_on_intended": {
+                "point": 0.10945745101188263,
+                "ci": [
+                  0.10395371747529958,
+                  0.1155580582299574
+                ]
+              },
+              "mean_abs_own_change_m": 0.07990387220006714,
+              "mean_abs_cross_change_m": 0.07376387230795593
+            },
+            "random_6": {
+              "slope_on_own_change": {
+                "point": 0.6333888641707389,
+                "ci": [
+                  0.5622461512225017,
+                  0.7077486818567635
+                ]
+              },
+              "slope_on_intended": {
+                "point": -0.0015464608842729226,
+                "ci": [
+                  -0.00638618228513622,
+                  0.0038901466384358135
+                ]
+              },
+              "mean_abs_own_change_m": 0.02399346092302989,
+              "mean_abs_cross_change_m": 0.02227046811314257
+            },
+            "random_7": {
+              "slope_on_own_change": {
+                "point": 0.769631869788732,
+                "ci": [
+                  0.6869268124967789,
+                  0.8545656766291021
+                ]
+              },
+              "slope_on_intended": {
+                "point": -0.0023851696237907937,
+                "ci": [
+                  -0.020186709451540993,
+                  0.015150652644963063
+                ]
+              },
+              "mean_abs_own_change_m": 0.07934766671864642,
+              "mean_abs_cross_change_m": 0.08339581574189892
+            }
+          }
+        }
+      },
+      "distance_per_unit": {
+        "speed": 0.625,
+        "acceleration": 0.1953125
+      },
+      "clip_seconds": 0.625,
+      "predicted_slope": 1.0,
+      "criteria": {
+        "clean": true,
+        "finite": true,
+        "bootstrap_point": true
+      },
+      "passed": true
+    }
   }
 }

@@ -14,25 +14,27 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from sklearn.preprocessing import StandardScaler
 
 from vjepa_physics.activations import capture_encoder
+from vjepa_physics.baselines import FIT_ROLE as KERNEL_FIT_ROLE, rbf_kernel_ridge
 from vjepa_physics.data import DATASETS, read_manifest, resolve
 from vjepa_physics.evidence import file_sha256, require_clean_code, save_result, verified_artifact
 from vjepa_physics.extraction import SITES, plot_index, pool_time_steps
 from vjepa_physics.intervention import edit_encoder, run_blocks
 from vjepa_physics.joined import FLAG_NAMES, load_joined
+from vjepa_physics.metrics import bootstrap_indices, percentile_interval, resampled_mean
 from vjepa_physics.model import load_model, weights_fingerprint
+from vjepa_physics.nullspace import train_span
 from vjepa_physics.preprocess import preprocess_clip
 from vjepa_physics.probes import Probe, fit_probe, probe_scores, probe_targets, site_features
 from vjepa_physics.reproducibility import SEED, set_seeds
 from vjepa_physics.steering import (
     N_CLIPS, QUARTILE_SIZE, RANDOM_SEEDS, STEERING_SITE, arm_shifts, arm_table, covariance_map, keyed_rng,
-    load_probe_sequence, random_probe_counts, steered_features, steering_clips, steering_targets, label_difference, 
-    readout_values,
+    label_difference, load_probe_sequence, random_probe_counts, readout_values, steered_features, steering_clips,
+    steering_targets,
 )
 from vjepa_physics.video import load_clip
-from vjepa_physics.nullspace import train_span
-from vjepa_physics.metrics import bootstrap_indices, percentile_interval, resampled_mean
 
 REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "results/steering/checks.json"
@@ -74,6 +76,11 @@ OFF_DISTRIBUTION_RATIO = 1.0  # bins starting at or above this are labelled off-
 CLIP_SECONDS = 15 / 24  # frame 0 to frame 15 at 24 fps
 DISTANCE_PER_UNIT = {"speed": CLIP_SECONDS, "acceleration": CLIP_SECONDS**2 / 2}  # metres per m/s; per m/s² from rest
 SPECIFICITY_PAIRS = (("speed", "acceleration"), ("acceleration", "speed"))  # (steered, read)
+
+H12_LINEAR_GAIN = 0.9  # reading rule: the linear readout "says target" at this output-space gain or more
+H12_ORIGINAL_FRACTION = 0.5  # reading rule: the kernel "still says original" if this fraction of runs is nearest it
+H12_MEAN_FRACTION = 0.5  # reading rule: nearest the validation mean this often = off-distribution, uninformative
+MIN_HAT_GAP = 1e-6  # kernel fits with a smaller min(1 - h_ii) are flagged: leave-one-out selection unreliable
 
 
 def selection_groups(table: dict, rows: np.ndarray, variable: str, role: str) -> np.ndarray:
@@ -794,16 +801,19 @@ def check_steering_propagation() -> dict:
         "criteria": criteria, "passed": all(criteria.values()),
     }
 
-def load_runs(variable: str) -> dict[str, np.ndarray]:
+def load_runs(variable: str, extra: tuple[str, ...] = ()) -> dict[str, np.ndarray]:
     """Readouts and ids of both halves of one variable's steering runs, read through their hashes and joined along the
-    clip axis (test_seen first); target labels and the arm table from the first half."""
+    clip axis (test_seen first), plus any per-clip arrays named in `extra` (e.g. "features", "shifts"); target labels
+    and the arm table from the first half."""
+    def per_clip(name: str) -> bool:
+        return name == "ids" or name.startswith("readout") or name in extra
+
     halves = []
     for half in HALVES:
         with np.load(verified_artifact(OUT, f"steer_{variable}_{half}")) as f:
-            halves.append({name: f[name] for name in f.files if name == "ids" or name.startswith("readout")}
+            halves.append({name: f[name] for name in f.files if per_clip(name)}
                           | {name: f[name] for name in ("target_label", "arm_kind", "arm_n", "arm_seed")})
-    joined = {name: np.concatenate([h[name] for h in halves]) for name in halves[0]
-              if name == "ids" or name.startswith("readout")}
+    joined = {name: np.concatenate([h[name] for h in halves]) for name in halves[0] if per_clip(name)}
     return joined | {name: halves[0][name] for name in ("target_label", "arm_kind", "arm_n", "arm_seed")}
 
 
@@ -872,6 +882,139 @@ def check_steering_specificity() -> dict:
         "predicted_slope": 1.0, "criteria": criteria, "passed": all(criteria.values()),
     }
 
+
+def check_steering_kernel() -> dict:
+    """Post hoc, saved test outputs only (no model): does a nonlinear readout still see the original value (H-12)?
+
+    Per steered variable and site (index 9, where H-12 is read; index 18, consistency): an RBF kernel ridge readout
+    (the nullspace checks' pipeline: median-heuristic gamma x factors, relative alpha grid, exact leave-one-out) fit on
+    the validation clips' features z-scored with validation statistics, predicting the train clips (quality), the
+    unedited steered clips and every saved steered point. Each steered kernel output is classed as nearest (output
+    space) to the target, the clip's original label, or the validation mean. Per arm group and bin of
+    |shift_z| / median train clip distance: those fractions, the kernel's output-space gain and the saved linear
+    readout's gain at the same site. Reading rule (fixed before computing), index 9, probes K - 1, in-distribution
+    shifts: linear gain >= H12_LINEAR_GAIN and nearest-original fraction >= H12_ORIGINAL_FRACTION -> "supports";
+    nearest-mean fraction >= H12_MEAN_FRACTION -> "uninformative (off-distribution)"; else "not supported". Passes if
+    every kernel fit has no lower-edge alpha and train-clip R² >= MIN_READOUT_TRAIN_R2, and all outputs are finite.
+    """
+    ok: dict[str, list[bool]] = {"no_lower_alpha": [], "kernel_quality": [], "finite": []}
+    result: dict = {}
+    for variable in DATASETS:
+        runs = load_runs(variable, extra=("features", "unedited_features", "shifts"))
+        arms = list(zip(runs["arm_kind"].tolist(), runs["arm_n"].tolist(), runs["arm_seed"].tolist()))
+        groups: dict[str, list[int]] = {}
+        for a, (kind, n, _) in enumerate(arms):
+            groups.setdefault("covariance" if kind == "covariance" else f"{kind}_{n}", []).append(a)
+        k = max(n for kind, n, _ in arms if kind == "probes")
+
+        table = load_joined(variable)
+        roles, labels = table["role"], table["label"]
+        row_of = {int(i): r for r, i in enumerate(table["id"].tolist())}
+        rows = np.array([row_of[int(i)] for i in runs["ids"]])
+        y = probe_targets(variable, labels).reshape(len(labels), -1)
+        val, train = np.isin(roles, VALIDATION_ROLES), roles == "train"
+        targets = runs["target_label"]
+        n_clips, n_targets, n_arms = len(rows), len(targets), len(arms)
+        target_out = probe_targets(variable, targets).reshape(n_targets, -1)
+        original_out = y[rows]
+        mean_out = y[val].mean(axis=0)
+
+        seq = load_probe_sequence(variable)
+        z_train = (site_features(table["activations"], STEERING_SITE)[train] - seq.mean) / seq.scale
+        distance = train_distance(z_train)
+        ratio = np.linalg.norm(runs["shifts"] / seq.scale, axis=-1) / distance  # (clips, targets, arms)
+
+        record: dict = {"train_clip_distance_median": distance}
+        for site in READOUT_SITES:
+            j = FEATURE_ROWS[site]
+            x = site_features(table["activations"], site)
+            steered = runs["features"][:, :, :, j].reshape(-1, x.shape[1]).astype(np.float64)
+            unedited = runs["unedited_features"][:, j].astype(np.float64)
+            points = np.vstack([x[val], x[train], unedited, steered])
+            n_val, n_train, n_unedited = int(val.sum()), int(train.sum()), len(unedited)
+            # the kernel readout is fit on the validation clips: they take the fit role, every other row is predicted
+            fit_roles = np.array([KERNEL_FIT_ROLE] * n_val + ["predict"] * (len(points) - n_val))
+            y_points = np.vstack([y[val], np.zeros((len(points) - n_val, y.shape[1]))])  # only fit rows' labels are used
+            scaler = StandardScaler().fit(x[val])
+            rbf = rbf_kernel_ridge(scaler.transform(points), y_points, fit_roles, fit_roles != KERNEL_FIT_ROLE)
+            pred = rbf.fit.predictions.reshape(len(points), -1)
+            p_train = pred[n_val:n_val + n_train]
+            p_unedited = pred[n_val + n_train:n_val + n_train + n_unedited]
+            p_steered = pred[n_val + n_train + n_unedited:].reshape(n_clips, n_targets, n_arms, -1)
+
+            train_score = probe_scores(variable, labels[train], p_train[:, 0] if p_train.shape[1] == 1 else p_train)
+            unedited_score = probe_scores(variable, labels[rows],
+                                          p_unedited[:, 0] if p_unedited.shape[1] == 1 else p_unedited)
+            ok["no_lower_alpha"].append(rbf.fit.alpha_edge != "lower")
+            ok["kernel_quality"].append(train_score["r2"] >= MIN_READOUT_TRAIN_R2)
+            ok["finite"].append(bool(np.isfinite(pred[n_val:]).all()))
+
+            candidates = np.stack([
+                np.broadcast_to(target_out[None, :, None, :], p_steered.shape),
+                np.broadcast_to(original_out[:, None, None, :], p_steered.shape),
+                np.broadcast_to(mean_out, p_steered.shape),
+            ])
+            nearest = np.linalg.norm(p_steered[None] - candidates, axis=-1).argmin(axis=0)  # 0 target, 1 original, 2 mean
+            kernel_achieved = p_steered - p_unedited[:, None, None, :]
+            kernel_intended = target_out[None, :, :] - p_unedited[:, None, :]
+            linear = runs[f"readout_{variable}_{site}"]
+            linear_base = runs[f"readout_unedited_{variable}_{site}"]
+            linear_achieved = linear - linear_base[:, None, None, :]
+            linear_intended = target_out[None, :, :] - linear_base[:, None, :]
+
+            def gain(achieved: np.ndarray, intended: np.ndarray, idx: list[int], mask: np.ndarray) -> float | None:
+                a = achieved[:, :, idx][mask]
+                i = np.broadcast_to(intended[:, :, None, :], achieved[:, :, idx].shape)[mask]
+                return float((a * i).sum() / (i**2).sum()) if len(a) else None
+
+            edges = [*LENGTH_EDGES, None]
+            arm_record = {}
+            for name in ("probes_1", f"probes_{k // 2}", f"probes_{k - 1}", f"probes_{k}", "covariance",
+                         f"random_{k - 1}", f"random_{k}"):
+                idx = groups[name]
+                r = ratio[:, :, idx]
+                bins = {"all": np.ones_like(r, dtype=bool), "in_distribution": r < OFF_DISTRIBUTION_RATIO}
+                bins |= {f"{lo}-{hi if hi is not None else 'inf'}": ((r >= lo) & (r < hi)) if hi is not None else r >= lo
+                         for lo, hi in zip(edges[:-1], edges[1:])}
+                arm_record[name] = {}
+                for bin_name, mask in bins.items():
+                    near = nearest[:, :, idx][mask]
+                    arm_record[name][bin_name] = {
+                        "runs": int(mask.sum()),
+                        "nearest_target": float((near == 0).mean()) if len(near) else None,
+                        "nearest_original": float((near == 1).mean()) if len(near) else None,
+                        "nearest_mean": float((near == 2).mean()) if len(near) else None,
+                        "kernel_gain": gain(kernel_achieved, kernel_intended, idx, mask),
+                        "linear_gain": gain(linear_achieved, linear_intended, idx, mask),
+                    }
+            record[site] = {
+                "gamma": rbf.gamma, "gamma_median": rbf.gamma_median, "gamma_edge": rbf.gamma_edge,
+                "alpha": rbf.fit.alpha, "alpha_edge": rbf.fit.alpha_edge,
+                "min_one_minus_hat": rbf.fit.min_one_minus_hat,
+                "hat_gap_flag": bool(rbf.fit.min_one_minus_hat < MIN_HAT_GAP),
+                "train_scores": train_score, "unedited_scores": unedited_score, "arms": arm_record,
+            }
+
+        head = record[STEERING_SITE]["arms"][f"probes_{k - 1}"]["in_distribution"]
+        if head["linear_gain"] is not None and head["linear_gain"] >= H12_LINEAR_GAIN \
+                and head["nearest_original"] >= H12_ORIGINAL_FRACTION:
+            verdict = "supports"
+        elif head["nearest_mean"] is not None and head["nearest_mean"] >= H12_MEAN_FRACTION:
+            verdict = "uninformative (off-distribution)"
+        else:
+            verdict = "not supported"
+        record["h12_reading_idx9"] = {"arm": f"probes_{k - 1}", "bin": "in_distribution", "verdict": verdict}
+        ok["finite"].append(all_finite({key: value for key, value in record.items() if key != "h12_reading_idx9"}))
+        result[variable] = record
+
+    criteria = {name: all(values) for name, values in ok.items()}
+    return {
+        "post_hoc": True, "variables": result,
+        "reading_rule": {"linear_gain": H12_LINEAR_GAIN, "nearest_original": H12_ORIGINAL_FRACTION,
+                         "nearest_mean": H12_MEAN_FRACTION, "site": STEERING_SITE},
+        "criteria": criteria, "passed": all(criteria.values()),
+    }
+
 CHECKS = {
     "steering_setup": check_steering_setup,
     "steering_cache": check_steering_cache,
@@ -879,6 +1022,7 @@ CHECKS = {
     "steering_scores": check_steering_scores,
     "steering_propagation": check_steering_propagation,
     "steering_specificity": check_steering_specificity,
+    "steering_kernel": check_steering_kernel,
 }
 
 

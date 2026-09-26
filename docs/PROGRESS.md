@@ -444,6 +444,16 @@ what's next.
 - Guard: `evidence.require_clean_code()` (same `code_changes` test as provenance's `git_dirty`), called in
   `check_steering.py main()` after argument parsing; refused a run while uncommitted as expected, nothing saved; committed.
   After three dirty saves (`steering_setup`, `steering_cache`, `steering_propagation`), every new script calls it.
+- 5.3c `steering_specificity` (post hoc, no model; clean) **passed** (3/3). Signed cross-readout slope in metres (speed ×
+  0.625 s, acceleration × 0.195 s²), through the origin, 95 % clip-bootstrap CI. **Idx 18, n = K−1:** speed →
+  acceleration **1.004 [0.969, 1.043]**, acceleration → speed **0.940 [0.885, 0.997]** (planner's prediction +1: met for
+  speed → acceleration, just below for the reverse); probes 1 / 3 / covariance 0.91–1.09; idx 9: 0.89–0.93 (speed →
+  acceleration) and 1.01–1.03 (reverse), CIs narrow (the same-layer readouts are linear in δ). Slope on intended at idx
+  18 0.129 / 0.128. Mean |change| at idx 18 K−1: own 0.102 / 0.094 m, cross 0.104 / 0.089 m (= scores key). **Random
+  arms also give positive slopes** (0.56–0.77, CIs above 0): any edit moves the two readouts together, only less
+  exactly than probe edits → the speed and acceleration readouts nearly share one direction in distance units
+  (observation; both labels = distance in these datasets, F-65, H-03). Claude Code's guesses met: 0.8–1.2 at idx 18,
+  0.3–1.2 at idx 9, 0.10–0.15 on intended. **Step 5.3c done.**
 
 ### 2026-09-25 — Phase 4 started (nullspace probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically), asks before
