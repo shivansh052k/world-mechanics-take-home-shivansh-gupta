@@ -454,6 +454,33 @@ what's next.
   exactly than probe edits → the speed and acceleration readouts nearly share one direction in distance units
   (observation; both labels = distance in these datasets, F-65, H-03). Claude Code's guesses met: 0.8–1.2 at idx 18,
   0.3–1.2 at idx 9, 0.10–0.15 on intended. **Step 5.3c done.**
+- 5.3d `steering_kernel` (post hoc, no model; clean, `2e95a6c`) **passed** (3/3): validation-fit RBF kernel readouts
+  (Phase 4 pipeline) at idx 9 / 18; train R² 0.972–0.988, unedited steered clips 0.974–0.990; no lower-edge alpha;
+  min(1 − h_ii) ≥ 9.6e-6 (no flag); gamma at the lower factor edge in 4 / 6 fits (widest kernel; observation).
+  **Pre-stated H-12 reading: "not supported" for all three.** Idx 9, probes K−1, in distribution: kernel gain 0.99 /
+  0.98 / 0.96 vs linear 0.98 / 1.01 / 0.99; nearest target 0.99 / 0.95 / 0.86, nearest original 0.01 / 0.01 / 0.07 —
+  the nonlinear readout follows the edit as fully as the linear one. Idx 18: kernel ≈ linear (K−1 gains 0.065 / 0.120 /
+  0.126 vs 0.068 / 0.128 / 0.136), nearest original 0.77–0.96. Random arms: nearest original 0.81–0.96, kernel gain
+  ≤ 0.13. Same pattern at n = 1 (kernel ≈ linear, 0.15–0.47 at idx 9). Caveat for the reading: an RBF readout on the full
+  features is dominated by the high-variance probe direction; the minimum-norm edit leaves the complement of
+  span(Q[:, :n·m]) untouched by construction, and Phase 4 showed that complement still carries the variable
+  nonlinearly (F-121) — so H-12 is not supported *as tested by a full-feature kernel readout*. Claude Code's predictions:
+  train R² 0.95–0.99 ✓, linear K−1 at idx 9 ✓, H-12 "supports" for speed / acceleration **wrong**, idx 18 kernel within
+  ±0.1 of linear ✓, random nearest original ≥ 0.9 missed (0.81–0.96), speed n = K nearest mean largest at idx 9 **wrong**
+  (target 0.48, mean 0.27). **Step 5.3d done.** Post-hoc set (5.3b–d) → planning chat.
+- Planning chat on 5.3b–d (→ D-50 addendum at the phase docs pass): no further analysis. Mechanism clause: readable at
+  idx 9 (linear and kernel), effect collapses within three blocks (idx 9 → 12: 0.96–0.99 → 0.24–0.42); at idx 18 the
+  directly carried edit alone gives 0.19–0.46 of full gain and block updates "push back" part of it (not "actively
+  cancel"); direction metric named for every number (output-space 0.068 vs angle 0.02), one metric for the headline.
+  Headline adds covariance ≈ K−1 at idx 9 (many-directions need belongs to the probe sequence) with the D-16
+  same-layer caveat (why P-06's same-layer evaluation is weak). Uniform-token hypothesis = labelled limitation.
+  Specificity: "consistent with F-65; cannot separate speed from acceleration"; H-03 stays for 7.1. H-12: prediction
+  observed, proposed mechanism not supported as tested, collapse equally consistent with the uniform-token
+  hypothesis; complement caveat kept. Figures: (a) reduction vs n at idx 9 / 18 with covariance and random, (b)
+  profile, (c) decomposition bars (two PNGs fine); 5.10 limitations as one-liners; P-06 extended. Phase 6 note:
+  token-structured edit feasible with the cache + partial forward. Claude Code's corrections sent back: pushed-back
+  fraction is 48–73 % (acceleration 0.48), not 50–75 %; specificity slopes are expected from F-65, not guaranteed; the
+  gate must also cover `steering_setup` and `steering_cache` (saved dirty), not only `steering_propagation`.
 
 ### 2026-09-25 — Phase 4 started (nullspace probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically), asks before

@@ -12,8 +12,14 @@ import json
 import time
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")  # files only, no window
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 from sklearn.preprocessing import StandardScaler
 
 from vjepa_physics.activations import capture_encoder
@@ -26,6 +32,7 @@ from vjepa_physics.joined import FLAG_NAMES, load_joined
 from vjepa_physics.metrics import bootstrap_indices, percentile_interval, resampled_mean
 from vjepa_physics.model import load_model, weights_fingerprint
 from vjepa_physics.nullspace import train_span
+from vjepa_physics.plotting import AXIS, DATASET_COLOUR, GRID, INK, INK_MUTED, INK_SECONDARY, SURFACE, style_axes
 from vjepa_physics.preprocess import preprocess_clip
 from vjepa_physics.probes import Probe, fit_probe, probe_scores, probe_targets, site_features
 from vjepa_physics.reproducibility import SEED, set_seeds
@@ -81,6 +88,10 @@ H12_LINEAR_GAIN = 0.9  # reading rule: the linear readout "says target" at this 
 H12_ORIGINAL_FRACTION = 0.5  # reading rule: the kernel "still says original" if this fraction of runs is nearest it
 H12_MEAN_FRACTION = 0.5  # reading rule: nearest the validation mean this often = off-distribution, uninformative
 MIN_HAT_GAP = 1e-6  # kernel fits with a smaller min(1 - h_ii) are flagged: leave-one-out selection unreliable
+
+FIGURE_REDUCTION = REPO / "results/steering/steering_reduction.png"
+FIGURE_PROPAGATION = REPO / "results/steering/steering_propagation.png"
+FIGURE_DPI = 200
 
 
 def selection_groups(table: dict, rows: np.ndarray, variable: str, role: str) -> np.ndarray:
@@ -1015,6 +1026,158 @@ def check_steering_kernel() -> dict:
         "criteria": criteria, "passed": all(criteria.values()),
     }
 
+
+def check_figure_steering() -> dict:
+    """Two figures drawn from the saved steering_scores and steering_propagation results (nothing recomputed).
+
+    steering_reduction.png: per variable, error reduction vs probes used n at the idx-18 readout (solid) and the
+    independent idx-9 readout (dashed); random same-length edits (grey); covariance arm (diamonds, filled idx 18,
+    hollow idx 9); 95% CIs at idx 18 for n = K - 1 (headline) and K. steering_propagation.png: top, output-space gain
+    vs layer index 9-18 for probes K - 1, probes 1, covariance and random K - 1; bottom, the idx-18 gain split into
+    direct and block-update parts with 95% CIs and the total (diamond), for probes 1, K - 1 and covariance (n = K
+    omitted: off-distribution, scale). Passes if both PNGs are written and non-empty and every plotted value is finite.
+    """
+    saved = json.loads(OUT.read_text())
+    scores = saved["steering_scores"]["result"]["variables"]
+    propagation = saved["steering_propagation"]["result"]["variables"]
+    plotted: list[float] = []
+
+    # figure 1: error reduction vs probes used
+    fig, axes = plt.subplots(1, 3, figsize=(12, 4.2), sharey=True, facecolor=SURFACE)
+    for ax, variable in zip(axes, DATASETS):
+        record, colour = scores[variable], DATASET_COLOUR[variable]
+        k, arms = record["k"], record["arms"]
+        ns = list(range(1, k + 1))
+        for key, style, face in (("reduction", "-", colour), ("same_layer_reduction", "--", SURFACE)):
+            ys = [arms[f"probes_{n}"]["all"][key] for n in ns]
+            plotted += ys
+            ax.plot(ns, ys, style, color=colour, linewidth=2, marker="o", markersize=6,
+                    markerfacecolor=face, markeredgecolor=colour, zorder=3)
+        random_ns = [n for n in ns if f"random_{n}" in arms]
+        for key, style in (("reduction", "-"), ("same_layer_reduction", "--")):
+            ys = [arms[f"random_{n}"]["all"][key] for n in random_ns]
+            plotted += ys
+            ax.plot(random_ns, ys, style, color=INK_MUTED, linewidth=1.2, marker="s", markersize=4, zorder=2)
+        cov_x = k + 1.3
+        cov = arms["covariance"]["all"]
+        plotted += [cov["reduction"], cov["same_layer_reduction"]]
+        ax.plot([cov_x], [cov["reduction"]], "D", color=colour, markersize=7, zorder=3)
+        ax.plot([cov_x], [cov["same_layer_reduction"]], "D", color=colour, markerfacecolor=SURFACE, markersize=7,
+                zorder=3)
+        for n in (k - 1, k):
+            head = record["headline"][f"probes_{n}"]
+            low, high = head["reduction_ci"]
+            ax.errorbar([n], [head["reduction"]], yerr=[[head["reduction"] - low], [high - head["reduction"]]],
+                        color=INK_SECONDARY, capsize=3, linewidth=1, zorder=4)
+        ax.axhline(0, color=AXIS, linewidth=1, zorder=1)
+        ax.axvline(k - 1, color=GRID, linewidth=1.5, linestyle=":", zorder=0)
+        ax.text(k - 1, 1.02, "headline", ha="center", va="bottom", fontsize=8, color=INK_MUTED)
+        ax.set_xticks([*ns, cov_x])
+        ax.set_xticklabels([*map(str, ns[:-1]), f"{k} (K)", "cov."])
+        ax.set_ylim(-0.45, 1.1)
+        ax.set_title(variable, fontsize=11)
+        ax.set_xlabel("probes used (n)")
+        style_axes(ax)
+    axes[0].set_ylabel("error reduction vs unedited clip")
+    handles = [
+        Line2D([], [], color=INK_SECONDARY, linestyle="-", marker="o", label="probes: readout at idx 18 (9 blocks later)"),
+        Line2D([], [], color=INK_SECONDARY, linestyle="--", marker="o", markerfacecolor=SURFACE,
+               label="probes: independent readout at idx 9 (steering layer)"),
+        Line2D([], [], color=INK_MUTED, marker="s", label="random edit, same length (solid idx 18, dashed idx 9)"),
+        Line2D([], [], color=INK_SECONDARY, marker="D", linestyle="none",
+               label="covariance direction(s) (filled idx 18, hollow idx 9)"),
+        Line2D([], [], color=INK_SECONDARY, marker="|", markersize=10, linestyle="none", label="95% CI, idx 18"),
+    ]
+    fig.legend(handles=handles, loc="lower center", ncol=3, frameon=False, fontsize=8.5, labelcolor=INK_SECONDARY)
+    fig.suptitle("Steering at idx 9: the steering-layer readout follows, the readout 9 blocks later barely moves",
+                 color=INK, fontsize=12)
+    fig.text(0.5, 0.905, "n = K: shift 1–4 × the typical clip-to-clip distance (off-distribution)",
+             ha="center", fontsize=8.5, color=INK_MUTED)
+    fig.subplots_adjust(bottom=0.27, top=0.83, wspace=0.08)
+    fig.savefig(FIGURE_REDUCTION, dpi=FIGURE_DPI, facecolor=SURFACE)
+    plt.close(fig)
+
+    # figure 2: propagation profile (top) and idx-18 decomposition (bottom)
+    fig, axes = plt.subplots(2, 3, figsize=(12, 7.4), facecolor=SURFACE)
+    indices = list(range(9, 19))
+    for col, variable in enumerate(DATASETS):
+        record, colour = propagation[variable], DATASET_COLOUR[variable]
+        k = record["k"]
+        ax = axes[0, col]
+        for name, style, line_colour, width, marker in (
+            (f"probes_{k - 1}", "-", colour, 2.2, "o"), ("probes_1", "--", colour, 1.4, None),
+            ("covariance", ":", colour, 1.8, None), (f"random_{k - 1}", "-", INK_MUTED, 1.2, None),
+        ):
+            ys = [record["profile"][str(i)]["arms"][name]["gain"] for i in indices]
+            plotted += ys
+            ax.plot(indices, ys, style, color=line_colour, linewidth=width, marker=marker, markersize=4, zorder=3)
+        ax.axhline(0, color=AXIS, linewidth=1, zorder=1)
+        ax.set_ylim(-0.1, 1.08)
+        ax.set_xticks(indices)
+        ax.set_title(variable, fontsize=11)
+        ax.set_xlabel("layer index (edit at 9)")
+        style_axes(ax)
+        if col:
+            ax.set_yticklabels([])
+
+        ax = axes[1, col]
+        names = ["probes_1", f"probes_{k - 1}", "covariance"]
+        decomposition = record["decomposition_idx18"]
+        xs = np.arange(len(names))
+        for offset, part, hatch in ((-0.2, "direct", None), (0.2, "blocks", "////")):
+            values = [decomposition[n][part]["point"] for n in names]
+            intervals = [decomposition[n][part]["ci"] for n in names]
+            plotted += values
+            ax.bar(xs + offset, values, width=0.36, color=colour if hatch is None else SURFACE, edgecolor=colour,
+                   hatch=hatch, linewidth=1.2, zorder=2)
+            ax.errorbar(xs + offset, values,
+                        yerr=[[v - c[0] for v, c in zip(values, intervals)], [c[1] - v for v, c in zip(values, intervals)]],
+                        fmt="none", ecolor=INK_SECONDARY, capsize=3, linewidth=1, zorder=3)
+        totals = [decomposition[n]["total"]["point"] for n in names]
+        plotted += totals
+        ax.plot(xs, totals, "D", color=INK, markersize=6, linestyle="none", zorder=4)
+        ax.axhline(0, color=AXIS, linewidth=1, zorder=1)
+        ax.set_xticks(xs)
+        ax.set_xticklabels(["1 probe", f"{k - 1} probes (K−1)", "covariance"])
+        ax.set_ylim(-0.45, 0.6)
+        style_axes(ax)
+        if col:
+            ax.set_yticklabels([])
+    axes[0, 0].set_ylabel("gain (output space)")
+    axes[1, 0].set_ylabel("gain at idx 18 (output space)")
+    axes[0, 2].legend(handles=[
+        Line2D([], [], color=INK_SECONDARY, linestyle="-", marker="o", label="probes, n = K−1 (headline)"),
+        Line2D([], [], color=INK_SECONDARY, linestyle="--", label="1 probe"),
+        Line2D([], [], color=INK_SECONDARY, linestyle=":", label="covariance direction(s)"),
+        Line2D([], [], color=INK_MUTED, label="random, same length as K−1"),
+    ], loc="upper right", frameon=False, fontsize=8.5, labelcolor=INK_SECONDARY)
+    fig.legend(handles=[
+        Patch(facecolor=INK_SECONDARY, edgecolor=INK_SECONDARY, label="direct: the edit carried by skip connections"),
+        Patch(facecolor=SURFACE, edgecolor=INK_SECONDARY, hatch="////", label="block updates (blocks 9–17)"),
+        Line2D([], [], color=INK, marker="D", linestyle="none", label="total change (= direct + blocks)"),
+    ], loc="lower center", ncol=3, frameon=False, fontsize=8.5, labelcolor=INK_SECONDARY)
+    fig.suptitle("Where the edit is lost: gain by depth (top) and the idx-18 change split into its parts (bottom)",
+                 color=INK, fontsize=12)
+    fig.text(0.5, 0.925, "gain = readout change / intended change, in the readout's output space ((sin, cos) for "
+             "direction); 95% clip-bootstrap CIs; n = K omitted (off-distribution)",
+             ha="center", fontsize=8.5, color=INK_MUTED)
+    fig.subplots_adjust(bottom=0.1, top=0.87, hspace=0.42, wspace=0.08)
+    fig.savefig(FIGURE_PROPAGATION, dpi=FIGURE_DPI, facecolor=SURFACE)
+    plt.close(fig)
+
+    paths = {"reduction": FIGURE_REDUCTION, "propagation": FIGURE_PROPAGATION}
+    criteria = {
+        "written": all(p.exists() and p.stat().st_size > 0 for p in paths.values()),
+        "finite": bool(np.isfinite(np.asarray(plotted, dtype=float)).all()),
+    }
+    return {
+        "figures": {name: {"path": str(p.relative_to(REPO)), "sha256": file_sha256(p)} for name, p in paths.items()},
+        "sources": {key: saved[key]["provenance"]["git_commit"] for key in ("steering_scores", "steering_propagation")},
+        "values_plotted": len(plotted),
+        "criteria": criteria, "passed": all(criteria.values()),
+    }
+    
+
 CHECKS = {
     "steering_setup": check_steering_setup,
     "steering_cache": check_steering_cache,
@@ -1023,6 +1186,7 @@ CHECKS = {
     "steering_propagation": check_steering_propagation,
     "steering_specificity": check_steering_specificity,
     "steering_kernel": check_steering_kernel,
+    "figure_steering": check_figure_steering,
 }
 
 
