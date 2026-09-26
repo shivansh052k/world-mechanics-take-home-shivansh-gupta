@@ -1,6 +1,6 @@
 # PROGRESS.md — where we are right now
 
-Last updated: 2026-09-25.
+Last updated: 2026-09-26.
 
 This file is the live status tracker. Update it at the end of every phase (and any time work
 pauses mid-phase), so this chat, Claude Code, and any future session can pick up instantly
@@ -119,8 +119,14 @@ adjacent changes, direction with/without exit nearly identical.
 (one log line per step), Phase 4–8 designs and cuts fixed; Goodfire quotations F-106.
 **Phase 3 passed (F-115).** **Phase 4 passed (2026-09-26, F-128):** D-49 with addenda (a)–(f); F-116–F-128; report
 `results/nullspace/report.md`. Headline: K at idx 9 = 6 / 7 / 7, procedure-dependent (7 to > 150 across ridge
-penalties); m-dim linear erasure; nonlinear recovery after erasure. **Next:** Phase 5 design brief (multi-probe
-steering at idx 9; readout idx 18; covariance-direction arm; H-12).
+penalties); m-dim linear erasure; nonlinear recovery after erasure. **Phase 5 (multi-probe steering), 5.1–5.10 done
+and gate evidence complete (2026-09-26):** D-50, F-129–F-138. Headline: an independent readout at the steering layer
+(idx 9) follows the edit (error reduction 0.95 / 0.95 / 0.92 at n = K−1; 0.11 / 0.55 / 0.36 at n = 1), random
+edits do nothing, but a readout nine blocks later (idx 18) moves only 0.029 / 0.129 / 0.136; the effect collapses within
+three blocks, the carried edit is only partly aligned with the later readout and block updates push back 48–73 % of
+it; H-12's mechanism not supported as tested (kernel readout follows at idx 9). **Phase 5 passed (2026-09-26):**
+report `results/steering/report.md`. **Next:** Phase 6 design brief (spline steering; planner notes: score over the
+idx 9 → 18 profile; token-structured edit via the per-token cache tests H-13).
 
 ---
 
@@ -133,7 +139,7 @@ steering at idx 9; readout idx 18; covariance-direction arm; H-12).
 | 2 — Splits and activation extraction | ✅ Passed gate | 2.1–2.9 done (D-38–D-41, F-75–F-87); report `results/splits_and_extraction/report.md`; clean re-run identical; balance notes closed (D-44) |
 | 3 — Part 1a: Layer-wise probing | ✅ Passed gate (2026-09-25) | 3.1–3.9 done (F-88–F-115; D-42–D-48); transition idx 1 for all three (mean-pooled) and for per-patch direction; test once (F-104, F-113); hash-check gate (F-115); report `results/layer_probing/report.md`, slide log `results/slide_log.md`, talk outline `slides/talk_outline.md` |
 | 4 — Part 1b: Iterative nullspace probing | ✅ Passed gate (2026-09-26) | 4.1–4.8 done (D-49 + addenda; F-116–F-128); K idx 9 = 6 / 7 / 7, procedure-dependent (F-120); linear erasure with m dims, nonlinear recovery (F-119–F-123); test once (F-127); hash-check gate, 2 keys re-run identical (F-128); five failures kept on record; report `results/nullspace/report.md`, figures `nullspace_rounds.png`, `erasure_and_procedure.png` |
-| 5 — Part 1c: Multi-probe subspace steering | ⬜ Not started | |
+| 5 — Part 1c: Multi-probe subspace steering | ✅ Passed gate (2026-09-26) | 5.1–5.10 done (D-50; F-129–F-138); steer idx 9, read idx 18 via bit-exact partial forward; headline K−1 idx-18 reduction 0.029 / 0.129 / 0.136 vs same-layer 0.95 / 0.95 / 0.92; post-hoc profile, decomposition, specificity, kernel; gate: 46 keys traced, setup and cache re-run identical (F-138); figures `steering_reduction.png`, `steering_propagation.png`; report `results/steering/report.md`; slide log +2; talk outline item 6 done |
 | 6 — Part 2: Spline steering | ⬜ Not started | |
 | 7 — Confounds and robustness | ⬜ Not started | |
 | 8 — Presentation and final delivery | ⬜ Not started | |
@@ -268,6 +274,15 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/nullspace/nullspace_rounds.png`, `erasure_and_procedure.png` + `checks.json` | `figure_nullspace`, `figure_erasure` | Rounds grid; procedure and erasure panels | ℹ️ visual (reviewed) | D-49 f |
 | `results/evidence/checks.json` | `code_hash_check`, `rerun_identical_nullspace` | Phase 4 gate: 33 / 33 keys matched; 2 re-runs identical | ✅ passed | F-128 |
 | `results/nullspace/report.md` | — | Nullspace report: setup, counts, what the count measures, paper comparison, kept on record, open items | ✅ gate passed | F-128; user-written from Claude Code's draft |
+| `results/steering/checks.json` + `artifacts/steering/setup.npz` | `steering_setup` | Clips (15 + 15 per variable, seeded, spread), targets (5, 3 unseen), validation-fit readouts idx 9 / 18 (train R² 0.969–0.987); `abcc701b…` | ✅ passed (saved dirty; re-run identical, F-138) | F-131 |
+| `results/steering/checks.json` + `artifacts/steering/cache_*.npy` | `steering_cache` | Per-token block_8 caches of the 90 clips; stored = recomputed, zero edit and two-path bit-exact; unsteered idx-18 R² 0.980 / 0.989 / 0.991; timing 0.66 s | ✅ passed (saved dirty; re-run identical, F-138) | F-130, F-132 |
+| `results/steering/checks.json` + `artifacts/steering/runs_*.npz` | `steer_{direction,speed,acceleration}_{seen,unseen}` | Six test runs (1,440 / 1,515 passes each): shifts, fp32 features idx 9–18, all readouts; check (iv) within tolerances | ✅ passed (clean, `80a2670`) | F-133 |
+| `results/steering/checks.json` | `steering_scores` | Headline: idx-18 reduction at K−1 0.029 / 0.129 / 0.136 (CIs), same-layer 0.95 / 0.95 / 0.92, n = 1, covariance, random, n = K, specificity, shift sizes | ✅ passed (test) | F-134 |
+| `results/steering/checks.json` | `steering_propagation` | Post hoc: readouts idx 9–18, gain profile, direct / block decomposition with CIs, gain vs shift size | ✅ passed (saved dirty; code matched `e6aebfc`) | F-135 |
+| `results/steering/checks.json` | `steering_specificity` | Post hoc: signed speed ↔ acceleration slopes in metres 1.004 / 0.940 at idx 18 | ✅ passed | F-136 |
+| `results/steering/checks.json` | `steering_kernel` | Post hoc: H-12 RBF readout at idx 9 / 18 — "not supported" (kernel follows the edit at idx 9) | ✅ passed | F-137 |
+| `results/steering/steering_reduction.png`, `steering_propagation.png` + `checks.json` | `figure_steering` | Reduction vs n; propagation profile and decomposition | ℹ️ visual (reviewed) | F-138 |
+| `results/evidence/checks.json` | `code_hash_check`, `rerun_identical_steering` | Phase 5 gate: 46 keys, 44 matched; setup and cache re-run identical incl. artifact hashes | ✅ passed | F-138 |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
@@ -490,6 +505,17 @@ what's next.
   steering keys, incl. `steering_propagation` via its fix commit `e6aebfc`); **`rerun_needed`: `steering_setup`,
   `steering_cache`** (both saved at `cda056e` with the script staged). Claude Code's predictions: setup flagged ✓;
   cache "probably matches" wrong; propagation left open (it matched).
+- 5.11b gate: `STEERING_RERUNS`, timing fields of `steering_cache` excluded in `without_machine_state`,
+  `rerun_identical_steering`. `steering_setup` and `steering_cache` re-run from clean commit `f121ee8` (chained under
+  `caffeinate`); **`rerun_identical_steering` passed** (3/3): both results identical to the committed ones, incl. the
+  SHA-256 of `setup.npz` and the three caches the steering runs read; re-runs clean and at a new commit. All 46 keys now
+  trace to committed code. **Gate evidence complete.**
+- Phase 5 docs pass: DECISIONS §1.11 F-129–F-138, D-50 (closes O-07, O-08, O-10, O-16), H-12 status, H-13, P-06
+  extended, change log; EXECUTION_PLAN 5.1–5.10 ticked (5.11 after the report); PROGRESS status, phase table, Saved
+  evidence (10 steering / gate rows); CLAUDE.md header, §5 Phase 5 facts and guard rule, §7 layout. **Next:** report.
+- 5.11: report `results/steering/report.md` (user-written from Claude Code's draft), slide log +2 ("Steering works at the
+  steering layer, not nine blocks later", "Where the edit is lost"), talk outline item 6 done; plan 5.11 ticked.
+  **Phase 5 passed.** Next session: Phase 6 design brief.
 
 ### 2026-09-25 — Phase 4 started (nullspace probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically), asks before

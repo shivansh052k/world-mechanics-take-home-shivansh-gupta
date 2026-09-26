@@ -1,6 +1,6 @@
 # CLAUDE.md — World Mechanics take-home (V-JEPA physics)
 
-Last updated: 2026-09-26 (Phase 4 passed, F-128; next: Phase 5 design brief; lean mode D-48). Read this fully at the start of every session.
+Last updated: 2026-09-26 (Phase 5 passed, D-50, F-129–F-138, report `results/steering/report.md`; next: Phase 6 design brief; lean mode D-48). Read this fully at the start of every session.
 
 ---
 
@@ -173,7 +173,16 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   (idx 9 test CIs ≈ 0.72–0.95, F-121–F-127). **Phase 5 rule:** steering at idx 9 uses only Q[:, :K·m] and composite maps
   1…K from `artifacts/nullspace/rounds.npz` (K = 6 / 7 / 7). Rounds after the exhaustion guard are undefined.
 - **[process, F-128]** Start a saved run only after the commit command has finished: two keys were saved from staged /
-  unstaged code and had to be re-run at the gate.
+  unstaged code and had to be re-run at the gate. **Now enforced (F-138):** `evidence.require_clean_code()` in each
+  check script's `main()` (after argument parsing) refuses a run from uncommitted code — call it in every new script.
+- **[verified, F-129–F-138] Phase 5 results (D-50):** steer at idx 9 (block_8) with the standardized minimum-norm shift
+  over probe maps 1…n (= the paper's C.12 procedure; δ in span(Q[:, :n·m])), same δ on every token; headline n = K−1
+  (5 / 6 / 6). Partial forward blocks 9–17 is bit-exact (`run_blocks`). Independent validation-fit idx-9 readout follows
+  (reduction 0.95 / 0.95 / 0.92; n = 1 only 0.11 / 0.55 / 0.36); **idx-18 readout moves only 0.029 / 0.129 / 0.136**;
+  random edits ≈ 0; covariance ≈ K−1; n = K off-distribution. Post hoc: gain collapses within three blocks (idx 12:
+  0.24–0.42); at idx 18 direct 0.19–0.46, block updates push back 48–73 %; speed ↔ acceleration co-move 1 : 1 in metres
+  (expected from F-65); H-12 mechanism not supported as tested (kernel follows at idx 9); H-13 uniform-token limitation.
+  Saved for Phase 6 in `artifacts/steering/` (setup, per-token caches, six run files); read via `verified_artifact`.
 - **[verified, F-65/F-72]** Tiny motion: 48 acceleration clips move < 3 px in total; some are frozen
   for up to 11 frames after frame 0.
 
@@ -241,6 +250,14 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `redundancy_counts`); `probes` also `nested_cv_predictions`, `label_permutations`; `baselines` also
   `KernelFit.loo_mse` / `min_one_minus_hat`, `squared_distances`, `median_gamma`, `rbf_kernel_ridge`, `GAMMA_FACTORS`.
   Script `check_nullspace.py` (15 keys; large — shared arm setup to move into the package at 8.6, user said).
+  Phase 5: `steering` (`ProbeSequence`, `load_probe_sequence` (rounds 1…K only), `shift_matrix`, `min_norm_shift`
+  (standardized / raw), `steering_clips`, `steering_targets`, `covariance_map`, `covariance_shift`, `random_shift`,
+  `random_key` / `keyed_rng` (SeedSequence-keyed draws), `arm_table`, `arm_shifts`, `steered_features`, `readout_values`,
+  `label_difference`); `intervention.run_blocks` (partial forward); `probes.fit_probe(fit_roles=…)` (validation-fit
+  readouts); `evidence.require_clean_code`. Script `check_steering.py` (keys `steering_setup`, `steering_cache`,
+  `steer_<variable>_<seen|unseen>`, `steering_scores`, `steering_propagation`, `steering_specificity`,
+  `steering_kernel`, `figure_steering`); gate keys `code_hash_check` (subjects incl. `steering`),
+  `rerun_identical_steering` in `check_evidence.py`.
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.
