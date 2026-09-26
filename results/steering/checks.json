@@ -2165,5 +2165,2609 @@
       },
       "passed": true
     }
+  },
+  "steering_scores": {
+    "provenance": {
+      "utc": "2026-09-26T08:19:28+00:00",
+      "git_commit": "f1b1889ff08e705e45e579f01c7a89eca0e59ad9",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "279ec58d6ffe8ecb6f42454e4b5998464e0910a86fdf2ec8df13f87c8bb4566a",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_steering.py": "cd6e4131eed3048e0bbd922fcbf613f16d6427de6a545deda27c69766a2b7742"
+        },
+        "combined_sha256": "1722ce3a8954a64c3677346420cc6bf4e7a11b315ae29b96345d7a43ae120ed1"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variables": {
+        "direction": {
+          "k": 6,
+          "headline_n": 5,
+          "targets": [
+            39.375,
+            95.625,
+            163.125,
+            253.125,
+            326.25
+          ],
+          "target_unseen": [
+            true,
+            false,
+            true,
+            true,
+            false
+          ],
+          "run_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+          "train_clip_distance_median": 44.40839090418788,
+          "unedited_readout_max_relative_diff": 3.698988896855671e-16,
+          "headline": {
+            "unedited": {
+              "error_target": 89.98453356168066,
+              "error_target_ci": [
+                88.07046314185617,
+                91.91724643891465
+              ]
+            },
+            "probes_5": {
+              "error_target": 87.33960071493668,
+              "error_target_ci": [
+                85.35873276784429,
+                89.30320953148117
+              ],
+              "reduction": 0.02939319394183426,
+              "reduction_ci": [
+                0.02646202593100816,
+                0.03249162634576438
+              ]
+            },
+            "probes_6": {
+              "error_target": 87.82795008543677,
+              "error_target_ci": [
+                85.70780363106226,
+                89.89540973886163
+              ],
+              "reduction": 0.02396615719262063,
+              "reduction_ci": [
+                0.017618539576386833,
+                0.030371658436058258
+              ]
+            },
+            "covariance": {
+              "error_target": 87.19926168395581,
+              "error_target_ci": [
+                85.246567481209,
+                89.13081984188194
+              ],
+              "reduction": 0.030952784522860766,
+              "reduction_ci": [
+                0.028066834939173165,
+                0.03394333691577038
+              ]
+            },
+            "random_5": {
+              "error_target": 90.07794018351788,
+              "error_target_ci": [
+                88.11550971661472,
+                92.03968675849684
+              ],
+              "reduction": -0.0010380297384462445,
+              "reduction_ci": [
+                -0.002835583759274751,
+                0.0008426117538200828
+              ]
+            },
+            "random_6": {
+              "error_target": 89.95953295836287,
+              "error_target_ci": [
+                87.9413070207837,
+                91.94640314027447
+              ],
+              "reduction": 0.00027783222658639417,
+              "reduction_ci": [
+                -0.0035604364195088835,
+                0.004113021170359444
+              ]
+            }
+          },
+          "arms": {
+            "probes_1": {
+              "all": {
+                "error_target": 89.64512128526238,
+                "reduction": 0.0037718957134519338,
+                "gain": 0.0027437240086619383,
+                "same_layer_error_target": 79.86696909972603,
+                "same_layer_reduction": 0.10927532306468346,
+                "same_layer_gain": 0.0888828588687155,
+                "error_original": 4.136807387596963,
+                "shift_length_median": 5.004290454545503,
+                "shift_over_distance_median": 0.1126879482155157
+              },
+              "test_seen": {
+                "error_target": 89.4497919412214,
+                "reduction": 0.003953730680762324,
+                "gain": 0.002870457809822212,
+                "same_layer_error_target": 79.85074422750536,
+                "same_layer_reduction": 0.10796511132266906,
+                "same_layer_gain": 0.0879324877755361,
+                "error_original": 3.1443060067158517,
+                "shift_length_median": 5.068048034634102,
+                "shift_over_distance_median": 0.11412365842231328
+              },
+              "test_unseen": {
+                "error_target": 89.84045062930335,
+                "reduction": 0.0035907854601892053,
+                "gain": 0.0026189306806628193,
+                "same_layer_error_target": 79.88319397194672,
+                "same_layer_reduction": 0.11058116171188748,
+                "same_layer_gain": 0.08983002742800815,
+                "error_original": 5.129308768478073,
+                "shift_length_median": 4.949845850013471,
+                "shift_over_distance_median": 0.11146195007814799
+              },
+              "target_seen": {
+                "error_target": 89.75872794821893,
+                "reduction": 0.004070561105069759,
+                "gain": 0.0029869393097173794,
+                "same_layer_error_target": 78.59724770754032,
+                "same_layer_reduction": 0.11932715730302301,
+                "same_layer_gain": 0.09946041912831682,
+                "error_original": 4.138573831559008,
+                "shift_length_median": 4.950951730038717,
+                "shift_over_distance_median": 0.11148685257974127
+              },
+              "target_unseen": {
+                "error_target": 89.56938350995802,
+                "reduction": 0.0035722647128926255,
+                "gain": 0.0025838505802014953,
+                "same_layer_error_target": 80.71345002784985,
+                "same_layer_reduction": 0.10262604735116998,
+                "same_layer_gain": 0.08208185263861456,
+                "error_original": 4.135629758288931,
+                "shift_length_median": 5.004290454545503,
+                "shift_over_distance_median": 0.1126879482155157
+              }
+            },
+            "probes_2": {
+              "all": {
+                "error_target": 87.7306894532261,
+                "reduction": 0.025047016628803487,
+                "gain": 0.019132233538730982,
+                "same_layer_error_target": 3.7817549388681146,
+                "same_layer_reduction": 0.9578235848418668,
+                "same_layer_gain": 0.9451207231910653,
+                "error_original": 4.95772378367959,
+                "shift_length_median": 15.833129486899146,
+                "shift_over_distance_median": 0.3565346360119079
+              },
+              "test_seen": {
+                "error_target": 87.64599711729882,
+                "reduction": 0.02403944654431689,
+                "gain": 0.01842210422266956,
+                "same_layer_error_target": 3.99281668889747,
+                "same_layer_reduction": 0.9553951334449458,
+                "same_layer_gain": 0.981979306888354,
+                "error_original": 3.929005299238955,
+                "shift_length_median": 15.713612993465677,
+                "shift_over_distance_median": 0.35384333171107585
+              },
+              "test_unseen": {
+                "error_target": 87.81538178915339,
+                "reduction": 0.026050570982955823,
+                "gain": 0.01983148977384517,
+                "same_layer_error_target": 3.5706931888387596,
+                "same_layer_reduction": 0.9602439307945607,
+                "same_layer_gain": 0.908386344516586,
+                "error_original": 5.986442268120225,
+                "shift_length_median": 16.167367096257927,
+                "shift_over_distance_median": 0.3640610877151435
+              },
+              "target_seen": {
+                "error_target": 87.63240145351116,
+                "reduction": 0.027663488513793744,
+                "gain": 0.02045595676334984,
+                "same_layer_error_target": 4.005308207386234,
+                "same_layer_reduction": 0.9551209963737959,
+                "same_layer_gain": 0.9847001639800074,
+                "error_original": 4.947800735312262,
+                "shift_length_median": 15.2133394376324,
+                "shift_over_distance_median": 0.3425780382463198
+              },
+              "target_unseen": {
+                "error_target": 87.79621478636938,
+                "reduction": 0.023298140076664975,
+                "gain": 0.018262106662115224,
+                "same_layer_error_target": 3.632719426522702,
+                "same_layer_reduction": 0.959611343716344,
+                "same_layer_gain": 0.9196725085949663,
+                "error_original": 4.964339149257809,
+                "shift_length_median": 16.195013015911965,
+                "shift_over_distance_median": 0.36468362591324405
+              }
+            },
+            "probes_3": {
+              "all": {
+                "error_target": 86.75991646032573,
+                "reduction": 0.03583523716489101,
+                "gain": 0.026994989709804632,
+                "same_layer_error_target": 3.55784239083921,
+                "same_layer_reduction": 0.9603207928147369,
+                "same_layer_gain": 0.9561927600332635,
+                "error_original": 5.20238337035474,
+                "shift_length_median": 19.03813345034257,
+                "shift_over_distance_median": 0.42870577074989674
+              },
+              "test_seen": {
+                "error_target": 86.69759144309,
+                "reduction": 0.03460018584953106,
+                "gain": 0.025704885582427693,
+                "same_layer_error_target": 3.711911483217926,
+                "same_layer_reduction": 0.9585332036821286,
+                "same_layer_gain": 0.9937653167496301,
+                "error_original": 4.281555161825589,
+                "shift_length_median": 19.129044283329723,
+                "shift_over_distance_median": 0.4307529251532908
+              },
+              "test_unseen": {
+                "error_target": 86.82224147756145,
+                "reduction": 0.03706536610997835,
+                "gain": 0.028265340524242552,
+                "same_layer_error_target": 3.403773298460493,
+                "same_layer_reduction": 0.9621024155096255,
+                "same_layer_gain": 0.9187468142659854,
+                "error_original": 6.123211578883891,
+                "shift_length_median": 18.7462820381821,
+                "shift_over_distance_median": 0.42213378274902214
+              },
+              "target_seen": {
+                "error_target": 86.87912488017302,
+                "reduction": 0.03602156501695164,
+                "gain": 0.025265098942234526,
+                "same_layer_error_target": 3.5352802723686527,
+                "same_layer_reduction": 0.9603876036628856,
+                "same_layer_gain": 0.9950982660798191,
+                "error_original": 5.087827631943148,
+                "shift_length_median": 18.567155622627983,
+                "shift_over_distance_median": 0.4181001663106201
+              },
+              "target_unseen": {
+                "error_target": 86.68044418042754,
+                "reduction": 0.035710693724027465,
+                "gain": 0.02813210389083411,
+                "same_layer_error_target": 3.572883803152914,
+                "same_layer_reduction": 0.9602765975226678,
+                "same_layer_gain": 0.9311778622199726,
+                "error_original": 5.278753862629135,
+                "shift_length_median": 19.711357323027848,
+                "shift_over_distance_median": 0.44386560561393795
+              }
+            },
+            "probes_4": {
+              "all": {
+                "error_target": 86.69720477814866,
+                "reduction": 0.03653215339810212,
+                "gain": 0.027394653433024233,
+                "same_layer_error_target": 3.4486918357941687,
+                "same_layer_reduction": 0.9615381057286452,
+                "same_layer_gain": 0.9541692194315935,
+                "error_original": 5.2373802423162035,
+                "shift_length_median": 20.092338319851066,
+                "shift_over_distance_median": 0.4524446373929815
+              },
+              "test_seen": {
+                "error_target": 86.62788974342315,
+                "reduction": 0.03537633206979274,
+                "gain": 0.02609131227393585,
+                "same_layer_error_target": 3.4751904719386113,
+                "same_layer_reduction": 0.9611776799858497,
+                "same_layer_gain": 0.9915995752103196,
+                "error_original": 4.297096027147745,
+                "shift_length_median": 21.134140678026846,
+                "shift_over_distance_median": 0.4759042209753611
+              },
+              "test_unseen": {
+                "error_target": 86.7665198128742,
+                "reduction": 0.03768336813195139,
+                "gain": 0.028678038601556956,
+                "same_layer_error_target": 3.422193199649725,
+                "same_layer_reduction": 0.9618973284781422,
+                "same_layer_gain": 0.9168649954172194,
+                "error_original": 6.177664457484662,
+                "shift_length_median": 19.96901464009675,
+                "shift_over_distance_median": 0.44966760185435123
+              },
+              "target_seen": {
+                "error_target": 86.95940894545555,
+                "reduction": 0.03513076290871375,
+                "gain": 0.023982430934627177,
+                "same_layer_error_target": 3.2029350239201997,
+                "same_layer_reduction": 0.9641114927715351,
+                "same_layer_gain": 0.9931937698954214,
+                "error_original": 5.051782698425597,
+                "shift_length_median": 19.803392127753987,
+                "shift_over_distance_median": 0.44593806991296436
+              },
+              "target_unseen": {
+                "error_target": 86.52240199994407,
+                "reduction": 0.037468857125492416,
+                "gain": 0.029637619673722405,
+                "same_layer_error_target": 3.612529710376814,
+                "same_layer_reduction": 0.9598358134345192,
+                "same_layer_gain": 0.9290777801660528,
+                "error_original": 5.361111938243274,
+                "shift_length_median": 21.222988835309508,
+                "shift_over_distance_median": 0.4779049274966659
+              }
+            },
+            "probes_5": {
+              "all": {
+                "error_target": 87.33960071493668,
+                "reduction": 0.02939319394183426,
+                "gain": 0.021926129648127714,
+                "same_layer_error_target": 4.069518782949267,
+                "same_layer_reduction": 0.9546142686509294,
+                "same_layer_gain": 0.9541172513007783,
+                "error_original": 4.9908460569192235,
+                "shift_length_median": 23.17647016982135,
+                "shift_over_distance_median": 0.521893941616239
+              },
+              "test_seen": {
+                "error_target": 87.3295898987891,
+                "reduction": 0.02756272169949414,
+                "gain": 0.020409937951202807,
+                "same_layer_error_target": 4.3258604067335265,
+                "same_layer_reduction": 0.951674609376715,
+                "same_layer_gain": 0.9918763385211241,
+                "error_original": 3.879005495287807,
+                "shift_length_median": 23.425892047825506,
+                "shift_over_distance_median": 0.5275104900415645
+              },
+              "test_unseen": {
+                "error_target": 87.34961153108425,
+                "reduction": 0.031216370728480602,
+                "gain": 0.023419106312692565,
+                "same_layer_error_target": 3.8131771591650065,
+                "same_layer_reduction": 0.9575441162219637,
+                "same_layer_gain": 0.9164854035947879,
+                "error_original": 6.102686618550641,
+                "shift_length_median": 22.796414566309025,
+                "shift_over_distance_median": 0.5133357480907789
+              },
+              "target_seen": {
+                "error_target": 87.65557521256888,
+                "reduction": 0.027406361108102906,
+                "gain": 0.017221277175169847,
+                "same_layer_error_target": 3.474427986580551,
+                "same_layer_reduction": 0.9610694463109771,
+                "same_layer_gain": 0.9918620696570705,
+                "error_original": 4.82481702644858,
+                "shift_length_median": 22.821333198518335,
+                "shift_over_distance_median": 0.5138968725022234
+              },
+              "target_unseen": {
+                "error_target": 87.12895104984854,
+                "reduction": 0.030721213316269758,
+                "gain": 0.02501878414802246,
+                "same_layer_error_target": 4.46624598052841,
+                "same_layer_reduction": 0.9503441767429615,
+                "same_layer_gain": 0.929848635618617,
+                "error_original": 5.101532077232987,
+                "shift_length_median": 23.335444263218747,
+                "shift_over_distance_median": 0.5254737626851984
+              }
+            },
+            "probes_6": {
+              "all": {
+                "error_target": 87.82795008543677,
+                "reduction": 0.02396615719262063,
+                "gain": 0.018437768203272347,
+                "same_layer_error_target": 7.843557376171979,
+                "same_layer_reduction": 0.9125239108399023,
+                "same_layer_gain": 0.9167429333840533,
+                "error_original": 5.271100018013355,
+                "shift_length_median": 43.97297241120141,
+                "shift_over_distance_median": 0.9901951301517342
+              },
+              "test_seen": {
+                "error_target": 87.66140122627121,
+                "reduction": 0.02386791785832265,
+                "gain": 0.018217642379241703,
+                "same_layer_error_target": 8.038840540578597,
+                "same_layer_reduction": 0.9101958748652496,
+                "same_layer_gain": 0.9155641431809444,
+                "error_original": 4.431103403583771,
+                "shift_length_median": 45.085722747654664,
+                "shift_over_distance_median": 1.0152523392466108
+              },
+              "test_unseen": {
+                "error_target": 87.99449894460234,
+                "reduction": 0.024064004988224807,
+                "gain": 0.01865452359061051,
+                "same_layer_error_target": 7.648274211765359,
+                "same_layer_reduction": 0.9148441765269655,
+                "same_layer_gain": 0.9179177513329575,
+                "error_original": 6.111096632442937,
+                "shift_length_median": 43.13486186586465,
+                "shift_over_distance_median": 0.9713223331808869
+              },
+              "target_seen": {
+                "error_target": 87.31454146240472,
+                "reduction": 0.031190344673925785,
+                "gain": 0.02135628159780323,
+                "same_layer_error_target": 8.658596114563808,
+                "same_layer_reduction": 0.9029814570307612,
+                "same_layer_gain": 0.9050726947061295,
+                "error_original": 5.433924505824266,
+                "shift_length_median": 44.716073999409474,
+                "shift_over_distance_median": 1.0069284900658848
+              },
+              "target_unseen": {
+                "error_target": 88.1702225007915,
+                "reduction": 0.019137436438237954,
+                "gain": 0.01651933321843964,
+                "same_layer_error_target": 7.300198217244093,
+                "same_layer_reduction": 0.9188362320397917,
+                "same_layer_gain": 0.9242464941303303,
+                "error_original": 5.162550359472746,
+                "shift_length_median": 43.60087765965085,
+                "shift_over_distance_median": 0.9818162012156832
+              }
+            },
+            "covariance": {
+              "all": {
+                "error_target": 87.19926168395581,
+                "reduction": 0.030952784522860766,
+                "gain": 0.023164131715171947,
+                "same_layer_error_target": 3.9389542383666236,
+                "same_layer_reduction": 0.9560704033096438,
+                "same_layer_gain": 0.9237469471225321,
+                "error_original": 5.085166984922755,
+                "shift_length_median": 20.994059551118177,
+                "shift_over_distance_median": 0.47274983676876153
+              },
+              "test_seen": {
+                "error_target": 87.15141825124115,
+                "reduction": 0.02954670848120977,
+                "gain": 0.02197408230443992,
+                "same_layer_error_target": 4.629154425840915,
+                "same_layer_reduction": 0.9482864274732361,
+                "same_layer_gain": 0.9219984760887059,
+                "error_original": 4.088423018871609,
+                "shift_length_median": 21.09474870699462,
+                "shift_over_distance_median": 0.4750171820570356
+              },
+              "test_unseen": {
+                "error_target": 87.24710511667047,
+                "reduction": 0.032353256565048394,
+                "gain": 0.024335959791730845,
+                "same_layer_error_target": 3.2487540508923325,
+                "same_layer_reduction": 0.9638283985634927,
+                "same_layer_gain": 0.9254895262076488,
+                "error_original": 6.081910950973901,
+                "shift_length_median": 20.412976033959715,
+                "shift_over_distance_median": 0.45966484302485033
+              },
+              "target_seen": {
+                "error_target": 87.48745618788388,
+                "reduction": 0.02927174723544068,
+                "gain": 0.019561750961581935,
+                "same_layer_error_target": 4.483403161754796,
+                "same_layer_reduction": 0.9497639990892401,
+                "same_layer_gain": 0.9092561820719641,
+                "error_original": 5.004866051001503,
+                "shift_length_median": 20.449737181927993,
+                "shift_over_distance_median": 0.4604926403671948
+              },
+              "target_unseen": {
+                "error_target": 87.00713201467045,
+                "reduction": 0.03207640702845904,
+                "gain": 0.025532095240481015,
+                "same_layer_error_target": 3.575988289441176,
+                "same_layer_reduction": 0.9602420817742953,
+                "same_layer_gain": 0.9330640089939957,
+                "error_original": 5.138700940870256,
+                "shift_length_median": 21.018971887335827,
+                "shift_over_distance_median": 0.47331081940538533
+              }
+            },
+            "random_1": {
+              "all": {
+                "error_target": 90.00276406786861,
+                "reduction": -0.00020259599584937504,
+                "gain": -0.00030877851959739815,
+                "same_layer_error_target": 89.67139149414962,
+                "same_layer_reduction": -6.951708952107616e-05,
+                "same_layer_gain": -0.0004169342141236546,
+                "error_original": 4.001198427691044,
+                "shift_length_median": 5.004290454545503,
+                "shift_over_distance_median": 0.1126879482155157
+              },
+              "test_seen": {
+                "error_target": 89.81651080230597,
+                "reduction": -0.0001297774587791789,
+                "gain": -0.0002579833998397528,
+                "same_layer_error_target": 89.62691361024402,
+                "same_layer_reduction": -0.0012471978597679012,
+                "same_layer_gain": -0.0017117784333307976,
+                "error_original": 3.0179656853152195,
+                "shift_length_median": 5.068048034634101,
+                "shift_over_distance_median": 0.11412365842231326
+              },
+              "test_unseen": {
+                "error_target": 90.18901733343124,
+                "reduction": -0.00027512431032028495,
+                "gain": -0.0003587958944621659,
+                "same_layer_error_target": 89.71586937805525,
+                "same_layer_reduction": 0.0011042329346490076,
+                "same_layer_gain": 0.0008735466753065672,
+                "error_original": 4.984431170066868,
+                "shift_length_median": 4.949845850013471,
+                "shift_over_distance_median": 0.11146195007814799
+              },
+              "target_seen": {
+                "error_target": 90.16195861141787,
+                "reduction": -0.0004035362593293179,
+                "gain": -0.00048201562501736433,
+                "same_layer_error_target": 89.13018245419805,
+                "same_layer_reduction": 0.001306872167886941,
+                "same_layer_gain": 0.0015114163799055422,
+                "error_original": 4.015128694338692,
+                "shift_length_median": 4.950951730038717,
+                "shift_over_distance_median": 0.11148685257974127
+              },
+              "target_unseen": {
+                "error_target": 89.8966343721691,
+                "reduction": -6.828546983239647e-05,
+                "gain": -0.00019490406408466767,
+                "same_layer_error_target": 90.03219752078402,
+                "same_layer_reduction": -0.0009799968531765124,
+                "same_layer_gain": -0.0016567971014002398,
+                "error_original": 3.9919115832592778,
+                "shift_length_median": 5.004290454545503,
+                "shift_over_distance_median": 0.1126879482155157
+              }
+            },
+            "random_3": {
+              "all": {
+                "error_target": 89.93685015259175,
+                "reduction": 0.0005299067206501196,
+                "gain": 0.0007679245584296429,
+                "same_layer_error_target": 89.29566014262836,
+                "same_layer_reduction": 0.004120865874434276,
+                "same_layer_gain": 0.0005499634150606039,
+                "error_original": 4.257461366742991,
+                "shift_length_median": 19.03813345034257,
+                "shift_over_distance_median": 0.42870577074989674
+              },
+              "test_seen": {
+                "error_target": 89.75918528897212,
+                "reduction": 0.0005085567670902735,
+                "gain": 0.0010720401999463846,
+                "same_layer_error_target": 89.05340060162396,
+                "same_layer_reduction": 0.005159675585791779,
+                "same_layer_gain": 0.0005063829145687787,
+                "error_original": 3.314800439818016,
+                "shift_length_median": 19.129044283329723,
+                "shift_over_distance_median": 0.4307529251532908
+              },
+              "test_unseen": {
+                "error_target": 90.11451501621136,
+                "reduction": 0.0005511715827041241,
+                "gain": 0.00046846535611734226,
+                "same_layer_error_target": 89.53791968363275,
+                "same_layer_reduction": 0.0030855233991059494,
+                "same_layer_gain": 0.0005933970592027091,
+                "error_original": 5.200122293667966,
+                "shift_length_median": 18.7462820381821,
+                "shift_over_distance_median": 0.42213378274902214
+              },
+              "target_seen": {
+                "error_target": 90.22530912513346,
+                "reduction": -0.0011064499817126094,
+                "gain": -0.0005307334409581601,
+                "same_layer_error_target": 89.06243972141175,
+                "same_layer_reduction": 0.0020659214577165574,
+                "same_layer_gain": -0.0017036754965175716,
+                "error_original": 4.094159260324393,
+                "shift_length_median": 18.567155622627983,
+                "shift_over_distance_median": 0.4181001663106201
+              },
+              "target_unseen": {
+                "error_target": 89.74454417089726,
+                "reduction": 0.0016236642664947398,
+                "gain": 0.0016215752368973614,
+                "same_layer_error_target": 89.45114042343945,
+                "same_layer_reduction": 0.005480209023029259,
+                "same_layer_gain": 0.0019989754652759207,
+                "error_original": 4.366329437688724,
+                "shift_length_median": 19.711357323027848,
+                "shift_over_distance_median": 0.44386560561393795
+              }
+            },
+            "random_5": {
+              "all": {
+                "error_target": 90.07794018351788,
+                "reduction": -0.0010380297384462445,
+                "gain": -0.0010128852514159938,
+                "same_layer_error_target": 89.6183919349853,
+                "same_layer_reduction": 0.0005215660046102855,
+                "same_layer_gain": -0.003186516785225088,
+                "error_original": 4.251679858294992,
+                "shift_length_median": 23.17647016982135,
+                "shift_over_distance_median": 0.521893941616239
+              },
+              "test_seen": {
+                "error_target": 89.86678089601959,
+                "reduction": -0.0006895477859667487,
+                "gain": -0.0010346086955851214,
+                "same_layer_error_target": 89.10767062146363,
+                "same_layer_reduction": 0.004553410089151444,
+                "same_layer_gain": -0.0001526071191781117,
+                "error_original": 3.234486820799041,
+                "shift_length_median": 23.425892047825506,
+                "shift_over_distance_median": 0.5275104900415645
+              },
+              "test_unseen": {
+                "error_target": 90.28909947101619,
+                "reduction": -0.0013851227954342349,
+                "gain": -0.0009914944238021341,
+                "same_layer_error_target": 90.12911324850697,
+                "same_layer_reduction": -0.0034968209906098835,
+                "same_layer_gain": -0.006210202867469484,
+                "error_original": 5.268872895790941,
+                "shift_length_median": 22.796414566309025,
+                "shift_over_distance_median": 0.5133357480907789
+              },
+              "target_seen": {
+                "error_target": 90.06155118541766,
+                "reduction": 0.0007105471699162536,
+                "gain": 0.001214332703235722,
+                "same_layer_error_target": 89.30280452670078,
+                "same_layer_reduction": -0.0006273376898029426,
+                "same_layer_gain": -0.0026270010043590378,
+                "error_original": 4.236582939059186,
+                "shift_length_median": 22.821333198518335,
+                "shift_over_distance_median": 0.5138968725022234
+              },
+              "target_unseen": {
+                "error_target": 90.08886618225138,
+                "reduction": -0.002206796417037138,
+                "gain": -0.0024769089735816397,
+                "same_layer_error_target": 89.82878354050831,
+                "same_layer_reduction": 0.0012815643542934962,
+                "same_layer_gain": -0.0035462661242142667,
+                "error_original": 4.2617444711188615,
+                "shift_length_median": 23.335444263218747,
+                "shift_over_distance_median": 0.5254737626851984
+              }
+            },
+            "random_6": {
+              "all": {
+                "error_target": 89.95953295836287,
+                "reduction": 0.00027783222658639417,
+                "gain": 0.00047751375611121215,
+                "same_layer_error_target": 89.02039893614536,
+                "same_layer_reduction": 0.007190745099615148,
+                "same_layer_gain": 0.0036665760209255867,
+                "error_original": 4.8244599957508205,
+                "shift_length_median": 43.97297241120141,
+                "shift_over_distance_median": 0.9901951301517342
+              },
+              "test_seen": {
+                "error_target": 89.86129848012386,
+                "reduction": -0.0006284996853362923,
+                "gain": 0.001183341375318469,
+                "same_layer_error_target": 88.45926716527387,
+                "same_layer_reduction": 0.011796905568821514,
+                "same_layer_gain": 0.009698504997472665,
+                "error_original": 3.981659456437151,
+                "shift_length_median": 45.085722747654664,
+                "shift_over_distance_median": 1.0152523392466108
+              },
+              "test_unseen": {
+                "error_target": 90.05776743660184,
+                "reduction": 0.0011805518989167485,
+                "gain": -0.00021750664719204755,
+                "same_layer_error_target": 89.58153070701684,
+                "same_layer_reduction": 0.002599958615999598,
+                "same_layer_gain": -0.00234502673033104,
+                "error_original": 5.667260535064491,
+                "shift_length_median": 43.13486186586465,
+                "shift_over_distance_median": 0.9713223331808869
+              },
+              "target_seen": {
+                "error_target": 90.01757132253391,
+                "reduction": 0.0011985313600415548,
+                "gain": 0.0014036954356202275,
+                "same_layer_error_target": 87.56176859568274,
+                "same_layer_reduction": 0.018880763513849486,
+                "same_layer_gain": 0.012246936332881115,
+                "error_original": 4.996780315077731,
+                "shift_length_median": 44.716073999409474,
+                "shift_over_distance_median": 1.0069284900658848
+              },
+              "target_unseen": {
+                "error_target": 89.92084071558214,
+                "reduction": -0.00033757248512111815,
+                "gain": -0.000131295968596874,
+                "same_layer_error_target": 89.99281916312043,
+                "same_layer_reduction": -0.0005421873870563587,
+                "same_layer_gain": -0.0018502995634182397,
+                "error_original": 4.709579782866213,
+                "shift_length_median": 43.60087765965085,
+                "shift_over_distance_median": 0.9818162012156832
+              }
+            },
+            "unedited": {
+              "all": {
+                "error_target": 89.98453356168065,
+                "same_layer_error_target": 89.6651582333178,
+                "error_original": 3.9829597216699155
+              },
+              "test_seen": {
+                "error_target": 89.80485615628797,
+                "same_layer_error_target": 89.51527035663867,
+                "error_original": 3.0185821759197986
+              },
+              "test_unseen": {
+                "error_target": 90.16421096707334,
+                "same_layer_error_target": 89.81504610999693,
+                "error_original": 4.947337267420031
+              },
+              "target_seen": {
+                "error_target": 90.12558966809335,
+                "same_layer_error_target": 89.24681663493075,
+                "error_original": 3.982959721669915
+              },
+              "target_unseen": {
+                "error_target": 89.89049615740552,
+                "same_layer_error_target": 89.94405263224249,
+                "error_original": 3.9829597216699146
+              }
+            }
+          },
+          "specificity_idx18": {
+            "direction": {
+              "probes_1": 0.4563743851888842,
+              "probes_2": 2.388490696189633,
+              "probes_3": 3.3758684536148804,
+              "probes_4": 3.468652442786412,
+              "probes_5": 2.853534885692715,
+              "probes_6": 3.0271458473635517,
+              "covariance": 2.9425722015929257,
+              "random_1": 0.2796999507555751,
+              "random_3": 1.161287645197831,
+              "random_5": 1.4198676556683278,
+              "random_6": 2.861834045902138
+            },
+            "speed": {
+              "probes_1": 0.014000652075598535,
+              "probes_2": 0.02410845558728696,
+              "probes_3": 0.01688615051865712,
+              "probes_4": 0.02369768747643922,
+              "probes_5": 0.05331492203789515,
+              "probes_6": 0.12679851272913065,
+              "covariance": 0.03358123627480931,
+              "random_1": 0.008355392889507337,
+              "random_3": 0.03135447185971766,
+              "random_5": 0.041404370328515704,
+              "random_6": 0.08417642598281826
+            },
+            "acceleration": {
+              "probes_1": 0.04017028388047614,
+              "probes_2": 0.0482030242402603,
+              "probes_3": 0.09342549306873292,
+              "probes_4": 0.10425743678308903,
+              "probes_5": 0.1986506181893276,
+              "probes_6": 0.3554874832820155,
+              "covariance": 0.14956245568684787,
+              "random_1": 0.02832110826847755,
+              "random_3": 0.1042218624182352,
+              "random_5": 0.1434072173360089,
+              "random_6": 0.29526310186899013
+            }
+          },
+          "round_shares": {
+            "5": [
+              0.04265284366033309,
+              0.3993622083802007,
+              0.19854962168576332,
+              0.09164297550818498,
+              0.2502611635021177
+            ],
+            "6": [
+              0.01206891569092669,
+              0.10966770117715419,
+              0.0541261904768764,
+              0.0231327468748136,
+              0.0670439511084619,
+              0.7284908603642442
+            ]
+          }
+        },
+        "speed": {
+          "k": 7,
+          "headline_n": 6,
+          "targets": [
+            0.4880952380952381,
+            1.2023809523809523,
+            2.2738095238095237,
+            2.988095238095238,
+            3.761904761904762
+          ],
+          "target_unseen": [
+            true,
+            false,
+            true,
+            false,
+            true
+          ],
+          "run_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+          "train_clip_distance_median": 44.830575088329745,
+          "unedited_readout_max_relative_diff": 5.608512033782559e-16,
+          "headline": {
+            "unedited": {
+              "error_target": 1.2528297118802394,
+              "error_target_ci": [
+                1.187633658857977,
+                1.324591818937713
+              ]
+            },
+            "probes_6": {
+              "error_target": 1.091023688580298,
+              "error_target_ci": [
+                1.0311006301740169,
+                1.1565341257414143
+              ],
+              "reduction": 0.12915244726843544,
+              "reduction_ci": [
+                0.1242270687148879,
+                0.13398434075017468
+              ]
+            },
+            "probes_7": {
+              "error_target": 1.2465966655424798,
+              "error_target_ci": [
+                1.103665933032224,
+                1.3934037220286766
+              ],
+              "reduction": 0.004975174422073292,
+              "reduction_ci": [
+                -0.11691991077061348,
+                0.12756152094889073
+              ]
+            },
+            "covariance": {
+              "error_target": 1.1031173795607057,
+              "error_target_ci": [
+                1.0435387928614592,
+                1.1693569262336907
+              ],
+              "reduction": 0.11949934687839314,
+              "reduction_ci": [
+                0.11409411909589424,
+                0.12436993998985377
+              ]
+            },
+            "random_6": {
+              "error_target": 1.2512357636227855,
+              "error_target_ci": [
+                1.1837934267523786,
+                1.3254016051031452
+              ],
+              "reduction": 0.0012722784607830384,
+              "reduction_ci": [
+                -0.004673213997010856,
+                0.007255307017402656
+              ]
+            },
+            "random_7": {
+              "error_target": 1.4540997872557653,
+              "error_target_ci": [
+                1.3569946969330744,
+                1.5548980104357246
+              ],
+              "reduction": -0.16065238034102847,
+              "reduction_ci": [
+                -0.23392890770210611,
+                -0.08523724483809585
+              ]
+            }
+          },
+          "arms": {
+            "probes_1": {
+              "all": {
+                "error_target": 1.1861289173594283,
+                "reduction": 0.05324011227408343,
+                "gain": 0.0533566352509423,
+                "same_layer_error_target": 0.5698698892652133,
+                "same_layer_reduction": 0.5490884160821381,
+                "same_layer_gain": 0.5512485328633229,
+                "error_original": 0.11556898948202585,
+                "shift_length_median": 4.118162183278971,
+                "shift_over_distance_median": 0.09186057004990346
+              },
+              "test_seen": {
+                "error_target": 1.2026654241195647,
+                "reduction": 0.05289217804488522,
+                "gain": 0.05269157488395049,
+                "same_layer_error_target": 0.5682466163302693,
+                "same_layer_reduction": 0.5499101568942125,
+                "same_layer_gain": 0.5512147628893237,
+                "error_original": 0.12035724815089585,
+                "shift_length_median": 4.082784362775888,
+                "shift_over_distance_median": 0.09107142513187867
+              },
+              "test_unseen": {
+                "error_target": 1.1695924105992919,
+                "reduction": 0.05359761869065016,
+                "gain": 0.054056670298787725,
+                "same_layer_error_target": 0.5714931622001571,
+                "same_layer_reduction": 0.5482683629879938,
+                "same_layer_gain": 0.5512819783670386,
+                "error_original": 0.11078073081315584,
+                "shift_length_median": 4.153540003782055,
+                "shift_over_distance_median": 0.09264971496792823
+              },
+              "target_seen": {
+                "error_target": 1.010819267844707,
+                "reduction": 0.05326977587636039,
+                "gain": 0.053471439194174776,
+                "same_layer_error_target": 0.4895138638502192,
+                "same_layer_reduction": 0.5463309867532612,
+                "same_layer_gain": 0.5507651287500501,
+                "error_original": 0.10956896158818422,
+                "shift_length_median": 3.5141327714608304,
+                "shift_over_distance_median": 0.07838696613944679
+              },
+              "target_unseen": {
+                "error_target": 1.3030020170359091,
+                "reduction": 0.05322477028394779,
+                "gain": 0.05330773794103538,
+                "same_layer_error_target": 0.6234405728752093,
+                "same_layer_reduction": 0.5505184811173625,
+                "same_layer_gain": 0.5514559022254868,
+                "error_original": 0.11956900807792022,
+                "shift_length_median": 4.373434643499431,
+                "shift_over_distance_median": 0.09755472988875219
+              }
+            },
+            "probes_2": {
+              "all": {
+                "error_target": 1.1311946154983854,
+                "reduction": 0.09708829159176402,
+                "gain": 0.09710961037309716,
+                "same_layer_error_target": 0.0682916048455362,
+                "same_layer_reduction": 0.9459640239127244,
+                "same_layer_gain": 0.9959591754999088,
+                "error_original": 0.1599397416288809,
+                "shift_length_median": 7.545042402444434,
+                "shift_over_distance_median": 0.16830126286755023
+              },
+              "test_seen": {
+                "error_target": 1.1489687413491498,
+                "reduction": 0.09517870865013056,
+                "gain": 0.0944445697045495,
+                "same_layer_error_target": 0.05918382698761848,
+                "same_layer_reduction": 0.9531223967943964,
+                "same_layer_gain": 0.9938120975651958,
+                "error_original": 0.15905195902157165,
+                "shift_length_median": 7.5035066364351,
+                "shift_over_distance_median": 0.16737475755443534
+              },
+              "test_unseen": {
+                "error_target": 1.113420489647621,
+                "reduction": 0.09905040999607806,
+                "gain": 0.09991480214892842,
+                "same_layer_error_target": 0.07739938270345395,
+                "same_layer_reduction": 0.9388203531294317,
+                "same_layer_gain": 0.9980856237774539,
+                "error_original": 0.1608275242361901,
+                "shift_length_median": 7.6150848303144905,
+                "shift_over_distance_median": 0.1698636436251482
+              },
+              "target_seen": {
+                "error_target": 0.9643415847832216,
+                "reduction": 0.09680063119470961,
+                "gain": 0.09699076609815761,
+                "same_layer_error_target": 0.06818847032177074,
+                "same_layer_reduction": 0.9368046579878937,
+                "same_layer_gain": 0.993897869991689,
+                "error_original": 0.1488813264562879,
+                "shift_length_median": 6.241077981964062,
+                "shift_over_distance_median": 0.13921476513890926
+              },
+              "target_unseen": {
+                "error_target": 1.2424299693084948,
+                "reduction": 0.09723706930705356,
+                "gain": 0.09716022854159172,
+                "same_layer_error_target": 0.06836036119471321,
+                "same_layer_reduction": 0.9507142776424405,
+                "same_layer_gain": 0.9968434286469718,
+                "error_original": 0.16731201841060953,
+                "shift_length_median": 7.763505052052809,
+                "shift_over_distance_median": 0.17317433552338696
+              }
+            },
+            "probes_3": {
+              "all": {
+                "error_target": 1.1131900819260552,
+                "reduction": 0.11145938560525859,
+                "gain": 0.1113595410100602,
+                "same_layer_error_target": 0.0751365382047338,
+                "same_layer_reduction": 0.9405479459606366,
+                "same_layer_gain": 1.009874211287767,
+                "error_original": 0.17493047247283602,
+                "shift_length_median": 9.019683779194324,
+                "shift_over_distance_median": 0.20119491577841303
+              },
+              "test_seen": {
+                "error_target": 1.130091711762726,
+                "reduction": 0.11004450758142392,
+                "gain": 0.10919494268282641,
+                "same_layer_error_target": 0.06373537456218337,
+                "same_layer_reduction": 0.9495172625536431,
+                "same_layer_gain": 1.008074842379378,
+                "error_original": 0.17353359558923134,
+                "shift_length_median": 8.900640918516887,
+                "shift_over_distance_median": 0.19853952131954455
+              },
+              "test_unseen": {
+                "error_target": 1.0962884520893847,
+                "reduction": 0.11291318902478953,
+                "gain": 0.1136379728168226,
+                "same_layer_error_target": 0.08653770184728424,
+                "same_layer_reduction": 0.931597050840935,
+                "same_layer_gain": 1.0116562914135283,
+                "error_original": 0.1763273493564407,
+                "shift_length_median": 9.273068988030957,
+                "shift_over_distance_median": 0.20684697820093131
+              },
+              "target_seen": {
+                "error_target": 0.9493793284277303,
+                "reduction": 0.11081423457905448,
+                "gain": 0.1110742839575791,
+                "same_layer_error_target": 0.07413836477163746,
+                "same_layer_reduction": 0.9312904469648138,
+                "same_layer_gain": 1.0076130012371838,
+                "error_original": 0.1622603668794161,
+                "shift_length_median": 8.100249395996983,
+                "shift_over_distance_median": 0.18068582390560572
+              },
+              "target_unseen": {
+                "error_target": 1.2223972509249388,
+                "reduction": 0.11179305717311494,
+                "gain": 0.11148103772964635,
+                "same_layer_error_target": 0.07580198716013134,
+                "same_layer_reduction": 0.9453490937140565,
+                "same_layer_gain": 1.0108442189336135,
+                "error_original": 0.183377209535116,
+                "shift_length_median": 9.513603994454101,
+                "shift_over_distance_median": 0.21221240137360348
+              }
+            },
+            "probes_4": {
+              "all": {
+                "error_target": 1.102788538848713,
+                "reduction": 0.11976182525743728,
+                "gain": 0.11957038016745943,
+                "same_layer_error_target": 0.06836232916395896,
+                "same_layer_reduction": 0.9459080630433361,
+                "same_layer_gain": 0.9777884758670095,
+                "error_original": 0.18384688615303768,
+                "shift_length_median": 11.650384656780147,
+                "shift_over_distance_median": 0.25987586895384185
+              },
+              "test_seen": {
+                "error_target": 1.1166594187808323,
+                "reduction": 0.12062253659498567,
+                "gain": 0.11940440156718231,
+                "same_layer_error_target": 0.06493926525060642,
+                "same_layer_reduction": 0.9485636995134121,
+                "same_layer_gain": 0.9737819904269648,
+                "error_original": 0.18430601606237923,
+                "shift_length_median": 11.226038960063333,
+                "shift_over_distance_median": 0.25041032683485887
+              },
+              "test_unseen": {
+                "error_target": 1.0889176589165939,
+                "reduction": 0.11887743447273458,
+                "gain": 0.119745087371727,
+                "same_layer_error_target": 0.07178539307731148,
+                "same_layer_reduction": 0.9432578808055678,
+                "same_layer_gain": 0.9817564660015319,
+                "error_original": 0.1833877562436961,
+                "shift_length_median": 12.34762219961434,
+                "shift_over_distance_median": 0.2754285925461764
+              },
+              "target_seen": {
+                "error_target": 0.9410474838592738,
+                "reduction": 0.11861781463197252,
+                "gain": 0.11911544797683185,
+                "same_layer_error_target": 0.06681480042345275,
+                "same_layer_reduction": 0.9380777403524972,
+                "same_layer_gain": 0.9770981526208259,
+                "error_original": 0.16969958906476032,
+                "shift_length_median": 10.299292459421961,
+                "shift_over_distance_median": 0.2297381293710654
+              },
+              "target_unseen": {
+                "error_target": 1.2106159088416726,
+                "reduction": 0.12035350659023991,
+                "gain": 0.11976414494317535,
+                "same_layer_error_target": 0.0693940149909631,
+                "same_layer_reduction": 0.9499690449794547,
+                "same_layer_gain": 0.9780846088276475,
+                "error_original": 0.19327841754522257,
+                "shift_length_median": 12.888653261702066,
+                "shift_over_distance_median": 0.2874969423503387
+              }
+            },
+            "probes_5": {
+              "all": {
+                "error_target": 1.103735628663909,
+                "reduction": 0.11900586472567865,
+                "gain": 0.11871197050579874,
+                "same_layer_error_target": 0.06609073702691305,
+                "same_layer_reduction": 0.9477054684297681,
+                "same_layer_gain": 0.9924021357860725,
+                "error_original": 0.18226510297289383,
+                "shift_length_median": 14.246016751753936,
+                "shift_over_distance_median": 0.3177745706738089
+              },
+              "test_seen": {
+                "error_target": 1.118829540604809,
+                "reduction": 0.11891354977881574,
+                "gain": 0.1175359696093221,
+                "same_layer_error_target": 0.059982720331790036,
+                "same_layer_reduction": 0.9524896191066758,
+                "same_layer_gain": 0.9890518381575633,
+                "error_original": 0.18167795245697121,
+                "shift_length_median": 13.735763614902924,
+                "shift_over_distance_median": 0.3063927595806953
+              },
+              "test_unseen": {
+                "error_target": 1.0886417167230094,
+                "reduction": 0.11910071939382805,
+                "gain": 0.1199498157972795,
+                "same_layer_error_target": 0.07219875372203606,
+                "same_layer_reduction": 0.9429311435966765,
+                "same_layer_gain": 0.9957202429242553,
+                "error_original": 0.18285225348881642,
+                "shift_length_median": 14.263189697722435,
+                "shift_over_distance_median": 0.31815763392773017
+              },
+              "target_seen": {
+                "error_target": 0.9414694597776516,
+                "reduction": 0.11822259328183693,
+                "gain": 0.11857229820497892,
+                "same_layer_error_target": 0.06608831012593251,
+                "same_layer_reduction": 0.9387510331042428,
+                "same_layer_gain": 0.9898762493496551,
+                "error_original": 0.16836270509992063,
+                "shift_length_median": 13.398700297854644,
+                "shift_over_distance_median": 0.298874156119014
+              },
+              "target_unseen": {
+                "error_target": 1.211913074588081,
+                "reduction": 0.11941097205730844,
+                "gain": 0.11877145974968968,
+                "same_layer_error_target": 0.06609235496090009,
+                "same_layer_reduction": 0.9523494405291102,
+                "same_layer_gain": 0.9934856835773238,
+                "error_original": 0.19153336822154265,
+                "shift_length_median": 15.170829633307008,
+                "shift_over_distance_median": 0.33840363643374866
+              }
+            },
+            "probes_6": {
+              "all": {
+                "error_target": 1.091023688580298,
+                "reduction": 0.12915244726843544,
+                "gain": 0.12753713239981843,
+                "same_layer_error_target": 0.07639632612563285,
+                "same_layer_reduction": 0.9395511342716639,
+                "same_layer_gain": 1.0110550407950991,
+                "error_original": 0.19184174786692998,
+                "shift_length_median": 23.461311388941485,
+                "shift_over_distance_median": 0.5233328223587502
+              },
+              "test_seen": {
+                "error_target": 1.108524214363171,
+                "reduction": 0.12702906960295945,
+                "gain": 0.12467524868782685,
+                "same_layer_error_target": 0.07098251840657892,
+                "same_layer_reduction": 0.9437770333254355,
+                "same_layer_gain": 1.00788919974492,
+                "error_original": 0.18984028238645748,
+                "shift_length_median": 23.47842046728848,
+                "shift_over_distance_median": 0.5237144609684109
+              },
+              "test_unseen": {
+                "error_target": 1.0735231627974253,
+                "reduction": 0.1313342422069549,
+                "gain": 0.1305495189449886,
+                "same_layer_error_target": 0.08181013384468679,
+                "same_layer_reduction": 0.9353339145064201,
+                "same_layer_gain": 1.0141904636594927,
+                "error_original": 0.19384321334740248,
+                "shift_length_median": 23.340851140397316,
+                "shift_over_distance_median": 0.5206458113555047
+              },
+              "target_seen": {
+                "error_target": 0.9347287083058088,
+                "reduction": 0.12453596042342963,
+                "gain": 0.12482273991881675,
+                "same_layer_error_target": 0.07390147351978128,
+                "same_layer_reduction": 0.9315099917589715,
+                "same_layer_gain": 1.0044251601249612,
+                "error_original": 0.17371679152190642,
+                "shift_length_median": 18.92696526077276,
+                "shift_over_distance_median": 0.42218876789960724
+              },
+              "target_unseen": {
+                "error_target": 1.1952203420966243,
+                "reduction": 0.13154009037988745,
+                "gain": 0.12869324678592242,
+                "same_layer_error_target": 0.07805956119620057,
+                "same_layer_reduction": 0.9437214521217832,
+                "same_layer_gain": 1.0138991087044134,
+                "error_original": 0.2039250520969457,
+                "shift_length_median": 26.993965678583514,
+                "shift_over_distance_median": 0.6021329332804066
+              }
+            },
+            "probes_7": {
+              "all": {
+                "error_target": 1.2465966655424798,
+                "reduction": 0.004975174422073292,
+                "gain": 0.5389235208717458,
+                "same_layer_error_target": 0.07503313146948297,
+                "same_layer_reduction": 0.9406297669089936,
+                "same_layer_gain": 1.0091020751968638,
+                "error_original": 1.0349956666972766,
+                "shift_length_median": 183.82823414452423,
+                "shift_over_distance_median": 4.100510283045159
+              },
+              "test_seen": {
+                "error_target": 1.2504401545577153,
+                "reduction": 0.01526922823497101,
+                "gain": 0.5340621641094317,
+                "same_layer_error_target": 0.0696241890031041,
+                "same_layer_reduction": 0.9448529222978048,
+                "same_layer_gain": 1.0059300808014886,
+                "error_original": 1.0256716579740024,
+                "shift_length_median": 179.84367920107186,
+                "shift_over_distance_median": 4.011629983481711
+              },
+              "test_unseen": {
+                "error_target": 1.2427531765272442,
+                "reduction": -0.005602084099103788,
+                "gain": 0.5440405302179698,
+                "same_layer_error_target": 0.08044207393586182,
+                "same_layer_reduction": 0.936415285173682,
+                "same_layer_gain": 1.0122435922835875,
+                "error_original": 1.0443196754205506,
+                "shift_length_median": 191.90697944563377,
+                "shift_over_distance_median": 4.280716432200996
+              },
+              "target_seen": {
+                "error_target": 0.9460860460502173,
+                "reduction": 0.11389871274696006,
+                "gain": 0.3908115865906615,
+                "same_layer_error_target": 0.07287105898774619,
+                "same_layer_reduction": 0.9324649537702753,
+                "same_layer_gain": 1.0029271831503273,
+                "error_original": 0.7482441945947376,
+                "shift_length_median": 175.87403149456708,
+                "shift_over_distance_median": 3.9230822078022025
+              },
+              "target_unseen": {
+                "error_target": 1.446937078537321,
+                "reduction": -0.05135998794013541,
+                "gain": 0.6020073745054917,
+                "same_layer_error_target": 0.07647451312397414,
+                "same_layer_reduction": 0.9448642231347774,
+                "same_layer_gain": 1.011750963342338,
+                "error_original": 1.2261633147656357,
+                "shift_length_median": 315.40151446467894,
+                "shift_over_distance_median": 7.0354108517065175
+              }
+            },
+            "covariance": {
+              "all": {
+                "error_target": 1.1031173795607057,
+                "reduction": 0.11949934687839314,
+                "gain": 0.11912529134900886,
+                "same_layer_error_target": 0.07898448358483028,
+                "same_layer_reduction": 0.9375032454441627,
+                "same_layer_gain": 0.9768639544593816,
+                "error_original": 0.1856133719941032,
+                "shift_length_median": 10.278452235756674,
+                "shift_over_distance_median": 0.22927326306889942
+              },
+              "test_seen": {
+                "error_target": 1.1200896757926482,
+                "reduction": 0.11792118409739849,
+                "gain": 0.1168589418441198,
+                "same_layer_error_target": 0.06515780053963723,
+                "same_layer_reduction": 0.9483906047494025,
+                "same_layer_gain": 0.9768041034531835,
+                "error_original": 0.18398044384704834,
+                "shift_length_median": 10.190153324236734,
+                "shift_over_distance_median": 0.22730364944369016
+              },
+              "test_unseen": {
+                "error_target": 1.0861450833287634,
+                "reduction": 0.12112092726125101,
+                "gain": 0.12151082529875479,
+                "same_layer_error_target": 0.09281116663002331,
+                "same_layer_reduction": 0.9266382469505547,
+                "same_layer_gain": 0.976923230402272,
+                "error_original": 0.18724630014115798,
+                "shift_length_median": 10.366751147276615,
+                "shift_over_distance_median": 0.23124287669410867
+              },
+              "target_seen": {
+                "error_target": 0.940230989146538,
+                "reduction": 0.1193825410741508,
+                "gain": 0.11920564798554033,
+                "same_layer_error_target": 0.07819186061635092,
+                "same_layer_reduction": 0.9275337699922621,
+                "same_layer_gain": 0.9760073093575441,
+                "error_original": 0.17216183858659803,
+                "shift_length_median": 8.770865311770686,
+                "shift_over_distance_median": 0.19564472002621958
+              },
+              "target_unseen": {
+                "error_target": 1.2117083065034842,
+                "reduction": 0.11955975874205493,
+                "gain": 0.11909106584029441,
+                "same_layer_error_target": 0.07951289889714984,
+                "same_layer_reduction": 0.9426736402441259,
+                "same_layer_gain": 0.9772314357105574,
+                "error_original": 0.19458106093244,
+                "shift_length_median": 10.915582507151417,
+                "shift_over_distance_median": 0.24348522154008573
+              }
+            },
+            "random_1": {
+              "all": {
+                "error_target": 1.2528184036934453,
+                "reduction": 9.026116388533012e-06,
+                "gain": 0.00013263900615908842,
+                "same_layer_error_target": 1.2614790160676164,
+                "same_layer_reduction": 0.0018502259390786868,
+                "same_layer_gain": 0.0020236475210406862,
+                "error_original": 0.082312702535616,
+                "shift_length_median": 4.118162183278971,
+                "shift_over_distance_median": 0.09186057004990346
+              },
+              "test_seen": {
+                "error_target": 1.269587855777687,
+                "reduction": 0.00019027341162880518,
+                "gain": 0.0005915654980794483,
+                "same_layer_error_target": 1.2626682954818782,
+                "same_layer_reduction": -0.00011888971421902816,
+                "same_layer_gain": -0.00031504472958602067,
+                "error_original": 0.1005219466365172,
+                "shift_length_median": 4.082784362775888,
+                "shift_over_distance_median": 0.09107142513187867
+              },
+              "test_unseen": {
+                "error_target": 1.2360489516092035,
+                "reduction": -0.0001772075611172763,
+                "gain": -0.00035042184767308327,
+                "same_layer_error_target": 1.2602897366533545,
+                "same_layer_reduction": 0.003815297358786829,
+                "same_layer_gain": 0.0043398690366409235,
+                "error_original": 0.06410345843471478,
+                "shift_length_median": 4.153540003782055,
+                "shift_over_distance_median": 0.09264971496792823
+              },
+              "target_seen": {
+                "error_target": 1.0689743643586633,
+                "reduction": -0.001198109044337592,
+                "gain": -0.0014773433518558514,
+                "same_layer_error_target": 1.0757323026282597,
+                "same_layer_reduction": 0.003038630177938262,
+                "same_layer_gain": 0.0026953401705078566,
+                "error_original": 0.0820574560463106,
+                "shift_length_median": 3.5141327714608304,
+                "shift_over_distance_median": 0.07838696613944679
+              },
+              "target_unseen": {
+                "error_target": 1.3753810965833,
+                "reduction": 0.0006333554057089685,
+                "gain": 0.0008183628941017098,
+                "same_layer_error_target": 1.3853101583605212,
+                "same_layer_reduction": 0.0012338927000330457,
+                "same_layer_gain": 0.0017355066623557908,
+                "error_original": 0.08248286686181959,
+                "shift_length_median": 4.373434643499431,
+                "shift_over_distance_median": 0.09755472988875219
+              }
+            },
+            "random_3": {
+              "all": {
+                "error_target": 1.2537860139140877,
+                "reduction": -0.0007633136608906632,
+                "gain": -0.0004237152979639397,
+                "same_layer_error_target": 1.269063642693115,
+                "same_layer_reduction": -0.004151136950157008,
+                "same_layer_gain": -0.005255232910668941,
+                "error_original": 0.08607155910860213,
+                "shift_length_median": 9.019683779194324,
+                "shift_over_distance_median": 0.20119491577841303
+              },
+              "test_seen": {
+                "error_target": 1.268287351100566,
+                "reduction": 0.00121443036125779,
+                "gain": 0.002475874900201544,
+                "same_layer_error_target": 1.2658369284450832,
+                "same_layer_reduction": -0.002628661831260315,
+                "same_layer_gain": -0.0036760433048677356,
+                "error_original": 0.10516598037810823,
+                "shift_length_median": 8.900640918516887,
+                "shift_over_distance_median": 0.19853952131954455
+              },
+              "test_unseen": {
+                "error_target": 1.2392846767276093,
+                "reduction": -0.0027954683582720463,
+                "gain": -0.003475791265572891,
+                "same_layer_error_target": 1.2722903569411466,
+                "same_layer_reduction": -0.005670485160278682,
+                "same_layer_gain": -0.006819249271175042,
+                "error_original": 0.066977137839096,
+                "shift_length_median": 9.273068988030959,
+                "shift_over_distance_median": 0.20684697820093134
+              },
+              "target_seen": {
+                "error_target": 1.0690898451296271,
+                "reduction": -0.0013062679800193155,
+                "gain": -0.001238118921774264,
+                "same_layer_error_target": 1.0834180486626162,
+                "same_layer_reduction": -0.004084323995507511,
+                "same_layer_gain": -0.003163954585047626,
+                "error_original": 0.08416700374856036,
+                "shift_length_median": 8.100249395996983,
+                "shift_over_distance_median": 0.18068582390560572
+              },
+              "target_unseen": {
+                "error_target": 1.376916793103728,
+                "reduction": -0.00048249814393463986,
+                "gain": -7.684440432114506e-05,
+                "same_layer_error_target": 1.3928273720467808,
+                "same_layer_reduction": -0.004185787655197171,
+                "same_layer_gain": -0.006152343714206302,
+                "error_original": 0.0873412626819633,
+                "shift_length_median": 9.513603994454101,
+                "shift_over_distance_median": 0.21221240137360348
+              }
+            },
+            "random_6": {
+              "all": {
+                "error_target": 1.2512357636227855,
+                "reduction": 0.0012722784607830384,
+                "gain": 0.0006545008242574145,
+                "same_layer_error_target": 1.2564196156516951,
+                "same_layer_reduction": 0.005853494576695817,
+                "same_layer_gain": 0.005296759995266058,
+                "error_original": 0.09604982879128787,
+                "shift_length_median": 23.46131138894149,
+                "shift_over_distance_median": 0.5233328223587503
+              },
+              "test_seen": {
+                "error_target": 1.272442174029733,
+                "reduction": -0.0020575230982284864,
+                "gain": -0.0013854889891040127,
+                "same_layer_error_target": 1.2436475148063793,
+                "same_layer_reduction": 0.0149468580508485,
+                "same_layer_gain": 0.013019195627803336,
+                "error_original": 0.11526548883450984,
+                "shift_length_median": 23.478420467288483,
+                "shift_over_distance_median": 0.5237144609684109
+              },
+              "test_unseen": {
+                "error_target": 1.2300293532158382,
+                "reduction": 0.004693687805831681,
+                "gain": 0.0028017711135095596,
+                "same_layer_error_target": 1.2691917164970112,
+                "same_layer_reduction": -0.0032211926526448664,
+                "same_layer_gain": -0.002351476560923655,
+                "error_original": 0.07683416874806588,
+                "shift_length_median": 23.340851140397312,
+                "shift_over_distance_median": 0.5206458113555046
+              },
+              "target_seen": {
+                "error_target": 1.0715936513887054,
+                "reduction": -0.0036513252382506245,
+                "gain": -0.00513581406525821,
+                "same_layer_error_target": 1.071940937570063,
+                "same_layer_reduction": 0.006552370996802059,
+                "same_layer_gain": 0.004018884900147135,
+                "error_original": 0.08457423821453582,
+                "shift_length_median": 18.926965260772754,
+                "shift_over_distance_median": 0.4221887678996071
+              },
+              "target_unseen": {
+                "error_target": 1.370997171778839,
+                "reduction": 0.0038187621506987623,
+                "gain": 0.003120712468555358,
+                "same_layer_error_target": 1.3794054010394499,
+                "same_layer_reduction": 0.005491041504237959,
+                "same_layer_gain": 0.005844939326231922,
+                "error_original": 0.10370022250912256,
+                "shift_length_median": 26.993965678583518,
+                "shift_over_distance_median": 0.6021329332804067
+              }
+            },
+            "random_7": {
+              "all": {
+                "error_target": 1.4540997872557653,
+                "reduction": -0.16065238034102847,
+                "gain": 0.02153657141624186,
+                "same_layer_error_target": 1.7447216750707266,
+                "same_layer_reduction": -0.3805172528352958,
+                "same_layer_gain": 0.03614142828937326,
+                "error_original": 0.7861064650675662,
+                "shift_length_median": 183.82823414452423,
+                "shift_over_distance_median": 4.100510283045159
+              },
+              "test_seen": {
+                "error_target": 1.495684744294732,
+                "reduction": -0.17786268075138878,
+                "gain": 0.006445309816377271,
+                "same_layer_error_target": 1.8421885504902022,
+                "same_layer_reduction": -0.4591382189234272,
+                "same_layer_gain": -0.04910537702888868,
+                "error_original": 0.7868827934487417,
+                "shift_length_median": 179.84367920107186,
+                "shift_over_distance_median": 4.011629983481711
+              },
+              "test_unseen": {
+                "error_target": 1.412514830216799,
+                "reduction": -0.1429685990070495,
+                "gain": 0.03742146331544459,
+                "same_layer_error_target": 1.647254799651251,
+                "same_layer_reduction": -0.3020577610370916,
+                "same_layer_gain": 0.12056916116505692,
+                "error_original": 0.7853301366863906,
+                "shift_length_median": 191.90697944563377,
+                "shift_over_distance_median": 4.280716432200996
+              },
+              "target_seen": {
+                "error_target": 1.1468640282574705,
+                "reduction": -0.07414932921356132,
+                "gain": 0.02328101065552606,
+                "same_layer_error_target": 1.4998780188923395,
+                "same_layer_reduction": -0.3900488445196799,
+                "same_layer_gain": 0.017980823927718378,
+                "error_original": 0.44780924474101524,
+                "shift_length_median": 175.87403149456708,
+                "shift_over_distance_median": 3.9230822078022025
+              },
+              "target_unseen": {
+                "error_target": 1.658923626587962,
+                "reduction": -0.2053916855916269,
+                "gain": 0.020793579636557716,
+                "same_layer_error_target": 1.9079507791896513,
+                "same_layer_reduction": -0.3755739544322776,
+                "same_layer_gain": 0.04393191421944093,
+                "error_original": 1.0116379452852668,
+                "shift_length_median": 315.40151446467894,
+                "shift_over_distance_median": 7.0354108517065175
+              }
+            },
+            "unedited": {
+              "all": {
+                "error_target": 1.2528297118802398,
+                "same_layer_error_target": 1.2638173637362593,
+                "error_original": 0.08254159338554377
+              },
+              "test_seen": {
+                "error_target": 1.2698294705632378,
+                "same_layer_error_target": 1.262518195054472,
+                "error_original": 0.10124100874369905
+              },
+              "test_unseen": {
+                "error_target": 1.2358299531972416,
+                "same_layer_error_target": 1.2651165324180467,
+                "error_original": 0.06384217802738851
+              },
+              "target_seen": {
+                "error_target": 1.0676951491438786,
+                "same_layer_error_target": 1.0790110180700954,
+                "error_original": 0.08254159338554379
+              },
+              "target_unseen": {
+                "error_target": 1.3762527537044806,
+                "same_layer_error_target": 1.3870215941803685,
+                "error_original": 0.08254159338554377
+              }
+            }
+          },
+          "specificity_idx18": {
+            "direction": {
+              "probes_1": 0.25351745784973917,
+              "probes_2": 0.4581015813287714,
+              "probes_3": 0.5136731327377888,
+              "probes_4": 0.5415507702768866,
+              "probes_5": 1.1190731260307876,
+              "probes_6": 1.5099103288133586,
+              "probes_7": 38.11290723837872,
+              "covariance": 0.46622468052622934,
+              "random_1": 0.3375562157023574,
+              "random_3": 0.6834710381487349,
+              "random_6": 1.5101836007724483,
+              "random_7": 23.26419541313667
+            },
+            "speed": {
+              "probes_1": 0.06683598478160159,
+              "probes_2": 0.12186434476072665,
+              "probes_3": 0.1400771243080211,
+              "probes_4": 0.15066349474323565,
+              "probes_5": 0.14962784697592385,
+              "probes_6": 0.16300942377688496,
+              "probes_7": 1.0333753340677432,
+              "covariance": 0.1502114409188066,
+              "random_1": 0.010095431895800864,
+              "random_3": 0.020368569038568218,
+              "random_6": 0.04616363267208745,
+              "random_7": 0.7918564926800178
+            },
+            "acceleration": {
+              "probes_1": 0.20242494636191444,
+              "probes_2": 0.3992566335900986,
+              "probes_3": 0.49421349008877047,
+              "probes_4": 0.531514024448467,
+              "probes_5": 0.5511437177769518,
+              "probes_6": 0.5304220057742708,
+              "probes_7": 2.414533547574939,
+              "covariance": 0.5112468062532805,
+              "random_1": 0.03188402754952426,
+              "random_3": 0.07677566298611026,
+              "random_6": 0.1567038344614448,
+              "random_7": 2.0391796406029177
+            }
+          },
+          "round_shares": {
+            "6": [
+              0.05609795646124044,
+              0.11910007246891349,
+              0.07011477337841202,
+              0.09675825322965609,
+              0.17670923811658487,
+              0.4181236056366535
+            ],
+            "7": [
+              0.0007536516248019005,
+              0.001647296587890063,
+              0.000973411055209661,
+              0.0011804141193803071,
+              0.0024406889133985845,
+              0.005280755028698969,
+              0.9866823902405699
+            ]
+          }
+        },
+        "acceleration": {
+          "k": 7,
+          "headline_n": 6,
+          "targets": [
+            0.8690476190476191,
+            2.7261904761904763,
+            5.511904761904762,
+            7.3690476190476195,
+            9.380952380952381
+          ],
+          "target_unseen": [
+            true,
+            false,
+            true,
+            false,
+            true
+          ],
+          "run_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+          "train_clip_distance_median": 44.41171056168747,
+          "unedited_readout_max_relative_diff": 7.194143435893228e-16,
+          "headline": {
+            "unedited": {
+              "error_target": 3.398340017409956,
+              "error_target_ci": [
+                3.1815937380723547,
+                3.6281534467704013
+              ]
+            },
+            "probes_6": {
+              "error_target": 2.935336420182958,
+              "error_target_ci": [
+                2.725707067940665,
+                3.155011668344004
+              ],
+              "reduction": 0.13624404705091153,
+              "reduction_ci": [
+                0.12694004524318817,
+                0.14658327953840705
+              ]
+            },
+            "probes_7": {
+              "error_target": 2.9917744326986377,
+              "error_target_ci": [
+                2.7438620865272982,
+                3.2515752396684614
+              ],
+              "reduction": 0.11963652331092578,
+              "reduction_ci": [
+                0.09544362607891371,
+                0.14497308700960623
+              ]
+            },
+            "covariance": {
+              "error_target": 2.995001141218933,
+              "error_target_ci": [
+                2.793423641544948,
+                3.2056500047131653
+              ],
+              "reduction": 0.11868702782084406,
+              "reduction_ci": [
+                0.11331307171474393,
+                0.12464607169733376
+              ]
+            },
+            "random_6": {
+              "error_target": 3.407530866852436,
+              "error_target_ci": [
+                3.189029100321127,
+                3.6372631605264307
+              ],
+              "reduction": -0.0027045114365822354,
+              "reduction_ci": [
+                -0.007017717547385586,
+                0.0018021148775024078
+              ]
+            },
+            "random_7": {
+              "error_target": 3.4609250869918045,
+              "error_target_ci": [
+                3.229450880607669,
+                3.7076488276916226
+              ],
+              "reduction": -0.018416364831423726,
+              "reduction_ci": [
+                -0.033057872724595816,
+                -0.003990667700982706
+              ]
+            }
+          },
+          "arms": {
+            "probes_1": {
+              "all": {
+                "error_target": 3.2901533145306816,
+                "reduction": 0.03183516138026965,
+                "gain": 0.031324755884092156,
+                "same_layer_error_target": 2.1438966293869224,
+                "same_layer_reduction": 0.356300134990141,
+                "same_layer_gain": 0.3573394106730098,
+                "error_original": 0.24825194378380605,
+                "shift_length_median": 3.2159717159412637,
+                "shift_over_distance_median": 0.07241269645478544
+              },
+              "test_seen": {
+                "error_target": 3.462472468525109,
+                "reduction": 0.030277903364091974,
+                "gain": 0.029793782772090598,
+                "same_layer_error_target": 2.223451804866463,
+                "same_layer_reduction": 0.35402917995086547,
+                "same_layer_gain": 0.35506513118454675,
+                "error_original": 0.20670358584581053,
+                "shift_length_median": 3.3291917724145135,
+                "shift_over_distance_median": 0.0749620253376707
+              },
+              "test_unseen": {
+                "error_target": 3.117834160536255,
+                "reduction": 0.03355870421015239,
+                "gain": 0.03322444385719158,
+                "same_layer_error_target": 2.064341453907381,
+                "same_layer_reduction": 0.35872833174943963,
+                "same_layer_gain": 0.36003805218184365,
+                "error_original": 0.28980030172180155,
+                "shift_length_median": 3.1084020484108366,
+                "shift_over_distance_median": 0.0699905950277077
+              },
+              "target_seen": {
+                "error_target": 2.8981574474096248,
+                "reduction": 0.031532129841631895,
+                "gain": 0.030717020991658798,
+                "same_layer_error_target": 1.851510640534588,
+                "same_layer_reduction": 0.3586898631629558,
+                "same_layer_gain": 0.3572082802944008,
+                "error_original": 0.2412621549968407,
+                "shift_length_median": 2.5055087853597318,
+                "shift_over_distance_median": 0.05641549838256291
+              },
+              "target_unseen": {
+                "error_target": 3.551483892611387,
+                "reduction": 0.03199993924302691,
+                "gain": 0.031594690689114295,
+                "same_layer_error_target": 2.3388206219551444,
+                "same_layer_reduction": 0.355031733379259,
+                "same_layer_gain": 0.3573964406539692,
+                "error_original": 0.25291180297511634,
+                "shift_length_median": 3.407545367152749,
+                "shift_over_distance_median": 0.0767262806151026
+              }
+            },
+            "probes_2": {
+              "all": {
+                "error_target": 3.138178645088914,
+                "reduction": 0.07655542735224108,
+                "gain": 0.0760579916514992,
+                "same_layer_error_target": 0.46164579186629834,
+                "same_layer_reduction": 0.8613919487379001,
+                "same_layer_gain": 0.8790639306810198,
+                "error_original": 0.35135440778832266,
+                "shift_length_median": 6.280484469451448,
+                "shift_over_distance_median": 0.1414150544984731
+              },
+              "test_seen": {
+                "error_target": 3.3058493071196793,
+                "reduction": 0.07414278368890603,
+                "gain": 0.07377431956724241,
+                "same_layer_error_target": 0.47894521331781864,
+                "same_layer_reduction": 0.8608539067370969,
+                "same_layer_gain": 0.875509346010315,
+                "error_original": 0.31243979894896445,
+                "shift_length_median": 6.551580805138078,
+                "shift_over_distance_median": 0.14751921784318556
+              },
+              "test_unseen": {
+                "error_target": 2.9705079830581487,
+                "reduction": 0.07922569434962057,
+                "gain": 0.07889165630501736,
+                "same_layer_error_target": 0.4443463704147782,
+                "same_layer_reduction": 0.8619672449547435,
+                "same_layer_gain": 0.883281771886417,
+                "error_original": 0.3902690166276809,
+                "shift_length_median": 6.2440597445507295,
+                "shift_over_distance_median": 0.14059489412995668
+              },
+              "target_seen": {
+                "error_target": 2.7664337146427713,
+                "reduction": 0.07554982219856266,
+                "gain": 0.07464183665073693,
+                "same_layer_error_target": 0.4230178090619037,
+                "same_layer_reduction": 0.8534787739941545,
+                "same_layer_gain": 0.8777850695518007,
+                "error_original": 0.3258670422369901,
+                "shift_length_median": 5.022105651313081,
+                "shift_over_distance_median": 0.11308066246035312
+              },
+              "target_unseen": {
+                "error_target": 3.3860085987196764,
+                "reduction": 0.07710223996701371,
+                "gain": 0.07668699868856645,
+                "same_layer_error_target": 0.48739778040256143,
+                "same_layer_reduction": 0.865592043002319,
+                "same_layer_gain": 0.8796201208378919,
+                "error_original": 0.3683459848225444,
+                "shift_length_median": 7.003949144075829,
+                "shift_over_distance_median": 0.1577050074292321
+              }
+            },
+            "probes_3": {
+              "all": {
+                "error_target": 3.0265340752528243,
+                "reduction": 0.1094081052079372,
+                "gain": 0.10846426650165618,
+                "same_layer_error_target": 0.27367025221881514,
+                "same_layer_reduction": 0.9178311575307428,
+                "same_layer_gain": 1.0153154109676157,
+                "error_original": 0.4472113046231006,
+                "shift_length_median": 8.295578877659498,
+                "shift_over_distance_median": 0.1867880964894836
+              },
+              "test_seen": {
+                "error_target": 3.19949690872116,
+                "reduction": 0.10392851388453128,
+                "gain": 0.10314239044717988,
+                "same_layer_error_target": 0.24495129822421566,
+                "same_layer_reduction": 0.9288352503797581,
+                "same_layer_gain": 1.0085216102394858,
+                "error_original": 0.40406369129751785,
+                "shift_length_median": 9.046535177148492,
+                "shift_over_distance_median": 0.20369706689371794
+              },
+              "test_unseen": {
+                "error_target": 2.8535712417844885,
+                "reduction": 0.11547281011748445,
+                "gain": 0.1150678468361253,
+                "same_layer_error_target": 0.30238920621341475,
+                "same_layer_reduction": 0.9060651374498149,
+                "same_layer_gain": 1.0233768795517024,
+                "error_original": 0.4903589179486836,
+                "shift_length_median": 8.080079551088389,
+                "shift_over_distance_median": 0.18193578785634096
+              },
+              "target_seen": {
+                "error_target": 2.6705793788058263,
+                "reduction": 0.10758115457369788,
+                "gain": 0.1060169366022534,
+                "same_layer_error_target": 0.2704145510742427,
+                "same_layer_reduction": 0.9063361619665988,
+                "same_layer_gain": 1.0120517966324478,
+                "error_original": 0.3978697223544696,
+                "shift_length_median": 6.688941344451109,
+                "shift_over_distance_median": 0.1506121079295117
+              },
+              "target_unseen": {
+                "error_target": 3.2638372062174894,
+                "reduction": 0.11040153652609896,
+                "gain": 0.10955128573890124,
+                "same_layer_error_target": 0.2758407196485302,
+                "same_layer_reduction": 0.9239323832084193,
+                "same_layer_gain": 1.0167347911704965,
+                "error_original": 0.4801056928021881,
+                "shift_length_median": 9.291322726307037,
+                "shift_over_distance_median": 0.20920884624341304
+              }
+            },
+            "probes_4": {
+              "all": {
+                "error_target": 2.991392321623297,
+                "reduction": 0.11974896381816846,
+                "gain": 0.11921848051864696,
+                "same_layer_error_target": 0.2705651203119253,
+                "same_layer_reduction": 0.9187634660021053,
+                "same_layer_gain": 0.997701028493547,
+                "error_original": 0.4801659760305855,
+                "shift_length_median": 10.43592439582164,
+                "shift_over_distance_median": 0.23498136558658858
+              },
+              "test_seen": {
+                "error_target": 3.1655780529645585,
+                "reduction": 0.11342804470211298,
+                "gain": 0.1134417952840341,
+                "same_layer_error_target": 0.2494379795836609,
+                "same_layer_reduction": 0.9275317522644778,
+                "same_layer_gain": 0.9913109827910415,
+                "error_original": 0.43616533924509554,
+                "shift_length_median": 10.484442762030413,
+                "shift_over_distance_median": 0.23607383344236688
+              },
+              "test_unseen": {
+                "error_target": 2.8172065902820362,
+                "reduction": 0.1267448339357531,
+                "gain": 0.12638640487900893,
+                "same_layer_error_target": 0.2916922610401898,
+                "same_layer_reduction": 0.9093880605367077,
+                "same_layer_gain": 1.0052834046542627,
+                "error_original": 0.5241666128160755,
+                "shift_length_median": 10.040456401979757,
+                "shift_over_distance_median": 0.22607677738585755
+              },
+              "target_seen": {
+                "error_target": 2.6414923084632655,
+                "reduction": 0.11730108648732962,
+                "gain": 0.11619000639417276,
+                "same_layer_error_target": 0.27049061961876825,
+                "same_layer_reduction": 0.9063098140063816,
+                "same_layer_gain": 0.9954631202528419,
+                "error_original": 0.4243102166306755,
+                "shift_length_median": 8.398323231494192,
+                "shift_over_distance_median": 0.18910154833664863
+              },
+              "target_unseen": {
+                "error_target": 3.224658997063318,
+                "reduction": 0.12108003317379223,
+                "gain": 0.12056362390679658,
+                "same_layer_error_target": 0.2706147874406967,
+                "same_layer_reduction": 0.9253735199958768,
+                "same_layer_gain": 0.9986743183269969,
+                "error_original": 0.5174031489638587,
+                "shift_length_median": 10.869419980727969,
+                "shift_over_distance_median": 0.24474220522603923
+              }
+            },
+            "probes_5": {
+              "all": {
+                "error_target": 2.989607527427313,
+                "reduction": 0.12027415970405408,
+                "gain": 0.12046069995154116,
+                "same_layer_error_target": 0.2819903343632142,
+                "same_layer_reduction": 0.9153330726511785,
+                "same_layer_gain": 0.964524944561333,
+                "error_original": 0.48263958802444884,
+                "shift_length_median": 15.025358258060187,
+                "shift_over_distance_median": 0.3383197374753242
+              },
+              "test_seen": {
+                "error_target": 3.162814387440957,
+                "reduction": 0.11420205447412102,
+                "gain": 0.11569127478948936,
+                "same_layer_error_target": 0.2757484643842422,
+                "same_layer_reduction": 0.9198878692689827,
+                "same_layer_gain": 0.9599532449966138,
+                "error_original": 0.44234755819852256,
+                "shift_length_median": 15.003044757986203,
+                "shift_over_distance_median": 0.337817313682325
+              },
+              "test_unseen": {
+                "error_target": 2.816400667413669,
+                "reduction": 0.12699464746049727,
+                "gain": 0.12637877881780038,
+                "same_layer_error_target": 0.28823220434218616,
+                "same_layer_reduction": 0.9104629003248496,
+                "same_layer_gain": 0.969949686011913,
+                "error_original": 0.522931617850375,
+                "shift_length_median": 15.35700453162524,
+                "shift_over_distance_median": 0.34578727856686575
+              },
+              "target_seen": {
+                "error_target": 2.63898983856826,
+                "reduction": 0.11813732873204186,
+                "gain": 0.1176733656042015,
+                "same_layer_error_target": 0.27529484065740567,
+                "same_layer_reduction": 0.9046457697474761,
+                "same_layer_gain": 0.9666555734127541,
+                "error_original": 0.42771833917003726,
+                "shift_length_median": 12.201509056031634,
+                "shift_over_distance_median": 0.2747363004422864
+              },
+              "target_unseen": {
+                "error_target": 3.223352653333348,
+                "reduction": 0.12143609302038516,
+                "gain": 0.12169873739673055,
+                "same_layer_error_target": 0.28645399683375317,
+                "same_layer_reduction": 0.9210055974066094,
+                "same_layer_gain": 0.963598311662707,
+                "error_original": 0.51925375392739,
+                "shift_length_median": 16.689000676049858,
+                "shift_over_distance_median": 0.3757792812971926
+              }
+            },
+            "probes_6": {
+              "all": {
+                "error_target": 2.935336420182958,
+                "reduction": 0.13624404705091153,
+                "gain": 0.1358210408732536,
+                "same_layer_error_target": 0.2740839547848149,
+                "same_layer_reduction": 0.9177069443190432,
+                "same_layer_gain": 0.9934354222735179,
+                "error_original": 0.5391035989294126,
+                "shift_length_median": 23.373131249089916,
+                "shift_over_distance_median": 0.5262830670893625
+              },
+              "test_seen": {
+                "error_target": 3.1091492241031364,
+                "reduction": 0.12923186198344316,
+                "gain": 0.13026174242733546,
+                "same_layer_error_target": 0.2604400468467154,
+                "same_layer_reduction": 0.9243353643793903,
+                "same_layer_gain": 0.9857118301901343,
+                "error_original": 0.5016950475685014,
+                "shift_length_median": 23.603397463097703,
+                "shift_over_distance_median": 0.5314678755800859
+              },
+              "test_unseen": {
+                "error_target": 2.7615236162627808,
+                "reduction": 0.14400499685453572,
+                "gain": 0.14271922367855047,
+                "same_layer_error_target": 0.28772786272291434,
+                "same_layer_reduction": 0.9106195701388218,
+                "same_layer_gain": 1.0026001737032573,
+                "error_original": 0.576512150290324,
+                "shift_length_median": 23.354039313780113,
+                "shift_over_distance_median": 0.5258531819291572
+              },
+              "target_seen": {
+                "error_target": 2.6004593973422434,
+                "reduction": 0.13101292125161845,
+                "gain": 0.12934349212893143,
+                "same_layer_error_target": 0.27389374743113487,
+                "same_layer_reduction": 0.9051310682215922,
+                "same_layer_gain": 0.9894652761115391,
+                "error_original": 0.46691201179775205,
+                "shift_length_median": 18.742759606796966,
+                "shift_over_distance_median": 0.422022916247809
+              },
+              "target_unseen": {
+                "error_target": 3.1585877687434354,
+                "reduction": 0.1390885487582194,
+                "gain": 0.13869814383227408,
+                "same_layer_error_target": 0.2742107596872682,
+                "same_layer_reduction": 0.9243818714851207,
+                "same_layer_gain": 0.9951620805995741,
+                "error_original": 0.587231323683853,
+                "shift_length_median": 28.460104399491666,
+                "shift_over_distance_median": 0.6408243240250977
+              }
+            },
+            "probes_7": {
+              "all": {
+                "error_target": 2.9917744326986377,
+                "reduction": 0.11963652331092578,
+                "gain": 0.13304819951334082,
+                "same_layer_error_target": 0.27614470403599933,
+                "same_layer_reduction": 0.9170882092566228,
+                "same_layer_gain": 1.0047333349887864,
+                "error_original": 0.5735638867373787,
+                "shift_length_median": 65.68628020595575,
+                "shift_over_distance_median": 1.479030628976069
+              },
+              "test_seen": {
+                "error_target": 3.1951781693943384,
+                "reduction": 0.10513804753220635,
+                "gain": 0.13026936894480817,
+                "same_layer_error_target": 0.26042748891102574,
+                "same_layer_reduction": 0.9243390127876886,
+                "same_layer_gain": 0.9959689464618717,
+                "error_original": 0.5743230979928885,
+                "shift_length_median": 65.77890369120416,
+                "shift_over_distance_median": 1.4811161934381665
+              },
+              "test_unseen": {
+                "error_target": 2.788370696002937,
+                "reduction": 0.13568315380699292,
+                "gain": 0.1364962750993457,
+                "same_layer_error_target": 0.2918619191609729,
+                "same_layer_reduction": 0.9093353575568102,
+                "same_layer_gain": 1.0151330869973942,
+                "error_original": 0.5728046754818689,
+                "shift_length_median": 65.59365672070734,
+                "shift_over_distance_median": 1.4769450645139717
+              },
+              "target_seen": {
+                "error_target": 2.706159322749014,
+                "reduction": 0.09569152015724747,
+                "gain": 0.10492546309257733,
+                "same_layer_error_target": 0.27503019307698146,
+                "same_layer_reduction": 0.9047374360724216,
+                "same_layer_gain": 0.9979649327541258,
+                "error_original": 0.43546020077338443,
+                "shift_length_median": 62.441249033359725,
+                "shift_over_distance_median": 1.4059636128320117
+              },
+              "target_unseen": {
+                "error_target": 3.1821845059983875,
+                "reduction": 0.1326569714831597,
+                "gain": 0.14553934568076307,
+                "same_layer_error_target": 0.27688771134201123,
+                "same_layer_reduction": 0.923643658023011,
+                "same_layer_gain": 1.0076769843144708,
+                "error_original": 0.6656330107133749,
+                "shift_length_median": 106.80414018131995,
+                "shift_over_distance_median": 2.4048643664145732
+              }
+            },
+            "covariance": {
+              "all": {
+                "error_target": 2.995001141218933,
+                "reduction": 0.11868702782084406,
+                "gain": 0.11863771515051341,
+                "same_layer_error_target": 0.31831228469867606,
+                "same_layer_reduction": 0.9044274934327823,
+                "same_layer_gain": 0.9568867190125147,
+                "error_original": 0.47594743584690086,
+                "shift_length_median": 10.191531834457917,
+                "shift_over_distance_median": 0.22947848001265275
+              },
+              "test_seen": {
+                "error_target": 3.161656964977794,
+                "reduction": 0.1145262095823204,
+                "gain": 0.11499495017223431,
+                "same_layer_error_target": 0.3138370955211367,
+                "same_layer_reduction": 0.9088221271484664,
+                "same_layer_gain": 0.950796637997927,
+                "error_original": 0.43756449381310203,
+                "shift_length_median": 10.55033032889944,
+                "shift_over_distance_median": 0.23755739635934817
+              },
+              "test_unseen": {
+                "error_target": 2.8283453174600726,
+                "reduction": 0.12329214037570191,
+                "gain": 0.12315779245547492,
+                "same_layer_error_target": 0.3227874738762155,
+                "same_layer_reduction": 0.8997285737438513,
+                "same_layer_gain": 0.9641131595188369,
+                "error_original": 0.5143303778806996,
+                "shift_length_median": 9.850639628962407,
+                "shift_over_distance_median": 0.2218027521205236
+              },
+              "target_seen": {
+                "error_target": 2.6396116691075027,
+                "reduction": 0.11792953363848058,
+                "gain": 0.11694305681660791,
+                "same_layer_error_target": 0.3119941111947209,
+                "same_layer_reduction": 0.891934195914279,
+                "same_layer_gain": 0.956535577673579,
+                "error_original": 0.42332482388809817,
+                "shift_length_median": 7.940048857063413,
+                "shift_over_distance_median": 0.17878277500783843
+              },
+              "target_unseen": {
+                "error_target": 3.231927455959887,
+                "reduction": 0.11909892644031495,
+                "gain": 0.11939042372893696,
+                "same_layer_error_target": 0.3225244003679795,
+                "same_layer_reduction": 0.9110585901733942,
+                "same_layer_gain": 0.957039434074318,
+                "error_original": 0.5110291771527692,
+                "shift_length_median": 10.7986357325697,
+                "shift_over_distance_median": 0.24314838577474945
+              }
+            },
+            "random_1": {
+              "all": {
+                "error_target": 3.396764416088018,
+                "reduction": 0.0004636385158242051,
+                "gain": 0.00040322359871225,
+                "same_layer_error_target": 3.327094785321293,
+                "same_layer_reduction": 0.0010477021931988295,
+                "same_layer_gain": 0.001547397713707534,
+                "error_original": 0.21137809999096985,
+                "shift_length_median": 3.2159717159412637,
+                "shift_over_distance_median": 0.07241269645478544
+              },
+              "test_seen": {
+                "error_target": 3.568660069917212,
+                "reduction": 0.0005383272678953777,
+                "gain": 0.0003278021785527829,
+                "same_layer_error_target": 3.437198283767662,
+                "same_layer_reduction": 0.0014041279522027938,
+                "same_layer_gain": 0.0014832566572844344,
+                "error_original": 0.17418372197674917,
+                "shift_length_median": 3.3291917724145135,
+                "shift_over_distance_median": 0.0749620253376707
+              },
+              "test_unseen": {
+                "error_target": 3.224868762258824,
+                "reduction": 0.0003809744603064935,
+                "gain": 0.0004968092820059959,
+                "same_layer_error_target": 3.216991286874924,
+                "same_layer_reduction": 0.0006665973901638367,
+                "same_layer_gain": 0.001623506968599863,
+                "error_original": 0.24857247800519047,
+                "shift_length_median": 3.108402048410837,
+                "shift_over_distance_median": 0.06999059502770771
+              },
+              "target_seen": {
+                "error_target": 2.9916885179697905,
+                "reduction": 0.00027715548542572854,
+                "gain": 0.0001505088130206769,
+                "same_layer_error_target": 2.8846013015667995,
+                "same_layer_reduction": 0.0008569138473921711,
+                "same_layer_gain": 0.0013704250473116435,
+                "error_original": 0.20899753579775238,
+                "shift_length_median": 2.5055087853597318,
+                "shift_over_distance_median": 0.05641549838256291
+              },
+              "target_unseen": {
+                "error_target": 3.666815014833503,
+                "reduction": 0.0005650414104790835,
+                "gain": 0.0005154707598530699,
+                "same_layer_error_target": 3.6220904411576225,
+                "same_layer_reduction": 0.0011489673696785108,
+                "same_layer_gain": 0.0016243649878203423,
+                "error_original": 0.21296514278644813,
+                "shift_length_median": 3.4075453671527485,
+                "shift_over_distance_median": 0.07672628061510259
+              }
+            },
+            "random_3": {
+              "all": {
+                "error_target": 3.397219982788706,
+                "reduction": 0.00032958285972317647,
+                "gain": 0.0005181888655997068,
+                "same_layer_error_target": 3.323432201905367,
+                "same_layer_reduction": 0.002147384154587595,
+                "same_layer_gain": 0.001849665405030102,
+                "error_original": 0.2194527244139249,
+                "shift_length_median": 8.2955788776595,
+                "shift_over_distance_median": 0.18678809648948366
+              },
+              "test_seen": {
+                "error_target": 3.5709061971638243,
+                "reduction": -9.073743736820461e-05,
+                "gain": 0.00043960329852170134,
+                "same_layer_error_target": 3.4314795208772253,
+                "same_layer_reduction": 0.0030655779309775033,
+                "same_layer_gain": 0.0028820745087749103,
+                "error_original": 0.18735644306800844,
+                "shift_length_median": 9.046535177148492,
+                "shift_over_distance_median": 0.20369706689371794
+              },
+              "test_unseen": {
+                "error_target": 3.2235337684135876,
+                "reduction": 0.00079478517480569,
+                "gain": 0.0006157007392354948,
+                "same_layer_error_target": 3.2153848829335088,
+                "same_layer_reduction": 0.0011656143204521463,
+                "same_layer_gain": 0.0006246171752074271,
+                "error_original": 0.25154900575984135,
+                "shift_length_median": 8.08007955108839,
+                "shift_over_distance_median": 0.18193578785634099
+              },
+              "target_seen": {
+                "error_target": 2.9864348987039144,
+                "reduction": 0.0020327403883761974,
+                "gain": 0.002969173263261659,
+                "same_layer_error_target": 2.8470209983795156,
+                "same_layer_reduction": 0.01387365209981506,
+                "same_layer_gain": 0.016679497690266287,
+                "error_original": 0.21773769787498692,
+                "shift_length_median": 6.688941344451109,
+                "shift_over_distance_median": 0.1506121079295117
+              },
+              "target_unseen": {
+                "error_target": 3.671076705511901,
+                "reduction": -0.0005965341338163288,
+                "gain": -0.0005704535732869615,
+                "same_layer_error_target": 3.641039670922602,
+                "same_layer_reduction": -0.0040765945056484565,
+                "same_layer_gain": -0.004599984644268435,
+                "error_original": 0.22059607543988355,
+                "shift_length_median": 9.291322726307037,
+                "shift_over_distance_median": 0.20920884624341304
+              }
+            },
+            "random_6": {
+              "all": {
+                "error_target": 3.407530866852436,
+                "reduction": -0.0027045114365822354,
+                "gain": -0.00398620194320891,
+                "same_layer_error_target": 3.3651265020988594,
+                "same_layer_reduction": -0.01037123033379217,
+                "same_layer_gain": -0.005592700068522742,
+                "error_original": 0.25166067045151536,
+                "shift_length_median": 23.373131249089916,
+                "shift_over_distance_median": 0.5262830670893625
+              },
+              "test_seen": {
+                "error_target": 3.580134970272881,
+                "reduction": -0.0026754064246434783,
+                "gain": -0.0013198862117921413,
+                "same_layer_error_target": 3.4370758151173555,
+                "same_layer_reduction": 0.0014397082936771222,
+                "same_layer_gain": 0.006546366933448088,
+                "error_original": 0.21467611600487257,
+                "shift_length_median": 23.603397463097703,
+                "shift_over_distance_median": 0.5314678755800859
+              },
+              "test_unseen": {
+                "error_target": 3.2349267634319907,
+                "reduction": -0.0027367242966984673,
+                "gain": -0.00729466496437598,
+                "same_layer_error_target": 3.293177189080363,
+                "same_layer_reduction": -0.022999962476655478,
+                "same_layer_gain": -0.019996818056752942,
+                "error_original": 0.2886452248981581,
+                "shift_length_median": 23.354039313780113,
+                "shift_over_distance_median": 0.5258531819291572
+              },
+              "target_seen": {
+                "error_target": 2.9963290729262426,
+                "reduction": -0.0012735637065370842,
+                "gain": -0.0022194651172949774,
+                "same_layer_error_target": 2.903882345092077,
+                "same_layer_reduction": -0.0058214861525054395,
+                "same_layer_gain": 0.0005803227137008378,
+                "error_original": 0.24026337197228748,
+                "shift_length_median": 18.742759606796966,
+                "shift_over_distance_median": 0.422022916247809
+              },
+              "target_unseen": {
+                "error_target": 3.681665396136565,
+                "reduction": -0.003482610342506298,
+                "gain": -0.0047709252930876606,
+                "same_layer_error_target": 3.6726226067700476,
+                "same_layer_reduction": -0.012786108692885545,
+                "same_layer_gain": -0.008277412607809245,
+                "error_original": 0.25925886943766724,
+                "shift_length_median": 28.460104399491662,
+                "shift_over_distance_median": 0.6408243240250976
+              }
+            },
+            "random_7": {
+              "all": {
+                "error_target": 3.4609250869918045,
+                "reduction": -0.018416364831423726,
+                "gain": -0.005166347067527719,
+                "same_layer_error_target": 3.5873980611807967,
+                "same_layer_reduction": -0.07710773740945687,
+                "same_layer_gain": -0.007058260110944139,
+                "error_original": 0.46869952545397636,
+                "shift_length_median": 65.68628020595575,
+                "shift_over_distance_median": 1.479030628976069
+              },
+              "test_seen": {
+                "error_target": 3.6088781947594137,
+                "reduction": -0.010725416978238034,
+                "gain": 0.002865316107463572,
+                "same_layer_error_target": 3.786868889320937,
+                "same_layer_reduction": -0.10018431544106088,
+                "same_layer_gain": -0.017021969023592837,
+                "error_original": 0.4707542628497024,
+                "shift_length_median": 65.77890369120416,
+                "shift_over_distance_median": 1.4811161934381665
+              },
+              "test_unseen": {
+                "error_target": 3.312971979224195,
+                "reduction": -0.0269285560609136,
+                "gain": -0.015132331328067065,
+                "same_layer_error_target": 3.3879272330406573,
+                "same_layer_reduction": -0.05243332905572817,
+                "same_layer_gain": 0.00476459569460267,
+                "error_original": 0.4666447880582503,
+                "shift_length_median": 65.59365672070734,
+                "shift_over_distance_median": 1.4769450645139717
+              },
+              "target_seen": {
+                "error_target": 2.992528760413761,
+                "reduction": -3.6256056279437843e-06,
+                "gain": 0.007063665341285697,
+                "same_layer_error_target": 3.0401167785193417,
+                "same_layer_reduction": -0.05300918317699055,
+                "same_layer_gain": 0.01176726564104051,
+                "error_original": 0.34600179202647163,
+                "shift_length_median": 62.441249033359725,
+                "shift_over_distance_median": 1.4059636128320117
+              },
+              "target_unseen": {
+                "error_target": 3.7731893047105003,
+                "reduction": -0.02842856300319596,
+                "gain": -0.0105984952888895,
+                "same_layer_error_target": 3.952252249621767,
+                "same_layer_reduction": -0.08989858339609058,
+                "same_layer_gain": -0.01524567927786462,
+                "error_original": 0.5504980144056462,
+                "shift_length_median": 106.80414018131995,
+                "shift_over_distance_median": 2.4048643664145732
+              }
+            },
+            "unedited": {
+              "all": {
+                "error_target": 3.398340017409956,
+                "same_layer_error_target": 3.3305842457401886,
+                "error_original": 0.20969488137021203
+              },
+              "test_seen": {
+                "error_target": 3.5705822116840236,
+                "same_layer_error_target": 3.442031336179149,
+                "error_original": 0.1733922796627422
+              },
+              "test_unseen": {
+                "error_target": 3.226097823135889,
+                "same_layer_error_target": 3.2191371553012273,
+                "error_original": 0.2459974830776818
+              },
+              "target_seen": {
+                "error_target": 2.9925179107239823,
+                "same_layer_error_target": 2.887075276349567,
+                "error_original": 0.20969488137021203
+              },
+              "target_unseen": {
+                "error_target": 3.6688880885339383,
+                "same_layer_error_target": 3.626256892000603,
+                "error_original": 0.20969488137021203
+              }
+            }
+          },
+          "specificity_idx18": {
+            "direction": {
+              "probes_1": 0.17311502904418374,
+              "probes_2": 0.47502608340568714,
+              "probes_3": 0.7695028310077324,
+              "probes_4": 0.8285441209136133,
+              "probes_5": 0.7027156563286965,
+              "probes_6": 1.1325698625745149,
+              "probes_7": 2.8484729393534485,
+              "covariance": 0.44397243086219307,
+              "random_1": 0.20722663227769733,
+              "random_3": 0.6223756552882986,
+              "random_6": 1.2973970528129182,
+              "random_7": 4.554277761179498
+            },
+            "speed": {
+              "probes_1": 0.031462433337467094,
+              "probes_2": 0.07839360333258151,
+              "probes_3": 0.11228280164907294,
+              "probes_4": 0.11275432771256268,
+              "probes_5": 0.11572258973098044,
+              "probes_6": 0.14267770955908612,
+              "probes_7": 0.23790335888949124,
+              "covariance": 0.1180221956927295,
+              "random_1": 0.00556288821575509,
+              "random_3": 0.01561937210510269,
+              "random_6": 0.035632748981028105,
+              "random_7": 0.13343330518703825
+            },
+            "acceleration": {
+              "probes_1": 0.1095318742781251,
+              "probes_2": 0.2634238637918041,
+              "probes_3": 0.37682223172508106,
+              "probes_4": 0.4137035786999879,
+              "probes_5": 0.4161761633161232,
+              "probes_6": 0.4798008202131075,
+              "probes_7": 0.5311046348437592,
+              "covariance": 0.40910782566434384,
+              "random_1": 0.020076754334743988,
+              "random_3": 0.04959120851096996,
+              "random_6": 0.12284651992591304,
+              "random_7": 0.4062600535994697
+            }
+          },
+          "round_shares": {
+            "6": [
+              0.030205183517872422,
+              0.0943345883487425,
+              0.08986000259994564,
+              0.07457481809441349,
+              0.17131143411708338,
+              0.516392279033095
+            ],
+            "7": [
+              0.002681935560942374,
+              0.008319869629716927,
+              0.006858293006835809,
+              0.008871981155359632,
+              0.01880266460848958,
+              0.0535972290714444,
+              0.8861267909888302
+            ]
+          }
+        }
+      },
+      "readout_site": "block_17",
+      "same_layer_site": "block_8",
+      "bootstrap_resamples": 10000,
+      "criteria": {
+        "same_code": true,
+        "clean": true,
+        "ids": true,
+        "targets": true,
+        "arms": true,
+        "unedited_readouts": true,
+        "finite": true,
+        "bootstrap_point": true
+      },
+      "passed": true
+    }
   }
 }

@@ -394,6 +394,23 @@ what's next.
   staged, not committed (`git_dirty`, commit `cda056e`) → at the gate: `code_hash_check`, re-run flagged keys from
   committed code (results committed first), `compare_reruns`; the steering runs read both through their hashes.
   **Step 5.2d done.**
+- 5.3a: `steering.readout_values`, `label_difference`; `steering_scores` **passed** (8/8, clean commit `f1b1889`; both halves
+  same clean commit and code; unedited readouts = setup maps ≤ 7.2e-16; unedited error to own label = cache MAE exactly).
+  **Surprise: steering at idx 9 barely reaches the idx-18 readout.** Headline n = K−1 (95 % CI), idx-18 error reduction:
+  direction 0.029 [0.026, 0.032] (error to target 87.3° vs unedited 90.0°), speed 0.129 [0.124, 0.134], acceleration
+  0.136 [0.127, 0.147]; gain 0.022 / 0.127 / 0.136. Same-layer idx-9 validation-fit readout follows: reduction 0.95 /
+  0.95 / 0.92, gain 0.95 / 0.99 / 0.99 — but at n = 1 only 0.11 / 0.55 / 0.36 (n ≥ 2 ≈ 0.86–0.96). Random arms ≈ 0
+  (|reduction| ≤ 0.007 at 1…K−1); covariance ≈ probes (0.031 / 0.119 / 0.119). n = K: 0.024 / 0.005 [−0.117, 0.128] /
+  0.120; speed n = K shift 4.1 × clip distance, error to own label 0.083 → 1.03 m/s, its random arm reduction −0.16
+  (off-distribution damage). Error to own label rises little at K−1 (direction 3.98 → 4.99°, speed 0.083 → 0.19,
+  acceleration 0.21 → 0.54). Shift / clip distance at K−1 0.52 / 0.52 / 0.53; round-K share at n = K 0.73 / 0.99 / 0.89.
+  Specificity (idx 18, K−1, mean |change|): speed steering moves acceleration 0.53 m/s² (random 0.16), acceleration
+  steering moves speed 0.14 m/s (random 0.036) — both ≈ the own change in distance units (≈ 0.10 / 0.09 m; observation,
+  sign not measured); direction steering moves speed / acceleration ≈ random. Claude Code's predictions: same-layer < 30 %
+  of unedited ✓; idx-18 reduction 30–80 % and direction 10–40° **wrong** (far smaller); n = K no better ✓; random gain
+  < 0.1 ✓; covariance highest gain per length **wrong** (probes 1–3 higher); shift / distance 0.4–1.0 ✓; round-K share
+  ≥ 0.75 missed for direction (0.73). Pipeline checks rule out a wiring bug (edits reach block_17 bit-exact, same-layer
+  readout moves, unedited readouts exact). → planning chat. **Step 5.3a done.**
 
 ### 2026-09-25 — Phase 4 started (nullspace probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically), asks before
