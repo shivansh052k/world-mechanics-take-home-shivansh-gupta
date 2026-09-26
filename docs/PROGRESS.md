@@ -420,6 +420,11 @@ what's next.
   (paper: 40–136+ / 400, P-02). Procedure count. **Step 4.3 done** (validation).
 - Validation findings frozen in DECISIONS §1.10 before any test row is read: F-116–F-125, test scope F-126; H-12
   added, H-01 reframed. Next: `nullspace_test_scores` (once, committed code).
+- Test once: `nullspace_test_scores` **passed** (8/8, committed code; round 1 = F-104). Test K within ±1 of validation
+  everywhere (idx 9: 7 / 7 / 7); fresh linear after covariance removal ≈ 0 (acceleration below chance on test-seen,
+  −0.195 idx 9, wide CI: observation); kernel after removal within 0.039 of val-seen (idx 9 CI direction [0.72, 0.79],
+  speed [0.91, 0.94], acceleration [0.92, 0.95]). F-127. Claude Code's "fresh ≤ 0.05" wrong for acceleration. Script
+  size noted: refactor shared arm setup into the package at 8.6 (user said), re-run affected keys then.
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),
