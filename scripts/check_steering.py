@@ -30,6 +30,7 @@ from vjepa_physics.steering import (
     load_probe_sequence, random_probe_counts, steered_features, steering_clips, steering_targets,
 )
 from vjepa_physics.video import load_clip
+from vjepa_physics.nullspace import train_span
 
 REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "results/steering/checks.json"
