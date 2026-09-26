@@ -1464,7 +1464,8 @@ def check_figure_nullspace() -> dict:
             m, k = r["dims_per_round"], r["summary"]["k"]
 
             band = random[f"{prefix}_val_seen_r2"][:, :FIGURE_ROUNDS]
-            ax.fill_between(x, band.min(axis=0), band.max(axis=0), color=INK_MUTED, alpha=0.25, linewidth=0)
+            ax.fill_between(x, band.min(axis=0), band.max(axis=0), color=INK_MUTED, alpha=0.35, linewidth=0)
+            ax.plot(x, band.mean(axis=0), color=INK_MUTED, linewidth=1.4)
             ax.plot(x, pcs[f"{prefix}_val_seen_r2"][0, :FIGURE_ROUNDS], color=INK_SECONDARY, linewidth=1.2,
                     linestyle="-.")
             for role, style in (("test_seen", "--"), ("test_unseen", ":")):
@@ -1475,10 +1476,9 @@ def check_figure_nullspace() -> dict:
             ax.axhline(NULL_R2, color=INK, linewidth=0.8)
             for t in paper:
                 ax.axhline(t, color=INK_MUTED, linewidth=0.8, linestyle=":")
-                ax.text(FIGURE_ROUNDS - 0.2, t + 0.01, f"paper {t:g}", color=INK_MUTED, fontsize=8,
-                        ha="right", va="bottom")
+                ax.text(1.2, t - 0.012, f"paper {t:g}", color=INK_MUTED, fontsize=8, ha="left", va="top")
             ax.axvline(k, color=INK_MUTED, linewidth=0.8)
-            ax.text(k + 0.3, 1.0, f"K = {k} · {(k - 1) * m} dims", color=INK_SECONDARY, fontsize=9, va="top")
+            ax.text(k + 0.3, 0.55, f"K = {k} · {(k - 1) * m} dims", color=INK_SECONDARY, fontsize=9, va="center")
 
             if row == 0:
                 note = " — headline" if site == "block_8" else ""
@@ -1495,14 +1495,14 @@ def check_figure_nullspace() -> dict:
         Line2D([], [], color=INK, linewidth=2.0, label="validation (val-seen)"),
         Line2D([], [], color=INK, linewidth=1.4, linestyle="--", label="test seen (frozen probes)"),
         Line2D([], [], color=INK, linewidth=1.4, linestyle=":", label="test unseen"),
-        Patch(facecolor=INK_MUTED, alpha=0.25, label="random subspaces, 5 seeds (min–max)"),
+        Line2D([], [], color=INK_MUTED, linewidth=1.4, label="random subspaces, 5 seeds (mean; band = min–max)"),
         Line2D([], [], color=INK_SECONDARY, linewidth=1.2, linestyle="-.", label="top principal components"),
         Line2D([], [], color=INK, linewidth=0.8, label="stop: R² = 0.1"),
     ]
-    fig.legend(handles=handles, loc="upper center", ncol=3, frameon=False, fontsize=9, bbox_to_anchor=(0.5, 0.965))
+    fig.legend(handles=handles, loc="upper center", ncol=3, frameon=False, fontsize=9, bbox_to_anchor=(0.5, 0.96))
     fig.suptitle("Iterative nullspace probing: readout per round (direction removes 2 dims per round, speed and "
                  "acceleration 1)", fontsize=11, color=INK, y=0.995)
-    fig.tight_layout(rect=(0, 0, 1, 0.90))
+    fig.tight_layout(rect=(0, 0, 1, 0.925))
     FIGURE_PATH.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(FIGURE_PATH, dpi=200, facecolor=SURFACE)
     plt.close(fig)
