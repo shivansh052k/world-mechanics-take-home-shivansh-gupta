@@ -68,6 +68,7 @@ PROBING_RERUNS = (("baselines", "pixel_grams"), ("baselines", "pixel_floor"), ("
 
 # Keys re-run at the nullspace gate: saved while their code was uncommitted, and no later commit holds exactly it.
 NULLSPACE_RERUNS = (("nullspace", "alpha_sweep"), ("nullspace", "kernel_hat_gap"))
+STEERING_RERUNS = (("steering", "steering_setup"), ("steering", "steering_cache"))
 
 
 def scratch_git(root: Path, *args: str) -> None:
@@ -338,6 +339,9 @@ def without_machine_state(subject: str, key: str, result: dict) -> dict:
         for variable in ("direction", "speed", "acceleration"):
             for run in r[variable]["runs"].values():
                 run.pop("seconds", None)
+    if (subject, key) == ("steering", "steering_cache"):
+        r.pop("partial_forward_seconds", None)  # timing
+        r.pop("projection", None)  # minutes projected from that timing
     return r
 
 
@@ -379,6 +383,11 @@ def check_rerun_identical_nullspace() -> dict:
     """The nullspace keys re-run from committed code reproduce their committed results exactly."""
     return compare_reruns(NULLSPACE_RERUNS)
 
+def check_rerun_identical_steering() -> dict:
+    """The steering setup and cache re-run from committed code reproduce their committed results exactly, including
+    the recorded SHA-256 of setup.npz and the three per-token caches that the steering runs read."""
+    return compare_reruns(STEERING_RERUNS)
+
 CHECKS = {
     "dirty_flag": check_dirty_flag,
     "rerun_identical": check_rerun_identical,
@@ -386,6 +395,7 @@ CHECKS = {
     "code_hash_check": check_code_hash_check,
     "rerun_identical_probing": check_rerun_identical_probing,
     "rerun_identical_nullspace": check_rerun_identical_nullspace,
+    "rerun_identical_steering": check_rerun_identical_steering,
 }
 
 def main() -> None:

@@ -361,8 +361,8 @@
   },
   "code_hash_check": {
     "provenance": {
-      "utc": "2026-09-26T03:21:35+00:00",
-      "git_commit": "5d33503ac5ce67fd114efb1e3ad907e24fb29e87",
+      "utc": "2026-09-26T21:28:55+00:00",
+      "git_commit": "37b04d09f49b253551dc14169454bd4e7446209d",
       "git_dirty": false,
       "git_dirty_paths": [],
       "code": {
@@ -374,26 +374,27 @@
           "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
           "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
           "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
-          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
           "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
           "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
           "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
           "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
-          "src/vjepa_physics/intervention.py": "2f070487f641c5ec6f27b8659e816f2750f885a7c43bc9ee94e535f5412145b9",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
           "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
           "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
           "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
           "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
           "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
           "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
-          "src/vjepa_physics/probes.py": "7453d72556febab8c62a45d1f101c7f98b47e7f29df5fee8f0e33827fc2f3316",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
           "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
           "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "279ec58d6ffe8ecb6f42454e4b5998464e0910a86fdf2ec8df13f87c8bb4566a",
           "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
           "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
-          "scripts/check_evidence.py": "bc52eb7c8335061075a2f7cb30fff571753fec631207d0c0b7e5d171d56ce24c"
+          "scripts/check_evidence.py": "b81cff62bebf3e680d357c4422497692d07da08a4a7b1f925a2777fdb728bfed"
         },
-        "combined_sha256": "c3453b799cf2573f69cbb6c202f17262321bddf439cc219babfcc64c0555cbfd"
+        "combined_sha256": "0d6db51a25af1d0b68043c4ee7c98cc1151a73deb7de9e21bae75ccaa0d8ad6a"
       },
       "versions": {
         "av": "18.1.0",
@@ -408,9 +409,9 @@
       }
     },
     "result": {
-      "head": "5d33503ac5ce67fd114efb1e3ad907e24fb29e87",
-      "keys_checked": 33,
-      "commits_searched": 29,
+      "head": "37b04d09f49b253551dc14169454bd4e7446209d",
+      "keys_checked": 46,
+      "commits_searched": 44,
       "keys": [
         {
           "subject": "probes",
@@ -675,10 +676,117 @@
           "git_dirty": false,
           "files": 25,
           "matching_commit": "c8519ae77c00902948f0dfc8e703e9dcb0b9109e"
+        },
+        {
+          "subject": "steering",
+          "key": "steering_setup",
+          "recorded_commit": "cda056ec5522edf3476018919ff97161cdec4407",
+          "git_dirty": true,
+          "files": 26,
+          "matching_commit": null
+        },
+        {
+          "subject": "steering",
+          "key": "steering_cache",
+          "recorded_commit": "cda056ec5522edf3476018919ff97161cdec4407",
+          "git_dirty": true,
+          "files": 26,
+          "matching_commit": null
+        },
+        {
+          "subject": "steering",
+          "key": "steer_direction_seen",
+          "recorded_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+          "git_dirty": false,
+          "files": 26,
+          "matching_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce"
+        },
+        {
+          "subject": "steering",
+          "key": "steer_direction_unseen",
+          "recorded_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+          "git_dirty": false,
+          "files": 26,
+          "matching_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce"
+        },
+        {
+          "subject": "steering",
+          "key": "steer_speed_seen",
+          "recorded_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+          "git_dirty": false,
+          "files": 26,
+          "matching_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce"
+        },
+        {
+          "subject": "steering",
+          "key": "steer_speed_unseen",
+          "recorded_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+          "git_dirty": false,
+          "files": 26,
+          "matching_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce"
+        },
+        {
+          "subject": "steering",
+          "key": "steer_acceleration_seen",
+          "recorded_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+          "git_dirty": false,
+          "files": 26,
+          "matching_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce"
+        },
+        {
+          "subject": "steering",
+          "key": "steer_acceleration_unseen",
+          "recorded_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+          "git_dirty": false,
+          "files": 26,
+          "matching_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce"
+        },
+        {
+          "subject": "steering",
+          "key": "steering_scores",
+          "recorded_commit": "f1b1889ff08e705e45e579f01c7a89eca0e59ad9",
+          "git_dirty": false,
+          "files": 26,
+          "matching_commit": "f1b1889ff08e705e45e579f01c7a89eca0e59ad9"
+        },
+        {
+          "subject": "steering",
+          "key": "steering_propagation",
+          "recorded_commit": "03ad13c33d61a3178928285835202398cc76cced",
+          "git_dirty": true,
+          "files": 26,
+          "matching_commit": "e6aebfc91914cb07d1de5b0afe143274bf2654d3"
+        },
+        {
+          "subject": "steering",
+          "key": "steering_specificity",
+          "recorded_commit": "28171cea119823928630204afcc6182d721ccd6b",
+          "git_dirty": false,
+          "files": 26,
+          "matching_commit": "28171cea119823928630204afcc6182d721ccd6b"
+        },
+        {
+          "subject": "steering",
+          "key": "steering_kernel",
+          "recorded_commit": "2e95a6ca8d10f5df9333ea0a905a1f6f8efe4917",
+          "git_dirty": false,
+          "files": 26,
+          "matching_commit": "2e95a6ca8d10f5df9333ea0a905a1f6f8efe4917"
+        },
+        {
+          "subject": "steering",
+          "key": "figure_steering",
+          "recorded_commit": "f0f89d03c5f5d083ebc0f5b62a6ac87cabf6167b",
+          "git_dirty": false,
+          "files": 26,
+          "matching_commit": "f0f89d03c5f5d083ebc0f5b62a6ac87cabf6167b"
         }
       ],
-      "rerun_needed": [],
-      "passed": true
+      "rerun_needed": [
+        "steering/steering_setup",
+        "steering/steering_cache"
+      ],
+      "passed": false
     }
   },
   "rerun_identical_probing": {

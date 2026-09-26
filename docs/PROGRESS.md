@@ -485,6 +485,11 @@ what's next.
   idx 9 / 18, covariance, random, CIs) and `steering_propagation.png` (profile idx 9–18; idx-18 direct / block bars with
   CIs, n = K omitted). Claude Code's review (1): covariance line hidden under the K−1 line, subtitle "1–4 ×" → "≈ 1–4 ×"
   (direction n = K 0.99) → fixed (covariance as hollow diamonds on top); review (2) clean. **Step 5.4a done.**
+- 5.11a gate: `check_evidence.py` — `steering` added to `HASH_CHECK_SUBJECTS`, `require_clean_code` in `main()`.
+  `code_hash_check` (HEAD `37b04d0`): 46 keys, 44 match a commit holding exactly their code (all 33 Phase 3–4 keys; 11
+  steering keys, incl. `steering_propagation` via its fix commit `e6aebfc`); **`rerun_needed`: `steering_setup`,
+  `steering_cache`** (both saved at `cda056e` with the script staged). Claude Code's predictions: setup flagged ✓;
+  cache "probably matches" wrong; propagation left open (it matched).
 
 ### 2026-09-25 — Phase 4 started (nullspace probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically), asks before
