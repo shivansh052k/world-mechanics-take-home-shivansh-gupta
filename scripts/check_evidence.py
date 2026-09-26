@@ -14,7 +14,8 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from vjepa_physics.evidence import code_changes, git, repo_root, save_result
+from vjepa_physics.evidence import code_changes, git, repo_root, require_clean_code, save_result
+
 
 REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "results/evidence/checks.json"
@@ -58,7 +59,7 @@ VOLATILE_FIELDS = {("joined", "storage"): ("free_disk_bytes", "memory")}
 
 # Probing-stage checks judged by the code-hash rule: a key passes if some commit at or after its recorded commit
 # holds exactly the file hashes it recorded; otherwise it is re-run from committed code.
-HASH_CHECK_SUBJECTS = ("probes", "baselines", "layer_curves", "patches", "nullspace")
+HASH_CHECK_SUBJECTS = ("probes", "baselines", "layer_curves", "patches", "nullspace", "steering")
 CODE_PREFIXES = ("src/", "scripts/")  # the recorded code files live here
 
 # Keys re-run at the probing gate because their code changed before it was committed (code_hash_check).
@@ -391,6 +392,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("check", choices=sorted(CHECKS))
     name = parser.parse_args().check
+    require_clean_code()  # after parsing, so --help still works with uncommitted code
     result = CHECKS[name]()
     print(json.dumps(result, indent=2))
     save_result(OUT, name, result)
