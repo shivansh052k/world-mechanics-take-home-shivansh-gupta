@@ -1476,7 +1476,6 @@ def check_figure_nullspace() -> dict:
             ax.axhline(NULL_R2, color=INK, linewidth=0.8)
             for t in paper:
                 ax.axhline(t, color=INK_MUTED, linewidth=0.8, linestyle=":")
-                ax.text(1.2, t - 0.012, f"paper {t:g}", color=INK_MUTED, fontsize=8, ha="left", va="top")
             ax.axvline(k, color=INK_MUTED, linewidth=0.8)
             ax.text(k + 0.3, 0.55, f"K = {k} · {(k - 1) * m} dims", color=INK_SECONDARY, fontsize=9, va="center")
 
@@ -1498,6 +1497,8 @@ def check_figure_nullspace() -> dict:
         Line2D([], [], color=INK_MUTED, linewidth=1.4, label="random subspaces, 5 seeds (mean; band = min–max)"),
         Line2D([], [], color=INK_SECONDARY, linewidth=1.2, linestyle="-.", label="top principal components"),
         Line2D([], [], color=INK, linewidth=0.8, label="stop: R² = 0.1"),
+        Line2D([], [], color=INK_MUTED, linewidth=0.8, linestyle=":",
+               label="paper's other threshold (direction 0.3, speed 0.05)"),
     ]
     fig.legend(handles=handles, loc="upper center", ncol=3, frameon=False, fontsize=9, bbox_to_anchor=(0.5, 0.96))
     fig.suptitle("Iterative nullspace probing: readout per round (direction removes 2 dims per round, speed and "
