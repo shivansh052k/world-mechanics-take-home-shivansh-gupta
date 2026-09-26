@@ -481,6 +481,10 @@ what's next.
   token-structured edit feasible with the cache + partial forward. Claude Code's corrections sent back: pushed-back
   fraction is 48–73 % (acceleration 0.48), not 50–75 %; specificity slopes are expected from F-65, not guaranteed; the
   gate must also cover `steering_setup` and `steering_cache` (saved dirty), not only `steering_propagation`.
+- 5.4a `figure_steering` (from saved results only): `results/steering/steering_reduction.png` (error reduction vs n at
+  idx 9 / 18, covariance, random, CIs) and `steering_propagation.png` (profile idx 9–18; idx-18 direct / block bars with
+  CIs, n = K omitted). Claude Code's review (1): covariance line hidden under the K−1 line, subtitle "1–4 ×" → "≈ 1–4 ×"
+  (direction n = K 0.99) → fixed (covariance as hollow diamonds on top); review (2) clean. **Step 5.4a done.**
 
 ### 2026-09-25 — Phase 4 started (nullspace probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically), asks before

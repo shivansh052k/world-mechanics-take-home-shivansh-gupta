@@ -11784,8 +11784,8 @@
   },
   "figure_steering": {
     "provenance": {
-      "utc": "2026-09-26T21:10:20+00:00",
-      "git_commit": "fd9d84f2c4c793fed97ca192ca88433b1aaf4b01",
+      "utc": "2026-09-26T21:24:25+00:00",
+      "git_commit": "f0f89d03c5f5d083ebc0f5b62a6ac87cabf6167b",
       "git_dirty": false,
       "git_dirty_paths": [],
       "code": {
@@ -11815,9 +11815,9 @@
           "src/vjepa_physics/steering.py": "279ec58d6ffe8ecb6f42454e4b5998464e0910a86fdf2ec8df13f87c8bb4566a",
           "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
           "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
-          "scripts/check_steering.py": "a281ccee291d4367274dd8c36d8130c67802037e881d53e0e6aea34c91b47068"
+          "scripts/check_steering.py": "35330ac3fb1f301226c369924c81bda4bfa622a262c02d842cff8c0f8e8c7647"
         },
-        "combined_sha256": "6171241124653fd3c9317f8ed35b542a4baf7f4b79077e51d2433eac8405bfad"
+        "combined_sha256": "d3e3032e8547b1c9c2d6e122323acf85d5afb6168105c6551ea6ce1757242f55"
       },
       "versions": {
         "av": "18.1.0",
@@ -11835,11 +11835,11 @@
       "figures": {
         "reduction": {
           "path": "results/steering/steering_reduction.png",
-          "sha256": "cd3fb8f77f9ba24e055a003d309846ea7c23acfc5c703251338a36b5ddc20cb8"
+          "sha256": "b9381370a62aa4acf723fc0241b074efb2b8c4c26d9a0ccf7122fccfbdd5fabc"
         },
         "propagation": {
           "path": "results/steering/steering_propagation.png",
-          "sha256": "df3090e1125808e441f6ffcf06b22c0222aa503feffc2c7449f4d247b3c078e4"
+          "sha256": "c0d24eae3947e472568b795999ade0945a0572d6b83cceec527b9bc801c02749"
         }
       },
       "sources": {
