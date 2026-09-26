@@ -96,6 +96,9 @@ FIGURE_PATH = REPO / "results/nullspace/nullspace_rounds.png"
 ERASURE_FIGURE_PATH = REPO / "results/nullspace/erasure_and_procedure.png"
 X_NUDGE = {"direction": 10**-0.06, "speed": 1.0, "acceleration": 10**0.06}  # K-vs-alpha: separate identical points
 
+IDX0_NUDGE = {"direction": 0.0, "speed": -0.3, "acceleration": 0.3}  # K-vs-depth: separate the "no signal" markers
+BAR_YMIN = -0.12
+
 
 def secondary_rule(variable: str, scores: list[dict], baseline_mae: float | None) -> dict:
     """First round where the paper's secondary rule says the variable is gone (val-seen)."""
@@ -1579,7 +1582,8 @@ def check_figure_erasure() -> dict:
         colour = DATASET_COLOUR[variable]
         ks = [profile[variable]["indices"][str(i)]["k"] for i in indices]
         ax_depth.plot(indices[1:], ks[1:], color=colour, linewidth=width, marker="o", markersize=5)
-        ax_depth.scatter([0], [ks[0]], s=36, facecolors=SURFACE, edgecolors=colour, linewidths=1.4, zorder=3)
+        ax_depth.scatter([IDX0_NUDGE[variable]], [ks[0]], s=36, facecolors=SURFACE, edgecolors=colour,
+                         linewidths=1.4, zorder=3)
     ax_depth.text(0.6, 2.6, "index 0: no signal", color=INK_SECONDARY, fontsize=8.5, va="bottom")
     ax_depth.set_xticks(indices)
     ax_depth.set_ylim(0, 15)
@@ -1624,12 +1628,17 @@ def check_figure_erasure() -> dict:
                     if arm == "covariance":
                         low, high = t_site["bootstrap"]["test_seen"][ci_key]
                         ax.plot([xpos, xpos], [low, high], color=INK, linewidth=1.0)
-                    ax.scatter([xpos], [value], s=18, color=INK, zorder=4)
+                    if value < BAR_YMIN:  # off the scale: mark at the edge and print the value
+                        ax.scatter([xpos], [BAR_YMIN + 0.02], marker="v", s=24, color=INK, zorder=4)
+                        ax.text(xpos + 0.07, BAR_YMIN + 0.02, f"{value:.2f}", fontsize=7.5, color=INK_SECONDARY,
+                                va="center")
+                    else:
+                        ax.scatter([xpos], [value], s=18, color=INK, zorder=4)
         ax.axhline(0, color=INK_MUTED, linewidth=0.8)
         ax.set_xticks(range(len(arms)))
         ax.set_xticklabels(["none", f"random\n{m} dim{'s' if m > 1 else ''}", f"covariance\n{m} dim{'s' if m > 1 else ''}",
-                            f"nullspace K\n{k * m} dims"], fontsize=8.5)
-        ax.set_ylim(-0.12, 1.05)
+                            f"K probes\n{k * m} dims"], fontsize=8.5)
+        ax.set_ylim(BAR_YMIN, 1.05)
         ax.set_title(f"{variable}: what removal erases (index {plot_index(site)})", fontsize=10)
         if variable == "direction":
             ax.set_ylabel("R²")
@@ -1647,7 +1656,7 @@ def check_figure_erasure() -> dict:
         Line2D([], [], color=INK, linewidth=1.4, label="range across grids (unreliable selection)"),
     ]
     fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False, fontsize=8.5, bbox_to_anchor=(0.5, 0.995))
-    fig.subplots_adjust(top=0.84, bottom=0.09, left=0.07, right=0.98)
+    fig.subplots_adjust(top=0.87, bottom=0.09, left=0.09, right=0.98)
     ERASURE_FIGURE_PATH.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(ERASURE_FIGURE_PATH, dpi=200, facecolor=SURFACE)
     plt.close(fig)
