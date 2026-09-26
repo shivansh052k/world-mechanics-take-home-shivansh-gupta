@@ -97,6 +97,7 @@ class KernelFit:
     n_fit: int
     predictions: np.ndarray  # (clips, k); NaN on rows that were not asked for
     loo_mse: float = float("nan")  # exact leave-one-out mean squared error at the chosen alpha (train rows)
+    min_one_minus_hat: float = float("nan")  # smallest 1 - h_ii at the chosen alpha (LOO divides by it)
 
 
 def kernel_ridge(
@@ -175,7 +176,6 @@ class RBFFit:
     gamma_median: float
     gamma_edge: str | None
     loo_mse: np.ndarray  # (len(gamma_factors),), each at its own best alpha
-    min_one_minus_hat: float = float("nan")  # smallest 1 - h_ii at the chosen alpha (LOO divides by it)
 
 
 def rbf_kernel_ridge(
