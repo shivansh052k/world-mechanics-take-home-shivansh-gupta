@@ -257,3 +257,24 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   (read its source, run a tiny test). Never invent APIs or arguments.
 - **Correctness first:** prefer checks that prove code is right (shape asserts, no-op tests,
   comparisons against a second method) over trusting it.
+
+### Working lessons (Phases 3–4, standing)
+- **Tools:** never use the terminal-run tool, subagents or scheduled tasks (not all are denied in settings). Read PNGs
+  and saved result keys yourself (Grep/Read) when terminal output is long; `read_terminal` only if the user asks.
+- **Step format:** exact path + full content or exact replace blocks, line notes (why), command, files written,
+  compute cost, predictions. Package first: reusable logic and shared setup go in `src/vjepa_physics/`, scripts stay
+  thin; smoke tests against a reference (full forward pass, sklearn, brute force, hand-worked cases).
+- **Edit didn't take** (ImportError, unknown check, NameError, TypeError): read the actual file first; re-check your
+  own code for slips before giving it.
+- **Criteria:** stated before running; pass/fail rules and diagnostic rules rest only on established facts (algebra,
+  construction, verified results) — uncertain premises are observations; never relaxed after seeing numbers; failures
+  stay recorded; say when a criterion is your own addition; two computation paths agree to a tolerance, not bits.
+- **Suspicious = bug until proven otherwise** (NaN, zeros, identical values, empty selections, too-good scores,
+  impossible negatives). No choice may touch test data; leakage checks.
+- **Test once:** freeze validation findings as F-entries in DECISIONS first; run from committed code; refits / saved
+  models must reproduce saved validation outputs before test rows are scored.
+- **Figures:** load the dataviz skill, use `plotting`, one y-axis; review every rendered PNG (collisions, hidden or
+  off-scale points, clipped labels) before moving on.
+- **Gate:** add new result subjects to `HASH_CHECK_SUBJECTS`; commit `results/` before re-running flagged keys; compare
+  with `compare_reruns`; report + 1–2 slides + talk outline; then the full docs pass.
+- **Planning-chat decisions:** one PROGRESS line when pasted; full wording at the phase docs pass.

@@ -314,6 +314,56 @@ Known decision points the plan cannot remove in advance (each has a planned fall
 Newest entry on top. One entry per work session: what was done, what passed, what didn't,
 what's next.
 
+### 2026-09-26 — Phase 5 started (multi-probe subspace steering)
+- Phase 5 layout (`steering.py`, partial forward in `intervention.py`, `check_steering.py`) and design brief drafted
+  (steer idx 9 / read idx 18; min-norm δ over maps 1…K; zero-edit and two-path checks; arms 1 / 3 / K, covariance,
+  norm-matched random; 3 planner questions: norm space of the min-norm solve, random-arm definition, round-K probe
+  dominating ‖δ‖). **Next:** brief to the planning chat; first step = probe-sequence loader + δ solver, no model.
+- 5.1a: `src/vjepa_physics/steering.py` (`ProbeSequence`, `load_probe_sequence` hash-guarded, K from `nullspace_rounds`
+  and exhaustion round from `covariance_exhaustion` (first version read a field the pre-guard result lacks — Claude
+  Code's slip, KeyError, nothing saved), `shift_matrix`, `min_norm_shift` standardized / raw). Smoke test (terminal, not
+  saved; 50 seeded train rows, no test rows): K 6 / 7 / 7; composite = saved val predictions ≤ 9.3e-15; rounds
+  orthogonal in the standardized space (off-block ≤ 2e-17); all probes hit target ≤ 3e-14 in both spaces;
+  standardized δ inside span(Q) ≤ 2.1e-15, raw δ 0.38–0.42 outside; median ‖δ_z‖ n = 1 / 3 / K: direction
+  4.6 / 19.3 / 45.3, speed 3.9 / 7.6 / 195.0, acceleration 2.7 / 7.9 / 72.4 vs median train clip-to-clip z-distance
+  44.5 / 46.6 / 46.4; round K's share of ‖δ_z‖² 0.75 / 0.99 / 0.89. Raw-space solve: z-length +8–9 %. Claude Code's
+  guesses: K/1 ratio 10–1000× met for speed (50×) and acceleration (27×), missed for direction (9.8×); last-two-rounds
+  share ≥ 0.8 met (0.80 / 0.99 / 0.95); train z-distance 20–45 missed for speed, acceleration (46.6, 46.4).
+  **Step 5.1a done.**
+- Planning chat approved the brief with changes (→ D-50 at the phase docs pass; paper App. C.12 checked there: probe
+  weights stacked, QR → V, c* by least squares so all probes read θ*, x⊥ kept; eval probe on test; 8 directions →
+  90°; MAE 82.9° → 11.9° with 20 of 25 probes; no random baseline): Q1 standardized solve (= the paper's procedure in
+  our space; raw minimum norm not used); Q2 random = unit direction in the standardized train span, length-matched per
+  clip / target / n, 3 seeds at n ∈ {1, 3, K−1, K}; Q3 counts n = 1…K (full curve), **headline n = K−1** (5 / 6 / 6,
+  all probes with val-seen R² ≥ 0.1; fixed from train-only norms before any outcome), n = K alongside with per-round
+  shares and ‖δ‖ / clip distance, CIs at both, no cap; covariance arm δ_z = Σ_zy Σ_yy⁻¹ (t − ŷ), ŷ = round-1 reading
+  of the unsteered clip; idx-18 error to the original label added; specificity = change vs unsteered only;
+  validation smoke run = mechanics only; H-12 RBF kernel readout (validation-fit, Phase 4 pipeline) at idx 9 and 18,
+  binned by ‖δ‖ / clip distance, labelled addition; random seeds → 2 if the cache timing projects > 30 min.
+  **Next:** 5.1b partial forward + terminal smoke test.
+- 5.1b: `intervention.run_blocks` (blocks first…last, `layer(h, None)[0]`). Smoke test (terminal, not saved; speed/1000,
+  role train; MPS): stored pooled = recomputed at block_8 and block_17 (bit-exact); partial path = full forward at
+  blocks 9–17, zero edit too (bit-exact); seeded δ (1e-2 × site std): partial = `edit_encoder` full pass at blocks 9–17
+  (bit-exact); block_17 relative change 1.19e-2. Partial forward + pooling: median 0.759 s, max 3.528 s (20 runs).
+  Claude Code's time guess 0.3–0.6 s wrong (higher) → 3,000 runs ≈ 38 min per variable at 3 seeds. **Step 5.1b done.**
+- Planning chat (→ D-50): option A — each variable split into test-seen / test-unseen saved runs
+  (`steer_<variable>_seen` / `_unseen`, 6 runs), 3 random seeds kept; random draws keyed by a SeedSequence of (SEED,
+  variable, clip id, target index, n, seed index), order-independent; `steering_scores` combines both halves and checks
+  they came from the same committed code; a half projecting > 30 min goes back to the planning chat. 5.1c approved
+  with its smoke-test contents.
+- 5.1c: `probes.fit_probe(fit_roles=…)`; `steering.py` clips / targets / covariance / random arms (`keyed_rng`,
+  `spread_counts`, `steering_clips`, `steering_targets`, `covariance_map`, `covariance_shift`, `random_probe_counts`,
+  `random_key`, `random_shift`). Two paste slips (code placed in `probes.py`, steering constants overwritten; NameError,
+  nothing ran) fixed by the user. Smoke test (terminal, not saved) all hard expectations met: 15 / 15 clips per
+  variable, roles ok, spread as specified, repeatable; targets as stated (direction 39.375 / 95.625 / 163.125 /
+  253.125 / 326.25°, unseen T F T T F; speed / acceleration indices 4 / 16 / 34 / 46 / 59, unseen T F T F T); B =
+  LinearRegression ≤ 3.1e-15, in the covariance span; random length error ≤ 2.1e-16, in span ≤ 4.2e-15, order-independent
+  and distinct; default `fit_probe` = `layer_curves` bit for bit at block_8 and block_17; readout n_fit 297 / 304 / 304,
+  interior alphas, train R² 0.969–0.987 (≥ 0.9 criterion previewed). Observations: no exit clip among the 30 selected
+  direction clips (with/without-exit reporting identical for steering); covariance median ‖δ_z‖ 9.13 / 2.53 / 1.97 (Claude
+  Code's 3–15 guess missed for speed, acceleration); round-1 reading after the covariance edit within ~0.005 of the target.
+  **Step 5.1c done.**
+
 ### 2026-09-25 — Phase 4 started (nullspace probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically), asks before
   every step, reads files only for bugs or suspicious results. Phase 4 layout (`nullspace.py`, `check_nullspace.py`)

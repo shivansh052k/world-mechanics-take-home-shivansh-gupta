@@ -12,7 +12,6 @@ ALPHAS = np.logspace(-3, 7, 41)  # probe alpha grid
 FIT_ROLE = "train"  # the only role any probe is fitted on
 NO_SIGNAL_R2 = 0.05  # val-seen R² at or below which an upper-edge alpha is expected
 
-
 def site_features(activations: np.ndarray, site: str, flatten: bool = False) -> np.ndarray:
     """Probe features of every clip at one site, as float64.
 
@@ -59,18 +58,26 @@ class Probe:
         return self.ridge.predict(self.scaler.transform(x))
 
 
-def fit_probe(x: np.ndarray, y: np.ndarray, roles: np.ndarray, alphas: np.ndarray = ALPHAS) -> Probe:
-    """Fit a probe on the train rows only: z-score, then RidgeCV (efficient leave-one-out, one alpha for all outputs).
+def fit_probe(
+    x: np.ndarray,
+    y: np.ndarray,
+    roles: np.ndarray,
+    alphas: np.ndarray = ALPHAS,
+    fit_roles: tuple[str, ...] = (FIT_ROLE,),
+) -> Probe:
+    """Fit a probe on the rows whose role is in `fit_roles` only (default: train): z-score, then RidgeCV (efficient
+    leave-one-out, one alpha for all outputs).
 
-    `x`, `y` and `roles` cover the same clips in the same order; rows whose role is not "train" are never
-    seen by the scaler or the ridge. Raises ValueError on mismatched lengths or if there is no train row.
+    `x`, `y` and `roles` cover the same clips in the same order; other rows are never seen by the scaler or the
+    ridge. The steering readouts pass the validation roles. Raises ValueError on mismatched lengths or if no row
+    has a fit role.
     """
     roles = np.asarray(roles)
     if not len(x) == len(y) == len(roles):
         raise ValueError(f"lengths differ: x {len(x)}, y {len(y)}, roles {len(roles)}")
-    fit_rows = roles == FIT_ROLE
+    fit_rows = np.isin(roles, fit_roles)
     if not fit_rows.any():
-        raise ValueError("no train rows to fit on")
+        raise ValueError(f"no rows with roles {fit_roles} to fit on")
     scaler = StandardScaler().fit(x[fit_rows])
     ridge = RidgeCV(alphas=alphas, fit_intercept=True).fit(scaler.transform(x[fit_rows]), y[fit_rows])
     return Probe(scaler, ridge, int(fit_rows.sum()))

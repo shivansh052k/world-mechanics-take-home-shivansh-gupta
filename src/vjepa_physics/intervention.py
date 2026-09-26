@@ -44,3 +44,24 @@ def edit_encoder(
         yield
     finally:
         handle.remove()
+        
+
+def run_blocks(model: VJEPA2Model, hidden: torch.Tensor, first: int, last: int) -> dict[str, torch.Tensor]:
+    """Continue the encoder from given hidden states: run blocks first ... last (inclusive), return each output.
+
+    `hidden` (B, 2048, 1024) must be what block `first` receives in a full forward pass, i.e. the output of block
+    first - 1 (the patch embedding when first = 0), possibly edited. Each block is called as the encoder calls it,
+    layer(hidden, None)[0]: no position mask, so positions come from the token index. Returns {"block_i": output}
+    for i = first ... last, (B, 2048, 1024) on the model's device. The encoder's final LayerNorm is not applied.
+    """
+    blocks = model.encoder.layer
+    if not 0 <= first <= last < len(blocks):
+        raise ValueError(f"blocks {first}...{last} outside 0...{len(blocks) - 1}")
+    if hidden.ndim != 3 or hidden.shape[-1] != blocks[first].hidden_size:
+        raise ValueError(f"expected (B, tokens, {blocks[first].hidden_size}) hidden states, got {tuple(hidden.shape)}")
+    outputs: dict[str, torch.Tensor] = {}
+    with torch.inference_mode():
+        for i in range(first, last + 1):
+            hidden = blocks[i](hidden, None)[0]
+            outputs[f"block_{i}"] = hidden
+    return outputs
