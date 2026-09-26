@@ -12,6 +12,7 @@ from vjepa_physics.evidence import repo_root, verified_artifact
 from vjepa_physics.extraction import pool_time_steps
 from vjepa_physics.intervention import run_blocks
 from vjepa_physics.reproducibility import SEED
+from vjepa_physics.metrics import angles_from_sincos
 
 NULLSPACE_CHECKS = "results/nullspace/checks.json"  # key "nullspace_rounds": rounds.npz and each site's K
 STEERING_SITE = "block_8"  # hidden_states index 9
@@ -262,3 +263,16 @@ def steered_features(
                                                           for i in range(first, last + 1)])
         out[a] = np.asarray(pooled.to("cpu")[:, 0], dtype=np.float64).mean(axis=1)
     return out
+
+def readout_values(variable: str, readout: np.ndarray) -> np.ndarray:
+    """(..., m) readout outputs -> (...) values in label units: degrees for direction (angle of (sin, cos)), else the output."""
+    r = np.asarray(readout, dtype=np.float64)
+    if variable == "direction":
+        return angles_from_sincos(r.reshape(-1, 2)).reshape(r.shape[:-1])
+    return r[..., 0]
+
+
+def label_difference(variable: str, a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """a - b in label units; for direction the signed angle in [-180, 180) degrees."""
+    d = np.asarray(a, dtype=np.float64) - np.asarray(b, dtype=np.float64)
+    return (d + 180.0) % 360.0 - 180.0 if variable == "direction" else d

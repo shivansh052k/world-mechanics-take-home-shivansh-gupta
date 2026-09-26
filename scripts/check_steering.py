@@ -24,13 +24,15 @@ from vjepa_physics.joined import FLAG_NAMES, load_joined
 from vjepa_physics.model import load_model, weights_fingerprint
 from vjepa_physics.preprocess import preprocess_clip
 from vjepa_physics.probes import Probe, fit_probe, probe_scores, probe_targets, site_features
-from vjepa_physics.reproducibility import set_seeds
+from vjepa_physics.reproducibility import SEED, set_seeds
 from vjepa_physics.steering import (
     N_CLIPS, QUARTILE_SIZE, RANDOM_SEEDS, STEERING_SITE, arm_shifts, arm_table, covariance_map, keyed_rng,
-    load_probe_sequence, random_probe_counts, steered_features, steering_clips, steering_targets,
+    load_probe_sequence, random_probe_counts, steered_features, steering_clips, steering_targets, label_difference, 
+    readout_values,
 )
 from vjepa_physics.video import load_clip
 from vjepa_physics.nullspace import train_span
+from vjepa_physics.metrics import bootstrap_indices, percentile_interval, resampled_mean
 
 REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "results/steering/checks.json"
@@ -58,6 +60,10 @@ HIT_TOLERANCE = 1e-5  # probe arms: idx-9 steering probes vs target after the fp
 SITE_TOLERANCE = 1e-4  # idx-9 features vs stored + shift after the fp32 edit (absolute)
 LENGTH_TOLERANCE = 1e-12  # random arms: z-length vs the probes arm with the same n (relative)
 FEATURE_ROWS = {STEERING_SITE: 0, f"block_{READOUT_BLOCK}": READOUT_BLOCK - FIRST_BLOCK + 1}  # rows of steered_features
+
+READOUT_SITE = f"block_{READOUT_BLOCK}"  # primary readout (index 18); STEERING_SITE = same-layer control (index 9)
+READOUT_TOLERANCE = 1e-12  # relative: stored unedited readouts vs the setup maps on the stored features
+BOOTSTRAP_RESAMPLES = 10_000
 
 
 def selection_groups(table: dict, rows: np.ndarray, variable: str, role: str) -> np.ndarray:
@@ -444,10 +450,192 @@ def steering_run(variable: str, half: str) -> dict:
         "passed": all(criteria.values()),
     }
 
+def train_distance(z_train: np.ndarray) -> float:
+    """Median Euclidean distance between two different train clips (standardized features)."""
+    sq = (z_train**2).sum(axis=1)
+    d2 = sq[:, None] + sq[None, :] - 2 * z_train @ z_train.T
+    return float(np.median(np.sqrt(np.clip(d2[np.triu_indices(len(z_train), 1)], 0.0, None))))
+
+
+def all_finite(obj) -> bool:
+    if isinstance(obj, dict):
+        return all(all_finite(v) for v in obj.values())
+    if isinstance(obj, (list, tuple)):
+        return all(all_finite(v) for v in obj)
+    if isinstance(obj, float):
+        return bool(np.isfinite(obj))
+    return True
+
+
+def check_steering_scores() -> dict:
+    """Score the six steering runs (no model): readout errors per arm, same-layer control, specificity, shift sizes.
+
+    Per steered variable, both halves combined (30 clips x 5 targets). For every arm group (probes n = 1...K,
+    covariance, random at each probe count with its seeds pooled) and the unedited clip: the index-18 readout's error
+    to the target and to the clip's own label (label units; circular degrees for direction), the error reduction vs
+    the unedited clip (1 - mean error / mean unedited error) and the gain (least-squares slope of achieved on intended
+    shift through the origin); the same at index 9 (same-layer control); the median standardized shift length and
+    its ratio to the median train clip-to-clip distance. Breakdowns: all, test-seen / test-unseen clips, seen /
+    unseen target values. Specificity: mean change of every variable's index-18 readout vs the unedited clip.
+    Per-round shares of |shift|² at n = K - 1 and K. Clip-bootstrap 95% intervals of the index-18 error and
+    reduction for probes K - 1 and K, covariance, random K - 1 and K, and the unedited error. Passes if: both
+    halves come from the same clean commit and code; clip ids and targets = the setup's; the arm table is the same
+    in both halves; stored unedited readouts = the setup maps on the stored features; all scores finite; bootstrap
+    point estimates = the full-sample means.
+    """
+    saved = json.loads(OUT.read_text())
+    with np.load(verified_artifact(OUT, "steering_setup")) as f:
+        setup = {key: f[key] for key in f.files}
+    n_clips = sum(N_CLIPS.values())
+    boot = bootstrap_indices(n_clips, BOOTSTRAP_RESAMPLES, SEED)
+    roles_order = list(HALVES.values())
+    ok: dict[str, list[bool]] = {name: [] for name in (
+        "same_code", "clean", "ids", "targets", "arms", "unedited_readouts", "finite", "bootstrap_point")}
+    result: dict = {}
+
+    for variable in DATASETS:
+        runs, provenance = {}, {}
+        for half, role in HALVES.items():
+            key = f"steer_{variable}_{half}"
+            provenance[role] = saved[key]["provenance"]
+            with np.load(verified_artifact(OUT, key)) as f:
+                runs[role] = {name: f[name] for name in f.files}
+        first, second = (runs[r] for r in roles_order)
+        p1, p2 = (provenance[r] for r in roles_order)
+        targets = setup[f"{variable}_target_label"]
+        unseen_target = setup[f"{variable}_target_unseen"]
+        ok["same_code"].append(p1["git_commit"] == p2["git_commit"]
+                               and p1["code"]["combined_sha256"] == p2["code"]["combined_sha256"])
+        ok["clean"].append(not p1["git_dirty"] and not p2["git_dirty"])
+        ok["ids"].append(all(np.array_equal(runs[r]["ids"], setup[f"{variable}_{r}_ids"]) for r in roles_order))
+        ok["targets"].append(all(np.array_equal(runs[r]["target_label"], targets) for r in roles_order))
+        ok["arms"].append(all(np.array_equal(first[k], second[k]) for k in ("arm_kind", "arm_n", "arm_seed")))
+
+        def joined_array(name: str) -> np.ndarray:
+            return np.concatenate([runs[r][name] for r in roles_order])
+
+        ids = joined_array("ids")
+        clip_role = np.repeat(roles_order, [len(runs[r]["ids"]) for r in roles_order])
+        arms = list(zip(first["arm_kind"].tolist(), first["arm_n"].tolist(), first["arm_seed"].tolist()))
+        groups: dict[str, list[int]] = {}
+        for a, (kind, n, _) in enumerate(arms):
+            groups.setdefault("covariance" if kind == "covariance" else f"{kind}_{n}", []).append(a)
+
+        table = load_joined(variable)
+        row_of = {int(i): r for r, i in enumerate(table["id"].tolist())}
+        rows = np.array([row_of[int(i)] for i in ids])
+        labels = table["label"][rows]
+        seq = load_probe_sequence(variable)
+        stored = {s: site_features(table["activations"], s) for s in READOUT_SITES}
+
+        unedited_diff = 0.0
+        for w in DATASETS:
+            for s in READOUT_SITES:
+                expected = stored[s][rows] @ setup[f"readout_{w}_{s}_weights"] + setup[f"readout_{w}_{s}_offset"]
+                got = joined_array(f"readout_unedited_{w}_{s}")
+                unedited_diff = max(unedited_diff, float(np.abs(got - expected).max() / np.abs(expected).max()))
+        ok["unedited_readouts"].append(unedited_diff <= READOUT_TOLERANCE)
+
+        # the steered variable's own readouts, in label units: (clips, targets, arms) and unedited (clips,)
+        value = {s: readout_values(variable, joined_array(f"readout_{variable}_{s}")) for s in READOUT_SITES}
+        base = {s: readout_values(variable, joined_array(f"readout_unedited_{variable}_{s}")) for s in READOUT_SITES}
+        err = {s: np.abs(label_difference(variable, value[s], targets[None, :, None])) for s in READOUT_SITES}
+        unsteered = {s: np.abs(label_difference(variable, base[s][:, None], targets[None, :])) for s in READOUT_SITES}
+        intended = {s: label_difference(variable, targets[None, :], base[s][:, None]) for s in READOUT_SITES}
+        achieved = {s: label_difference(variable, value[s], base[s][:, None, None]) for s in READOUT_SITES}
+        error_original = np.abs(label_difference(variable, value[READOUT_SITE], labels[:, None, None]))
+        unsteered_original = np.abs(label_difference(variable, base[READOUT_SITE], labels))
+
+        shifts = joined_array("shifts")
+        lengths = np.linalg.norm(shifts / seq.scale, axis=-1)  # standardized length, (clips, targets, arms)
+        z_train = (stored[STEERING_SITE][table["role"] == "train"] - seq.mean) / seq.scale
+        distance = train_distance(z_train)
+
+        n_targets = len(targets)
+        masks = {
+            "all": np.ones((n_clips, n_targets), dtype=bool),
+            "test_seen": np.repeat((clip_role == "test_seen")[:, None], n_targets, axis=1),
+            "test_unseen": np.repeat((clip_role == "test_unseen")[:, None], n_targets, axis=1),
+            "target_seen": np.repeat(~unseen_target[None, :], n_clips, axis=0),
+            "target_unseen": np.repeat(unseen_target[None, :], n_clips, axis=0),
+        }
+
+        def summary(arm_rows: list[int] | None, mask: np.ndarray) -> dict:
+            if arm_rows is None:  # the unedited clip
+                return {
+                    "error_target": float(unsteered[READOUT_SITE][mask].mean()),
+                    "same_layer_error_target": float(unsteered[STEERING_SITE][mask].mean()),
+                    "error_original": float(np.repeat(unsteered_original[:, None], n_targets, axis=1)[mask].mean()),
+                }
+            out = {}
+            for s, prefix in ((READOUT_SITE, ""), (STEERING_SITE, "same_layer_")):
+                e = err[s][:, :, arm_rows][mask]
+                a = achieved[s][:, :, arm_rows][mask]
+                i = np.broadcast_to(intended[s][mask][:, None], a.shape)
+                out[f"{prefix}error_target"] = float(e.mean())
+                out[f"{prefix}reduction"] = float(1 - e.mean() / unsteered[s][mask].mean())
+                out[f"{prefix}gain"] = float((a * i).sum() / (i**2).sum())
+            out["error_original"] = float(error_original[:, :, arm_rows][mask].mean())
+            out["shift_length_median"] = float(np.median(lengths[:, :, arm_rows][mask]))
+            out["shift_over_distance_median"] = out["shift_length_median"] / distance
+            return out
+
+        arm_scores = {name: {g: summary(idx, m) for g, m in masks.items()} for name, idx in groups.items()}
+        arm_scores["unedited"] = {g: summary(None, m) for g, m in masks.items()}
+
+        specificity = {}
+        for w in DATASETS:
+            if w == variable:
+                change = np.abs(achieved[READOUT_SITE])
+            else:
+                v_w = readout_values(w, joined_array(f"readout_{w}_{READOUT_SITE}"))
+                b_w = readout_values(w, joined_array(f"readout_unedited_{w}_{READOUT_SITE}"))
+                change = np.abs(label_difference(w, v_w, b_w[:, None, None]))
+            specificity[w] = {name: float(change[:, :, idx].mean()) for name, idx in groups.items()}
+
+        m = seq.dims_per_round
+
+        def round_shares(n: int) -> list[float]:
+            dz = shifts[:, :, arms.index(("probes", n, -1))] / seq.scale
+            parts = ((dz @ seq.basis[:, : n * m]).reshape(n_clips, n_targets, n, m) ** 2).sum(axis=-1)
+            return np.median(parts / (dz**2).sum(axis=-1)[..., None], axis=(0, 1)).tolist()
+
+        k = seq.k
+        per_clip_unsteered = unsteered[READOUT_SITE].mean(axis=1)
+        u = resampled_mean(per_clip_unsteered, boot)
+        headline = {"unedited": {"error_target": float(per_clip_unsteered.mean()),
+                                 "error_target_ci": percentile_interval(u)}}
+        for name in (f"probes_{k - 1}", f"probes_{k}", "covariance", f"random_{k - 1}", f"random_{k}"):
+            per_clip = err[READOUT_SITE][:, :, groups[name]].mean(axis=(1, 2))
+            e = resampled_mean(per_clip, boot)
+            point = arm_scores[name]["all"]
+            ok["bootstrap_point"].append(bool(np.isclose(per_clip.mean(), point["error_target"], rtol=1e-12, atol=0)))
+            headline[name] = {
+                "error_target": point["error_target"], "error_target_ci": percentile_interval(e),
+                "reduction": point["reduction"], "reduction_ci": percentile_interval(1 - e / u),
+            }
+
+        record = {
+            "k": k, "headline_n": k - 1, "targets": targets.tolist(), "target_unseen": unseen_target.tolist(),
+            "run_commit": p1["git_commit"], "train_clip_distance_median": distance,
+            "unedited_readout_max_relative_diff": unedited_diff,
+            "headline": headline, "arms": arm_scores, "specificity_idx18": specificity,
+            "round_shares": {str(n): round_shares(n) for n in (k - 1, k)},
+        }
+        ok["finite"].append(all_finite(record))
+        result[variable] = record
+
+    criteria = {name: all(values) for name, values in ok.items()}
+    return {
+        "variables": result, "readout_site": READOUT_SITE, "same_layer_site": STEERING_SITE,
+        "bootstrap_resamples": BOOTSTRAP_RESAMPLES, "criteria": criteria, "passed": all(criteria.values()),
+    }
+
 CHECKS = {
     "steering_setup": check_steering_setup,
     "steering_cache": check_steering_cache,
     **{f"steer_{v}_{h}": partial(steering_run, v, h) for v in DATASETS for h in HALVES},
+    "steering_scores": check_steering_scores,
 }
 
 
