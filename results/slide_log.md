@@ -27,7 +27,6 @@ Candidate slides, added as results come in. Each names its figure, its message a
 - Evidence: `patches`: `patch_probes`, `patch_breakdown`, `spatial_generalization`, `position_baseline`,
   `patch_test_scores`.
 
-
 ## What the nullspace count measures
 
 - Figure: `results/nullspace/nullspace_rounds.png`
@@ -56,3 +55,27 @@ Candidate slides, added as results come in. Each names its figure, its message a
     equal distance travelled.
 - Evidence: `nullspace`: `alpha_sweep`, `fresh_probe_erasure`, `kernel_erasure`, `kernel_shuffled_labels`,
   `kernel_hat_gap`, `nullspace_test_scores`, `figure_erasure`.
+
+## Steering works at the steering layer, not nine blocks later
+
+- Figure: `results/steering/steering_reduction.png`
+- Message: an independent readout at the steering layer follows a multi-probe edit (error reduction 0.92–0.95), random
+  edits do nothing — the paper's result — but a readout nine blocks later moves only 0.03 / 0.13 / 0.14.
+- Points to say:
+  - One probe is not enough even at the same layer (0.11 / 0.55 / 0.36); from two probes on it follows; the covariance
+    direction alone does as well as five or six probes.
+  - Headline uses K − 1 probes; all K push the activations off-distribution (1–4 × the clip-to-clip distance).
+  - Caveat: same-layer readouts follow edits partly by construction; this is why we test downstream.
+- Evidence: `steering`: `steering_setup`, `steering_cache`, `steer_*`, `steering_scores`, `figure_steering`.
+
+## Where the edit is lost
+
+- Figure: `results/steering/steering_propagation.png`
+- Message: the effect collapses within three blocks; at index 18 the carried edit is only partly aligned with the
+  later readout, and the block updates push back about half to three-quarters of what reaches it.
+- Points to say:
+  - Gain 0.96–0.99 at index 9 → 0.24–0.42 at index 12 → 0.07–0.14 at index 18; random ≤ 0.03.
+  - A kernel readout at index 9 also follows the edit, so "nonlinear code intact at the steering layer" is not supported
+    as tested; the uniform token edit is the leading open explanation.
+  - Speed and acceleration co-move one-for-one in metres (both labels = distance).
+- Evidence: `steering`: `steering_propagation`, `steering_kernel`, `steering_specificity`, `figure_steering`.

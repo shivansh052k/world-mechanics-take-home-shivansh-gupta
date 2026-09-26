@@ -12,10 +12,9 @@ Status markers: [done] results exist · [todo] not yet run.
 4. **Local to global, direction** (2 min) [done] — slide "Where inside the frame direction is readable"
 5. **Nullspace probing: what the count measures** (2 min) [done] — slides "What the nullspace count measures",
    "Linear erasure removes the readout, not the information"
-6. **Multi-probe subspace steering on held-out clips and values** (2 min) [todo]
+6. **Multi-probe subspace steering on held-out clips and values** (2 min) [done] — slides "Steering works at the
+   steering layer, not nine blocks later", "Where the edit is lost"
 7. **Spline steering and the comparison with probe steering** (2 min) [todo]
 8. **Confounds and robustness** (1 min) [todo] — distance vs acceleration, motion type, flags
 9. **Limitations and open questions** (1 min) [todo]
-   So far: time-averaged per-patch vectors; simpler stimuli than the paper; one checkpoint; interpretation of
-   unspecified protocol details; nullspace counts depend on the probe's regularization; only linear erasure and one
-   kernel family tested; speed / acceleration labels equal distance travelled.
+   So far: time-averaged per-patch vectors; simpler stimuli than the paper; one checkpoint; interpretation of unspecified protocol details; nullspace counts depend on the probe's regularization; only linear erasure and one kernel family tested; speed / acceleration labels equal distance travelled. same-layer steering evaluation follows by construction; uniform token edit; one steering / readout layer.
