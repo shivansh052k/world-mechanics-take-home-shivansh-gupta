@@ -384,6 +384,16 @@ what's next.
   site diff 1e-6–1e-5 missed (1.8e-5), fp32 hit 1e-6–1e-3 missed (smaller). Tolerances for check (iv) fixed now, before
   any test run (Claude Code's own addition, ~30× / ~5× the measured maxima): probe hit ≤ 1e-5, site diff ≤ 1e-4.
   **Step 5.2c done.**
+- 5.2d: six saved runs `steer_<variable>_<seen|unseen>` (one function, `functools.partial`) **all passed** (11/11 each;
+  clean commit `80a2670`, chained with `&&` under `caffeinate`). Two starts stopped at NameErrors before any model load
+  or save (missing `partial`, `train_span` imports; Claude Code's step listed them, not added). Runs 1,440 / 1,515 /
+  1,515 per half; 10.5–12.5 min each (~72 min total; Claude Code's 16–17 min guess wrong, faster); unedited = stored on
+  all 90 clips; max site diff 2.2–2.8e-5 (≤ 1e-4), max probe hit 1.8e-7–7.2e-7 (≤ 1e-5), random length ≤ 2.6e-16;
+  weights, hooks unchanged; npz saved = computed. Claude Code's guesses missed: site ≤ 2e-5, hit ≤ 4e-7 (acceleration).
+  **Process slip (F-128 again):** `steering_setup` and `steering_cache` were saved with `scripts/check_steering.py`
+  staged, not committed (`git_dirty`, commit `cda056e`) → at the gate: `code_hash_check`, re-run flagged keys from
+  committed code (results committed first), `compare_reruns`; the steering runs read both through their hashes.
+  **Step 5.2d done.**
 
 ### 2026-09-25 — Phase 4 started (nullspace probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically), asks before

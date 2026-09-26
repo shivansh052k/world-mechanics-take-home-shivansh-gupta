@@ -891,5 +891,1279 @@
       },
       "passed": true
     }
+  },
+  "steer_direction_seen": {
+    "provenance": {
+      "utc": "2026-09-26T07:07:46+00:00",
+      "git_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "a4a7cc86b9e9becbff6a0d6417b382d9feb008e3c6276b4b7e6c097087f20827",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_steering.py": "7b4e8cdffe288c04b6af95dff872ec0be1ae2583cc21d8f76a82abef71dad90e"
+        },
+        "combined_sha256": "26699238e617d7bc2fd47a19911dc7ebc11126ebed5a5aef14bdbd9e3da68617"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variable": "direction",
+      "role": "test_seen",
+      "ids": [
+        115,
+        162,
+        289,
+        303,
+        418,
+        537,
+        577,
+        665,
+        841,
+        889,
+        1102,
+        1130,
+        1165,
+        1339,
+        1472
+      ],
+      "k": 6,
+      "targets": [
+        39.375,
+        95.625,
+        163.125,
+        253.125,
+        326.25
+      ],
+      "arms": [
+        [
+          "probes",
+          1,
+          -1
+        ],
+        [
+          "probes",
+          2,
+          -1
+        ],
+        [
+          "probes",
+          3,
+          -1
+        ],
+        [
+          "probes",
+          4,
+          -1
+        ],
+        [
+          "probes",
+          5,
+          -1
+        ],
+        [
+          "probes",
+          6,
+          -1
+        ],
+        [
+          "covariance",
+          0,
+          -1
+        ],
+        [
+          "random",
+          1,
+          0
+        ],
+        [
+          "random",
+          1,
+          1
+        ],
+        [
+          "random",
+          1,
+          2
+        ],
+        [
+          "random",
+          3,
+          0
+        ],
+        [
+          "random",
+          3,
+          1
+        ],
+        [
+          "random",
+          3,
+          2
+        ],
+        [
+          "random",
+          5,
+          0
+        ],
+        [
+          "random",
+          5,
+          1
+        ],
+        [
+          "random",
+          5,
+          2
+        ],
+        [
+          "random",
+          6,
+          0
+        ],
+        [
+          "random",
+          6,
+          1
+        ],
+        [
+          "random",
+          6,
+          2
+        ]
+      ],
+      "runs": 1440,
+      "seconds": 629.0662228340079,
+      "tolerances": {
+        "hit": 1e-05,
+        "site": 0.0001,
+        "length": 1e-12
+      },
+      "max_site_diff": 2.380168598392629e-05,
+      "max_hit_error": 1.9253714556022317e-07,
+      "max_length_error": 2.2201744979721152e-16,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "criteria": {
+        "unedited_equals_stored": true,
+        "site": true,
+        "hit": true,
+        "length": true,
+        "finite": true,
+        "same_clip_ids": true,
+        "arm_count": true,
+        "finite_outputs": true,
+        "hooks_unchanged": true,
+        "weights_unchanged": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/steering/runs_direction_seen.npz",
+        "sha256": "f15dbbf1a4af23eb157416bf4fd4148050a4a2920890f6e5c5c2a88e31d26381"
+      },
+      "passed": true
+    }
+  },
+  "steer_direction_unseen": {
+    "provenance": {
+      "utc": "2026-09-26T07:19:24+00:00",
+      "git_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "a4a7cc86b9e9becbff6a0d6417b382d9feb008e3c6276b4b7e6c097087f20827",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_steering.py": "7b4e8cdffe288c04b6af95dff872ec0be1ae2583cc21d8f76a82abef71dad90e"
+        },
+        "combined_sha256": "26699238e617d7bc2fd47a19911dc7ebc11126ebed5a5aef14bdbd9e3da68617"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variable": "direction",
+      "role": "test_unseen",
+      "ids": [
+        170,
+        176,
+        318,
+        327,
+        560,
+        570,
+        714,
+        925,
+        945,
+        1067,
+        1085,
+        1299,
+        1300,
+        1431,
+        1435
+      ],
+      "k": 6,
+      "targets": [
+        39.375,
+        95.625,
+        163.125,
+        253.125,
+        326.25
+      ],
+      "arms": [
+        [
+          "probes",
+          1,
+          -1
+        ],
+        [
+          "probes",
+          2,
+          -1
+        ],
+        [
+          "probes",
+          3,
+          -1
+        ],
+        [
+          "probes",
+          4,
+          -1
+        ],
+        [
+          "probes",
+          5,
+          -1
+        ],
+        [
+          "probes",
+          6,
+          -1
+        ],
+        [
+          "covariance",
+          0,
+          -1
+        ],
+        [
+          "random",
+          1,
+          0
+        ],
+        [
+          "random",
+          1,
+          1
+        ],
+        [
+          "random",
+          1,
+          2
+        ],
+        [
+          "random",
+          3,
+          0
+        ],
+        [
+          "random",
+          3,
+          1
+        ],
+        [
+          "random",
+          3,
+          2
+        ],
+        [
+          "random",
+          5,
+          0
+        ],
+        [
+          "random",
+          5,
+          1
+        ],
+        [
+          "random",
+          5,
+          2
+        ],
+        [
+          "random",
+          6,
+          0
+        ],
+        [
+          "random",
+          6,
+          1
+        ],
+        [
+          "random",
+          6,
+          2
+        ]
+      ],
+      "runs": 1440,
+      "seconds": 689.9020859579905,
+      "tolerances": {
+        "hit": 1e-05,
+        "site": 0.0001,
+        "length": 1e-12
+      },
+      "max_site_diff": 2.213501900882875e-05,
+      "max_hit_error": 1.8252861733181192e-07,
+      "max_length_error": 2.1928565977266506e-16,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "criteria": {
+        "unedited_equals_stored": true,
+        "site": true,
+        "hit": true,
+        "length": true,
+        "finite": true,
+        "same_clip_ids": true,
+        "arm_count": true,
+        "finite_outputs": true,
+        "hooks_unchanged": true,
+        "weights_unchanged": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/steering/runs_direction_unseen.npz",
+        "sha256": "610ec271a45e01c0b92e32b8846b416423f9118198a3a98ea383266da7f31f83"
+      },
+      "passed": true
+    }
+  },
+  "steer_speed_seen": {
+    "provenance": {
+      "utc": "2026-09-26T07:31:26+00:00",
+      "git_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "a4a7cc86b9e9becbff6a0d6417b382d9feb008e3c6276b4b7e6c097087f20827",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_steering.py": "7b4e8cdffe288c04b6af95dff872ec0be1ae2583cc21d8f76a82abef71dad90e"
+        },
+        "combined_sha256": "26699238e617d7bc2fd47a19911dc7ebc11126ebed5a5aef14bdbd9e3da68617"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variable": "speed",
+      "role": "test_seen",
+      "ids": [
+        69,
+        298,
+        378,
+        407,
+        455,
+        480,
+        677,
+        967,
+        1004,
+        1031,
+        1127,
+        1163,
+        1215,
+        1235,
+        1456
+      ],
+      "k": 7,
+      "targets": [
+        0.4880952380952381,
+        1.2023809523809523,
+        2.2738095238095237,
+        2.988095238095238,
+        3.761904761904762
+      ],
+      "arms": [
+        [
+          "probes",
+          1,
+          -1
+        ],
+        [
+          "probes",
+          2,
+          -1
+        ],
+        [
+          "probes",
+          3,
+          -1
+        ],
+        [
+          "probes",
+          4,
+          -1
+        ],
+        [
+          "probes",
+          5,
+          -1
+        ],
+        [
+          "probes",
+          6,
+          -1
+        ],
+        [
+          "probes",
+          7,
+          -1
+        ],
+        [
+          "covariance",
+          0,
+          -1
+        ],
+        [
+          "random",
+          1,
+          0
+        ],
+        [
+          "random",
+          1,
+          1
+        ],
+        [
+          "random",
+          1,
+          2
+        ],
+        [
+          "random",
+          3,
+          0
+        ],
+        [
+          "random",
+          3,
+          1
+        ],
+        [
+          "random",
+          3,
+          2
+        ],
+        [
+          "random",
+          6,
+          0
+        ],
+        [
+          "random",
+          6,
+          1
+        ],
+        [
+          "random",
+          6,
+          2
+        ],
+        [
+          "random",
+          7,
+          0
+        ],
+        [
+          "random",
+          7,
+          1
+        ],
+        [
+          "random",
+          7,
+          2
+        ]
+      ],
+      "runs": 1515,
+      "seconds": 713.5627142500016,
+      "tolerances": {
+        "hit": 1e-05,
+        "site": 0.0001,
+        "length": 1e-12
+      },
+      "max_site_diff": 2.800661218316236e-05,
+      "max_hit_error": 2.1500474295388372e-07,
+      "max_length_error": 2.2023919012055333e-16,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "criteria": {
+        "unedited_equals_stored": true,
+        "site": true,
+        "hit": true,
+        "length": true,
+        "finite": true,
+        "same_clip_ids": true,
+        "arm_count": true,
+        "finite_outputs": true,
+        "hooks_unchanged": true,
+        "weights_unchanged": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/steering/runs_speed_seen.npz",
+        "sha256": "38964795c74e015b363044df71a5c35da7a1833cf644886d2b1d8533b84cc5a9"
+      },
+      "passed": true
+    }
+  },
+  "steer_speed_unseen": {
+    "provenance": {
+      "utc": "2026-09-26T07:43:47+00:00",
+      "git_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "a4a7cc86b9e9becbff6a0d6417b382d9feb008e3c6276b4b7e6c097087f20827",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_steering.py": "7b4e8cdffe288c04b6af95dff872ec0be1ae2583cc21d8f76a82abef71dad90e"
+        },
+        "combined_sha256": "26699238e617d7bc2fd47a19911dc7ebc11126ebed5a5aef14bdbd9e3da68617"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variable": "speed",
+      "role": "test_unseen",
+      "ids": [
+        110,
+        348,
+        352,
+        464,
+        476,
+        712,
+        718,
+        817,
+        836,
+        1066,
+        1078,
+        1190,
+        1199,
+        1416,
+        1433
+      ],
+      "k": 7,
+      "targets": [
+        0.4880952380952381,
+        1.2023809523809523,
+        2.2738095238095237,
+        2.988095238095238,
+        3.761904761904762
+      ],
+      "arms": [
+        [
+          "probes",
+          1,
+          -1
+        ],
+        [
+          "probes",
+          2,
+          -1
+        ],
+        [
+          "probes",
+          3,
+          -1
+        ],
+        [
+          "probes",
+          4,
+          -1
+        ],
+        [
+          "probes",
+          5,
+          -1
+        ],
+        [
+          "probes",
+          6,
+          -1
+        ],
+        [
+          "probes",
+          7,
+          -1
+        ],
+        [
+          "covariance",
+          0,
+          -1
+        ],
+        [
+          "random",
+          1,
+          0
+        ],
+        [
+          "random",
+          1,
+          1
+        ],
+        [
+          "random",
+          1,
+          2
+        ],
+        [
+          "random",
+          3,
+          0
+        ],
+        [
+          "random",
+          3,
+          1
+        ],
+        [
+          "random",
+          3,
+          2
+        ],
+        [
+          "random",
+          6,
+          0
+        ],
+        [
+          "random",
+          6,
+          1
+        ],
+        [
+          "random",
+          6,
+          2
+        ],
+        [
+          "random",
+          7,
+          0
+        ],
+        [
+          "random",
+          7,
+          1
+        ],
+        [
+          "random",
+          7,
+          2
+        ]
+      ],
+      "runs": 1515,
+      "seconds": 733.1505876670126,
+      "tolerances": {
+        "hit": 1e-05,
+        "site": 0.0001,
+        "length": 1e-12
+      },
+      "max_site_diff": 2.528101643406444e-05,
+      "max_hit_error": 2.297751455215824e-07,
+      "max_length_error": 2.1985923001815965e-16,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "criteria": {
+        "unedited_equals_stored": true,
+        "site": true,
+        "hit": true,
+        "length": true,
+        "finite": true,
+        "same_clip_ids": true,
+        "arm_count": true,
+        "finite_outputs": true,
+        "hooks_unchanged": true,
+        "weights_unchanged": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/steering/runs_speed_unseen.npz",
+        "sha256": "8bbe6f4ea75111a39e8aa4c17b08b00e0987e8f40ba2ee797e3699642cea1f8d"
+      },
+      "passed": true
+    }
+  },
+  "steer_acceleration_seen": {
+    "provenance": {
+      "utc": "2026-09-26T07:56:23+00:00",
+      "git_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "a4a7cc86b9e9becbff6a0d6417b382d9feb008e3c6276b4b7e6c097087f20827",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_steering.py": "7b4e8cdffe288c04b6af95dff872ec0be1ae2583cc21d8f76a82abef71dad90e"
+        },
+        "combined_sha256": "26699238e617d7bc2fd47a19911dc7ebc11126ebed5a5aef14bdbd9e3da68617"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variable": "acceleration",
+      "role": "test_seen",
+      "ids": [
+        39,
+        161,
+        203,
+        314,
+        413,
+        524,
+        732,
+        745,
+        865,
+        920,
+        967,
+        1378,
+        1392,
+        1413,
+        1521
+      ],
+      "k": 7,
+      "targets": [
+        0.8690476190476191,
+        2.7261904761904763,
+        5.511904761904762,
+        7.3690476190476195,
+        9.380952380952381
+      ],
+      "arms": [
+        [
+          "probes",
+          1,
+          -1
+        ],
+        [
+          "probes",
+          2,
+          -1
+        ],
+        [
+          "probes",
+          3,
+          -1
+        ],
+        [
+          "probes",
+          4,
+          -1
+        ],
+        [
+          "probes",
+          5,
+          -1
+        ],
+        [
+          "probes",
+          6,
+          -1
+        ],
+        [
+          "probes",
+          7,
+          -1
+        ],
+        [
+          "covariance",
+          0,
+          -1
+        ],
+        [
+          "random",
+          1,
+          0
+        ],
+        [
+          "random",
+          1,
+          1
+        ],
+        [
+          "random",
+          1,
+          2
+        ],
+        [
+          "random",
+          3,
+          0
+        ],
+        [
+          "random",
+          3,
+          1
+        ],
+        [
+          "random",
+          3,
+          2
+        ],
+        [
+          "random",
+          6,
+          0
+        ],
+        [
+          "random",
+          6,
+          1
+        ],
+        [
+          "random",
+          6,
+          2
+        ],
+        [
+          "random",
+          7,
+          0
+        ],
+        [
+          "random",
+          7,
+          1
+        ],
+        [
+          "random",
+          7,
+          2
+        ]
+      ],
+      "runs": 1515,
+      "seconds": 747.7964625839959,
+      "tolerances": {
+        "hit": 1e-05,
+        "site": 0.0001,
+        "length": 1e-12
+      },
+      "max_site_diff": 2.6025414683772397e-05,
+      "max_hit_error": 6.116263246980225e-07,
+      "max_length_error": 2.2118881423926316e-16,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "criteria": {
+        "unedited_equals_stored": true,
+        "site": true,
+        "hit": true,
+        "length": true,
+        "finite": true,
+        "same_clip_ids": true,
+        "arm_count": true,
+        "finite_outputs": true,
+        "hooks_unchanged": true,
+        "weights_unchanged": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/steering/runs_acceleration_seen.npz",
+        "sha256": "da6b9bbddf192fac0f4b51c5a2e174a34cf919565544439c09349f6231d68f7e"
+      },
+      "passed": true
+    }
+  },
+  "steer_acceleration_unseen": {
+    "provenance": {
+      "utc": "2026-09-26T08:08:52+00:00",
+      "git_commit": "80a267024fce6ff1c6d52a9d7e98ab670b449dce",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "a4a7cc86b9e9becbff6a0d6417b382d9feb008e3c6276b4b7e6c097087f20827",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_steering.py": "7b4e8cdffe288c04b6af95dff872ec0be1ae2583cc21d8f76a82abef71dad90e"
+        },
+        "combined_sha256": "26699238e617d7bc2fd47a19911dc7ebc11126ebed5a5aef14bdbd9e3da68617"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variable": "acceleration",
+      "role": "test_unseen",
+      "ids": [
+        115,
+        354,
+        356,
+        460,
+        471,
+        702,
+        712,
+        817,
+        824,
+        1062,
+        1069,
+        1194,
+        1198,
+        1418,
+        1433
+      ],
+      "k": 7,
+      "targets": [
+        0.8690476190476191,
+        2.7261904761904763,
+        5.511904761904762,
+        7.3690476190476195,
+        9.380952380952381
+      ],
+      "arms": [
+        [
+          "probes",
+          1,
+          -1
+        ],
+        [
+          "probes",
+          2,
+          -1
+        ],
+        [
+          "probes",
+          3,
+          -1
+        ],
+        [
+          "probes",
+          4,
+          -1
+        ],
+        [
+          "probes",
+          5,
+          -1
+        ],
+        [
+          "probes",
+          6,
+          -1
+        ],
+        [
+          "probes",
+          7,
+          -1
+        ],
+        [
+          "covariance",
+          0,
+          -1
+        ],
+        [
+          "random",
+          1,
+          0
+        ],
+        [
+          "random",
+          1,
+          1
+        ],
+        [
+          "random",
+          1,
+          2
+        ],
+        [
+          "random",
+          3,
+          0
+        ],
+        [
+          "random",
+          3,
+          1
+        ],
+        [
+          "random",
+          3,
+          2
+        ],
+        [
+          "random",
+          6,
+          0
+        ],
+        [
+          "random",
+          6,
+          1
+        ],
+        [
+          "random",
+          6,
+          2
+        ],
+        [
+          "random",
+          7,
+          0
+        ],
+        [
+          "random",
+          7,
+          1
+        ],
+        [
+          "random",
+          7,
+          2
+        ]
+      ],
+      "runs": 1515,
+      "seconds": 741.4573455830105,
+      "tolerances": {
+        "hit": 1e-05,
+        "site": 0.0001,
+        "length": 1e-12
+      },
+      "max_site_diff": 2.583377278142507e-05,
+      "max_hit_error": 7.163207129678995e-07,
+      "max_length_error": 2.587800823310819e-16,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "criteria": {
+        "unedited_equals_stored": true,
+        "site": true,
+        "hit": true,
+        "length": true,
+        "finite": true,
+        "same_clip_ids": true,
+        "arm_count": true,
+        "finite_outputs": true,
+        "hooks_unchanged": true,
+        "weights_unchanged": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/steering/runs_acceleration_unseen.npz",
+        "sha256": "4622b6bc8f753eaf6ce6ba6a55fcba182e20280410cb4b9e4520554cb083e2f4"
+      },
+      "passed": true
+    }
   }
 }
