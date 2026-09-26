@@ -17,7 +17,7 @@ import torch
 
 from vjepa_physics.activations import capture_encoder
 from vjepa_physics.data import DATASETS, read_manifest, resolve
-from vjepa_physics.evidence import file_sha256, save_result, verified_artifact
+from vjepa_physics.evidence import file_sha256, require_clean_code, save_result, verified_artifact
 from vjepa_physics.extraction import SITES, plot_index, pool_time_steps
 from vjepa_physics.intervention import edit_encoder, run_blocks
 from vjepa_physics.joined import FLAG_NAMES, load_joined
@@ -803,6 +803,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("check", choices=sorted(CHECKS))
     name = parser.parse_args().check
+    require_clean_code()  # after parsing, so --help still works with uncommitted code
     result = CHECKS[name]()
     print(json.dumps(result, indent=2))
     save_result(OUT, name, result)

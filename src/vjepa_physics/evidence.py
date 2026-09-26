@@ -37,6 +37,16 @@ def code_changes(root: Path) -> list[str]:
     """Uncommitted or untracked changes under CODE_PATHS, as `git status --porcelain` lines."""
     return git(root, "status", "--porcelain", "--untracked-files=all", "--", *CODE_PATHS).splitlines()
 
+def require_clean_code() -> None:
+    """Stop (SystemExit) if code_changes finds uncommitted or untracked changes under CODE_PATHS.
+
+    The same test that makes a saved result git_dirty, run before a check starts, so every saved result can be traced
+    to a commit holding exactly its code.
+    """
+    changes = code_changes(repo_root())
+    if changes:
+        raise SystemExit("uncommitted code; commit before a saved run:\n" + "\n".join(changes))
+
 
 def file_sha256(path: Path, chunk_bytes: int = 1 << 24) -> str:
     """SHA-256 of a file, read in 16 MB chunks, so multi-GB activation files never sit in memory whole."""
