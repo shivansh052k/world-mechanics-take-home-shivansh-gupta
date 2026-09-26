@@ -93,6 +93,9 @@ N_BOOTSTRAP = 10_000
 FIGURE_ROUNDS = 20  # rounds shown: every real run is exhausted by round 19; the controls stay flat to 150 (saved)
 FIGURE_PATH = REPO / "results/nullspace/nullspace_rounds.png"
 
+ERASURE_FIGURE_PATH = REPO / "results/nullspace/erasure_and_procedure.png"
+X_NUDGE = {"direction": 10**-0.06, "speed": 1.0, "acceleration": 10**0.06}  # K-vs-alpha: separate identical points
+
 
 def secondary_rule(variable: str, scores: list[dict], baseline_mae: float | None) -> dict:
     """First round where the paper's secondary rule says the variable is gone (val-seen)."""
@@ -1521,6 +1524,142 @@ def print_figure_nullspace(result: dict) -> None:
     print(f"wrote {result['figure']['path']}  sha256 {result['figure']['sha256'][:12]}…")
                   
 
+def check_figure_erasure() -> dict:
+    """Figure: what the nullspace count measures, and what erasure removes (saved results only).
+
+    Top left: K versus a fixed ridge alpha at the headline layer (filled = round-1 R² >= 0.9, hollow = weaker probe;
+    variables nudged apart in x by a fixed factor where points coincide). Top right: K versus layer index (every third).
+    Bottom: per variable at the headline layer, R² after removing nothing, random m dims, the train cross-covariance
+    direction(s), or the nullspace at K: linear probe fit on train (outline), fresh linear probe fit on validation
+    (light), RBF kernel probe fit on train (filled); test-seen dots with 95 % intervals where computed; grid-range
+    whiskers where the kernel selection was numerically unreliable.
+    """
+    records = json.loads(OUT.read_text())
+    sweep = records["alpha_sweep"]["result"]
+    profile = records["depth_profile"]["result"]
+    fresh = records["fresh_probe_erasure"]["result"]
+    kern = records["kernel_erasure"]["result"]
+    test = records["nullspace_test_scores"]["result"]
+    hat = records["kernel_hat_gap"]["result"]
+    site = HEADLINE_SITE
+
+    fig = plt.figure(figsize=(12, 8.5), facecolor=SURFACE)
+    grid = fig.add_gridspec(2, 6, height_ratios=(1, 1.1), hspace=0.55, wspace=0.9)
+    ax_alpha, ax_depth = fig.add_subplot(grid[0, 0:3]), fig.add_subplot(grid[0, 3:6])
+    ax_bars = [fig.add_subplot(grid[1, 2 * i:2 * i + 2]) for i in range(3)]
+
+    # K versus fixed alpha
+    style_axes(ax_alpha)
+    for variable in DATASETS:
+        colour = DATASET_COLOUR[variable]
+        runs = list(sweep[variable]["runs"].values())
+        alphas = np.array([r["alpha"] for r in runs]) * X_NUDGE[variable]
+        ks = np.array([r["summary"]["k"] if r["summary"]["k"] is not None else N_ROUNDS for r in runs], dtype=float)
+        good = np.array([r["round1_val_seen"]["r2"] >= 0.9 for r in runs])
+        ax_alpha.plot(alphas, ks, color=colour, linewidth=1.6)
+        ax_alpha.scatter(alphas[good], ks[good], s=36, color=colour, zorder=3)
+        ax_alpha.scatter(alphas[~good], ks[~good], s=36, facecolors=SURFACE, edgecolors=colour, linewidths=1.4, zorder=3)
+    ax_alpha.set_xscale("log")
+    ax_alpha.set_yscale("log")
+    ax_alpha.axhline(N_ROUNDS, color=INK_MUTED, linewidth=0.8, linestyle=":")
+    ax_alpha.set_yticks([1, 2, 5, 10, 20, 50, N_ROUNDS])
+    ax_alpha.set_yticklabels(["1", "2", "5", "10", "20", "50", f"{N_ROUNDS} (cap)"])
+    ax_alpha.set_ylim(0.8, 220)
+    ax_alpha.set_xlabel("fixed ridge alpha (standardized features)")
+    ax_alpha.set_ylabel("K (rounds to R² < 0.1)")
+    ax_alpha.set_title(f"K depends on the probe's regularization (index {plot_index(site)})", fontsize=10)
+    loo = " / ".join(str(sweep[v]["leave_one_out_reference"]["k"]) for v in DATASETS)
+    ax_alpha.text(1.2e-3, 1.05, f"leave-one-out alpha, re-chosen each round: K = {loo}", color=INK_SECONDARY,
+                  fontsize=8.5, va="bottom")
+
+    # K versus depth
+    style_axes(ax_depth)
+    indices = list(PROFILE_INDICES)
+    for variable, width in (("acceleration", 3.0), ("speed", 1.8), ("direction", 1.8)):
+        colour = DATASET_COLOUR[variable]
+        ks = [profile[variable]["indices"][str(i)]["k"] for i in indices]
+        ax_depth.plot(indices[1:], ks[1:], color=colour, linewidth=width, marker="o", markersize=5)
+        ax_depth.scatter([0], [ks[0]], s=36, facecolors=SURFACE, edgecolors=colour, linewidths=1.4, zorder=3)
+    ax_depth.text(0.6, 2.6, "index 0: no signal", color=INK_SECONDARY, fontsize=8.5, va="bottom")
+    ax_depth.set_xticks(indices)
+    ax_depth.set_ylim(0, 15)
+    ax_depth.set_xlabel("layer index (0 = patch embedding)")
+    ax_depth.set_ylabel("K (rounds to R² < 0.1)")
+    ax_depth.set_title("K by depth (leave-one-out alpha, every third index)", fontsize=10)
+
+    # erasure bars at the headline layer
+    arms = ("none", "random", "covariance", "nullspace_k")
+    width = 0.26
+    for ax, variable in zip(ax_bars, DATASETS):
+        style_axes(ax)
+        colour = DATASET_COLOUR[variable]
+        f_site, k_site = fresh[variable]["sites"][site], kern[variable]["sites"][site]
+        t_site, h_site = test[variable]["sites"][site], hat[variable]["sites"][site]["arms"]
+        m, k = f_site["dims_per_round"], f_site["k"]
+        random_arms = [a for a in k_site["arms"] if a.startswith("random_m_seed")]
+        values = {
+            "none": (k_site["arms"]["none"]["linear_train_fit_val_seen_r2"],
+                     f_site["arms"]["none"]["fresh"]["validation"]["r2"], k_site["arms"]["none"]["val_seen"]["r2"]),
+            "random": (float(np.mean([k_site["arms"][a]["linear_train_fit_val_seen_r2"] for a in random_arms])),
+                       f_site["random_m"]["fresh_validation_r2_mean"], k_site["random_m"]["val_seen_r2_mean"]),
+            "covariance": (k_site["arms"]["covariance"]["linear_train_fit_val_seen_r2"],
+                           f_site["arms"]["covariance"]["fresh"]["validation"]["r2"],
+                           k_site["arms"]["covariance"]["val_seen"]["r2"]),
+            "nullspace_k": (k_site["arms"]["nullspace_k"]["linear_train_fit_val_seen_r2"],
+                            f_site["arms"]["nullspace_k"]["fresh"]["validation"]["r2"],
+                            k_site["arms"]["nullspace_k"]["val_seen"]["r2"]),
+        }
+        for i, arm in enumerate(arms):
+            train_lin, fresh_lin, kernel = values[arm]
+            ax.bar(i - width, train_lin, width * 0.92, facecolor=SURFACE, edgecolor=colour, linewidth=1.2)
+            ax.bar(i, fresh_lin, width * 0.92, facecolor=colour, alpha=0.35, edgecolor=colour, linewidth=1.0)
+            ax.bar(i + width, kernel, width * 0.92, facecolor=colour, edgecolor=colour, linewidth=1.0)
+            if arm in h_site and h_site[arm]["quote"] == "range":
+                low, high = h_site[arm]["cross_grid_range"]
+                ax.plot([i + width, i + width], [low, high], color=INK, linewidth=1.4)
+            if arm in ("none", "covariance"):
+                points = [(i, t_site["fresh_probe"][arm]["test_seen"]["r2"], "fresh_covariance_r2"),
+                          (i + width, t_site["kernel"][arm]["test_seen"]["r2"], "kernel_covariance_r2")]
+                for xpos, value, ci_key in points:
+                    if arm == "covariance":
+                        low, high = t_site["bootstrap"]["test_seen"][ci_key]
+                        ax.plot([xpos, xpos], [low, high], color=INK, linewidth=1.0)
+                    ax.scatter([xpos], [value], s=18, color=INK, zorder=4)
+        ax.axhline(0, color=INK_MUTED, linewidth=0.8)
+        ax.set_xticks(range(len(arms)))
+        ax.set_xticklabels(["none", f"random\n{m} dim{'s' if m > 1 else ''}", f"covariance\n{m} dim{'s' if m > 1 else ''}",
+                            f"nullspace K\n{k * m} dims"], fontsize=8.5)
+        ax.set_ylim(-0.12, 1.05)
+        ax.set_title(f"{variable}: what removal erases (index {plot_index(site)})", fontsize=10)
+        if variable == "direction":
+            ax.set_ylabel("R²")
+
+    handles = [
+        *[Line2D([], [], color=DATASET_COLOUR[v], linewidth=2.0, label=v) for v in DATASETS],
+        Line2D([], [], color=INK, marker="o", linestyle="none", markersize=6, label="probe fits well (round-1 R² ≥ 0.9)"),
+        Line2D([], [], color=INK, marker="o", linestyle="none", markersize=6, markerfacecolor=SURFACE,
+               label="weak probe / no signal"),
+        Patch(facecolor=SURFACE, edgecolor=INK_SECONDARY, label="linear probe, fit on train (val-seen)"),
+        Patch(facecolor=INK_SECONDARY, alpha=0.35, edgecolor=INK_SECONDARY,
+              label="fresh linear probe, fit on validation (out of fold)"),
+        Patch(facecolor=INK_SECONDARY, edgecolor=INK_SECONDARY, label="RBF kernel probe, fit on train (val-seen)"),
+        Line2D([], [], color=INK, marker="o", markersize=4, linewidth=1.0, label="test seen (95 % interval where computed)"),
+        Line2D([], [], color=INK, linewidth=1.4, label="range across grids (unreliable selection)"),
+    ]
+    fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False, fontsize=8.5, bbox_to_anchor=(0.5, 0.995))
+    fig.subplots_adjust(top=0.84, bottom=0.09, left=0.07, right=0.98)
+    ERASURE_FIGURE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(ERASURE_FIGURE_PATH, dpi=200, facecolor=SURFACE)
+    plt.close(fig)
+    return {
+        "figure": {"path": str(ERASURE_FIGURE_PATH.relative_to(REPO)), "sha256": file_sha256(ERASURE_FIGURE_PATH)},
+        "site": site, "x_nudge_decades": 0.06,
+        "sources": {"keys": ["alpha_sweep", "depth_profile", "fresh_probe_erasure", "kernel_erasure",
+                             "nullspace_test_scores", "kernel_hat_gap"]},
+        "visual": True,
+    }
+    
+
 CHECKS = {
     "nullspace_rounds": (check_nullspace_rounds, print_nullspace_rounds),
     "leak_diagnostic": (check_leak_diagnostic, print_leak_diagnostic),
@@ -1536,6 +1675,7 @@ CHECKS = {
     "depth_profile": (check_depth_profile, print_depth_profile),
     "nullspace_test_scores": (check_nullspace_test_scores, print_nullspace_test_scores),
     "figure_nullspace": (check_figure_nullspace, print_figure_nullspace),
+    "figure_erasure": (check_figure_erasure, print_figure_nullspace),
 }
 
 
