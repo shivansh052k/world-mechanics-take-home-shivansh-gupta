@@ -77,6 +77,9 @@ MIN_HAT_GAP = 1e-6  # numerical guard: flag a fit whose smallest 1 - h_ii falls 
 CONTROL_ROUNDS = N_ROUNDS  # control runs cover the same rounds as the real run
 SPAN_TOLERANCE_CHECK = 1e-10  # control bases must lie in the train span to this (max abs residual)
 
+PROFILE_INDICES = tuple(range(0, 25, 3))  # every third hidden_states index: 0, 3, ..., 24
+PROFILE_STOP_R2 = 0.05  # the profile's curve is reported up to the first val-seen R² below this
+
 
 def secondary_rule(variable: str, scores: list[dict], baseline_mae: float | None) -> dict:
     """First round where the paper's secondary rule says the variable is gone (val-seen)."""
@@ -1149,6 +1152,102 @@ def print_control_run(result: dict) -> None:
                   f"  ({r['seconds']:.0f} s)")
             
             
+def check_depth_profile() -> dict:
+    """K versus depth: the real nullspace rounds at every third layer index (a procedure count, not a dimension).
+
+    Per variable and index in PROFILE_INDICES: the same scaler and run_rounds as the full runs (leave-one-out alpha,
+    exhaustion guard on, cap N_ROUNDS); curve reported up to the first val-seen R² < PROFILE_STOP_R2 (the guard stops
+    the run a few rounds later; those rounds are not reported). Validation only, never used for selection. Passes if:
+    at the indices of the full runs (9, 18) every round equals the saved run (alphas and validation predictions,
+    bit-identical); n_fit exact; basis orthonormal; scores finite; no alpha failure; K <= the guard round wherever
+    the guard fires (at exhaustion the prediction is the train mean, so val-seen R² <= 0). Reported: exceptions to
+    "guard > K".
+    """
+    saved_rounds = json.loads(OUT.read_text())["nullspace_rounds"]["result"]
+    with np.load(verified_artifact(OUT, "nullspace_rounds")) as f:
+        saved = {key: f[key] for key in f.files if key.endswith(("_predictions", "_alphas"))}
+
+    result: dict = {}
+    ok: dict[str, list[bool]] = {name: [] for name in ("full", "n_fit", "orthonormal", "finite", "alpha", "guard")}
+    exceptions = []
+    for variable in DATASETS:
+        table = load_joined(variable)
+        roles, labels = table["role"], table["label"]
+        y = probe_targets(variable, labels)
+        evaluated = np.isin(roles, EVAL_ROLES)
+        seen = roles[evaluated] == "val_seen"
+        indices = {}
+        for index in PROFILE_INDICES:
+            site = SITES[index]
+            if plot_index(site) != index:
+                raise RuntimeError(f"{site} is not at index {index}")
+            x = site_features(table["activations"], site)
+            z = train_scaler(x, roles).transform(x)
+            run = run_rounds(z, y, roles, evaluated, N_ROUNDS)
+            scores = round_scores(variable, labels[roles == "val_seen"], run.predictions[:, seen])
+            seen_r2 = np.array([s["r2"] for s in scores])
+            m = run.dims_per_round
+            k = curve_summary(seen_r2, m)["k"]
+            k_stop = first_true(seen_r2 < PROFILE_STOP_R2)
+            guard = run.exhausted_round
+            verdicts = [nullspace_alpha_verdict(e, r) for e, r in zip(run.alpha_edges, seen_r2)]
+            q = run.basis
+            ok["n_fit"].append(run.n_fit == EXPECTED_FIT[variable])
+            ok["orthonormal"].append(float(np.abs(q.T @ q - np.eye(q.shape[1])).max()) <= ORTHONORMAL_TOLERANCE)
+            ok["finite"].append(bool(np.isfinite(seen_r2).all()))
+            ok["alpha"].append("failure" not in verdicts)
+            ok["guard"].append(guard is None or (k is not None and k <= guard and k_stop is not None and k_stop <= guard))
+            if guard is not None and not (k is not None and k < guard):
+                exceptions.append({"variable": variable, "index": index, "k": k, "guard_round": guard})
+
+            full = None
+            if site in NULLSPACE_SITES:
+                n = len(run.alphas)
+                prefix = f"{variable}_{site}"
+                same = bool(np.array_equal(run.alphas, saved[f"{prefix}_alphas"][:n])
+                            and np.array_equal(run.predictions, saved[f"{prefix}_predictions"][evaluated, :n].transpose(1, 0, 2)))
+                ok["full"].append(same)
+                full = {"rounds_compared": n, "identical": same,
+                        "saved_k": saved_rounds[variable]["sites"][site]["summary"]["k"]}
+
+            shown = len(seen_r2) if k_stop is None else k_stop
+            indices[str(index)] = {
+                "site": site, "depth_fraction": index / 24, "dims_per_round": m,
+                "k": k, "dims_before_k": None if k is None else (k - 1) * m,
+                "k_stop_0_05": k_stop, "dims_before_k_stop": None if k_stop is None else (k_stop - 1) * m,
+                "round1_val_seen_r2": float(seen_r2[0]), "guard_round": guard, "rounds_run": len(run.alphas),
+                "val_seen_r2": seen_r2[:shown].tolist(), "alpha_verdicts": dict(Counter(verdicts[:shown])),
+                "matches_full_run": full,
+            }
+        result[variable] = {"indices": indices}
+
+    criteria = {
+        "full_run_indices_identical": bool(ok["full"]) and all(ok["full"]),
+        "n_fit_equals_train_count": all(ok["n_fit"]),
+        "basis_orthonormal": all(ok["orthonormal"]),
+        "scores_finite": all(ok["finite"]),
+        "no_alpha_failure": all(ok["alpha"]),
+        "k_not_after_guard": all(ok["guard"]),
+    }
+    return {
+        "criteria": criteria, "indices": list(PROFILE_INDICES), "stop_r2": PROFILE_STOP_R2, "k_r2": NULL_R2,
+        "guard_not_after_k_exceptions": exceptions, **result, "passed": all(criteria.values()),
+    }
+
+
+def print_depth_profile(result: dict) -> None:
+    """Per variable: one line per index with round-1 R², K (0.1) and K (0.05) with dims, and the guard round."""
+    for variable in DATASETS:
+        print(f"\n{variable}")
+        for index, r in result[variable]["indices"].items():
+            full = r["matches_full_run"]
+            note = f"  = full run: {full['identical']}" if full else ""
+            print(f"  idx {int(index):2d} ({r['site']:9s})  round-1 R2 {r['round1_val_seen_r2']:7.3f}"
+                  f"  K {str(r['k']):>4s} (dims {str(r['dims_before_k']):>3s})"
+                  f"  K0.05 {str(r['k_stop_0_05']):>4s} (dims {str(r['dims_before_k_stop']):>3s})"
+                  f"  guard {r['guard_round']}{note}")
+    print(f"\nguard not after K (exceptions): {result['guard_not_after_k_exceptions']}")
+    
 
 CHECKS = {
     "nullspace_rounds": (check_nullspace_rounds, print_nullspace_rounds),
@@ -1162,6 +1261,7 @@ CHECKS = {
     "kernel_hat_gap": (check_kernel_hat_gap, print_kernel_hat_gap),
     "random_subspaces": (check_random_subspaces, print_control_run),
     "pc_subspaces": (check_pc_subspaces, print_control_run),
+    "depth_profile": (check_depth_profile, print_depth_profile),
 }
 
 

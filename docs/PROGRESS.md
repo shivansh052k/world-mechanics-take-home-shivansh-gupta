@@ -408,6 +408,12 @@ what's next.
   `nullspace_k` at the lower edge → quoted as ranges: direction idx 9 0.664–0.692, idx 18 0.760–0.834; acceleration
   idx 9 0.922–0.929, idx 18 0.937–0.939. Headline idx 9 covariance arm sound → points: direction 0.753, speed 0.942,
   acceleration 0.928 (gap 1.0e-6, marginal, edge). Unerased / random gaps ≥ 9e-3. **Kernel thread closed.**
+- 4.4 `random_subspaces` (5 seeds, ~14 min) and `pc_subspaces` (~3 min) **passed** (7/7 each; round 1 = real
+  bit-identical; bases orthonormal, in train span). Random: never below 0.1 in 150 rounds, max drop 0.014; at real K
+  still 0.85–0.99. Top PCs: K ≤ real K everywhere — direction 7 / 3 / 6, speed 2 / 5 / 2, acceleration 2 / 7 / 3
+  (idx 1 / 9 / 18); one top axis erases speed (idx 1, 18) and acceleration (idx 1) (observation). Claude Code's
+  "PC K ≤ 5 at idx 9" wrong for acceleration (7). Artifacts `random_subspaces.npz` `75795bef…`, `pc_subspaces.npz`
+  `9e1807e0…`. **Step 4.4 done.**
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),
