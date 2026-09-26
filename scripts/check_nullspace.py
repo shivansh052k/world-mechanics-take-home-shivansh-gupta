@@ -218,9 +218,84 @@ def print_nullspace_rounds(result: dict) -> None:
                   + "  ".join(f"{f}: {v['consecutive']} / {v['total']}" for f, v in r["redundancy"].items())
                   + f"  verdicts {dict(Counter(r['alpha_verdicts']))}  round1 bit-identical {r['round1']['bit_identical']}")
 
+def check_leak_diagnostic() -> dict:
+    """Diagnostic of nullspace_rounds' leak failure, with its rule fixed before looking.
 
+    Explanation tested: the leak comes only from rounds where the variable is gone (alpha at the upper edge,
+    "no_signal"), where the ridge weights shrink until their part outside the removed subspace is at rounding level.
+    Leaks are recomputed from the saved basis and weights (hash-guarded), not taken from the run. The explanation holds
+    if (a) every round with leak > LEAK_TOLERANCE has alpha verdict "no_signal", and (b) every round with verdict "ok"
+    has leak <= LEAK_TOLERANCE (so K and every probe before it are unaffected). Also recorded per round: leak, weight
+    norm, norm of the leaked part.
+    """
+    saved = json.loads(OUT.read_text())["nullspace_rounds"]["result"]
+    with np.load(verified_artifact(OUT, "nullspace_rounds")) as f:
+        arrays = {key: f[key] for key in f.files}
+
+    result: dict = {}
+    holds_a, holds_b = [], []
+    for variable in DATASETS:
+        sites = {}
+        for site in NULLSPACE_SITES:
+            entry = saved[variable]["sites"][site]
+            prefix = f"{variable}_{site}"
+            basis, weights = arrays[f"{prefix}_basis"], arrays[f"{prefix}_weights"]
+            m = entry["dims_per_round"]
+            weight_norms = np.linalg.norm(weights, axis=(1, 2))
+            leaked_norms = np.array([np.linalg.norm(basis[:, : k * m].T @ w) for k, w in enumerate(weights)])
+            leaks = leaked_norms / weight_norms
+            verdicts = np.array(entry["alpha_verdicts"])
+            leaking = leaks > LEAK_TOLERANCE
+            ok_rounds = verdicts == "ok"
+            holds_a.append(bool((verdicts[leaking] == "no_signal").all()))
+            holds_b.append(bool((leaks[ok_rounds] <= LEAK_TOLERANCE).all()))
+            sites[site] = {
+                "k": entry["summary"]["k"],
+                "first_leaking_round": first_true(leaking),
+                "n_leaking_rounds": int(leaking.sum()),
+                "last_ok_round": int(np.flatnonzero(ok_rounds)[-1]) + 1 if ok_rounds.any() else None,
+                "max_leak_ok_rounds": float(leaks[ok_rounds].max()) if ok_rounds.any() else None,
+                "verdicts_of_leaking_rounds": dict(Counter(verdicts[leaking].tolist())),
+                "weight_norm_round1": float(weight_norms[0]),
+                "min_weight_norm": float(weight_norms.min()),
+                "leaked_norm_range_leaking_rounds": (
+                    [float(leaked_norms[leaking].min()), float(leaked_norms[leaking].max())] if leaking.any() else None
+                ),
+                "leaks": leaks.tolist(),
+                "weight_norms": weight_norms.tolist(),
+                "leaked_norms": leaked_norms.tolist(),
+            }
+        result[variable] = {"sites": sites}
+
+    criteria = {
+        "leaking_rounds_are_no_signal": all(holds_a),
+        "ok_rounds_do_not_leak": all(holds_b),
+    }
+    return {
+        "criteria": criteria, "leak_tolerance": LEAK_TOLERANCE,
+        "source": {"key": "nullspace_rounds", "artifact_sha256": json.loads(OUT.read_text())["nullspace_rounds"]
+                   ["result"]["artifact"]["sha256"]},
+        **result,
+        "explanation_holds": all(criteria.values()),
+    }
+
+
+def print_leak_diagnostic(result: dict) -> None:
+    """Per variable and site: K vs the first leaking round, counts, and the size of weights and leaked parts."""
+    for variable in DATASETS:
+        print(f"\n{variable}")
+        for site, r in result[variable]["sites"].items():
+            print(f"  {site:9s} K {r['k']}  last ok round {r['last_ok_round']}  first leaking round "
+                  f"{r['first_leaking_round']}  leaking {r['n_leaking_rounds']}  verdicts {r['verdicts_of_leaking_rounds']}"
+                  f"  max leak (ok rounds) {r['max_leak_ok_rounds']:.2e}")
+            print(f"    |W| round 1 {r['weight_norm_round1']:.3e}  min |W| {r['min_weight_norm']:.3e}"
+                  f"  leaked part (leaking rounds) {r['leaked_norm_range_leaking_rounds']}")
+    print(f"\nexplanation holds: {result['explanation_holds']}")
+    
+    
 CHECKS = {
     "nullspace_rounds": (check_nullspace_rounds, print_nullspace_rounds),
+    "leak_diagnostic": (check_leak_diagnostic, print_leak_diagnostic),
 }
 
 

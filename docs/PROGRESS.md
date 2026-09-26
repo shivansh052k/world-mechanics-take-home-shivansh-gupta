@@ -315,6 +315,14 @@ what's next.
   fastest** (speed 0.132 after 2 PCs, direction 0.071 after 4). Claude Code's predictions wrong on speed redundancy
   (> 0.9 at round 5) and on PC ordering (predicted between random and real). **Step 4.3a done.**
 - Plan 4.1 and 4.2 ticked: both are decision steps, settled by the brief + planning chat (D-49) before any code.
+- D-49 written into DECISIONS (O-15 closed). 4.3b: `nullspace.py` curve helpers (`round_scores`, `first_true`,
+  `curve_summary`, `redundancy_counts`); `scripts/check_nullspace.py nullspace_rounds` (~3 min) **failed
+  `no_leak_into_removed_directions`** (saved max leak 0.97–0.99999 at all 9 sites; smoke test rounds 1–5 were ≤ 2.8e-15);
+  the other 11 criteria passed (round 1 bit-identical everywhere). K (val-seen R² < 0.1): direction 8 / 6 / 8, speed
+  14 / 7 / 9, acceleration 13 / 7 / 9 (idx 1 / 9 / 18); 135–143 `no_signal` rounds per site; no rise after K > 0.03.
+  Artifact `rounds.npz` `25ed92ab…`. Failure kept on record; hypothesis: rounding-dominated weights in no-signal
+  rounds. Diagnostic `leak_diagnostic` rule fixed before looking: (a) leak > 1e-8 only at `no_signal` rounds, (b) every
+  `ok` round leak ≤ 1e-8.
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),
