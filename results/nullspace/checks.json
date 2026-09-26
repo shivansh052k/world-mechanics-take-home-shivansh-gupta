@@ -21862,17 +21862,15 @@
   },
   "alpha_sweep": {
     "provenance": {
-      "utc": "2026-09-26T01:28:50+00:00",
-      "git_commit": "feebbd0aa708899a6b6f3e06cebb50725ed80ea8",
-      "git_dirty": true,
-      "git_dirty_paths": [
-        "M  scripts/check_nullspace.py"
-      ],
+      "utc": "2026-09-26T03:20:02+00:00",
+      "git_commit": "5d33503ac5ce67fd114efb1e3ad907e24fb29e87",
+      "git_dirty": false,
+      "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
           "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
-          "src/vjepa_physics/baselines.py": "f81858b19b20464506e46c798b3568138a80495d3c737897d863cf0c3ff6ed25",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
           "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
           "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
           "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
@@ -21886,17 +21884,17 @@
           "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
           "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
           "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
-          "src/vjepa_physics/nullspace.py": "9b2b28aa1ffde3a1dd4953732527ab3d67b8a259761f7d8267dd1038b5fe6fb9",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
           "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
           "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
-          "src/vjepa_physics/probes.py": "b9422cb83f55e470f9d1acb42f73b4abc30b0022c27c0e23af87551951c9bea4",
+          "src/vjepa_physics/probes.py": "7453d72556febab8c62a45d1f101c7f98b47e7f29df5fee8f0e33827fc2f3316",
           "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
           "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
           "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
           "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
-          "scripts/check_nullspace.py": "744b86873ef932facaddc8b4fddb4adb252c8548e1edd5b7645957eb666c02e2"
+          "scripts/check_nullspace.py": "c481de9793cc0934e146e26ab5f373dccc1e3ea3be9c587b393b9400069854fb"
         },
-        "combined_sha256": "4b0f336eb629b4d07da38b74382a625867e20c67db81c3c3aecdf14bf3ab79fd"
+        "combined_sha256": "c187fded8072fa58a762de5ec427309f3085e122b7945b25e8f1d6c7920dbc8d"
       },
       "versions": {
         "av": "18.1.0",
@@ -21939,7 +21937,7 @@
         "runs": {
           "0.001": {
             "alpha": 0.001,
-            "seconds": 13.158004249999067,
+            "seconds": 14.08291683299467,
             "rounds_run": 150,
             "exhausted_round": null,
             "summary": {
@@ -22262,7 +22260,7 @@
           },
           "0.1": {
             "alpha": 0.1,
-            "seconds": 12.952760208005202,
+            "seconds": 12.55371979100164,
             "rounds_run": 150,
             "exhausted_round": null,
             "summary": {
@@ -22585,7 +22583,7 @@
           },
           "10": {
             "alpha": 10.0,
-            "seconds": 12.597941458996502,
+            "seconds": 12.793421958005638,
             "rounds_run": 150,
             "exhausted_round": null,
             "summary": {
@@ -22908,7 +22906,7 @@
           },
           "1000": {
             "alpha": 1000.0,
-            "seconds": 5.496055916999467,
+            "seconds": 5.532734166001319,
             "rounds_run": 64,
             "exhausted_round": 64,
             "summary": {
@@ -23059,7 +23057,7 @@
           },
           "100000": {
             "alpha": 100000.0,
-            "seconds": 1.0063352500001201,
+            "seconds": 1.0038881250075065,
             "rounds_run": 12,
             "exhausted_round": 12,
             "summary": {
@@ -23106,7 +23104,7 @@
           },
           "1e+07": {
             "alpha": 10000000.0,
-            "seconds": 0.5121642919984879,
+            "seconds": 0.49650637499871664,
             "rounds_run": 6,
             "exhausted_round": 6,
             "summary": {
@@ -23150,7 +23148,7 @@
         "runs": {
           "0.001": {
             "alpha": 0.001,
-            "seconds": 12.70500383299077,
+            "seconds": 12.731323832995258,
             "rounds_run": 150,
             "exhausted_round": null,
             "summary": {
@@ -23473,7 +23471,7 @@
           },
           "0.1": {
             "alpha": 0.1,
-            "seconds": 12.688182416997734,
+            "seconds": 12.616144166997401,
             "rounds_run": 150,
             "exhausted_round": null,
             "summary": {
@@ -23796,7 +23794,7 @@
           },
           "10": {
             "alpha": 10.0,
-            "seconds": 12.629076541008544,
+            "seconds": 12.662160042003961,
             "rounds_run": 150,
             "exhausted_round": null,
             "summary": {
@@ -24119,7 +24117,7 @@
           },
           "1000": {
             "alpha": 1000.0,
-            "seconds": 7.696034209002391,
+            "seconds": 7.667743792000692,
             "rounds_run": 91,
             "exhausted_round": 91,
             "summary": {
@@ -24324,7 +24322,7 @@
           },
           "100000": {
             "alpha": 100000.0,
-            "seconds": 1.268399791995762,
+            "seconds": 1.269478957998217,
             "rounds_run": 15,
             "exhausted_round": 15,
             "summary": {
@@ -24377,7 +24375,7 @@
           },
           "1e+07": {
             "alpha": 10000000.0,
-            "seconds": 0.5047379589959746,
+            "seconds": 0.5049242499953834,
             "rounds_run": 6,
             "exhausted_round": 6,
             "summary": {
@@ -24421,7 +24419,7 @@
         "runs": {
           "0.001": {
             "alpha": 0.001,
-            "seconds": 12.710409791005077,
+            "seconds": 12.69317729199247,
             "rounds_run": 150,
             "exhausted_round": null,
             "summary": {
@@ -24744,7 +24742,7 @@
           },
           "0.1": {
             "alpha": 0.1,
-            "seconds": 12.658624417003011,
+            "seconds": 12.659362124992185,
             "rounds_run": 150,
             "exhausted_round": null,
             "summary": {
@@ -25067,7 +25065,7 @@
           },
           "10": {
             "alpha": 10.0,
-            "seconds": 12.572702124991338,
+            "seconds": 12.64524029099266,
             "rounds_run": 150,
             "exhausted_round": null,
             "summary": {
@@ -25390,7 +25388,7 @@
           },
           "1000": {
             "alpha": 1000.0,
-            "seconds": 7.83599191599933,
+            "seconds": 7.921149125002557,
             "rounds_run": 93,
             "exhausted_round": 93,
             "summary": {
@@ -25599,7 +25597,7 @@
           },
           "100000": {
             "alpha": 100000.0,
-            "seconds": 1.2660318330017617,
+            "seconds": 1.2772127500065835,
             "rounds_run": 15,
             "exhausted_round": 15,
             "summary": {
@@ -25652,7 +25650,7 @@
           },
           "1e+07": {
             "alpha": 10000000.0,
-            "seconds": 0.5052747080044355,
+            "seconds": 0.5084849590057274,
             "rounds_run": 6,
             "exhausted_round": 6,
             "summary": {
@@ -28377,12 +28375,10 @@
   },
   "kernel_hat_gap": {
     "provenance": {
-      "utc": "2026-09-26T02:19:24+00:00",
-      "git_commit": "8a0eb3cc08f415afa92cb4a4b6f832291441ef16",
-      "git_dirty": true,
-      "git_dirty_paths": [
-        " M scripts/check_nullspace.py"
-      ],
+      "utc": "2026-09-26T03:20:55+00:00",
+      "git_commit": "5d33503ac5ce67fd114efb1e3ad907e24fb29e87",
+      "git_dirty": false,
+      "git_dirty_paths": [],
       "code": {
         "files": {
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
@@ -28409,9 +28405,9 @@
           "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
           "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
           "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
-          "scripts/check_nullspace.py": "132bc988e3f82c23ee464d7e970487f7dd9f7b511df509fd28feea111c4623f1"
+          "scripts/check_nullspace.py": "c481de9793cc0934e146e26ab5f373dccc1e3ea3be9c587b393b9400069854fb"
         },
-        "combined_sha256": "ba42b7eb96e6957d5b2574da3e585b1242d1e1f4343e5c9ce55251fdcc508ec3"
+        "combined_sha256": "c187fded8072fa58a762de5ec427309f3085e122b7945b25e8f1d6c7920dbc8d"
       },
       "versions": {
         "av": "18.1.0",

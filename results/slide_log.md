@@ -26,3 +26,33 @@ Candidate slides, added as results come in. Each names its figure, its message a
     stimuli simpler (interpretation of the protocol, caveats stated).
 - Evidence: `patches`: `patch_probes`, `patch_breakdown`, `spatial_generalization`, `position_baseline`,
   `patch_test_scores`.
+
+
+## What the nullspace count measures
+
+- Figure: `results/nullspace/nullspace_rounds.png`
+- Message: removing each probe's directions and refitting erases the linear readout of every variable within 6–14
+  rounds (6–16 dimensions), at every layer; removing the same number of random directions changes nothing, and
+  removing the top principal components erases it fastest.
+- Points to say:
+  - Headline layer index 9: K = 6 / 7 / 7 (direction / speed / acceleration); test agrees within one round everywhere.
+  - Random directions: R² drops by at most 0.014 even after 150 rounds; top principal components: K 2–7.
+  - K stays 6–12 from index 3 to 24; the paper reports 40–136+ dimensions for direction and 400 at late layers.
+- Evidence: `nullspace`: `nullspace_rounds`, `random_subspaces`, `pc_subspaces`, `depth_profile`,
+  `nullspace_test_scores`, `figure_nullspace`.
+
+## Linear erasure removes the readout, not the information
+
+- Figure: `results/nullspace/erasure_and_procedure.png`
+- Message: the nullspace count measures the probe procedure, not the representation — linear readout can be erased with
+  as many dimensions as the target has (by construction), and each variable is still read nonlinearly afterwards.
+- Points to say:
+  - Same layer, same data, only the ridge penalty changed: K from 7 to more than 150 among probes that read well.
+  - Removing the label-covariance direction(s) (1 dim, 2 for direction): a fresh linear probe fit on held-out clips is at
+    chance; this is a property of linear regression, the empirical part is that the direction generalizes.
+  - An RBF kernel probe still reads direction / speed / acceleration after erasure: test R² [0.72, 0.79] /
+    [0.91, 0.94] / [0.92, 0.95] at index 9; shuffled-label control ≤ 0.005.
+  - Caveats: linear erasure theory (LEACE) to be checked before citing; one kernel family; speed and acceleration labels
+    equal distance travelled.
+- Evidence: `nullspace`: `alpha_sweep`, `fresh_probe_erasure`, `kernel_erasure`, `kernel_shuffled_labels`,
+  `kernel_hat_gap`, `nullspace_test_scores`, `figure_erasure`.

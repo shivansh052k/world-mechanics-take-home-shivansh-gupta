@@ -1,6 +1,6 @@
 # CLAUDE.md — World Mechanics take-home (V-JEPA physics)
 
-Last updated: 2026-09-25 (Phase 3 passed, F-115; next: Phase 4 design brief; lean mode D-48). Read this fully at the start of every session.
+Last updated: 2026-09-26 (Phase 4 passed, F-128; next: Phase 5 design brief; lean mode D-48). Read this fully at the start of every session.
 
 ---
 
@@ -166,6 +166,14 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   direction (39 GB per-patch array in `artifacts/patches/`): transition idx 1, off-path patches readable from block_0,
   spatial generalization near-perfect early and degrading late (unlike the paper's one-third, under our time-averaged
   interpretation). Index-0 per-patch alpha failure kept on record (F-108).
+- **[verified, F-116–F-128] Phase 4 results:** nullspace K (val-seen R² < 0.1) at idx 1 / 9 / 18: direction 8 / 6 / 8,
+  speed 14 / 7 / 9, acceleration 13 / 7 / 9; test within ±1. **K is procedure-dependent** (7 to > 150 across fixed ridge
+  alphas, F-120); removing the m train cross-covariance direction(s) (1, or 2 for direction) erases linear readout even
+  for fresh held-out probes (a mathematical property, F-119); an RBF kernel still reads each variable after erasure
+  (idx 9 test CIs ≈ 0.72–0.95, F-121–F-127). **Phase 5 rule:** steering at idx 9 uses only Q[:, :K·m] and composite maps
+  1…K from `artifacts/nullspace/rounds.npz` (K = 6 / 7 / 7). Rounds after the exhaustion guard are undefined.
+- **[process, F-128]** Start a saved run only after the commit command has finished: two keys were saved from staged /
+  unstaged code and had to be re-run at the gate.
 - **[verified, F-65/F-72]** Tiny motion: 48 acceleration clips move < 3 px in total; some are frozen
   for up to 11 frames after frame 0.
 
@@ -225,7 +233,14 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `curves` (`rise_index`, `largest_jump_index`, `transition_points`: D-43 rules), `geometry` also `pixel_to_world`,
   `distance_to_patches`, `DISK_RADIUS_PX`; `extraction` also `pool_patches`, `patch_activations` (per-patch, idx 0–24).
   Phase 3 scripts: `check_probes.py`, `check_baselines.py`, `check_layer_curves.py`, `check_patches.py`;
-  gate keys in `check_evidence.py` (`code_hash_check`, `rerun_identical_probing`).
+  gate keys in `check_evidence.py` (`code_hash_check`, `rerun_identical_probing`, `rerun_identical_nullspace`,
+  `compare_reruns`).
+  Phase 4: `nullspace` (`train_scaler`, `project_out`, `extend_basis`, `run_rounds` with exhaustion guard
+  `EXHAUSTION_RATIO`, `NullspaceRun`, `composite_maps`, `train_span`, `random_span_basis`, `covariance_basis`,
+  `train_ridge`, `nullspace_alpha_verdict` (NULL_R2 0.1), `round_scores`, `first_true`, `curve_summary`,
+  `redundancy_counts`); `probes` also `nested_cv_predictions`, `label_permutations`; `baselines` also
+  `KernelFit.loo_mse` / `min_one_minus_hat`, `squared_distances`, `median_gamma`, `rbf_kernel_ridge`, `GAMMA_FACTORS`.
+  Script `check_nullspace.py` (15 keys; large — shared arm setup to move into the package at 8.6, user said).
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.

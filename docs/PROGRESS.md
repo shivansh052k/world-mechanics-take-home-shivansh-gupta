@@ -117,8 +117,10 @@ adjacent changes, direction with/without exit nearly identical.
 **3.8 design settled (D-47, per-patch).** **3.8a done:** `pool_patches`, `patch_activations` (F-105).
 **Lean mode adopted (D-48):** hash-check gates, commit before each saved run, no full re-runs, docs once per phase
 (one log line per step), Phase 4–8 designs and cuts fixed; Goodfire quotations F-106.
-**Phase 3 passed (F-115).** **Phase 4 started:** design approved by the planning chat (recorded as D-49 at the
-phase docs pass). **Next:** 4.3a core `nullspace.py` + terminal smoke test.
+**Phase 3 passed (F-115).** **Phase 4 passed (2026-09-26, F-128):** D-49 with addenda (a)–(f); F-116–F-128; report
+`results/nullspace/report.md`. Headline: K at idx 9 = 6 / 7 / 7, procedure-dependent (7 to > 150 across ridge
+penalties); m-dim linear erasure; nonlinear recovery after erasure. **Next:** Phase 5 design brief (multi-probe
+steering at idx 9; readout idx 18; covariance-direction arm; H-12).
 
 ---
 
@@ -130,7 +132,7 @@ phase docs pass). **Next:** 4.3a core `nullspace.py` + terminal smoke test.
 | 1 — Data audit | ✅ Passed gate | 1.1–1.13 done; report `results/data_audit/report.md`; clean re-run identical (`documented_fields`, `documented_colour` failed as predicted; `format` / `uniform_frames` failed, closed without re-score, D-34) |
 | 2 — Splits and activation extraction | ✅ Passed gate | 2.1–2.9 done (D-38–D-41, F-75–F-87); report `results/splits_and_extraction/report.md`; clean re-run identical; balance notes closed (D-44) |
 | 3 — Part 1a: Layer-wise probing | ✅ Passed gate (2026-09-25) | 3.1–3.9 done (F-88–F-115; D-42–D-48); transition idx 1 for all three (mean-pooled) and for per-patch direction; test once (F-104, F-113); hash-check gate (F-115); report `results/layer_probing/report.md`, slide log `results/slide_log.md`, talk outline `slides/talk_outline.md` |
-| 4 — Part 1b: Iterative nullspace probing | 🟨 In progress | Design approved by the planning chat (D-49, recorded at the phase docs pass) |
+| 4 — Part 1b: Iterative nullspace probing | ✅ Passed gate (2026-09-26) | 4.1–4.8 done (D-49 + addenda; F-116–F-128); K idx 9 = 6 / 7 / 7, procedure-dependent (F-120); linear erasure with m dims, nonlinear recovery (F-119–F-123); test once (F-127); hash-check gate, 2 keys re-run identical (F-128); five failures kept on record; report `results/nullspace/report.md`, figures `nullspace_rounds.png`, `erasure_and_procedure.png` |
 | 5 — Part 1c: Multi-probe subspace steering | ⬜ Not started | |
 | 6 — Part 2: Spline steering | ⬜ Not started | |
 | 7 — Confounds and robustness | ⬜ Not started | |
@@ -250,7 +252,22 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/patches/local_to_global.png` + `checks.json` | `figure_local_to_global` | Heatmaps + local-to-global curves | ℹ️ visual (reviewed) | F-114 |
 | `results/evidence/checks.json` | `code_hash_check`, `rerun_identical_probing` | Phase 3 gate: 18 keys matched to commits holding their exact code; 5 re-runs identical | ✅ passed | F-115 |
 | `results/layer_probing/report.md` | — | Layer-wise probing report: setup, mean-pooled curves and test, controls and references, per-patch local-to-global results, comparison with the paper, items kept on record, open items | ✅ gate passed | F-115; user-written from saved evidence |
-| `results/slide_log.md`, `slides/talk_outline.md` | — | Slide log (2 slides so far) and talk outline, updated per phase | ℹ️ presentation drafts | D-48 |
+| `results/slide_log.md`, `slides/talk_outline.md` | — | Slide log (4 slides so far) and talk outline, updated per phase | ℹ️ presentation drafts | D-48 |
+| `results/nullspace/checks.json` + `artifacts/nullspace/rounds.npz` | `nullspace_rounds` | Iterative nullspace at idx 1/9/18, 150 rounds; K, crossings, secondary rules, redundancy; probe sequence and composite maps for Phase 5 (`25ed92ab…`) | ❌ failed `no_leak_into_removed_directions` (kept; explained F-117/F-118); other 11 passed | F-116 |
+| `results/nullspace/checks.json` | `leak_diagnostic` | Leaks only in no-signal rounds; exact on every round with signal | ℹ️ diagnostic, explanation holds | F-117 |
+| `results/nullspace/checks.json` | `covariance_exhaustion` | Guard reproduces saved rounds; covariance collapse per round | ⚠️ diagnostic, explanation_holds false (kept) | F-118 |
+| `results/nullspace/checks.json` | `fresh_probe_erasure` | Fresh validation-fit probe after removal: covariance arm at chance, random = none | ✅ passed | F-119 |
+| `results/nullspace/checks.json` | `alpha_sweep` | K vs fixed ridge alpha at idx 9: 7 to > 150 among good probes (re-run clean, F-128) | ✅ passed | F-120 |
+| `results/nullspace/checks.json` | `kernel_erasure` | RBF kernel after erasure: strong nonlinear recovery | ❌ failed `no_alpha_failure` (7 lower edges, kept) | F-121 |
+| `results/nullspace/checks.json` | `kernel_shuffled_labels` | Kernel negative control: max R² ≤ 0.005 | ✅ passed | F-122 |
+| `results/nullspace/checks.json` | `kernel_grid_diagnostic` | Extended grid: 2/7 arms moved > 0.05; LOO invalid at extended alphas | ⚠️ diagnostic, explanation_holds false (kept) | F-123 |
+| `results/nullspace/checks.json` | `kernel_hat_gap` | Numerical soundness per kernel selection; 4 / 72 quoted as ranges (re-run clean, F-128) | ℹ️ observation | F-123 |
+| `results/nullspace/checks.json` + `artifacts/nullspace/random_subspaces.npz`, `pc_subspaces.npz` | `random_subspaces`, `pc_subspaces` | Random train-span removal changes nothing; top PCs erase fastest | ✅ passed | F-124 |
+| `results/nullspace/checks.json` | `depth_profile` | K at every third index: 6–12 from idx 3 to 24 | ✅ passed | F-125 |
+| `results/nullspace/checks.json` + `artifacts/nullspace/test_predictions.npz` | `nullspace_test_scores` | One-time test (F-126 scope); findings hold; headline CIs | ✅ passed (committed code) | F-127 |
+| `results/nullspace/nullspace_rounds.png`, `erasure_and_procedure.png` + `checks.json` | `figure_nullspace`, `figure_erasure` | Rounds grid; procedure and erasure panels | ℹ️ visual (reviewed) | D-49 f |
+| `results/evidence/checks.json` | `code_hash_check`, `rerun_identical_nullspace` | Phase 4 gate: 33 / 33 keys matched; 2 re-runs identical | ✅ passed | F-128 |
+| `results/nullspace/report.md` | — | Nullspace report: setup, counts, what the count measures, paper comparison, kept on record, open items | ✅ gate passed | F-128; user-written from Claude Code's draft |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
@@ -434,6 +451,13 @@ what's next.
   instead of a fourth grid row (slide-sized; layout Claude Code's call, noted for the report). Review (1): hidden
   off-scale test point (acceleration fresh covariance −0.195), clipped y-label, overlapping idx-0 markers, crowded tick
   labels, legend gap → fixed; review (2) clean. **Step 4.5 done.**
+- 4.8a gate: `code_hash_check` (+ `nullspace`) flagged `alpha_sweep`, `kernel_hat_gap` (run before their commit; next
+  commits bundled more code; Claude Code's "no key flagged" prediction wrong). Results committed (`5d33503`), both re-run
+  clean: `rerun_identical_nullspace` passed (identical, `seconds` excluded); `code_hash_check` re-run passed, 33 / 33 keys,
+  `rerun_needed` empty (F-128). Lesson: run only after the commit command has finished.
+- 4.8b–d: report `results/nullspace/report.md` (user-written from Claude Code's draft), slide log +2 slides, talk outline
+  item 5 done; full docs pass (D-49 addenda a–f, O-16 fixed, change log, plan 4.3–4.8 ticked, phase table, Saved
+  evidence, CLAUDE.md). **Step 4.8 done — Phase 4 passed.** Next: gate commit + push, then the Phase 5 design brief.
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),
