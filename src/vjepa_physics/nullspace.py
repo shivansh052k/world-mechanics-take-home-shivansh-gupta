@@ -242,3 +242,12 @@ def redundancy_counts(r2: np.ndarray, fractions: tuple[float, ...] = REDUNDANCY_
         counts[str(f)] = {"limit": float(limit), "consecutive": len(c) if first is None else first - 1,
                           "total": int((c >= limit).sum())}
     return counts
+
+def train_ridge(z: np.ndarray, y: np.ndarray, roles: np.ndarray, alphas: np.ndarray = ALPHAS) -> RidgeCV:
+    """One ridge probe on standardized (possibly projected) features z, fitted as run_rounds fits each round:
+    RidgeCV with efficient leave-one-out on the train rows only, no re-standardizing."""
+    fit_rows = np.asarray(roles) == FIT_ROLE
+    if not fit_rows.any():
+        raise ValueError("no train rows to fit on")
+    z = np.asarray(z, dtype=np.float64)
+    return RidgeCV(alphas=alphas, fit_intercept=True).fit(z[fit_rows], np.asarray(y, dtype=np.float64)[fit_rows])

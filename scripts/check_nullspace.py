@@ -9,6 +9,7 @@ import argparse
 import json
 import time
 from collections import Counter
+from sklearn.linear_model import Ridge
 from pathlib import Path
 
 import numpy as np
@@ -19,10 +20,12 @@ from vjepa_physics.extraction import SITES, plot_index
 from vjepa_physics.joined import load_joined
 from vjepa_physics.metrics import mae
 from vjepa_physics.nullspace import (
-    EXHAUSTION_RATIO, NULL_R2, RANK_TOLERANCE, composite_maps, curve_summary, first_true, nullspace_alpha_verdict,
-    project_out, redundancy_counts, round_scores, run_rounds, train_scaler,
+    EXHAUSTION_RATIO, NULL_R2, RANK_TOLERANCE, composite_maps, curve_summary, first_true, grid_edge,
+    nullspace_alpha_verdict, project_out, random_span_basis, redundancy_counts, round_scores, run_rounds,
+    train_ridge, train_scaler, train_span,
 )
-from vjepa_physics.probes import ALPHAS, probe_targets, site_features
+from vjepa_physics.probes import ALPHAS, nested_cv_predictions, probe_scores, probe_targets, site_features
+from vjepa_physics.reproducibility import SEED
 
 REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "results/nullspace/checks.json"
@@ -47,6 +50,11 @@ ROUND1_TOLERANCE = 1e-12  # relative, accepted only if round 1 is not bit-identi
 ORTHONORMAL_TOLERANCE = 1e-10
 LEAK_TOLERANCE = 1e-8
 COMPOSITE_TOLERANCE = 1e-9  # relative
+
+ERASURE_FOLDS = 5  # outer and inner folds of the fresh probe (nested, grouped by clip)
+N_RANDOM_SEEDS = 5  # random-subspace arms: seeds SEED ... SEED + 4
+CONSTANT_TOLERANCE = 1e-8  # covariance arm: train-fit prediction spread / label SD (Xᵀy_c = 0 ⇒ ridge weights 0)
+REFIT_TOLERANCE = 1e-9  # relative: nullspace arm vs saved round K + 1; nested CV vs a sklearn refit
 
 
 def secondary_rule(variable: str, scores: list[dict], baseline_mae: float | None) -> dict:
@@ -392,10 +400,171 @@ def print_covariance_exhaustion(result: dict) -> None:
     print(f"\nexplanation holds: {result['explanation_holds']}")
     
 
+def flat(p: np.ndarray) -> np.ndarray:
+    """(n, 1) predictions -> (n,); (n, 2) unchanged."""
+    return p[:, 0] if p.ndim == 2 and p.shape[1] == 1 else p
+
+
+def validation_scores(variable: str, labels: np.ndarray, roles: np.ndarray, pred: np.ndarray) -> dict:
+    """DATA.md scores on all given validation clips and per validation role."""
+    p = flat(pred)
+    scores = {"validation": probe_scores(variable, labels, p)}
+    for role in EVAL_ROLES:
+        rows = roles == role
+        scores[role] = probe_scores(variable, labels[rows], p[rows])
+    return scores
+
+
+def relative_diff(a: np.ndarray, b: np.ndarray) -> float:
+    return float(np.abs(a - b).max() / np.abs(b).max())
+
+
+def check_fresh_probe_erasure() -> dict:
+    """Is the variable's information removed, or only the train-fitted readout?
+
+    Per variable and site (idx 1 / 9 / 18), for each removal arm (none; the nullspace basis at K, K·m dims; the train
+    cross-covariance directions, m dims; random train-span subspaces of m and K·m dims, N_RANDOM_SEEDS seeds): the
+    train-fit probe (RidgeCV leave-one-out on train, as in the nullspace rounds) scored on val_seen, and a fresh probe
+    fit on the validation clips only, scored out of fold (nested grouped CV, D-42 grid). Passes if: outer folds
+    partition the validation clips; the nested fits equal sklearn Ridge refits; the nullspace arm's train fit equals
+    saved round K + 1; the covariance arm's train-fit predictions are constant (Xᵀy_c = 0 ⇒ weights 0); bases
+    orthonormal; scores finite; no alpha failure (every fit).
+    """
+    saved_rounds = json.loads(OUT.read_text())["nullspace_rounds"]["result"]
+    with np.load(verified_artifact(OUT, "nullspace_rounds")) as f:
+        arrays = {key: f[key] for key in f.files}
+
+    result: dict = {}
+    ok: dict[str, list[bool]] = {name: [] for name in (
+        "partition", "sklearn", "saved_round", "constant", "orthonormal", "finite", "alpha")}
+    for variable in DATASETS:
+        table = load_joined(variable)
+        roles, labels, ids = table["role"], table["label"], table["id"]
+        y = probe_targets(variable, labels)
+        evaluated = np.isin(roles, EVAL_ROLES)
+        ev_roles, ev_labels, ev_ids, ev_y = roles[evaluated], labels[evaluated], ids[evaluated], y[evaluated]
+        seen = ev_roles == "val_seen"
+        train = roles == "train"
+        label_sd = float(y[train].std())
+        sites = {}
+        for site in NULLSPACE_SITES:
+            start = time.perf_counter()
+            prefix = f"{variable}_{site}"
+            x = site_features(table["activations"], site)
+            z = train_scaler(x, roles).transform(x)
+            summary = saved_rounds[variable]["sites"][site]
+            m, k = summary["dims_per_round"], summary["summary"]["k"]
+            cross = z[train].T @ (y[train] - y[train].mean(axis=0))
+            covariance_basis, _ = np.linalg.qr(cross.reshape(len(cross), -1))
+            span = train_span(z, roles)
+            randoms = [random_span_basis(span, k * m, SEED + s) for s in range(N_RANDOM_SEEDS)]
+            for q in (covariance_basis, *randoms):
+                ok["orthonormal"].append(float(np.abs(q.T @ q - np.eye(q.shape[1])).max()) <= ORTHONORMAL_TOLERANCE)
+
+            arms: dict[str, tuple[np.ndarray, int]] = {
+                "none": (np.empty((z.shape[1], 0)), 0),
+                "nullspace_k": (arrays[f"{prefix}_basis"], k * m),
+                "covariance": (covariance_basis, m),
+            }
+            arms |= {f"random_m_seed{s}": (b, m) for s, b in enumerate(randoms)}
+            arms |= {f"random_km_seed{s}": (b, k * m) for s, b in enumerate(randoms)}
+
+            entries = {}
+            for arm, (basis, n_cols) in arms.items():
+                zp = project_out(z, basis, n_cols)
+                ridge = train_ridge(zp, y, roles)
+                train_pred = np.reshape(ridge.predict(zp[evaluated]), (len(ev_y), -1))
+                train_seen = probe_scores(variable, ev_labels[seen], flat(train_pred)[seen])
+                train_verdict = nullspace_alpha_verdict(grid_edge(float(ridge.alpha_), ALPHAS), train_seen["r2"])
+                fresh = nested_cv_predictions(zp[evaluated], ev_y, ev_ids, ERASURE_FOLDS, SEED)
+                fresh_scores = validation_scores(variable, ev_labels, ev_roles, fresh.predictions)
+                fresh_verdicts = [nullspace_alpha_verdict(e, fresh_scores["validation"]["r2"])
+                                  for e in fresh.alpha_edges]
+
+                ok["partition"].append(bool(np.isfinite(fresh.predictions).all()
+                                            and len(np.unique(fresh.folds)) == ERASURE_FOLDS))
+                ok["finite"].append(all(np.isfinite(v) for s in (train_seen, *fresh_scores.values()) for v in s.values()))
+                ok["alpha"].append(train_verdict != "failure" and "failure" not in fresh_verdicts)
+                entry = {
+                    "dims_removed": n_cols,
+                    "train_fit": {"alpha": float(ridge.alpha_), "alpha_verdict": train_verdict, "val_seen": train_seen},
+                    "fresh": {"alphas": fresh.alphas.tolist(), "alpha_edges": list(fresh.alpha_edges),
+                              "alpha_verdicts": fresh_verdicts, **fresh_scores},
+                }
+                if arm == "none":
+                    diffs = []
+                    for f in range(ERASURE_FOLDS):
+                        held = fresh.folds == f
+                        refit = Ridge(alpha=fresh.alphas[f], fit_intercept=True).fit(zp[evaluated][~held], ev_y[~held])
+                        diffs.append(relative_diff(fresh.predictions[held], refit.predict(zp[evaluated][held])))
+                    entry["sklearn_refit_max_relative_diff"] = max(diffs)
+                    ok["sklearn"].append(max(diffs) <= REFIT_TOLERANCE)
+                if arm == "nullspace_k":
+                    saved = arrays[f"{prefix}_predictions"][evaluated, k]  # round K + 1: fit after K·m dims removed
+                    diff = relative_diff(train_pred, saved)
+                    entry["saved_round"] = {"round": k + 1, "max_relative_diff": diff,
+                                            "bit_identical": bool(np.array_equal(train_pred, saved))}
+                    ok["saved_round"].append(diff <= REFIT_TOLERANCE)
+                if arm == "covariance":
+                    spread = float((train_pred.max(axis=0) - train_pred.min(axis=0)).max() / label_sd)
+                    entry["train_fit_spread_over_label_sd"] = spread
+                    ok["constant"].append(spread <= CONSTANT_TOLERANCE)
+                entries[arm] = entry
+
+            def aggregate(prefix_: str) -> dict:
+                picked = [e for a, e in entries.items() if a.startswith(prefix_)]
+                fresh_r2 = [e["fresh"]["validation"]["r2"] for e in picked]
+                train_r2 = [e["train_fit"]["val_seen"]["r2"] for e in picked]
+                return {"dims_removed": picked[0]["dims_removed"], "fresh_validation_r2_mean": float(np.mean(fresh_r2)),
+                        "fresh_validation_r2_min": min(fresh_r2), "fresh_validation_r2_max": max(fresh_r2),
+                        "train_fit_val_seen_r2_mean": float(np.mean(train_r2))}
+
+            sites[site] = {
+                "plot_index": plot_index(site), "k": k, "dims_per_round": m, "seconds": time.perf_counter() - start,
+                "arms": entries, "random_m": aggregate("random_m_"), "random_km": aggregate("random_km_"),
+            }
+        result[variable] = {"n_validation": int(evaluated.sum()), "sites": sites}
+
+    criteria = {
+        "outer_folds_partition_clips": all(ok["partition"]),
+        "nested_cv_matches_sklearn_refit": all(ok["sklearn"]),
+        "nullspace_arm_equals_saved_round": all(ok["saved_round"]),
+        "covariance_arm_train_fit_constant": all(ok["constant"]),
+        "bases_orthonormal": all(ok["orthonormal"]),
+        "scores_finite": all(ok["finite"]),
+        "no_alpha_failure": all(ok["alpha"]),
+    }
+    return {
+        "criteria": criteria, "folds": ERASURE_FOLDS, "seed": SEED, "n_random_seeds": N_RANDOM_SEEDS,
+        "source": {"key": "nullspace_rounds", "artifact_sha256": saved_rounds["artifact"]["sha256"]},
+        **result, "passed": all(criteria.values()),
+    }
+
+
+def print_fresh_probe_erasure(result: dict) -> None:
+    """Per variable and site: train-fit val-seen R² vs fresh out-of-fold validation R² for each arm."""
+    for variable in DATASETS:
+        other = "circular_mae" if variable == "direction" else "mae"
+        print(f"\n{variable}  (train-fit val-seen R2 | fresh CV R2 on validation | fresh {other})")
+        for site, r in result[variable]["sites"].items():
+            print(f"  {site} idx {r['plot_index']}  K {r['k']}  ({r['seconds']:.0f} s)")
+            for arm in ("none", "nullspace_k", "covariance"):
+                e = r["arms"][arm]
+                print(f"    {arm:12s} dims {e['dims_removed']:3d}  {e['train_fit']['val_seen']['r2']:7.3f} | "
+                      f"{e['fresh']['validation']['r2']:7.3f} | {e['fresh']['validation'][other]:7.3f}"
+                      f"  verdicts {e['train_fit']['alpha_verdict']} / {dict(Counter(e['fresh']['alpha_verdicts']))}")
+            for name in ("random_m", "random_km"):
+                a = r[name]
+                print(f"    {name:12s} dims {a['dims_removed']:3d}  {a['train_fit_val_seen_r2_mean']:7.3f} | "
+                      f"{a['fresh_validation_r2_mean']:7.3f} (min {a['fresh_validation_r2_min']:.3f}, "
+                      f"max {a['fresh_validation_r2_max']:.3f})")
+                
+
 CHECKS = {
     "nullspace_rounds": (check_nullspace_rounds, print_nullspace_rounds),
     "leak_diagnostic": (check_leak_diagnostic, print_leak_diagnostic),
     "covariance_exhaustion": (check_covariance_exhaustion, print_covariance_exhaustion),
+    "fresh_probe_erasure": (check_fresh_probe_erasure, print_fresh_probe_erasure),
 }
 
 

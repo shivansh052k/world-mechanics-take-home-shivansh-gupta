@@ -336,6 +336,18 @@ what's next.
   alpha sweep at idx 9 (6 fixed alphas, guard, cap 150). Interpretation held; LEACE to be verified before any slide.
   Order: mechanism → erasure → alpha sweep → controls / profile → test. Claude Code's details: nested CV in the
   erasure test; sweep grid 1e-3, 1e-1, 1e1, 1e3, 1e5, 1e7.
+- 4.3c: guard in `run_rounds` (`EXHAUSTION_RATIO` 1e-12, `exhausted_round`); `nullspace_rounds` kept runnable under
+  the guard; `covariance_exhaustion` (committed code) **explanation_holds false**: scaler rebuilt = saved, guarded run
+  stops at weight collapse and reproduces saved rounds bit for bit (9/9); **failed (a)** covariance ratio at first
+  leaking round 8e-11–1.2e-8 (not ≤ 1e-12), **(b)** weight collapse one round after first leak at 7/9 sites (Claude
+  Code's claim to the planner was wrong). Mechanism qualitatively supported (covariance −1e-1…−1e-4 per round from
+  the last ok round; leak rises ~1e3 per round ∝ 1/|W|). Re-scored leak criterion fails at 7/9 sites by one no-signal
+  round after K (leaks 2.6e-8…6.3e-7); every direction added under the guard has leak ≤ 6.3e-7 → planning chat.
+- Planning chat (→ D-49 addendum): proposal accepted; all three failures kept, no threshold changed, no re-run; report
+  line on leaks fixed; guard = definition of exhaustion; Phase 5 uses only Q[:, :K·m] and maps 1…K (loader enforces);
+  rounds of record = up to the guard round, later "undefined (train covariance exhausted)"; pre-stated check for
+  profile / sweep / controls: guard round > K everywhere; sweep: no edge rule, cap without exhaustion expected at small
+  alpha; diagnostic rules only on established facts (uncertain premises → observations). Next: fresh-probe erasure test.
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),

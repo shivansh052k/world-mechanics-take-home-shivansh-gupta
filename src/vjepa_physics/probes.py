@@ -174,3 +174,39 @@ def grouped_cv_ridge(x: np.ndarray, y: np.ndarray, folds: np.ndarray, alphas: np
     w = v @ (vb / (lam + alphas[best])[:, None])  # (d, k)
     edge = "lower" if best == 0 else "upper" if best == len(alphas) - 1 else None
     return GroupedRidge(float(alphas[best]), edge, w.T, my - mx @ w, cv_mse, len(x))
+
+@dataclass(frozen=True)
+class NestedCV:
+    """Out-of-fold ridge predictions and, per outer fold, the alpha chosen inside it."""
+
+    predictions: np.ndarray  # same shape as y; every row predicted by a fit that never saw its group
+    folds: np.ndarray  # outer fold per row
+    alphas: np.ndarray  # (n_folds,)
+    alpha_edges: tuple[str | None, ...]
+
+
+def nested_cv_predictions(
+    x: np.ndarray, y: np.ndarray, groups: np.ndarray, n_folds: int, seed: int, alphas: np.ndarray = ALPHAS
+) -> NestedCV:
+    """Grouped out-of-fold ridge predictions with alpha chosen inside each outer training part.
+
+    Outer folds: clip_folds(groups, n_folds, seed). For outer fold f, grouped_cv_ridge picks alpha on the other
+    folds' rows only (inner folds clip_folds(those groups, n_folds, seed + 1 + f)) and predicts fold f. So the score
+    of the returned predictions is not the one alpha was selected on. x is used as given (standardise it first).
+    """
+    x = np.asarray(x, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64)
+    groups = np.asarray(groups)
+    if not len(x) == len(y) == len(groups):
+        raise ValueError("x, y and groups must cover the same rows")
+    outer = clip_folds(groups, n_folds, seed)
+    predictions = np.full(y.shape, np.nan)
+    chosen, edges = [], []
+    for f in range(n_folds):
+        held = outer == f
+        inner = clip_folds(groups[~held], n_folds, seed + 1 + f)
+        fit = grouped_cv_ridge(x[~held], y[~held], inner, alphas)
+        predictions[held] = fit.predict(x[held]).reshape(predictions[held].shape)
+        chosen.append(fit.alpha)
+        edges.append(fit.alpha_edge)
+    return NestedCV(predictions, outer, np.array(chosen), tuple(edges))
