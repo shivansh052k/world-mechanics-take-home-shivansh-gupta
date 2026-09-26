@@ -162,8 +162,8 @@ def composite_maps(scaler: StandardScaler, run: NullspaceRun) -> tuple[np.ndarra
     offsets = np.empty_like(run.intercepts)
     for k in range(len(run.weights)):
         projected = project_out(run.weights[k].T, run.basis, k * m).T  # P is symmetric: (W_kᵀ P)ᵀ = P W_k
-        maps[k] = projected / scaler.scale_[:, None]
-        offsets[k] = run.intercepts[k] - scaler.mean_ @ maps[k]
+        maps[k] = projected / np.asarray(scaler.scale_)[:, None]
+        offsets[k] = run.intercepts[k] - np.asarray(scaler.mean_) @ maps[k]
     return maps, offsets
 
 

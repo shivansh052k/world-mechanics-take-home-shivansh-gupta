@@ -123,11 +123,12 @@ def check_nullspace_rounds() -> dict:
             verdicts = [nullspace_alpha_verdict(e, r) for e, r in zip(run.alpha_edges, seen_r2)]
             error_name = "circular_mae" if variable == "direction" else "mae"
 
-            full = np.full((len(y), N_ROUNDS, m), np.nan)
+            full: np.ndarray = np.full((len(y), N_ROUNDS, m), np.nan)
             full[evaluated] = run.predictions.transpose(1, 0, 2)
             prefix = f"{variable}_{site}"
             arrays |= {
-                f"{prefix}_mean": scaler.mean_, f"{prefix}_scale": scaler.scale_, f"{prefix}_basis": q,
+                f"{prefix}_mean": np.asarray(scaler.mean_), f"{prefix}_scale": np.asarray(scaler.scale_),
+                f"{prefix}_basis": q,
                 f"{prefix}_weights": run.weights, f"{prefix}_intercepts": run.intercepts,
                 f"{prefix}_alphas": run.alphas, f"{prefix}_maps": maps, f"{prefix}_offsets": offsets,
                 f"{prefix}_predictions": full,
