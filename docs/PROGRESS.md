@@ -323,6 +323,19 @@ what's next.
   Artifact `rounds.npz` `25ed92ab…`. Failure kept on record; hypothesis: rounding-dominated weights in no-signal
   rounds. Diagnostic `leak_diagnostic` rule fixed before looking: (a) leak > 1e-8 only at `no_signal` rounds, (b) every
   `ok` round leak ≤ 1e-8.
+- `leak_diagnostic` (committed code): **explanation holds** at all 9 sites — leaking rounds all `no_signal`; `ok`
+  rounds max leak 2.3e-14; first leaking round = last `ok` + 3–4, always after K; |W| 0.25–8 → 1e-18–1e-19, leaked part
+  ≈ all of |W|. Claude Code's analysis: at alpha 1e7 ridge ≈ covariance direction; removing it exhausts the train
+  covariance (Xᵀy = 0 ⇒ weights 0 for any alpha); consequence: m covariance directions suffice to erase linear
+  readout (LEACE, from memory) → K is procedure-dependent. Failure + proposals (re-scored leak criterion before
+  "covariance exhausted", covariance-direction control, mechanism check) → planning chat.
+- Planning chat (→ D-49 addendum at the phase docs pass): leak failure kept; re-scored post hoc = criterion before
+  covariance exhaustion (|W_k| ≤ 1e-12·|W_1|), later rounds "undefined"; no re-run; code guard (commit first).
+  Covariance control rejected → fresh-probe erasure test (new ridge fit on validation, clip-grouped 5-fold CV; arms:
+  none / nullspace at K / covariance dirs / random m and K·m, 5 seeds; idx 1/9/18). Mechanism check accepted. New:
+  alpha sweep at idx 9 (6 fixed alphas, guard, cap 150). Interpretation held; LEACE to be verified before any slide.
+  Order: mechanism → erasure → alpha sweep → controls / profile → test. Claude Code's details: nested CV in the
+  erasure test; sweep grid 1e-3, 1e-1, 1e1, 1e3, 1e5, 1e7.
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),

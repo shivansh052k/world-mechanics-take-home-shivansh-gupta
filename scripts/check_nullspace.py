@@ -19,8 +19,8 @@ from vjepa_physics.extraction import SITES, plot_index
 from vjepa_physics.joined import load_joined
 from vjepa_physics.metrics import mae
 from vjepa_physics.nullspace import (
-    NULL_R2, RANK_TOLERANCE, composite_maps, curve_summary, first_true, nullspace_alpha_verdict, redundancy_counts,
-    round_scores, run_rounds, train_scaler,
+    EXHAUSTION_RATIO, NULL_R2, RANK_TOLERANCE, composite_maps, curve_summary, first_true, nullspace_alpha_verdict,
+    project_out, redundancy_counts, round_scores, run_rounds, train_scaler,
 )
 from vjepa_physics.probes import ALPHAS, probe_targets, site_features
 
@@ -123,7 +123,7 @@ def check_nullspace_rounds() -> dict:
             verdicts = [nullspace_alpha_verdict(e, r) for e, r in zip(run.alpha_edges, seen_r2)]
             error_name = "circular_mae" if variable == "direction" else "mae"
 
-            full: np.ndarray = np.full((len(y), N_ROUNDS, m), np.nan)
+            full: np.ndarray = np.full((len(y), len(run.alphas), m), np.nan)  # rounds actually run (guard)
             full[evaluated] = run.predictions.transpose(1, 0, 2)
             prefix = f"{variable}_{site}"
             arrays |= {
@@ -137,13 +137,14 @@ def check_nullspace_rounds() -> dict:
             ok["n_fit"].append(run.n_fit == EXPECTED_FIT[variable])
             ok["round1"].append(bool(run.alphas[0] == saved_alpha and round1_diff <= ROUND1_TOLERANCE))
             ok["orthonormal"].append(orthonormal_error <= ORTHONORMAL_TOLERANCE)
-            ok["leak"].append(float(run.leaks.max()) <= LEAK_TOLERANCE)
-            ok["rank"].append(float(run.rank_ratios.min()) > RANK_TOLERANCE)
+            ok["leak"].append(float(np.nanmax(run.leaks)) <= LEAK_TOLERANCE)  # NaN = the exhausted round
+            ok["rank"].append(float(np.nanmin(run.rank_ratios)) > RANK_TOLERANCE)
             ok["composite"].append(composite_diff <= COMPOSITE_TOLERANCE)
+            n_again = len(again.alphas)
             ok["refit"].append(bool(
-                np.array_equal(again.alphas, run.alphas[:REFIT_ROUNDS])
-                and np.array_equal(again.weights, run.weights[:REFIT_ROUNDS])
-                and np.array_equal(again.predictions, run.predictions[:REFIT_ROUNDS])
+                np.array_equal(again.alphas, run.alphas[:n_again])
+                and np.array_equal(again.weights, run.weights[:n_again])
+                and np.array_equal(again.predictions, run.predictions[:n_again])
             ))
             ok["rows"].append(bool(np.isfinite(full[evaluated]).all() and np.isnan(full[~evaluated]).all()))
             ok["finite"].append(all(np.isfinite(v) for role in EVAL_ROLES for s in scores[role] for v in s.values()))
@@ -159,8 +160,9 @@ def check_nullspace_rounds() -> dict:
                 "redundancy": redundancy_counts(seen_r2),
                 "round1": {"alpha": float(run.alphas[0]), "layer_curves_alpha": saved_alpha,
                            "bit_identical": round1_bit_identical, "max_relative_diff": round1_diff},
-                "orthonormal_error": orthonormal_error, "max_leak": float(run.leaks.max()),
-                "min_rank_ratio": float(run.rank_ratios.min()), "composite_max_relative_diff": composite_diff,
+                "exhausted_round": run.exhausted_round, "rounds_run": len(run.alphas),
+                "orthonormal_error": orthonormal_error, "max_leak": float(np.nanmax(run.leaks)),
+                "min_rank_ratio": float(np.nanmin(run.rank_ratios)), "composite_max_relative_diff": composite_diff,
                 "val_seen_r2": seen_r2.tolist(), "val_unseen_r2": unseen_r2.tolist(),
                 f"val_seen_{error_name}": [s[error_name] for s in scores["val_seen"]],
                 f"val_unseen_{error_name}": [s[error_name] for s in scores["val_unseen"]],
@@ -212,7 +214,8 @@ def print_nullspace_rounds(result: dict) -> None:
             print(f"  {site:9s} idx {r['plot_index']:2d}  K {k}  dims before K {s['dims_before_k']}"
                   f"  last >= 0.1 at {s['last_round_at_or_above']}  max after K {s['max_r2_after_k']}"
                   f"  (unseen K {r['val_unseen_k']})  {r['seconds']:.0f} s")
-            print("    val-seen R2  " + "  ".join(f"{n}:{c[n - 1]:.3f}" for n in (1, 2, 3, 5, 10, 20, 50, 100, 150)))
+            print("    val-seen R2  " + "  ".join(f"{n}:{c[n - 1]:.3f}" for n in (1, 2, 3, 5, 10, 20, 50, 100, 150)
+                                           if n <= len(c)))
             print(f"    crossings {r['crossings']}")
             print(f"    secondary {r['secondary_rule']['round']}  redundancy "
                   + "  ".join(f"{f}: {v['consecutive']} / {v['total']}" for f, v in r["redundancy"].items())
@@ -292,10 +295,107 @@ def print_leak_diagnostic(result: dict) -> None:
                   f"  leaked part (leaking rounds) {r['leaked_norm_range_leaking_rounds']}")
     print(f"\nexplanation holds: {result['explanation_holds']}")
     
+def check_covariance_exhaustion() -> dict:
+    """Mechanism behind the leak: the train cross-covariance runs out where the probe weights collapse.
+
+    Per variable, site and round k: |P_{k-1} Zᵀ y_c| on the train rows (Frobenius), relative to round 1, with the
+    scaler rebuilt from the activations (must equal the saved one exactly) and P from the saved basis. y_c is
+    centred, so this is the cross-covariance the round-k ridge fit sees (centring X does not change Xᵀy_c); a ridge
+    fit's weights are exactly 0 when it is 0. Rule fixed before looking, at every site: (a) the covariance ratio is
+    <= EXHAUSTION_RATIO at the first leaking round (leak_diagnostic); (b) the first round with |W_k| <=
+    EXHAUSTION_RATIO x |W_1| equals the first leaking round. Guard check: the guarded run_rounds stops at that round
+    and reproduces the saved alphas and weights of every earlier round bit for bit.
+    """
+    records = json.loads(OUT.read_text())
+    saved_rounds = records["nullspace_rounds"]["result"]
+    leak = records["leak_diagnostic"]["result"]
+    with np.load(verified_artifact(OUT, "nullspace_rounds")) as f:
+        arrays = {key: f[key] for key in f.files}
+
+    result: dict = {}
+    ok: dict[str, list[bool]] = {"scaler": [], "a": [], "b": [], "guard": []}
+    for variable in DATASETS:
+        table = load_joined(variable)
+        roles = table["role"]
+        y = probe_targets(variable, table["label"])
+        train = roles == "train"
+        y_centred = y[train] - y[train].mean(axis=0)
+        evaluated = np.isin(roles, EVAL_ROLES)
+        sites = {}
+        for site in NULLSPACE_SITES:
+            prefix = f"{variable}_{site}"
+            x = site_features(table["activations"], site)
+            scaler = train_scaler(x, roles)
+            ok["scaler"].append(bool(np.array_equal(scaler.mean_, arrays[f"{prefix}_mean"])
+                                     and np.array_equal(scaler.scale_, arrays[f"{prefix}_scale"])))
+            z = scaler.transform(x)
+            cross = z[train].T @ y_centred  # (d,) or (d, 2)
+            cross_rows = cross.reshape(len(cross), -1).T  # (m, d): project_out works on rows
+            basis, weights = arrays[f"{prefix}_basis"], arrays[f"{prefix}_weights"]
+            m = weights.shape[2]
+            norms = np.array([np.linalg.norm(project_out(cross_rows, basis, k * m)) for k in range(len(weights))])
+            ratios = norms / norms[0]
+            weight_norms = np.linalg.norm(weights, axis=(1, 2))
+            exhausted = first_true(weight_norms <= EXHAUSTION_RATIO * weight_norms[0])
+            first_leaking = leak[variable]["sites"][site]["first_leaking_round"]
+            ok["a"].append(first_leaking is not None and bool(ratios[first_leaking - 1] <= EXHAUSTION_RATIO))
+            ok["b"].append(exhausted == first_leaking)
+
+            guarded = run_rounds(z, y, roles, evaluated, N_ROUNDS)
+            n = len(guarded.alphas)
+            ok["guard"].append(bool(
+                guarded.exhausted_round == exhausted
+                and np.array_equal(guarded.alphas[: n - 1], arrays[f"{prefix}_alphas"][: n - 1])
+                and np.array_equal(guarded.weights[: n - 1], weights[: n - 1])
+            ))
+            last_ok = leak[variable]["sites"][site]["last_ok_round"]
+            sites[site] = {
+                "k": saved_rounds[variable]["sites"][site]["summary"]["k"],
+                "last_ok_round": last_ok,
+                "first_leaking_round": first_leaking,
+                "weight_exhausted_round": exhausted,
+                "guarded_run_exhausted_round": guarded.exhausted_round,
+                "first_round_covariance_below_ratio": first_true(ratios <= EXHAUSTION_RATIO),
+                "covariance_ratio_at_first_leaking": float(ratios[first_leaking - 1]) if first_leaking else None,
+                "covariance_ratios_last_ok_to_first_leaking": (
+                    ratios[last_ok - 1: first_leaking].tolist() if last_ok and first_leaking else None
+                ),
+                "covariance_ratios": ratios.tolist(),
+            }
+        result[variable] = {"sites": sites}
+
+    criteria = {
+        "scaler_rebuilt_equals_saved": all(ok["scaler"]),
+        "covariance_exhausted_at_first_leaking_round": all(ok["a"]),
+        "weight_collapse_equals_first_leaking_round": all(ok["b"]),
+        "guarded_run_stops_there_and_reproduces_saved_rounds": all(ok["guard"]),
+    }
+    return {
+        "criteria": criteria, "exhaustion_ratio": EXHAUSTION_RATIO,
+        "source": {"key": "nullspace_rounds", "artifact_sha256": saved_rounds["artifact"]["sha256"]},
+        **result,
+        "explanation_holds": all(criteria.values()),
+    }
+
+
+def print_covariance_exhaustion(result: dict) -> None:
+    """Per variable and site: K, last ok round, first leaking round, where weights and covariance run out."""
+    for variable in DATASETS:
+        print(f"\n{variable}")
+        for site, r in result[variable]["sites"].items():
+            print(f"  {site:9s} K {r['k']}  last ok {r['last_ok_round']}  first leaking {r['first_leaking_round']}"
+                  f"  weights exhausted {r['weight_exhausted_round']}  guarded stop {r['guarded_run_exhausted_round']}"
+                  f"  covariance < ratio from {r['first_round_covariance_below_ratio']}"
+                  f"  ratio at first leaking {r['covariance_ratio_at_first_leaking']:.2e}")
+            print("    covariance ratio, last ok -> first leaking: "
+                  + "  ".join(f"{v:.1e}" for v in r["covariance_ratios_last_ok_to_first_leaking"]))
+    print(f"\nexplanation holds: {result['explanation_holds']}")
     
+
 CHECKS = {
     "nullspace_rounds": (check_nullspace_rounds, print_nullspace_rounds),
     "leak_diagnostic": (check_leak_diagnostic, print_leak_diagnostic),
+    "covariance_exhaustion": (check_covariance_exhaustion, print_covariance_exhaustion),
 }
 
 

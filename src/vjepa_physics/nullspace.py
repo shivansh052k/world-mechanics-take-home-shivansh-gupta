@@ -15,6 +15,7 @@ NULL_R2 = 0.1  # val-seen R² below this = no longer readable (shuffled-label nu
 SPAN_TOLERANCE = 1e-10  # singular values below this x the largest are treated as zero (train span)
 RANK_TOLERANCE = 1e-8  # a new weight block needs smallest / largest singular value above this
 EMPTY_TOLERANCE = 1e-12  # weights whose part outside the removed subspace is smaller than this (relative) are rejected
+EXHAUSTION_RATIO = 1e-12  # |W_k| <= this x |W_1|: train cross-covariance exhausted, later rounds are undefined
 REDUNDANCY_FRACTIONS = (0.9, 0.5)  # redundancy counts: rounds with R² at or above these fractions of round 1's
 
 
@@ -93,6 +94,7 @@ class NullspaceRun:
     rank_ratios: np.ndarray  # (rounds,) smallest / largest singular value of the weight block
     n_fit: int
     dims_per_round: int
+    exhausted_round: int | None  # 1-based round whose probe was ~0 (run stopped there); None = not exhausted
 
 
 def run_rounds(
@@ -104,11 +106,13 @@ def run_rounds(
     basis: np.ndarray | None = None,
     alphas: np.ndarray = ALPHAS,
 ) -> NullspaceRun:
-    """Fit n_rounds ridge probes (RidgeCV, efficient leave-one-out, train rows only) on standardized features z.
+    """Fit up to n_rounds ridge probes (RidgeCV, efficient leave-one-out, train rows only) on standardized features z.
 
     basis=None: iterative nullspace -- each probe's weight directions are added to the removed subspace before
-    the next round (m = 1 per round for (n,) targets, 2 for (sin, cos)). With a fixed `basis` (control): round k
-    removes its first k * m columns instead, so the removed size matches the real run round by round.
+    the next round (m = 1 per round for (n,) targets, 2 for (sin, cos)). The run stops at the first round whose
+    weights are <= EXHAUSTION_RATIO x round 1's: the train cross-covariance is exhausted, so that probe is ~0 and its
+    direction is rounding noise; the round is recorded (leak and rank ratio NaN) but nothing is added to the basis.
+    With a fixed `basis` (control): round k removes its first k * m columns, all n_rounds are run.
     Only `predict_rows` are predicted. Raises ValueError on mismatched lengths, no train rows, or a short basis.
     """
     z = np.asarray(z, dtype=np.float64)
@@ -125,6 +129,7 @@ def run_rounds(
     removed = np.empty((z.shape[1], 0)) if basis is None else np.asarray(basis, dtype=np.float64)
 
     weights, intercepts, chosen, edges, preds, leaks, ratios = [], [], [], [], [], [], []
+    exhausted = None
     for k in range(n_rounds):
         n_removed = k * m
         zk = project_out(z, removed, n_removed)
@@ -136,6 +141,11 @@ def run_rounds(
         edges.append(grid_edge(float(ridge.alpha_), np.asarray(alphas, dtype=float)))
         preds.append(np.reshape(ridge.predict(zk[predict_rows]), (-1, m)))
         if basis is None:
+            if k > 0 and np.linalg.norm(w) <= EXHAUSTION_RATIO * np.linalg.norm(weights[0]):
+                exhausted = k + 1
+                leaks.append(float("nan"))
+                ratios.append(float("nan"))
+                break
             removed, leak, ratio = extend_basis(removed, w)
         else:
             used = removed[:, :n_removed]
@@ -148,7 +158,7 @@ def run_rounds(
     kept = removed if basis is None else removed[:, : (n_rounds - 1) * m]
     return NullspaceRun(
         kept, np.stack(weights), np.stack(intercepts), np.array(chosen), tuple(edges), np.stack(preds),
-        np.array(leaks), np.array(ratios), int(fit_rows.sum()), m,
+        np.array(leaks), np.array(ratios), int(fit_rows.sum()), m, exhausted,
     )
 
 
