@@ -362,7 +362,28 @@ what's next.
   interior alphas, train R² 0.969–0.987 (≥ 0.9 criterion previewed). Observations: no exit clip among the 30 selected
   direction clips (with/without-exit reporting identical for steering); covariance median ‖δ_z‖ 9.13 / 2.53 / 1.97 (Claude
   Code's 3–15 guess missed for speed, acceleration); round-1 reading after the covariance edit within ~0.005 of the target.
-  **Step 5.1c done.**
+  **Step 5.1c done.** Committed and pushed (user said).
+- 5.2a: `scripts/check_steering.py steering_setup` **passed** (10/10; committed code, no model): clips, targets and readouts
+  = the 5.1c smoke test; readout raw maps = probe ≤ 1.5e-14; `artifacts/steering/setup.npz` SHA-256 `abcc701b…`. Chosen
+  clips' flags (test-seen / test-unseen): direction clipped 1 / 0, sub-patch 3 / 4, frozen 1 / 3; speed sub-patch 1 / 1;
+  acceleration sub-patch 4 / 3, frozen 3 / 2; no exit clip anywhere. Claude Code's flag guesses: sub-patch 2–6 per
+  variable missed for acceleration (7). Two seen-target cases equal a clip's own label (direction 418 at 95.625°, speed
+  407 at 1.202 m/s; kept, D-50). **Step 5.2a done.**
+- 5.2b: `steering_cache` **passed** (8/8; committed code, MPS, 90 clips): on every clip stored pooled = recomputed at
+  block_8 / block_17, zero edit = full pass at blocks 9–17, seeded δ (1e-2 × site std): partial path = `edit_encoder`
+  full pass and block_17 changed — all bit-exact; cache re-read = computed; hooks 0 / 0; fingerprint = reference. Caches
+  (git-ignored) direction `2f8244ef…`, speed `b127ca6c…`, acceleration `f9c3e763…`. Unsteered idx-18 readout on the
+  steered test clips (own labels): R² 0.980 / 0.989 / 0.991, direction circular MAE 3.98°, speed MAE 0.083, acceleration
+  0.210; seen vs unseen within 0.009 R². Partial forward median 0.659 s (max 1.24) → 1,440 / 1,515 / 1,515 runs per
+  half ≈ 15.8 / 16.6 / 16.6 min, all within budget. Claude Code's guesses: time 0.7–0.9 s missed (faster); R² 0.95–0.99
+  missed narrowly for acceleration (0.991). **Step 5.2b done.**
+- 5.2c: `steering.arm_table`, `arm_shifts`, `steered_features`. Mechanics smoke test (terminal, not saved; one seeded
+  val_seen clip per variable, 2 targets; no readout computed): 19 / 20 / 20 arms; zero shift = stored features at idx 9
+  and 18 bit for bit; features finite; float64 probe hit ≤ 1.9e-14; after the fp32 edit ≤ 3.5e-7 (target units);
+  idx-9 site vs stored + shift ≤ 1.8e-5 abs; random length error ≤ 2.1e-16; 0.67–0.73 s per arm. Claude Code's guesses:
+  site diff 1e-6–1e-5 missed (1.8e-5), fp32 hit 1e-6–1e-3 missed (smaller). Tolerances for check (iv) fixed now, before
+  any test run (Claude Code's own addition, ~30× / ~5× the measured maxima): probe hit ≤ 1e-5, site diff ≤ 1e-4.
+  **Step 5.2c done.**
 
 ### 2026-09-25 — Phase 4 started (nullspace probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically), asks before

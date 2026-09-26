@@ -1,0 +1,895 @@
+{
+  "steering_setup": {
+    "provenance": {
+      "utc": "2026-09-26T05:38:12+00:00",
+      "git_commit": "cda056ec5522edf3476018919ff97161cdec4407",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        "A  scripts/check_steering.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "fd26ac66b9218cf6473c4ced95b161c736d4a53203e0f286fd610f2af8143d78",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_steering.py": "af451fc7d0213632a7c5a3eb854de4c9defeb0b274ab8b0ba819029c12917048"
+        },
+        "combined_sha256": "f463b096a7f477028941e95a13d20ee481730a9d53a7f4822fbbefcb2fabe82b"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variables": {
+        "direction": {
+          "clips": {
+            "test_seen": {
+              "ids": [
+                115,
+                162,
+                289,
+                303,
+                418,
+                537,
+                577,
+                665,
+                841,
+                889,
+                1102,
+                1130,
+                1165,
+                1339,
+                1472
+              ],
+              "labels": [
+                22.5,
+                33.75,
+                67.5,
+                67.5,
+                95.625,
+                123.75,
+                135.0,
+                151.875,
+                196.875,
+                208.125,
+                258.75,
+                264.375,
+                275.625,
+                320.625,
+                348.75
+              ],
+              "groups": {
+                "0": 2,
+                "1": 2,
+                "2": 2,
+                "3": 2,
+                "4": 2,
+                "5": 2,
+                "6": 1,
+                "7": 2
+              },
+              "flags": {
+                "exit": 0,
+                "clipped": 1,
+                "sub_patch_motion": 3,
+                "frozen_start": 1
+              }
+            },
+            "test_unseen": {
+              "ids": [
+                170,
+                176,
+                318,
+                327,
+                560,
+                570,
+                714,
+                925,
+                945,
+                1067,
+                1085,
+                1299,
+                1300,
+                1431,
+                1435
+              ],
+              "labels": [
+                39.375,
+                39.375,
+                73.125,
+                73.125,
+                129.375,
+                129.375,
+                163.125,
+                219.375,
+                219.375,
+                253.125,
+                253.125,
+                309.375,
+                309.375,
+                343.125,
+                343.125
+              ],
+              "groups": {
+                "7": 2,
+                "13": 2,
+                "23": 2,
+                "29": 1,
+                "39": 2,
+                "45": 2,
+                "55": 2,
+                "61": 2
+              },
+              "flags": {
+                "exit": 0,
+                "clipped": 0,
+                "sub_patch_motion": 4,
+                "frozen_start": 3
+              }
+            }
+          },
+          "targets": {
+            "value_index": [
+              7,
+              17,
+              29,
+              45,
+              58
+            ],
+            "label": [
+              39.375,
+              95.625,
+              163.125,
+              253.125,
+              326.25
+            ],
+            "unseen": [
+              true,
+              false,
+              true,
+              true,
+              false
+            ]
+          },
+          "k": 6,
+          "headline_n": 5,
+          "random_probe_counts": [
+            1,
+            3,
+            5,
+            6
+          ],
+          "readouts": {
+            "block_8": {
+              "n_fit": 297,
+              "alpha": 56.23413251903491,
+              "alpha_edge": null,
+              "map_max_relative_diff": 4.382121309673567e-15,
+              "train_scores": {
+                "r2": 0.9692009991512104,
+                "circular_mae": 4.799302152880131
+              }
+            },
+            "block_17": {
+              "n_fit": 297,
+              "alpha": 17.78279410038923,
+              "alpha_edge": null,
+              "map_max_relative_diff": 1.4734391062358826e-14,
+              "train_scores": {
+                "r2": 0.9822933285160649,
+                "circular_mae": 3.914666353925449
+              }
+            }
+          }
+        },
+        "speed": {
+          "clips": {
+            "test_seen": {
+              "ids": [
+                69,
+                298,
+                378,
+                407,
+                455,
+                480,
+                677,
+                967,
+                1004,
+                1031,
+                1127,
+                1163,
+                1215,
+                1235,
+                1456
+              ],
+              "labels": [
+                0.36904761904761907,
+                0.9642857142857142,
+                1.1428571428571428,
+                1.2023809523809523,
+                1.3214285714285714,
+                1.4404761904761905,
+                1.9166666666666665,
+                2.630952380952381,
+                2.6904761904761902,
+                2.75,
+                2.988095238095238,
+                3.1071428571428568,
+                3.226190476190476,
+                3.2857142857142856,
+                3.821428571428571
+              ],
+              "groups": {
+                "0": 3,
+                "1": 4,
+                "2": 4,
+                "3": 4
+              },
+              "flags": {
+                "exit": 0,
+                "clipped": 0,
+                "sub_patch_motion": 1,
+                "frozen_start": 0
+              }
+            },
+            "test_unseen": {
+              "ids": [
+                110,
+                348,
+                352,
+                464,
+                476,
+                712,
+                718,
+                817,
+                836,
+                1066,
+                1078,
+                1190,
+                1199,
+                1416,
+                1433
+              ],
+              "labels": [
+                0.4880952380952381,
+                1.0833333333333333,
+                1.0833333333333333,
+                1.380952380952381,
+                1.380952380952381,
+                1.976190476190476,
+                1.976190476190476,
+                2.2738095238095237,
+                2.2738095238095237,
+                2.869047619047619,
+                2.869047619047619,
+                3.1666666666666665,
+                3.1666666666666665,
+                3.761904761904762,
+                3.761904761904762
+              ],
+              "groups": {
+                "4": 1,
+                "14": 2,
+                "19": 2,
+                "29": 2,
+                "34": 2,
+                "44": 2,
+                "49": 2,
+                "59": 2
+              },
+              "flags": {
+                "exit": 0,
+                "clipped": 0,
+                "sub_patch_motion": 1,
+                "frozen_start": 0
+              }
+            }
+          },
+          "targets": {
+            "value_index": [
+              4,
+              16,
+              34,
+              46,
+              59
+            ],
+            "label": [
+              0.4880952380952381,
+              1.2023809523809523,
+              2.2738095238095237,
+              2.988095238095238,
+              3.761904761904762
+            ],
+            "unseen": [
+              true,
+              false,
+              true,
+              false,
+              true
+            ]
+          },
+          "k": 7,
+          "headline_n": 6,
+          "random_probe_counts": [
+            1,
+            3,
+            6,
+            7
+          ],
+          "readouts": {
+            "block_8": {
+              "n_fit": 304,
+              "alpha": 31.622776601683793,
+              "alpha_edge": null,
+              "map_max_relative_diff": 3.251772664409275e-16,
+              "train_scores": {
+                "r2": 0.9834107614569174,
+                "mae": 0.1152850629301972
+              }
+            },
+            "block_17": {
+              "n_fit": 304,
+              "alpha": 17.78279410038923,
+              "alpha_edge": null,
+              "map_max_relative_diff": 3.8427718133530946e-16,
+              "train_scores": {
+                "r2": 0.9874138489099634,
+                "mae": 0.09708649181349784
+              }
+            }
+          }
+        },
+        "acceleration": {
+          "clips": {
+            "test_seen": {
+              "ids": [
+                39,
+                161,
+                203,
+                314,
+                413,
+                524,
+                732,
+                745,
+                865,
+                920,
+                967,
+                1378,
+                1392,
+                1413,
+                1521
+              ],
+              "labels": [
+                0.40476190476190477,
+                1.1785714285714286,
+                1.4880952380952381,
+                2.261904761904762,
+                2.880952380952381,
+                3.5,
+                4.892857142857143,
+                5.0476190476190474,
+                5.821428571428571,
+                6.130952380952381,
+                6.440476190476191,
+                9.071428571428571,
+                9.226190476190476,
+                9.226190476190476,
+                10.0
+              ],
+              "groups": {
+                "0": 4,
+                "1": 4,
+                "2": 3,
+                "3": 4
+              },
+              "flags": {
+                "exit": 0,
+                "clipped": 0,
+                "sub_patch_motion": 4,
+                "frozen_start": 3
+              }
+            },
+            "test_unseen": {
+              "ids": [
+                115,
+                354,
+                356,
+                460,
+                471,
+                702,
+                712,
+                817,
+                824,
+                1062,
+                1069,
+                1194,
+                1198,
+                1418,
+                1433
+              ],
+              "labels": [
+                0.8690476190476191,
+                2.416666666666667,
+                2.416666666666667,
+                3.1904761904761907,
+                3.1904761904761907,
+                4.738095238095238,
+                4.738095238095238,
+                5.511904761904762,
+                5.511904761904762,
+                7.05952380952381,
+                7.05952380952381,
+                7.833333333333334,
+                7.833333333333334,
+                9.380952380952381,
+                9.380952380952381
+              ],
+              "groups": {
+                "4": 1,
+                "14": 2,
+                "19": 2,
+                "29": 2,
+                "34": 2,
+                "44": 2,
+                "49": 2,
+                "59": 2
+              },
+              "flags": {
+                "exit": 0,
+                "clipped": 0,
+                "sub_patch_motion": 3,
+                "frozen_start": 2
+              }
+            }
+          },
+          "targets": {
+            "value_index": [
+              4,
+              16,
+              34,
+              46,
+              59
+            ],
+            "label": [
+              0.8690476190476191,
+              2.7261904761904763,
+              5.511904761904762,
+              7.3690476190476195,
+              9.380952380952381
+            ],
+            "unseen": [
+              true,
+              false,
+              true,
+              false,
+              true
+            ]
+          },
+          "k": 7,
+          "headline_n": 6,
+          "random_probe_counts": [
+            1,
+            3,
+            6,
+            7
+          ],
+          "readouts": {
+            "block_8": {
+              "n_fit": 304,
+              "alpha": 56.23413251903491,
+              "alpha_edge": null,
+              "map_max_relative_diff": 3.9622399522340534e-16,
+              "train_scores": {
+                "r2": 0.9699474989493347,
+                "mae": 0.38693669938286196
+              }
+            },
+            "block_17": {
+              "n_fit": 304,
+              "alpha": 17.78279410038923,
+              "alpha_edge": null,
+              "map_max_relative_diff": 5.21815531763717e-16,
+              "train_scores": {
+                "r2": 0.9827026883380557,
+                "mae": 0.2974764341715912
+              }
+            }
+          }
+        }
+      },
+      "readout_sites": [
+        "block_8",
+        "block_17"
+      ],
+      "validation_roles": [
+        "val_seen",
+        "val_unseen"
+      ],
+      "min_readout_train_r2": 0.9,
+      "criteria": {
+        "clip_counts": true,
+        "clip_roles": true,
+        "clip_spread": true,
+        "repeatable": true,
+        "targets": true,
+        "readout_fit": true,
+        "readout_alpha": true,
+        "readout_quality": true,
+        "readout_map": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/steering/setup.npz",
+        "sha256": "abcc701bdf21478483346b88ee1ae33ea0a37f78812c86f8358a25097fcebb7d"
+      },
+      "passed": true
+    }
+  },
+  "steering_cache": {
+    "provenance": {
+      "utc": "2026-09-26T05:58:47+00:00",
+      "git_commit": "cda056ec5522edf3476018919ff97161cdec4407",
+      "git_dirty": true,
+      "git_dirty_paths": [
+        "A  scripts/check_steering.py"
+      ],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "878b2455c336b06032366d427f228a840b62767cade5a7d90b5973221fba4df3",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "fd26ac66b9218cf6473c4ced95b161c736d4a53203e0f286fd610f2af8143d78",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_steering.py": "6ea0231d231c221e9b2deb4ff7c60f7018c03d126e6c248bb2cc699a23ff7530"
+        },
+        "combined_sha256": "7bcbea61751fb1227d32e05b4f5c1f1fa1ff5a76c2965f4ad206883af3dd2eb5"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "ids": {
+        "direction": {
+          "test_seen": [
+            115,
+            162,
+            289,
+            303,
+            418,
+            537,
+            577,
+            665,
+            841,
+            889,
+            1102,
+            1130,
+            1165,
+            1339,
+            1472
+          ],
+          "test_unseen": [
+            170,
+            176,
+            318,
+            327,
+            560,
+            570,
+            714,
+            925,
+            945,
+            1067,
+            1085,
+            1299,
+            1300,
+            1431,
+            1435
+          ]
+        },
+        "speed": {
+          "test_seen": [
+            69,
+            298,
+            378,
+            407,
+            455,
+            480,
+            677,
+            967,
+            1004,
+            1031,
+            1127,
+            1163,
+            1215,
+            1235,
+            1456
+          ],
+          "test_unseen": [
+            110,
+            348,
+            352,
+            464,
+            476,
+            712,
+            718,
+            817,
+            836,
+            1066,
+            1078,
+            1190,
+            1199,
+            1416,
+            1433
+          ]
+        },
+        "acceleration": {
+          "test_seen": [
+            39,
+            161,
+            203,
+            314,
+            413,
+            524,
+            732,
+            745,
+            865,
+            920,
+            967,
+            1378,
+            1392,
+            1413,
+            1521
+          ],
+          "test_unseen": [
+            115,
+            354,
+            356,
+            460,
+            471,
+            702,
+            712,
+            817,
+            824,
+            1062,
+            1069,
+            1194,
+            1198,
+            1418,
+            1433
+          ]
+        }
+      },
+      "unsteered": {
+        "direction": {
+          "block_8": {
+            "all": {
+              "r2": 0.9721688030174758,
+              "circular_mae": 4.39540014577199
+            },
+            "test_seen": {
+              "r2": 0.9745365895044475,
+              "circular_mae": 3.521527936187345
+            },
+            "test_unseen": {
+              "r2": 0.9695268116261021,
+              "circular_mae": 5.269272355356635
+            }
+          },
+          "block_17": {
+            "all": {
+              "r2": 0.9796871590877354,
+              "circular_mae": 3.982959721669914
+            },
+            "test_seen": {
+              "r2": 0.9835431768778256,
+              "circular_mae": 3.018582175919797
+            },
+            "test_unseen": {
+              "r2": 0.9755419132464866,
+              "circular_mae": 4.947337267420031
+            }
+          }
+        },
+        "speed": {
+          "block_8": {
+            "all": {
+              "r2": 0.9823760261445481,
+              "mae": 0.10868245126783743
+            },
+            "test_seen": {
+              "r2": 0.984741353872372,
+              "mae": 0.10342614564415027
+            },
+            "test_unseen": {
+              "r2": 0.9798383152050789,
+              "mae": 0.11393875689152459
+            }
+          },
+          "block_17": {
+            "all": {
+              "r2": 0.9891017018316325,
+              "mae": 0.08254159338554398
+            },
+            "test_seen": {
+              "r2": 0.9851716973283793,
+              "mae": 0.10124100874369943
+            },
+            "test_unseen": {
+              "r2": 0.9932785302938743,
+              "mae": 0.06384217802738852
+            }
+          }
+        },
+        "acceleration": {
+          "block_8": {
+            "all": {
+              "r2": 0.9731773078610573,
+              "mae": 0.37665435607962366
+            },
+            "test_seen": {
+              "r2": 0.9761632767459215,
+              "mae": 0.3919339367022735
+            },
+            "test_unseen": {
+              "r2": 0.9687006898188776,
+              "mae": 0.3613747754569738
+            }
+          },
+          "block_17": {
+            "all": {
+              "r2": 0.9909299181067223,
+              "mae": 0.20969488137021158
+            },
+            "test_seen": {
+              "r2": 0.9944800051796205,
+              "mae": 0.1733922796627419
+            },
+            "test_unseen": {
+              "r2": 0.9857058685137254,
+              "mae": 0.24599748307768124
+            }
+          }
+        }
+      },
+      "cache_direction": {
+        "path": "artifacts/steering/cache_direction.npy",
+        "sha256": "2f8244effe7e9bf6a1ca1958f1069f310576f8cd771b188396d16f9f1779ba13"
+      },
+      "cache_speed": {
+        "path": "artifacts/steering/cache_speed.npy",
+        "sha256": "b127ca6cb2f04fd1cb864642d0275814279fb0577458a01218c654ac3eadf6cb"
+      },
+      "cache_acceleration": {
+        "path": "artifacts/steering/cache_acceleration.npy",
+        "sha256": "f9c3e763339ad1104e77192e0eaa03a915d9a081272daf4928fd7e527b370910"
+      },
+      "device": "mps",
+      "partial_forward_blocks": [
+        9,
+        17
+      ],
+      "control_relative_std": 0.01,
+      "min_unsteered_r2": 0.9,
+      "partial_forward_seconds": {
+        "median": 0.6592236249998678,
+        "max": 1.2368843330041273,
+        "n": 90
+      },
+      "projection": {
+        "direction": {
+          "test_seen": {
+            "runs": 1440,
+            "minutes": 15.821366999996826,
+            "within_budget": true
+          },
+          "test_unseen": {
+            "runs": 1440,
+            "minutes": 15.821366999996826,
+            "within_budget": true
+          }
+        },
+        "speed": {
+          "test_seen": {
+            "runs": 1515,
+            "minutes": 16.64539653124666,
+            "within_budget": true
+          },
+          "test_unseen": {
+            "runs": 1515,
+            "minutes": 16.64539653124666,
+            "within_budget": true
+          }
+        },
+        "acceleration": {
+          "test_seen": {
+            "runs": 1515,
+            "minutes": 16.64539653124666,
+            "within_budget": true
+          },
+          "test_unseen": {
+            "runs": 1515,
+            "minutes": 16.64539653124666,
+            "within_budget": true
+          }
+        }
+      },
+      "budget_minutes": 30,
+      "failures": [],
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "criteria": {
+        "stored_pooled": true,
+        "zero_edit": true,
+        "control_paths": true,
+        "control_changes": true,
+        "cache_saved": true,
+        "unsteered_readout": true,
+        "hooks_unchanged": true,
+        "weights_unchanged": true
+      },
+      "passed": true
+    }
+  }
+}

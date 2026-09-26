@@ -4,9 +4,13 @@ import json
 from dataclasses import dataclass
 
 import numpy as np
+import torch
+from transformers import VJEPA2Model
 
 from vjepa_physics.data import DATASETS
 from vjepa_physics.evidence import repo_root, verified_artifact
+from vjepa_physics.extraction import pool_time_steps
+from vjepa_physics.intervention import run_blocks
 from vjepa_physics.reproducibility import SEED
 
 NULLSPACE_CHECKS = "results/nullspace/checks.json"  # key "nullspace_rounds": rounds.npz and each site's K
@@ -200,3 +204,61 @@ def random_shift(span: np.ndarray, length: float, scale: np.ndarray, rng: np.ran
     of z-length `length`."""
     direction = span @ rng.standard_normal(span.shape[1])
     return length * direction / np.linalg.norm(direction) * scale
+
+
+def arm_table(k: int) -> list[tuple[str, int, int]]:
+    """Steering arms in run order, as (kind, n, seed): probes n = 1...K; covariance (n 0); random at each of
+    random_probe_counts(K) x RANDOM_SEEDS (seed index 0...). Non-random arms have seed -1."""
+    arms = [("probes", n, -1) for n in range(1, k + 1)] + [("covariance", 0, -1)]
+    arms += [("random", n, s) for n in random_probe_counts(k) for s in range(RANDOM_SEEDS)]
+    return arms
+
+
+def arm_shifts(
+    seq: ProbeSequence,
+    b: np.ndarray,
+    span: np.ndarray,
+    variable: str,
+    clip_id: int,
+    target_index: int,
+    x: np.ndarray,
+    target: np.ndarray,
+) -> np.ndarray:
+    """(A, d) raw shifts for one clip and target, one per arm of arm_table(K), in that order.
+
+    x: the clip's (d,) raw pooled row at the steering site. target: (m,) in probe-target units (direction: (sin, cos)).
+    probes: standardized minimum-norm shift making probes 1...n read the target. covariance: covariance_shift with B.
+    random: a keyed random direction in `span`, z-length = the probes shift with the same n for this clip and target.
+    """
+    x = np.asarray(x, dtype=np.float64).reshape(1, -1)
+    probe_shifts = {n: min_norm_shift(seq, x, target, n)[0] for n in range(1, seq.k + 1)}
+    shifts = []
+    for kind, n, s in arm_table(seq.k):
+        if kind == "probes":
+            shifts.append(probe_shifts[n])
+        elif kind == "covariance":
+            shifts.append(covariance_shift(seq, b, x, target)[0])
+        else:
+            length = float(np.linalg.norm(probe_shifts[n] / seq.scale))
+            shifts.append(random_shift(span, length, seq.scale, random_key(variable, clip_id, target_index, n, s)))
+    return np.stack(shifts)
+
+
+def steered_features(
+    model: VJEPA2Model, cached: torch.Tensor, shifts: np.ndarray, first: int, last: int
+) -> np.ndarray:
+    """(A, last - first + 2, d) float64 probe features for each raw shift added to every token of `cached`.
+
+    cached: the steering site's (1, 2048, d) output on the model's device. Each shift is cast to the model's fp32 and
+    added to every token; blocks first...last then run on the result. Row 0 = the edited steering site, rows 1...
+    = blocks first...last. Features are computed as the probes' are: per-time-step means on the device, moved to the
+    CPU, widened to float64, then averaged over the 8 steps.
+    """
+    out = np.empty((len(shifts), last - first + 2, cached.shape[-1]))
+    for a, shift in enumerate(np.asarray(shifts)):
+        edited = cached + torch.from_numpy(shift.astype(np.float32)).to(cached.device)
+        blocks = run_blocks(model, edited, first, last)
+        pooled = torch.stack([pool_time_steps(edited)] + [pool_time_steps(blocks[f"block_{i}"])
+                                                          for i in range(first, last + 1)])
+        out[a] = np.asarray(pooled.to("cpu")[:, 0], dtype=np.float64).mean(axis=1)
+    return out
