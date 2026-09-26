@@ -411,6 +411,18 @@ what's next.
   < 0.1 ✓; covariance highest gain per length **wrong** (probes 1–3 higher); shift / distance 0.4–1.0 ✓; round-K share
   ≥ 0.75 missed for direction (0.73). Pipeline checks rule out a wiring bug (edits reach block_17 bit-exact, same-layer
   readout moves, unedited readouts exact). → planning chat. **Step 5.3a done.**
+- Planning chat on the results (→ D-50 addendum at the phase docs pass): no re-run; mechanism open — (i) blocks 9–17
+  cancel the edit, (ii) idx-18 readout ≈ orthogonal to δ (skip connections carry δ), (iii) uniform token mapping (O-08)
+  unlike real clip differences (limitation, future work); no "absorbs" wording until the decomposition and the
+  propagation profile are in. Accepted, all post hoc on saved test outputs (rules and predictions fixed first, nothing
+  selected): (1) H-12 kernel readout (read at idx 9, idx 18 consistency); (2) decomposition of the readout change into
+  direct (readout map on δ) + block updates (map on Δmean − δ); (3) signed specificity in distance units, predicted
+  slope ≈ +1 under the shared-distance reading, clip-bootstrap CIs; (4) propagation profile: validation-fit ridge
+  readouts at every idx 9–18 on the saved steered means, gain / reduction vs depth per arm (n = 1, K−1, K, covariance,
+  random), decomposition per index; (5) gain vs ‖δ‖ / clip distance over all arms, large edits labelled
+  off-distribution; (6) covariance arm's idx-9 reduction next to K−1's. Provisional headline: same-layer result
+  reproduced (0.92–0.95 at K−1, 0.11–0.55 at n = 1, random nothing), downstream barely reached (0.03 / 0.13 / 0.14);
+  the paper tests the same layer only (C.12, P-06). Phase 6 note: score both methods over the idx 9 → 18 profile.
 
 ### 2026-09-25 — Phase 4 started (nullspace probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically), asks before

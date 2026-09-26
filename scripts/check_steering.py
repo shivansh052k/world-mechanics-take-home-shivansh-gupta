@@ -65,6 +65,12 @@ READOUT_SITE = f"block_{READOUT_BLOCK}"  # primary readout (index 18); STEERING_
 READOUT_TOLERANCE = 1e-12  # relative: stored unedited readouts vs the setup maps on the stored features
 BOOTSTRAP_RESAMPLES = 10_000
 
+PROFILE_SITES = tuple(f"block_{i}" for i in range(8, READOUT_BLOCK + 1))  # indices 9-18 = rows 0-9 of the saved features
+DECOMPOSITION_TOLERANCE = 1e-9  # relative: direct + block-update terms = total readout change
+CONSISTENCY_TOLERANCE = 1e-5  # relative: readouts from the saved fp32 features vs the float64 readouts saved in the runs
+LENGTH_EDGES = (0.0, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0)  # bins of |shift_z| / median train clip distance; last bin open
+OFF_DISTRIBUTION_RATIO = 1.0  # bins starting at or above this are labelled off-distribution (pre-stated)
+
 
 def selection_groups(table: dict, rows: np.ndarray, variable: str, role: str) -> np.ndarray:
     """The group each clip was spread over when chosen: held-out value, angle octant, or value-index quartile."""
@@ -631,11 +637,165 @@ def check_steering_scores() -> dict:
         "bootstrap_resamples": BOOTSTRAP_RESAMPLES, "criteria": criteria, "passed": all(criteria.values()),
     }
 
+
+def check_steering_propagation() -> dict:
+    """Post hoc, saved test outputs only (no model): how the edit propagates from index 9 to 18, and why.
+
+    Per steered variable, both halves (30 clips x 5 targets): validation-fit ridge readouts (D-42 grid, LOO) of the
+    steered variable at every index 9-18, applied to the saved steered and unedited features. Per index and arm group:
+    the output-space gain (sum of achieved . intended / sum of |intended|², outputs = the readout's (sin, cos) or scalar,
+    intended = target output - unedited output), split exactly into direct (readout map applied to the shift, which the
+    skip connections carry unchanged) + block updates (map applied to the feature change minus the shift); and the error
+    reduction in label units. At index 18: clip-bootstrap 95% intervals of the three gains for probes 1, K - 1, K and
+    covariance; gain in bins of |shift_z| / median train clip distance (bins from 1.0 on labelled off-distribution),
+    probes + covariance arms and random arms separately. Passes if: every profile readout has an interior alpha and
+    train R² >= MIN_READOUT_TRAIN_R2; the refit index-9 and 18 maps = the setup's exactly; readouts from the saved
+    features match the runs' saved readouts within CONSISTENCY_TOLERANCE; direct + blocks = total within
+    DECOMPOSITION_TOLERANCE; everything finite.
+    """
+    with np.load(verified_artifact(OUT, "steering_setup")) as f:
+        setup = {key: f[key] for key in f.files}
+    n_clips = sum(N_CLIPS.values())
+    boot = bootstrap_indices(n_clips, BOOTSTRAP_RESAMPLES, SEED)
+    roles_order = list(HALVES.values())
+    ok: dict[str, list[bool]] = {name: [] for name in (
+        "readout_alpha", "readout_quality", "setup_maps", "consistent_with_runs", "decomposition", "finite")}
+    result: dict = {}
+
+    for variable in DATASETS:
+        runs = {}
+        for half, role in HALVES.items():
+            with np.load(verified_artifact(OUT, f"steer_{variable}_{half}")) as f:
+                runs[role] = {name: f[name] for name in f.files}
+
+        def joined_array(name: str) -> np.ndarray:
+            return np.concatenate([runs[r][name] for r in roles_order])
+
+        first = runs[roles_order[0]]
+        arms = list(zip(first["arm_kind"].tolist(), first["arm_n"].tolist(), first["arm_seed"].tolist()))
+        groups: dict[str, list[int]] = {}
+        for a, (kind, n, _) in enumerate(arms):
+            groups.setdefault("covariance" if kind == "covariance" else f"{kind}_{n}", []).append(a)
+
+        table = load_joined(variable)
+        roles, all_labels = table["role"], table["label"]
+        y = probe_targets(variable, all_labels)
+        train = roles == "train"
+        seq = load_probe_sequence(variable)
+        k = seq.k
+        targets = setup[f"{variable}_target_label"]
+        target_out = probe_targets(variable, targets).reshape(len(targets), -1)  # (targets, m)
+
+        features = joined_array("features")  # (clips, targets, arms, 10, d) fp32
+        base_features = joined_array("unedited_features")  # (clips, 10, d) fp32
+        shifts = joined_array("shifts")  # (clips, targets, arms, d) float64
+        z_train = (site_features(table["activations"], STEERING_SITE)[train] - seq.mean) / seq.scale
+        distance = train_distance(z_train)
+        ratio = np.linalg.norm(shifts / seq.scale, axis=-1) / distance  # (clips, targets, arms)
+
+        profile: dict = {}
+        at_readout: dict = {}
+        for j, site in enumerate(PROFILE_SITES):
+            x = site_features(table["activations"], site)
+            probe = fit_probe(x, y, roles, fit_roles=VALIDATION_ROLES)
+            weights, offset = readout_map(probe)
+            train_pred = probe.predict(x[train]).reshape(int(train.sum()), -1)
+            score = probe_scores(variable, all_labels[train], train_pred[:, 0] if train_pred.shape[1] == 1 else train_pred)
+            ok["readout_alpha"].append(probe.alpha_edge is None)
+            ok["readout_quality"].append(score["r2"] >= MIN_READOUT_TRAIN_R2)
+            if site in READOUT_SITES:
+                ok["setup_maps"].append(bool(np.array_equal(weights, setup[f"readout_{variable}_{site}_weights"])
+                                             and np.array_equal(offset, setup[f"readout_{variable}_{site}_offset"])))
+
+            steered = features[:, :, :, j].astype(np.float64)
+            base = base_features[:, j].astype(np.float64)
+            out = steered @ weights + offset  # (clips, targets, arms, m)
+            out0 = base @ weights + offset  # (clips, m)
+            achieved = out - out0[:, None, None, :]
+            direct = shifts @ weights
+            blocks = (steered - base[:, None, None, :] - shifts) @ weights
+            scale = max(float(np.abs(achieved).max()), float(np.abs(direct).max()))
+            ok["decomposition"].append(float(np.abs(direct + blocks - achieved).max()) <= DECOMPOSITION_TOLERANCE * scale)
+            if site in READOUT_SITES:
+                saved_out = joined_array(f"readout_{variable}_{site}")
+                ok["consistent_with_runs"].append(
+                    float(np.abs(out - saved_out).max()) <= CONSISTENCY_TOLERANCE * float(np.abs(saved_out).max()))
+
+            intended = target_out[None, :, :] - out0[:, None, :]  # (clips, targets, m)
+            value = readout_values(variable, out)
+            base_value = readout_values(variable, out0)
+            err = np.abs(label_difference(variable, value, targets[None, :, None]))
+            unsteered = np.abs(label_difference(variable, base_value[:, None], targets[None, :]))
+            record = {"site": site, "alpha": probe.alpha, "train_scores": score, "arms": {}}
+            for name, idx in groups.items():
+                i = np.broadcast_to(intended[:, :, None, :], achieved[:, :, idx].shape)
+                den = float((i**2).sum())
+                record["arms"][name] = {
+                    "gain": float((achieved[:, :, idx] * i).sum()) / den,
+                    "gain_direct": float((direct[:, :, idx] * i).sum()) / den,
+                    "gain_blocks": float((blocks[:, :, idx] * i).sum()) / den,
+                    "reduction": float(1 - err[:, :, idx].mean() / unsteered.mean()),
+                }
+            profile[str(plot_index(site))] = record
+            if site == READOUT_SITE:
+                at_readout = {"total": achieved, "direct": direct, "blocks": blocks, "intended": intended}
+
+        # index 18: bootstrap intervals of the three gains, paired over clips
+        def boot_gain(part: np.ndarray, idx: list[int]) -> dict:
+            i = np.broadcast_to(at_readout["intended"][:, :, None, :], part[:, :, idx].shape)
+            num = (part[:, :, idx] * i).sum(axis=(1, 2, 3))
+            den = (i**2).sum(axis=(1, 2, 3))
+            return {"point": float(num.sum() / den.sum()),
+                    "ci": percentile_interval(num[boot].sum(axis=1) / den[boot].sum(axis=1))}
+
+        decomposition = {name: {part: boot_gain(at_readout[part], groups[name]) for part in ("total", "direct", "blocks")}
+                         for name in ("probes_1", f"probes_{k - 1}", f"probes_{k}", "covariance")}
+
+        # index 18: gain by shift size
+        families = {"probes_and_covariance": [a for a, arm in enumerate(arms) if arm[0] != "random"],
+                    "random": [a for a, arm in enumerate(arms) if arm[0] == "random"]}
+        edges = [*LENGTH_EDGES, None]
+        by_length = {}
+        for family, idx in families.items():
+            r = ratio[:, :, idx]
+            a = at_readout["total"][:, :, idx]
+            i = np.broadcast_to(at_readout["intended"][:, :, None, :], a.shape)
+            bins = []
+            for lo, hi in zip(edges[:-1], edges[1:]):
+                sel = (r >= lo) & (r < hi) if hi is not None else r >= lo
+                n = int(sel.sum())
+                gain = float((a[sel] * i[sel]).sum() / (i[sel] ** 2).sum()) if n else None
+                bins.append({"from": lo, "to": hi, "runs": n, "gain": gain,
+                             "off_distribution": lo >= OFF_DISTRIBUTION_RATIO})
+            by_length[family] = bins
+
+        record = {
+            "k": k, "headline_n": k - 1, "train_clip_distance_median": distance,
+            "profile": profile,
+            "decomposition_idx18": decomposition,
+            "gain_vs_length_idx18": by_length,
+            "idx9_reduction_covariance_vs_headline": {
+                "covariance": profile["9"]["arms"]["covariance"]["reduction"],
+                f"probes_{k - 1}": profile["9"]["arms"][f"probes_{k - 1}"]["reduction"],
+            },
+        }
+        ok["finite"].append(all_finite(record))
+        result[variable] = record
+
+    criteria = {name: all(values) for name, values in ok.items()}
+    return {
+        "post_hoc": True, "variables": result, "profile_sites": list(PROFILE_SITES),
+        "gain_definition": "output space: sum(achieved . intended) / sum(|intended|^2)",
+        "length_edges": list(LENGTH_EDGES), "off_distribution_ratio": OFF_DISTRIBUTION_RATIO,
+        "criteria": criteria, "passed": all(criteria.values()),
+    }
+
 CHECKS = {
     "steering_setup": check_steering_setup,
     "steering_cache": check_steering_cache,
     **{f"steer_{v}_{h}": partial(steering_run, v, h) for v in DATASETS for h in HALVES},
     "steering_scores": check_steering_scores,
+    "steering_propagation": check_steering_propagation,
 }
 
 
