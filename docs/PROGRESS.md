@@ -391,6 +391,23 @@ what's next.
   0.928); direction mean circular MAE 89.5° (min 86.8°); labels moved 97.7–99.0 %; no lower-edge alpha (6 / 15 upper
   edge, rest interior). Claude Code's "most upper edge" prediction wrong; gamma always on a grid edge (observation).
   Kernel slide requirement cleared.
+- 4.3h: `KernelFit.min_one_minus_hat` (first placed in `RBFFit` by mistake → TypeError, fixed; nothing saved by the
+  failed calls). `kernel_grid_diagnostic` (committed code) **explanation_holds false**: original-grid refits = saved;
+  2/7 arms moved > 0.05 (direction idx 18 nullspace_k −0.073, speed idx 18 nullspace_k −0.094), 6/7 downward; all 7 at
+  the new lower edge (~1e-10); **min(1 − h_ii) negative in all 7 (−1.2e-8 … −1.5e-6) → LOO invalid at the extended
+  alphas** (rounding breakdown). Extended val-seen R² all ≥ 0.66 (observation). Claude Code's predictions: change
+  < 0.05 wrong at 2 arms; hat gap 1e-4–1e-7 wrong (negative). Proposal (keep failure; rule-free hat-gap observation
+  over all 72 original fits; grid-dependent wording) → planning chat.
+- Planning chat (→ D-49 addendum): diagnostic failure kept, no re-score / grid extension; extended fits' scores only in
+  the cross-grid range. Observation key over all 72 original fits: min(1 − h_ii) ≥ 1e-6 → point value (edge flag
+  kept), < 1e-6 or negative → range only. Headline = idx 9 covariance arm; summary line "val-seen R² ≥ 0.66 under
+  every grid tried; linear ≈ 0; shuffled ≤ 0.005". Test: kernel arms from original-grid refits (must reproduce saved
+  val-seen), unreliable arms labelled. Kernel thread closes after the observation key. Next: random (+ PC, user
+  decision) control, depth profile, test, report and slides; each Phase 4 failure one line in "kept on record".
+- 4.3i `kernel_hat_gap` (observation; refits = saved, 72/72): 4 / 72 selections unreliable (min(1 − h_ii) < 1e-6), all
+  `nullspace_k` at the lower edge → quoted as ranges: direction idx 9 0.664–0.692, idx 18 0.760–0.834; acceleration
+  idx 9 0.922–0.929, idx 18 0.937–0.939. Headline idx 9 covariance arm sound → points: direction 0.753, speed 0.942,
+  acceleration 0.928 (gap 1.0e-6, marginal, edge). Unerased / random gaps ≥ 9e-3. **Kernel thread closed.**
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),

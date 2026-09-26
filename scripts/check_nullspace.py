@@ -74,6 +74,9 @@ EXTENDED_GAMMA_FACTORS = (0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0)
 GRID_R2_TOLERANCE = 0.05  # the recovery finding does not depend on the grid if every refit stays within this
 MIN_HAT_GAP = 1e-6  # numerical guard: flag a fit whose smallest 1 - h_ii falls below this
 
+CONTROL_ROUNDS = N_ROUNDS  # control runs cover the same rounds as the real run
+SPAN_TOLERANCE_CHECK = 1e-10  # control bases must lie in the train span to this (max abs residual)
+
 
 def secondary_rule(variable: str, scores: list[dict], baseline_mae: float | None) -> dict:
     """First round where the paper's secondary rule says the variable is gone (val-seen)."""
@@ -938,6 +941,215 @@ def print_kernel_grid_diagnostic(result: dict) -> None:
     print(f"\ncriteria {result['criteria']}  explanation holds: {result['explanation_holds']}"
           f"  ({result['n_flagged_arms']} arms)")
 
+def check_kernel_hat_gap() -> dict:
+    """Observation: was each original kernel_erasure selection numerically sound?
+
+    Refits all kernel_erasure fits with the original grids (integrity: each must reproduce its saved val-seen R²)
+    and records min(1 - h_ii) at the chosen alpha. Quoting rule fixed before running: >= MIN_HAT_GAP -> the
+    selection is numerically sound and the score is quoted as a point value (edge flag kept where it applies);
+    below it or negative -> unreliable, quoted only as the range across the grids tried (original and, where it
+    exists, the extended grid of kernel_grid_diagnostic).
+    """
+    records = json.loads(OUT.read_text())
+    saved = records["kernel_erasure"]["result"]
+    extended = {(a["variable"], a["site"], a["arm"]): a["extended_val_seen"]["r2"]
+                for a in records["kernel_grid_diagnostic"]["result"]["arms"]}
+    with np.load(verified_artifact(OUT, "nullspace_rounds")) as f:
+        bases = {key: f[key] for key in f.files if key.endswith("_basis")}
+
+    result: dict = {}
+    reproduced = []
+    for variable in DATASETS:
+        table = load_joined(variable)
+        roles, labels = table["role"], table["label"]
+        y = probe_targets(variable, labels)
+        evaluated = np.isin(roles, EVAL_ROLES)
+        seen = roles == "val_seen"
+        sites = {}
+        for site, r in saved[variable]["sites"].items():
+            x = site_features(table["activations"], site)
+            z = train_scaler(x, roles).transform(x)
+            span = train_span(z, roles)
+            m, k = r["dims_per_round"], r["k"]
+            arms = {}
+            for arm, e in r["arms"].items():
+                if arm == "none":
+                    basis = np.empty((z.shape[1], 0))
+                elif arm == "covariance":
+                    basis = covariance_basis(z, y, roles)
+                elif arm == "nullspace_k":
+                    basis = bases[f"{variable}_{site}_basis"]
+                else:  # random_m_seed<s>: the same bases as kernel_erasure
+                    seed = int(arm.removeprefix("random_m_seed"))
+                    basis = random_span_basis(span, k * m, SEED + seed)[:, :m]
+                zp = project_out(z, basis, e["dims_removed"])
+                rbf = rbf_kernel_ridge(zp, y, roles, evaluated)
+                r2 = probe_scores(variable, labels[seen], rbf.fit.predictions[seen])["r2"]
+                reproduced.append(abs(r2 - e["val_seen"]["r2"]) <= 1e-12)
+                gap = rbf.fit.min_one_minus_hat
+                sound = bool(gap >= MIN_HAT_GAP)
+                grids = [e["val_seen"]["r2"]] + ([extended[(variable, site, arm)]]
+                                                 if (variable, site, arm) in extended else [])
+                arms[arm] = {
+                    "val_seen_r2": e["val_seen"]["r2"], "refit_val_seen_r2": r2, "alpha_edge": e["alpha_edge"],
+                    "min_one_minus_hat": gap, "selection_sound": sound,
+                    "quote": "point" if sound else "range",
+                    "cross_grid_range": [min(grids), max(grids)],
+                }
+            sites[site] = {"plot_index": plot_index(site), "arms": arms}
+        result[variable] = {"sites": sites}
+
+    all_arms = [a for v in result.values() for s in v["sites"].values() for a in s["arms"].values()]
+    criteria = {"refits_reproduce_saved": bool(reproduced) and all(reproduced)}
+    return {
+        "criteria": criteria, "min_hat_gap": MIN_HAT_GAP, "n_fits": len(all_arms),
+        "n_unreliable": sum(not a["selection_sound"] for a in all_arms),
+        "source": {"keys": ["kernel_erasure", "kernel_grid_diagnostic"]},
+        **result, "observation": True,
+    }
+
+
+def print_kernel_hat_gap(result: dict) -> None:
+    """Per variable and site: min(1 - h_ii) and quoting mode for the main arms; random arms summarised."""
+    for variable in DATASETS:
+        print(f"\n{variable}")
+        for site, r in result[variable]["sites"].items():
+            parts = []
+            for arm, a in r["arms"].items():
+                if arm.startswith("random_m_seed") and arm != "random_m_seed0":
+                    continue
+                flag = " edge" if a["alpha_edge"] else ""
+                parts.append(f"{arm} {a['min_one_minus_hat']:.1e} {a['quote']}{flag}")
+            random_gaps = [a["min_one_minus_hat"] for name, a in r["arms"].items() if name.startswith("random_m_seed")]
+            print(f"  {site:9s} " + " | ".join(parts) + f" | random min {min(random_gaps):.1e}")
+    print(f"\ncriteria {result['criteria']}  unreliable {result['n_unreliable']} / {result['n_fits']}")
+
+
+
+def control_run(kind: str) -> dict:
+    """Shared body of the random-subspace and top-PC controls (validation only).
+
+    Per variable and site (idx 1 / 9 / 18): the same train scaler as the real run; a fixed orthonormal basis inside
+    the span of the standardized train rows -- kind "random": N_RANDOM_SEEDS seeded Gaussian rotations of the span
+    (then QR); kind "pc": the top train principal axes; round k removes its first (k - 1)·m columns, so the removed
+    size matches the real run round by round. Fresh RidgeCV each round (train rows only), scored on val_seen and
+    val_unseen. Criteria: round 1 = the real round 1 (nothing removed yet, same fit); bases orthonormal and inside
+    the train span; n_fit exact; scores finite; no alpha failure. The exhaustion guard only applies to the real
+    run (it builds its basis from probe weights), so it never fires here.
+    """
+    records = json.loads(OUT.read_text())
+    saved_rounds = records["nullspace_rounds"]["result"]
+    with np.load(verified_artifact(OUT, "nullspace_rounds")) as f:
+        real_predictions = {key: f[key] for key in f.files if key.endswith("_predictions")}
+
+    arrays: dict[str, np.ndarray] = {"sites": np.array(NULLSPACE_SITES)}
+    result: dict = {}
+    ok: dict[str, list[bool]] = {name: [] for name in ("round1", "orthonormal", "span", "n_fit", "finite", "alpha")}
+    seeds = list(range(N_RANDOM_SEEDS)) if kind == "random" else [0]
+    for variable in DATASETS:
+        table = load_joined(variable)
+        roles, labels = table["role"], table["label"]
+        y = probe_targets(variable, labels)
+        evaluated = np.isin(roles, EVAL_ROLES)
+        eval_roles = roles[evaluated]
+        sites = {}
+        for site in NULLSPACE_SITES:
+            start = time.perf_counter()
+            x = site_features(table["activations"], site)
+            z = train_scaler(x, roles).transform(x)
+            span = train_span(z, roles)
+            real = saved_rounds[variable]["sites"][site]
+            m, k = real["dims_per_round"], real["summary"]["k"]
+            n_cols = (CONTROL_ROUNDS - 1) * m
+            real_first = real_predictions[f"{variable}_{site}_predictions"][evaluated, 0]
+
+            curves_seen, curves_unseen, per_seed = [], [], []
+            for s in seeds:
+                basis = random_span_basis(span, n_cols, SEED + s) if kind == "random" else span[:, :n_cols]
+                ok["orthonormal"].append(float(np.abs(basis.T @ basis - np.eye(n_cols)).max()) <= ORTHONORMAL_TOLERANCE)
+                ok["span"].append(float(np.abs(basis - span @ (span.T @ basis)).max()) <= SPAN_TOLERANCE_CHECK)
+                run = run_rounds(z, y, roles, evaluated, CONTROL_ROUNDS, basis=basis)
+                ok["round1"].append(bool(np.array_equal(run.predictions[0], real_first)))
+                ok["n_fit"].append(run.n_fit == EXPECTED_FIT[variable])
+                scores = {role: round_scores(variable, labels[roles == role], run.predictions[:, eval_roles == role])
+                          for role in EVAL_ROLES}
+                seen_r2 = np.array([sc["r2"] for sc in scores["val_seen"]])
+                unseen_r2 = np.array([sc["r2"] for sc in scores["val_unseen"]])
+                verdicts = [nullspace_alpha_verdict(e, r) for e, r in zip(run.alpha_edges, seen_r2)]
+                ok["finite"].append(bool(np.isfinite(seen_r2).all() and np.isfinite(unseen_r2).all()))
+                ok["alpha"].append("failure" not in verdicts)
+                curves_seen.append(seen_r2)
+                curves_unseen.append(unseen_r2)
+                per_seed.append({
+                    "seed": SEED + s if kind == "random" else None,
+                    "k": curve_summary(seen_r2, m)["k"],
+                    "val_seen_r2_at": {str(n): float(seen_r2[n - 1]) for n in (1, 2, 5, 10, k, k + 1, 50, 150)},
+                    "alpha_verdicts": dict(Counter(verdicts)),
+                })
+            prefix = f"{variable}_{site}"
+            arrays[f"{prefix}_val_seen_r2"] = np.array(curves_seen)  # (seeds, rounds)
+            arrays[f"{prefix}_val_unseen_r2"] = np.array(curves_unseen)
+            stacked = np.array(curves_seen)
+            sites[site] = {
+                "plot_index": plot_index(site), "dims_per_round": m, "real_k": k,
+                "real_val_seen_r2_at_k": real["val_seen_r2"][k - 1],
+                "control_val_seen_r2_at_real_k": {"mean": float(stacked[:, k - 1].mean()),
+                                                  "min": float(stacked[:, k - 1].min()),
+                                                  "max": float(stacked[:, k - 1].max())},
+                "control_k": [p["k"] for p in per_seed], "per_seed": per_seed,
+                "seconds": time.perf_counter() - start,
+            }
+        arrays[f"{variable}_roles"] = roles
+        result[variable] = {"sites": sites}
+
+    ARTIFACTS.mkdir(parents=True, exist_ok=True)
+    path = ARTIFACTS / f"{kind}_subspaces.npz"
+    np.savez(path, **arrays)
+    with np.load(path) as saved_file:
+        saved_ok = set(saved_file.files) == set(arrays) and all(
+            np.array_equal(saved_file[key], value) for key, value in arrays.items())
+    criteria = {
+        "round1_equals_real_round1": all(ok["round1"]),
+        "bases_orthonormal": all(ok["orthonormal"]),
+        "bases_in_train_span": all(ok["span"]),
+        "n_fit_equals_train_count": all(ok["n_fit"]),
+        "scores_finite": all(ok["finite"]),
+        "no_alpha_failure": all(ok["alpha"]),
+        "saved_equals_computed": saved_ok,
+    }
+    return {
+        "criteria": criteria, "kind": kind, "n_rounds": CONTROL_ROUNDS, "seeds": [SEED + s for s in seeds],
+        "guard_applies": False, "source": {"key": "nullspace_rounds", "artifact_sha256": saved_rounds["artifact"]["sha256"]},
+        **result,
+        "artifact": {"path": str(path.relative_to(REPO)), "sha256": file_sha256(path)},
+        "passed": all(criteria.values()),
+    }
+
+
+def check_random_subspaces() -> dict:
+    """Random-subspace control: remove random train-span directions of the real run's size each round."""
+    return control_run("random")
+
+
+def check_pc_subspaces() -> dict:
+    """Top-principal-component control: remove the top train principal axes, the real run's size each round."""
+    return control_run("pc")
+
+
+def print_control_run(result: dict) -> None:
+    """Per variable and site: real K and its R², the control's R² at that round (mean, min-max), control K per seed."""
+    for variable in DATASETS:
+        print(f"\n{variable}  ({result['kind']} control)")
+        for site, r in result[variable]["sites"].items():
+            c = r["control_val_seen_r2_at_real_k"]
+            first = r["per_seed"][0]["val_seen_r2_at"]
+            print(f"  {site:9s} idx {r['plot_index']:2d}  real K {r['real_k']} (R2 {r['real_val_seen_r2_at_k']:.3f})"
+                  f"  control R2 at real K {c['mean']:.3f} [{c['min']:.3f}, {c['max']:.3f}]"
+                  f"  control K {r['control_k']}  R2 at 10/50/150 {first['10']:.3f}/{first['50']:.3f}/{first['150']:.3f}"
+                  f"  ({r['seconds']:.0f} s)")
+            
+            
+
 CHECKS = {
     "nullspace_rounds": (check_nullspace_rounds, print_nullspace_rounds),
     "leak_diagnostic": (check_leak_diagnostic, print_leak_diagnostic),
@@ -947,6 +1159,9 @@ CHECKS = {
     "kernel_erasure": (check_kernel_erasure, print_kernel_erasure),
     "kernel_shuffled_labels": (check_kernel_shuffled_labels, print_kernel_shuffled_labels),
     "kernel_grid_diagnostic": (check_kernel_grid_diagnostic, print_kernel_grid_diagnostic),
+    "kernel_hat_gap": (check_kernel_hat_gap, print_kernel_hat_gap),
+    "random_subspaces": (check_random_subspaces, print_control_run),
+    "pc_subspaces": (check_pc_subspaces, print_control_run),
 }
 
 
