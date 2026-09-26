@@ -348,6 +348,13 @@ what's next.
   rounds of record = up to the guard round, later "undefined (train covariance exhausted)"; pre-stated check for
   profile / sweep / controls: guard round > K everywhere; sweep: no edge rule, cap without exhaustion expected at small
   alpha; diagnostic rules only on established facts (uncertain premises → observations). Next: fresh-probe erasure test.
+- 4.3d: `probes.nested_cv_predictions` (+ `NestedCV`), `nullspace.train_ridge`; `fresh_probe_erasure` **passed** (7/7,
+  ~8.5 min; committed code). Fresh out-of-fold probe on validation (nested grouped CV): `none` 0.72 (direction idx 1) /
+  0.947–0.987; random m and K·m = `none` to ~0.001 (5 seeds); **`covariance` (m = 1 or 2 dims) −0.045…0.001** and
+  `nullspace_k` −0.012…0.021, direction circular MAE 78–92°. Claude Code's prediction (fresh R² ≥ 0.8 after covariance
+  removal) **wrong**: β = Σₓₓ⁻¹Σₓᵧ = 0 when Σₓᵧ = 0, and the train cross-covariance ≈ the population one → linear
+  readout erased with m dims for held-out fresh probes too (LEACE, from memory). K counts procedure steps, not
+  dimensionality (interpretation → planning chat together with the alpha sweep).
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),

@@ -56,6 +56,9 @@ N_RANDOM_SEEDS = 5  # random-subspace arms: seeds SEED ... SEED + 4
 CONSTANT_TOLERANCE = 1e-8  # covariance arm: train-fit prediction spread / label SD (Xᵀy_c = 0 ⇒ ridge weights 0)
 REFIT_TOLERANCE = 1e-9  # relative: nullspace arm vs saved round K + 1; nested CV vs a sklearn refit
 
+SWEEP_SITE = "block_8"  # headline layer (index 9)
+SWEEP_ALPHAS = (1e-3, 1e-1, 1e1, 1e3, 1e5, 1e7)  # fixed ridge penalty per run (standardized space, same units as ALPHAS)
+
 
 def secondary_rule(variable: str, scores: list[dict], baseline_mae: float | None) -> dict:
     """First round where the paper's secondary rule says the variable is gone (val-seen)."""
@@ -302,6 +305,7 @@ def print_leak_diagnostic(result: dict) -> None:
             print(f"    |W| round 1 {r['weight_norm_round1']:.3e}  min |W| {r['min_weight_norm']:.3e}"
                   f"  leaked part (leaking rounds) {r['leaked_norm_range_leaking_rounds']}")
     print(f"\nexplanation holds: {result['explanation_holds']}")
+    
     
 def check_covariance_exhaustion() -> dict:
     """Mechanism behind the leak: the train cross-covariance runs out where the probe weights collapse.
@@ -558,7 +562,84 @@ def print_fresh_probe_erasure(result: dict) -> None:
                 print(f"    {name:12s} dims {a['dims_removed']:3d}  {a['train_fit_val_seen_r2_mean']:7.3f} | "
                       f"{a['fresh_validation_r2_mean']:7.3f} (min {a['fresh_validation_r2_min']:.3f}, "
                       f"max {a['fresh_validation_r2_max']:.3f})")
-                
+
+def check_alpha_sweep() -> dict:
+    """Does K depend on the probe's regularization? The nullspace rounds at the headline layer with a fixed alpha.
+
+    Per variable and alpha in SWEEP_ALPHAS: run_rounds with a one-value alpha grid (guard on, cap N_ROUNDS), scored
+    on val_seen; K = first round with R² < NULL_R2. The alpha edge rule does not apply (one-value grid); reaching the
+    cap without exhaustion is expected at small alpha. Passes if: every run fits exactly the train clips; the basis
+    is orthonormal; scores are finite; K <= the guard round wherever the guard fires (at exhaustion the prediction is
+    the train mean, so val_seen R² <= 0). Reported: guard round vs K (exceptions to "guard > K" listed), max leak
+    (observation), the leave-one-out run's K for reference.
+    """
+    saved_rounds = json.loads(OUT.read_text())["nullspace_rounds"]["result"]
+    result: dict = {}
+    ok: dict[str, list[bool]] = {"n_fit": [], "orthonormal": [], "finite": [], "k_guard": []}
+    exceptions = []
+    for variable in DATASETS:
+        table = load_joined(variable)
+        roles, labels = table["role"], table["label"]
+        y = probe_targets(variable, labels)
+        evaluated = np.isin(roles, EVAL_ROLES)
+        seen = roles[evaluated] == "val_seen"
+        x = site_features(table["activations"], SWEEP_SITE)
+        z = train_scaler(x, roles).transform(x)
+        error_name = "circular_mae" if variable == "direction" else "mae"
+        runs = {}
+        for alpha in SWEEP_ALPHAS:
+            start = time.perf_counter()
+            run = run_rounds(z, y, roles, evaluated, N_ROUNDS, alphas=np.array([alpha]))
+            seconds = time.perf_counter() - start
+            scores = round_scores(variable, labels[roles == "val_seen"], run.predictions[:, seen])
+            seen_r2 = np.array([s["r2"] for s in scores])
+            summary = curve_summary(seen_r2, run.dims_per_round)
+            k, guard = summary["k"], run.exhausted_round
+            q = run.basis
+            ok["n_fit"].append(run.n_fit == EXPECTED_FIT[variable])
+            ok["orthonormal"].append(float(np.abs(q.T @ q - np.eye(q.shape[1])).max()) <= ORTHONORMAL_TOLERANCE)
+            ok["finite"].append(bool(np.isfinite(seen_r2).all()))
+            ok["k_guard"].append(guard is None or (k is not None and k <= guard))
+            if guard is not None and not (k is not None and k < guard):
+                exceptions.append({"variable": variable, "alpha": alpha, "k": k, "guard_round": guard})
+            runs[f"{alpha:g}"] = {
+                "alpha": alpha, "seconds": seconds, "rounds_run": len(run.alphas), "exhausted_round": guard,
+                "summary": summary, "round1_val_seen": scores[0],
+                "max_leak_observation": float(np.nanmax(run.leaks)),
+                "val_seen_r2": seen_r2.tolist(), f"val_seen_{error_name}": [s[error_name] for s in scores],
+            }
+        reference = saved_rounds[variable]["sites"][SWEEP_SITE]
+        result[variable] = {
+            "leave_one_out_reference": {"k": reference["summary"]["k"], "round1_alpha": reference["round1"]["alpha"],
+                                        "round1_val_seen_r2": reference["val_seen_r2"][0]},
+            "runs": runs,
+        }
+
+    criteria = {
+        "n_fit_equals_train_count": all(ok["n_fit"]),
+        "basis_orthonormal": all(ok["orthonormal"]),
+        "scores_finite": all(ok["finite"]),
+        "k_not_after_guard": all(ok["k_guard"]),
+    }
+    return {
+        "criteria": criteria, "site": SWEEP_SITE, "plot_index": plot_index(SWEEP_SITE), "alphas": list(SWEEP_ALPHAS),
+        "n_rounds": N_ROUNDS, "stop_r2": NULL_R2, "guard_not_after_k_exceptions": exceptions, **result,
+        "passed": all(criteria.values()),
+    }
+
+
+def print_alpha_sweep(result: dict) -> None:
+    """Per variable: the leave-one-out reference, then per fixed alpha round-1 R², K, guard round, rounds run."""
+    for variable in DATASETS:
+        ref = result[variable]["leave_one_out_reference"]
+        print(f"\n{variable}  (leave-one-out: alpha {ref['round1_alpha']:.3g}, round-1 R2 {ref['round1_val_seen_r2']:.3f},"
+              f" K {ref['k']})")
+        for name, r in result[variable]["runs"].items():
+            k = r["summary"]["k"] if r["summary"]["k"] is not None else f"> {result['n_rounds']}"
+            print(f"  alpha {name:>6s}  round-1 R2 {r['round1_val_seen']['r2']:7.3f}  K {str(k):>6s}"
+                  f"  guard {str(r['exhausted_round']):>5s}  rounds run {r['rounds_run']:3d}"
+                  f"  max leak {r['max_leak_observation']:.1e}  {r['seconds']:.0f} s")
+    print(f"\nguard not after K (exceptions): {result['guard_not_after_k_exceptions']}")            
 
 CHECKS = {
     "nullspace_rounds": (check_nullspace_rounds, print_nullspace_rounds),
