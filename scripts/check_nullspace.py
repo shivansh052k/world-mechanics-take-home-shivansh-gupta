@@ -69,6 +69,11 @@ KERNEL_PERMUTATIONS = 5  # shuffled train-label permutations (the first ones of 
 SHUFFLED_MAX_R2 = 0.1  # every shuffled fit's val-seen R² must stay below this
 SHUFFLED_MIN_MEAN_CIRCULAR_MAE = 80.0  # direction: circular MAE averaged over the permutations (chance 90)
 
+EXTENDED_RELATIVE_ALPHAS = np.logspace(-9, 3, 49)  # the floor grid (0.25-decade steps) extended down to 1e-9
+EXTENDED_GAMMA_FACTORS = (0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0)
+GRID_R2_TOLERANCE = 0.05  # the recovery finding does not depend on the grid if every refit stays within this
+MIN_HAT_GAP = 1e-6  # numerical guard: flag a fit whose smallest 1 - h_ii falls below this
+
 
 def secondary_rule(variable: str, scores: list[dict], baseline_mae: float | None) -> dict:
     """First round where the paper's secondary rule says the variable is gone (val-seen)."""
@@ -854,6 +859,85 @@ def print_kernel_shuffled_labels(result: dict) -> None:
                   f"{' (edge)' if f['gamma_edge'] else ''}  alpha {f['alpha']:.3g} {f['alpha_verdict']}"
                   f"  moved {f['labels_moved_fraction']:.3f}")
 
+
+def check_kernel_grid_diagnostic() -> dict:
+    """Diagnostic of kernel_erasure's alpha failure, with its rule fixed before looking.
+
+    Refits only the arms whose alpha hit the lower grid edge (read from the saved kernel_erasure result): first with
+    the original grids (must reproduce the saved val-seen R², integrity), then with alphas extended to 1e-9 relative
+    and gamma factors 0.125-8. Rule: "the recovery finding does not depend on the grid" holds if every extended refit's
+    val-seen R² is within GRID_R2_TOLERANCE of the saved one. An edge hit again is recorded, not failed. Numerical
+    guard: min(1 - h_ii) at the chosen alpha, flagged below MIN_HAT_GAP.
+    """
+    records = json.loads(OUT.read_text())
+    saved = records["kernel_erasure"]["result"]
+    with np.load(verified_artifact(OUT, "nullspace_rounds")) as f:
+        bases = {key: f[key] for key in f.files if key.endswith("_basis")}
+
+    arms_out: list[dict] = []
+    integrity, holds = [], []
+    for variable in DATASETS:
+        flagged = [(site, arm) for site, r in saved[variable]["sites"].items()
+                   for arm, e in r["arms"].items() if e["alpha_edge"] == "lower"]
+        if not flagged:
+            continue
+        table = load_joined(variable)
+        roles, labels = table["role"], table["label"]
+        y = probe_targets(variable, labels)
+        evaluated = np.isin(roles, EVAL_ROLES)
+        seen = roles == "val_seen"
+        for site, arm in flagged:
+            x = site_features(table["activations"], site)
+            z = train_scaler(x, roles).transform(x)
+            entry_saved = saved[variable]["sites"][site]["arms"][arm]
+            if arm == "covariance":
+                basis = covariance_basis(z, y, roles)
+            elif arm == "nullspace_k":
+                basis = bases[f"{variable}_{site}_basis"]
+            else:
+                raise RuntimeError(f"unexpected flagged arm {arm}")
+            zp = project_out(z, basis, entry_saved["dims_removed"])
+
+            original = rbf_kernel_ridge(zp, y, roles, evaluated)
+            original_r2 = probe_scores(variable, labels[seen], original.fit.predictions[seen])["r2"]
+            extended = rbf_kernel_ridge(zp, y, roles, evaluated, EXTENDED_GAMMA_FACTORS, EXTENDED_RELATIVE_ALPHAS)
+            scores = probe_scores(variable, labels[seen], extended.fit.predictions[seen])
+            diff = scores["r2"] - entry_saved["val_seen"]["r2"]
+            integrity.append(abs(original_r2 - entry_saved["val_seen"]["r2"]) <= 1e-12)
+            holds.append(abs(diff) <= GRID_R2_TOLERANCE)
+            arms_out.append({
+                "variable": variable, "site": site, "plot_index": plot_index(site), "arm": arm,
+                "saved_val_seen_r2": entry_saved["val_seen"]["r2"], "original_grid_refit_r2": original_r2,
+                "extended_val_seen": scores, "r2_change": diff,
+                "extended_alpha": extended.fit.alpha, "extended_alpha_edge": extended.fit.alpha_edge,
+                "extended_gamma_factor": extended.gamma / extended.gamma_median,
+                "extended_gamma_edge": extended.gamma_edge, "extended_loo_mse_per_gamma": extended.loo_mse.tolist(),
+                "min_one_minus_hat": extended.fit.min_one_minus_hat,
+                "hat_gap_flag": bool(extended.fit.min_one_minus_hat < MIN_HAT_GAP),
+            })
+
+    criteria = {"original_grid_reproduces_saved": bool(integrity) and all(integrity)}
+    return {
+        "criteria": criteria, "n_flagged_arms": len(arms_out), "r2_tolerance": GRID_R2_TOLERANCE,
+        "extended_relative_alphas": [float(EXTENDED_RELATIVE_ALPHAS[0]), float(EXTENDED_RELATIVE_ALPHAS[-1]),
+                                     len(EXTENDED_RELATIVE_ALPHAS)],
+        "extended_gamma_factors": list(EXTENDED_GAMMA_FACTORS), "min_hat_gap": MIN_HAT_GAP,
+        "source": {"key": "kernel_erasure"}, "arms": arms_out,
+        "explanation_holds": bool(holds) and all(holds),
+    }
+
+
+def print_kernel_grid_diagnostic(result: dict) -> None:
+    """One line per flagged arm: saved vs extended R², change, new alpha/gamma edges, hat-gap guard."""
+    for a in result["arms"]:
+        print(f"{a['variable']:12s} {a['site']:9s} {a['arm']:11s}  saved {a['saved_val_seen_r2']:.3f}"
+              f"  (orig refit {a['original_grid_refit_r2']:.3f})  extended {a['extended_val_seen']['r2']:.3f}"
+              f"  change {a['r2_change']:+.3f}  alpha {a['extended_alpha']:.2e} edge {a['extended_alpha_edge']}"
+              f"  gamma {a['extended_gamma_factor']:g} edge {a['extended_gamma_edge']}"
+              f"  min(1-h) {a['min_one_minus_hat']:.2e}{'  FLAG' if a['hat_gap_flag'] else ''}")
+    print(f"\ncriteria {result['criteria']}  explanation holds: {result['explanation_holds']}"
+          f"  ({result['n_flagged_arms']} arms)")
+
 CHECKS = {
     "nullspace_rounds": (check_nullspace_rounds, print_nullspace_rounds),
     "leak_diagnostic": (check_leak_diagnostic, print_leak_diagnostic),
@@ -862,6 +946,7 @@ CHECKS = {
     "alpha_sweep": (check_alpha_sweep, print_alpha_sweep),
     "kernel_erasure": (check_kernel_erasure, print_kernel_erasure),
     "kernel_shuffled_labels": (check_kernel_shuffled_labels, print_kernel_shuffled_labels),
+    "kernel_grid_diagnostic": (check_kernel_grid_diagnostic, print_kernel_grid_diagnostic),
 }
 
 

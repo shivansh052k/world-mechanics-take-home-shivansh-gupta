@@ -386,6 +386,11 @@ what's next.
   min(1 − h_ii), flag < 1e-6). Hypothesis-level reading (nonlinear/curved encoding, H-01; direction weaker ↔ H-02);
   kernel arms added to the test key; new H-12 (probe steering leaves the nonlinear code intact). Order: negative
   control → B → controls / profile → test.
+- 4.3g: `probes.label_permutations` (= F-94's first 5); `kernel_shuffled_labels` **passed** (4/4, ~30 s): covariance
+  removed at idx 9, 5 shuffled-label kernel fits: max val-seen R² 0.005 / 0.001 / 0.005 (real arm 0.753 / 0.942 /
+  0.928); direction mean circular MAE 89.5° (min 86.8°); labels moved 97.7–99.0 %; no lower-edge alpha (6 / 15 upper
+  edge, rest interior). Claude Code's "most upper edge" prediction wrong; gamma always on a grid edge (observation).
+  Kernel slide requirement cleared.
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),

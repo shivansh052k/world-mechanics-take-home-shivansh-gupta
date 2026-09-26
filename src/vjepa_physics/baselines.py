@@ -127,21 +127,23 @@ def kernel_ridge(
     y_mean = y_train.mean(axis=0)
     qy = q.T @ (y_train - y_mean)
     alphas = np.asarray(relative_alphas) * np.trace(k_train) / len(train)
-    best_score, best = -np.inf, 0
+    best_score, best, best_gap = -np.inf, 0, float("nan")
     for i, alpha in enumerate(alphas):
         shrink = lam / (lam + alpha)
         fitted = y_mean + q @ (shrink[:, None] * qy)
         hat = 1.0 / len(train) + (q**2) @ shrink
         score = -np.mean(((y_train - fitted) / (1.0 - hat)[:, None]) ** 2)
         if score > best_score:
-            best_score, best = score, i
+            best_score, best, best_gap = score, i, float((1.0 - hat).min())
 
     alpha = float(alphas[best])
     dual = q @ (qy / (lam + alpha)[:, None])  # (K + alpha I)^-1 (y - mean)
     predictions = np.full((len(roles), y_train.shape[1]), np.nan)
     predictions[predict] = y_mean + centred[predict] @ dual
     edge = "lower" if best == 0 else "upper" if best == len(alphas) - 1 else None
-    return KernelFit(alpha, edge, len(train), predictions.reshape((len(roles), *np.shape(y)[1:])), -best_score)
+    return KernelFit(
+        alpha, edge, len(train), predictions.reshape((len(roles), *np.shape(y)[1:])), -best_score, best_gap,
+    )
 
 
 GAMMA_FACTORS = (0.25, 0.5, 1.0, 2.0, 4.0)  # RBF width grid: multiples of the median-distance gamma
@@ -173,6 +175,7 @@ class RBFFit:
     gamma_median: float
     gamma_edge: str | None
     loo_mse: np.ndarray  # (len(gamma_factors),), each at its own best alpha
+    min_one_minus_hat: float = float("nan")  # smallest 1 - h_ii at the chosen alpha (LOO divides by it)
 
 
 def rbf_kernel_ridge(
