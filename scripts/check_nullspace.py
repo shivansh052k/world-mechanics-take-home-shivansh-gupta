@@ -25,7 +25,9 @@ from vjepa_physics.nullspace import (
     grid_edge, nullspace_alpha_verdict, project_out, random_span_basis, redundancy_counts, round_scores, run_rounds,
     train_ridge, train_scaler, train_span,
 )
-from vjepa_physics.probes import ALPHAS, nested_cv_predictions, probe_scores, probe_targets, site_features
+from vjepa_physics.probes import (
+    ALPHAS, label_permutations, nested_cv_predictions, probe_scores, probe_targets, site_features,
+)
 from vjepa_physics.reproducibility import SEED
 from vjepa_physics.baselines import FLOOR_ALPHAS, GAMMA_FACTORS, kernel_ridge, rbf_kernel_ridge, squared_distances
 
@@ -61,6 +63,11 @@ REFIT_TOLERANCE = 1e-9  # relative: nullspace arm vs saved round K + 1; nested C
 SWEEP_SITE = "block_8"  # headline layer (index 9)
 SWEEP_ALPHAS = (1e-3, 1e-1, 1e1, 1e3, 1e5, 1e7)  # fixed ridge penalty per run (standardized space, same units as ALPHAS)
 RBF_CHECK_ROWS = 200  # clips used to compare our RBF Gram with sklearn's
+
+CONTROL_SITE = "block_8"  # kernel negative control at the headline layer (index 9)
+KERNEL_PERMUTATIONS = 5  # shuffled train-label permutations (the first ones of the probe shuffled-label control)
+SHUFFLED_MAX_R2 = 0.1  # every shuffled fit's val-seen R² must stay below this
+SHUFFLED_MIN_MEAN_CIRCULAR_MAE = 80.0  # direction: circular MAE averaged over the permutations (chance 90)
 
 
 def secondary_rule(variable: str, scores: list[dict], baseline_mae: float | None) -> dict:
@@ -770,6 +777,83 @@ def print_kernel_erasure(result: dict) -> None:
             print(f"    implementation checks {r['arms']['none']['implementation_checks']}")
             
 
+def check_kernel_shuffled_labels() -> dict:
+    """Negative control for the kernel probe after erasure: can the pipeline produce signal from shuffled labels?
+
+    Per variable at CONTROL_SITE: the train cross-covariance direction(s) of the TRUE labels removed (as in the
+    real covariance arm), then RBF kernel ridge with the same grids and train LOO selection fit on
+    KERNEL_PERMUTATIONS permutations of the train labels (seed SEED; only train rows move), scored on val_seen with
+    the true labels. Passes if: every shuffled fit's val-seen R² < SHUFFLED_MAX_R2; direction's circular MAE averaged
+    over the permutations > SHUFFLED_MIN_MEAN_CIRCULAR_MAE; every fit saw exactly the train clips; no alpha failure
+    (the alpha rule covers every fit). Chosen alphas and gammas recorded.
+    """
+    real = json.loads(OUT.read_text())["kernel_erasure"]["result"]
+    result: dict = {}
+    ok: dict[str, list[bool]] = {"r2": [], "circular": [], "n_fit": [], "alpha": []}
+    for variable in DATASETS:
+        table = load_joined(variable)
+        roles, labels = table["role"], table["label"]
+        y = probe_targets(variable, labels)
+        evaluated = np.isin(roles, EVAL_ROLES)
+        seen = roles == "val_seen"
+        train = np.flatnonzero(roles == "train")
+        x = site_features(table["activations"], CONTROL_SITE)
+        z = train_scaler(x, roles).transform(x)
+        basis = covariance_basis(z, y, roles)  # true labels, as in the real arm
+        zp = project_out(z, basis, basis.shape[1])
+        permutations = label_permutations(len(train), KERNEL_PERMUTATIONS, SEED)
+
+        fits = []
+        for permutation in permutations:
+            y_shuffled = y.copy()
+            y_shuffled[train] = y[train[permutation]]
+            rbf = rbf_kernel_ridge(zp, y_shuffled, roles, evaluated)
+            scores = probe_scores(variable, labels[seen], rbf.fit.predictions[seen])
+            verdict = nullspace_alpha_verdict(rbf.fit.alpha_edge, scores["r2"])
+            ok["n_fit"].append(rbf.fit.n_fit == EXPECTED_FIT[variable])
+            ok["alpha"].append(verdict != "failure")
+            fits.append({
+                "labels_moved_fraction": float(np.mean(labels[train[permutation]] != labels[train])),
+                "gamma_factor": rbf.gamma / rbf.gamma_median, "gamma_edge": rbf.gamma_edge,
+                "alpha": rbf.fit.alpha, "alpha_edge": rbf.fit.alpha_edge, "alpha_verdict": verdict, **scores,
+            })
+        r2s = [f["r2"] for f in fits]
+        ok["r2"].append(max(r2s) < SHUFFLED_MAX_R2)
+        entry: dict = {"dims_removed": int(basis.shape[1]), "max_r2": max(r2s), "fits": fits,
+                       "real_covariance_arm_val_seen_r2":
+                           real[variable]["sites"][CONTROL_SITE]["arms"]["covariance"]["val_seen"]["r2"]}
+        if variable == "direction":
+            errors = [f["circular_mae"] for f in fits]
+            entry |= {"mean_circular_mae": float(np.mean(errors)), "min_circular_mae": min(errors)}
+            ok["circular"].append(entry["mean_circular_mae"] > SHUFFLED_MIN_MEAN_CIRCULAR_MAE)
+        result[variable] = entry
+
+    criteria = {
+        "max_shuffled_r2_below_0_1": all(ok["r2"]),
+        "direction_mean_circular_mae_above_80": bool(ok["circular"]) and all(ok["circular"]),
+        "n_fit_equals_train_count": all(ok["n_fit"]),
+        "no_alpha_failure": all(ok["alpha"]),
+    }
+    return {
+        "criteria": criteria, "site": CONTROL_SITE, "plot_index": plot_index(CONTROL_SITE),
+        "n_permutations": KERNEL_PERMUTATIONS, "seed": SEED, "gamma_factors": list(GAMMA_FACTORS),
+        **result, "passed": all(criteria.values()),
+    }
+
+
+def print_kernel_shuffled_labels(result: dict) -> None:
+    """Per variable: each shuffled fit's val-seen R², gamma factor and alpha verdict, next to the real arm's R²."""
+    for variable in DATASETS:
+        r = result[variable]
+        extra = (f"  circular MAE mean {r['mean_circular_mae']:.2f} min {r['min_circular_mae']:.2f}"
+                 if variable == "direction" else "")
+        print(f"\n{variable}  (covariance removed, {r['dims_removed']} dims; real arm val-seen R2 "
+              f"{r['real_covariance_arm_val_seen_r2']:.3f})  max shuffled R2 {r['max_r2']:.3f}{extra}")
+        for i, f in enumerate(r["fits"]):
+            print(f"  permutation {i}  R2 {f['r2']:7.3f}  gamma factor {f['gamma_factor']:g}"
+                  f"{' (edge)' if f['gamma_edge'] else ''}  alpha {f['alpha']:.3g} {f['alpha_verdict']}"
+                  f"  moved {f['labels_moved_fraction']:.3f}")
+
 CHECKS = {
     "nullspace_rounds": (check_nullspace_rounds, print_nullspace_rounds),
     "leak_diagnostic": (check_leak_diagnostic, print_leak_diagnostic),
@@ -777,6 +861,7 @@ CHECKS = {
     "fresh_probe_erasure": (check_fresh_probe_erasure, print_fresh_probe_erasure),
     "alpha_sweep": (check_alpha_sweep, print_alpha_sweep),
     "kernel_erasure": (check_kernel_erasure, print_kernel_erasure),
+    "kernel_shuffled_labels": (check_kernel_shuffled_labels, print_kernel_shuffled_labels),
 }
 
 

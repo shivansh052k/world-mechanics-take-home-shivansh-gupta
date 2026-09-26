@@ -210,3 +210,15 @@ def nested_cv_predictions(
         chosen.append(fit.alpha)
         edges.append(fit.alpha_edge)
     return NestedCV(predictions, outer, np.array(chosen), tuple(edges))
+
+
+def label_permutations(n: int, count: int, seed: int) -> np.ndarray:
+    """(count, n) permutations of n rows, drawn in order from one generator seeded with `seed`.
+
+    Raises RuntimeError if a permutation is the identity (it would leave the labels unshuffled).
+    """
+    rng = np.random.default_rng(seed)
+    permutations = np.stack([rng.permutation(n) for _ in range(count)])
+    if (permutations == np.arange(n)).all(axis=1).any():
+        raise RuntimeError("a permutation is the identity")
+    return permutations

@@ -371,6 +371,21 @@ what's next.
   headline. Depth profile every third index (or dropped, user decides); random control kept, PC optional. One
   multi-panel figure; message "the nullspace count measures the probe procedure, not the representation". Phase 5 K
   6 / 7 / 7 unchanged; notes for Phase 5 (covariance steering arm) and 7.5 (covariance principal angles).
+- User: keep depth profile (every third index) and PC control. 4.3f: `KernelFit.loo_mse`, `squared_distances`,
+  `median_gamma`, `rbf_kernel_ridge` (`baselines.py`), `nullspace.covariance_basis`; two script bugs (missing import,
+  `GAMMA_FACTORS_USED`, Claude Code's slip) caught by review before running. `kernel_erasure` **failed
+  `no_alpha_failure`** (7 / 72 fits at the lower relative-alpha edge, all erased arms at idx 9/18); other 5 passed (RBF
+  Gram = sklearn ≤ 3.3e-16; linear-Gram kernel_ridge = RidgeCV). Kernel val-seen R² after erasure: covariance
+  0.71–0.93 (direction), 0.93–0.96 (speed), 0.86–0.96 (acceleration); nullspace_k 0.69–0.94; random = none. Claude
+  Code's recovery prediction (0.2–0.8) wrong (stronger). Failure + options (A keep / B extended-grid diagnostic) →
+  planning chat.
+- Planning chat (→ D-49 addendum): failure kept, 7 arms flagged "alpha at lower grid edge (under-resolved)", scores
+  held out, not a lower bound. Required before any slide: kernel negative control (covariance removed at idx 9, 5
+  shuffled-label permutations, pass max R² < 0.1 and direction mean circular MAE > 80°). Modified B diagnostic (7 arms,
+  alpha to 1e-9 relative, gamma 0.125–8; holds if every refit within 0.05 of saved; edge = recorded; report
+  min(1 − h_ii), flag < 1e-6). Hypothesis-level reading (nonlinear/curved encoding, H-01; direction weaker ↔ H-02);
+  kernel arms added to the test key; new H-12 (probe steering leaves the nonlinear code intact). Order: negative
+  control → B → controls / profile → test.
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),
