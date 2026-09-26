@@ -441,6 +441,9 @@ what's next.
   breakage). Claude Code's predictions: hard expectations ✓; direct 0.3–1.0 and blocks −0.2…−0.9 met for speed only
   (direction, acceleration smaller); most of the drop by idx 12 ✓; random < 0.05 ✓ (K−1 arms checked); flat within
   ±0.05 ✓ (with a rising trend). **Step 5.3b done.**
+- Guard: `evidence.require_clean_code()` (same `code_changes` test as provenance's `git_dirty`), called in
+  `check_steering.py main()` after argument parsing; refused a run while uncommitted as expected, nothing saved; committed.
+  After three dirty saves (`steering_setup`, `steering_cache`, `steering_propagation`), every new script calls it.
 
 ### 2026-09-25 — Phase 4 started (nullspace probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically), asks before

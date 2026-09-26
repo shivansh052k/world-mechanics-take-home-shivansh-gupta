@@ -71,6 +71,10 @@ CONSISTENCY_TOLERANCE = 1e-5  # relative: readouts from the saved fp32 features 
 LENGTH_EDGES = (0.0, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0)  # bins of |shift_z| / median train clip distance; last bin open
 OFF_DISTRIBUTION_RATIO = 1.0  # bins starting at or above this are labelled off-distribution (pre-stated)
 
+CLIP_SECONDS = 15 / 24  # frame 0 to frame 15 at 24 fps
+DISTANCE_PER_UNIT = {"speed": CLIP_SECONDS, "acceleration": CLIP_SECONDS**2 / 2}  # metres per m/s; per m/s² from rest
+SPECIFICITY_PAIRS = (("speed", "acceleration"), ("acceleration", "speed"))  # (steered, read)
+
 
 def selection_groups(table: dict, rows: np.ndarray, variable: str, role: str) -> np.ndarray:
     """The group each clip was spread over when chosen: held-out value, angle octant, or value-index quartile."""
@@ -790,12 +794,91 @@ def check_steering_propagation() -> dict:
         "criteria": criteria, "passed": all(criteria.values()),
     }
 
+def load_runs(variable: str) -> dict[str, np.ndarray]:
+    """Readouts and ids of both halves of one variable's steering runs, read through their hashes and joined along the
+    clip axis (test_seen first); target labels and the arm table from the first half."""
+    halves = []
+    for half in HALVES:
+        with np.load(verified_artifact(OUT, f"steer_{variable}_{half}")) as f:
+            halves.append({name: f[name] for name in f.files if name == "ids" or name.startswith("readout")}
+                          | {name: f[name] for name in ("target_label", "arm_kind", "arm_n", "arm_seed")})
+    joined = {name: np.concatenate([h[name] for h in halves]) for name in halves[0]
+              if name == "ids" or name.startswith("readout")}
+    return joined | {name: halves[0][name] for name in ("target_label", "arm_kind", "arm_n", "arm_seed")}
+
+
+def check_steering_specificity() -> dict:
+    """Post hoc, saved test outputs only (no model): signed speed <-> acceleration cross-readout changes in metres.
+
+    For each (steered, read) pair, readout site (index 9, 18) and arm group (probes 1, K/2, K - 1, K; covariance;
+    random K - 1, K): the slope through the origin of the read variable's readout change on the steered variable's own
+    readout change, both vs the unedited clip and in metres travelled over the clip (DISTANCE_PER_UNIT); also the slope
+    on the intended shift. Prediction fixed before computing (planning chat): slope ≈ +1 under the shared-distance
+    reading. Clip-bootstrap 95% intervals (paired resamples of the 30 clips). Passes if both halves of the steered
+    variable come from one clean commit, everything is finite, and each bootstrap point equals the full-sample slope.
+    """
+    saved = json.loads(OUT.read_text())
+    boot = bootstrap_indices(sum(N_CLIPS.values()), BOOTSTRAP_RESAMPLES, SEED)
+    ok: dict[str, list[bool]] = {"clean": [], "finite": [], "bootstrap_point": []}
+    result: dict = {}
+
+    for steered, read in SPECIFICITY_PAIRS:
+        provs = [saved[f"steer_{steered}_{h}"]["provenance"] for h in HALVES]
+        ok["clean"].append(len({p["git_commit"] for p in provs}) == 1 and not any(p["git_dirty"] for p in provs))
+        runs = load_runs(steered)
+        arms = list(zip(runs["arm_kind"].tolist(), runs["arm_n"].tolist(), runs["arm_seed"].tolist()))
+        groups: dict[str, list[int]] = {}
+        for a, (kind, n, _) in enumerate(arms):
+            groups.setdefault("covariance" if kind == "covariance" else f"{kind}_{n}", []).append(a)
+        k = max(n for kind, n, _ in arms if kind == "probes")
+        targets = runs["target_label"]
+
+        record = {}
+        for site in READOUT_SITES:
+            base_own = readout_values(steered, runs[f"readout_unedited_{steered}_{site}"])  # (clips,)
+            base_read = readout_values(read, runs[f"readout_unedited_{read}_{site}"])
+            own = (readout_values(steered, runs[f"readout_{steered}_{site}"]) - base_own[:, None, None]) \
+                * DISTANCE_PER_UNIT[steered]
+            cross = (readout_values(read, runs[f"readout_{read}_{site}"]) - base_read[:, None, None]) \
+                * DISTANCE_PER_UNIT[read]
+            intended = (targets[None, :] - base_own[:, None]) * DISTANCE_PER_UNIT[steered]  # (clips, targets)
+
+            site_record = {}
+            for name in ("probes_1", f"probes_{k // 2}", f"probes_{k - 1}", f"probes_{k}", "covariance",
+                         f"random_{k - 1}", f"random_{k}"):
+                idx = groups[name]
+                o, c = own[:, :, idx], cross[:, :, idx]
+                i = np.broadcast_to(intended[:, :, None], o.shape)
+
+                def slope(x: np.ndarray) -> dict:
+                    num, den = (x * c).sum(axis=(1, 2)), (x**2).sum(axis=(1, 2))
+                    point = float(num.sum() / den.sum())
+                    ok["bootstrap_point"].append(bool(np.isclose(point, (x * c).sum() / (x**2).sum(), rtol=1e-12, atol=0)))
+                    return {"point": point, "ci": percentile_interval(num[boot].sum(axis=1) / den[boot].sum(axis=1))}
+
+                site_record[name] = {
+                    "slope_on_own_change": slope(o),
+                    "slope_on_intended": slope(i),
+                    "mean_abs_own_change_m": float(np.abs(o).mean()),
+                    "mean_abs_cross_change_m": float(np.abs(c).mean()),
+                }
+            record[site] = site_record
+        result[f"{steered}_to_{read}"] = record
+
+    ok["finite"].append(all_finite(result))
+    criteria = {name: all(values) for name, values in ok.items()}
+    return {
+        "post_hoc": True, "pairs": result, "distance_per_unit": DISTANCE_PER_UNIT, "clip_seconds": CLIP_SECONDS,
+        "predicted_slope": 1.0, "criteria": criteria, "passed": all(criteria.values()),
+    }
+
 CHECKS = {
     "steering_setup": check_steering_setup,
     "steering_cache": check_steering_cache,
     **{f"steer_{v}_{h}": partial(steering_run, v, h) for v in DATASETS for h in HALVES},
     "steering_scores": check_steering_scores,
     "steering_propagation": check_steering_propagation,
+    "steering_specificity": check_steering_specificity,
 }
 
 
