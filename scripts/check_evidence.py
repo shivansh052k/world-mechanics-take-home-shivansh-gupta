@@ -58,7 +58,7 @@ VOLATILE_FIELDS = {("joined", "storage"): ("free_disk_bytes", "memory")}
 
 # Probing-stage checks judged by the code-hash rule: a key passes if some commit at or after its recorded commit
 # holds exactly the file hashes it recorded; otherwise it is re-run from committed code.
-HASH_CHECK_SUBJECTS = ("probes", "baselines", "layer_curves", "patches")
+HASH_CHECK_SUBJECTS = ("probes", "baselines", "layer_curves", "patches", "nullspace")
 CODE_PREFIXES = ("src/", "scripts/")  # the recorded code files live here
 
 # Keys re-run at the probing gate because their code changed before it was committed (code_hash_check).

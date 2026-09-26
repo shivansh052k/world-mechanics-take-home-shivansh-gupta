@@ -425,6 +425,15 @@ what's next.
   −0.195 idx 9, wide CI: observation); kernel after removal within 0.039 of val-seen (idx 9 CI direction [0.72, 0.79],
   speed [0.91, 0.94], acceleration [0.92, 0.95]). F-127. Claude Code's "fresh ≤ 0.05" wrong for acceleration. Script
   size noted: refactor shared arm setup into the package at 8.6 (user said), re-run affected keys then.
+- 4.5 pass 1: `figure_nullspace` → `results/nullspace/nullspace_rounds.png` (3 × 3, rounds 1–20; validation, frozen test,
+  random mean + band, top PCs, stop 0.1, paper thresholds in the legend; K with dims in each panel; dims not on a second
+  axis). Claude Code's reviews: (1) invisible random band, K labels in its path, paper labels crowding, legend gap →
+  fixed; (2) paper labels crossing the PC line → moved to the legend; (3) clean.
+- 4.5 pass 2: `figure_erasure` → `results/nullspace/erasure_and_procedure.png` (K vs fixed alpha, K vs depth, erasure
+  bars at idx 9: linear train-fit / fresh linear / RBF kernel, test-seen dots with CIs, grid-range whiskers). Second PNG
+  instead of a fourth grid row (slide-sized; layout Claude Code's call, noted for the report). Review (1): hidden
+  off-scale test point (acceleration fresh covariance −0.195), clipped y-label, overlapping idx-0 markers, crowded tick
+  labels, legend gap → fixed; review (2) clean. **Step 4.5 done.**
 
 ### 2026-09-25 — Phase 3 started (layer-wise probing)
 - Working style reconfirmed (user said): Claude Code edits only `docs/` and `CLAUDE.md` (automatically after each step),
