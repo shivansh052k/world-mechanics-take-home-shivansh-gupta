@@ -610,6 +610,8 @@ def check_figure_manifolds() -> dict:
             p = project(curve(np.array([v])))[0]
             ax.scatter(p[0], p[1], s=22, color=INK, zorder=6, linewidths=0)
             out = (p - centre) / np.linalg.norm(p - centre)  # label outward, away from the curve's centre
+            if kind == "open" and v == LABEL_MARKS[variable][0]:
+                out = np.array([1.0, -0.4]) / np.linalg.norm([1.0, -0.4])  # first point sits at the left edge: label to the right
             ax.annotate(f"{v:g}{UNITS[variable]}", p, xytext=tuple(14 * out), textcoords="offset points",
                         ha="left" if out[0] >= 0 else "right", va="center", color=INK_SECONDARY, fontsize=9,
                         zorder=7, bbox={"boxstyle": "round,pad=0.15", "fc": SURFACE, "ec": "none", "alpha": 0.85})
