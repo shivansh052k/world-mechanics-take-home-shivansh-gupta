@@ -80,6 +80,8 @@ FIGURE_DPI = 200
 BIN_CENTRES = (np.arange(N_BINS) * 4 + 1.5) * 5.625  # direction: centre angle (degrees) of each 4-value bin
 PATH_FRACTIONS_SHOWN = (0.0, 0.25, 0.5, 0.75, 1.0)
 
+FIGURE_PROFILE = REPO / "results/spline_steering/spline_profile.png"
+
 def kind_of(variable: str) -> str:
     return "loop" if variable == "direction" else "open"
 
@@ -972,6 +974,105 @@ def check_figure_spline_paths() -> dict:
         "sources": {key: saved[key]["provenance"]["git_commit"] for key in ("spline_setup", "spline_naturalness")},
         "criteria": criteria, "passed": all(criteria.values()),
     }
+
+def check_figure_spline_profile() -> dict:
+    """Figure (slide 4, Q3 + Q4): propagation of each edit from index 9 to 18, and the token-structure effect.
+
+    Row 1 (one panel per variable): output-space gain at indices 9-18 of the spline endpoint, the covariance line,
+    the time-structured covariance edit, Phase 5's K - 1 probes and the random floor (spline_scores' saved profile).
+    Row 2: mean gain over indices 10-18 minus the uniform covariance edit, time-structured and time-reversed, with
+    95% intervals and the pre-declared confirmation threshold (C11). Saved results only. Passes if: the covariance
+    replication's profile equals Phase 5's covariance profile at every index; plotted values finite; figure written.
+    """
+    saved = json.loads(OUT.read_text())
+    scores = saved["spline_scores"]["result"]["variables"]
+    indices = [plot_index(s) for s in PROFILE_SITES]
+    ok: dict[str, list[bool]] = {"covariance_equals_phase5": [], "finite": []}
+
+    fig = plt.figure(figsize=(15, 9.5), facecolor=SURFACE)
+    grid = fig.add_gridspec(2, 3, height_ratios=[1.15, 0.85], hspace=0.45, wspace=0.14, top=0.86)
+    first = None
+    for col, variable in enumerate(DATASETS):
+        k1 = load_probe_sequence(variable).k - 1
+        colour = DATASET_COLOUR[variable]
+        profile = scores[variable]["profile"]
+
+        def gains(arm: str) -> list[float]:
+            return [profile[str(i)]["arms"][arm]["gain"] for i in indices]
+
+        ok["covariance_equals_phase5"].append(gains("covariance_1") == gains("phase5_covariance"))
+        styles = [
+            (f"phase5_random_{k1}", {"color": INK_MUTED, "lw": 1.2}),
+            (f"phase5_probes_{k1}", {"color": INK_SECONDARY, "lw": 1.6, "ls": (0, (4, 3)), "marker": "^", "ms": 5}),
+            ("time_covariance_1", {"color": colour, "lw": 1.4, "ls": (0, (1, 2)), "marker": "s", "ms": 5}),
+            ("covariance_1", {"color": colour, "lw": 2.0, "marker": "o", "ms": 5}),
+            ("spline_1", {"color": colour, "lw": 0, "marker": "o", "ms": 10, "mfc": SURFACE, "mew": 1.6}),
+        ]
+        ax = fig.add_subplot(grid[0, col], sharey=first)
+        first = first or ax
+        for z, (arm, style) in enumerate(styles):
+            values = gains(arm)
+            ok["finite"].append(bool(np.isfinite(values).all()))
+            ax.plot(indices, values, zorder=2 + z, **style)
+        at18 = {name: profile["18"]["arms"][arm]["gain"] for name, arm in
+                (("spline", "spline_1"), ("covariance", "covariance_1"), ("probes", f"phase5_probes_{k1}"))}
+        ax.text(0.98, 0.95, "index 18: " + " · ".join(f"{n} {g:.3f}" for n, g in at18.items()), transform=ax.transAxes,
+                ha="right", va="top", color=INK_SECONDARY, fontsize=8.5)
+        ax.axhline(0, color=INK_MUTED, lw=0.8, zorder=1)
+        ax.set_xticks(indices)
+        ax.set_xlabel("layer index (steered at 9)", color=INK_SECONDARY)
+        if col == 0:
+            ax.set_ylabel("gain (1 = readout reaches the target)", color=INK_SECONDARY)
+        ax.set_title(variable.capitalize() + (" (gain on (sin, cos))" if variable == "direction" else ""),
+                     color=INK, fontsize=11, loc="left")
+        style_axes(ax)
+
+    ax = fig.add_subplot(grid[1, :])
+    for i, variable in enumerate(DATASETS):
+        colour = DATASET_COLOUR[variable]
+        for k, (key, filled) in enumerate((("time_minus_covariance_downstream", True),
+                                           ("reversed_minus_covariance_downstream", False))):
+            h = scores[variable]["headline"][key]
+            ok["finite"].append(bool(np.isfinite([h["point"], *h["ci"]]).all()))
+            ax.errorbar(i + (k - 0.5) * 0.25, h["point"], yerr=[[h["point"] - h["ci"][0]], [h["ci"][1] - h["point"]]],
+                        fmt="s", ms=8, color=colour, mfc=colour if filled else SURFACE, mec=colour, mew=1.8,
+                        elinewidth=1.8, capsize=4, zorder=3)
+    ax.axhline(0, color=INK_MUTED, lw=1.0, zorder=1)
+    ax.axhline(C11_MIN_DIFFERENCE, color=INK_SECONDARY, lw=1.0, ls=(0, (4, 3)), zorder=1)
+    ax.annotate(f"pre-declared confirmation threshold (+{C11_MIN_DIFFERENCE:g}): not reached", (0.01, C11_MIN_DIFFERENCE),
+                xycoords=("axes fraction", "data"), xytext=(0, 4), textcoords="offset points", color=INK_SECONDARY, fontsize=9)
+    ax.set_xticks(range(len(DATASETS)), [v.capitalize() for v in DATASETS])
+    ax.set_xlim(-0.6, len(DATASETS) - 0.4)
+    ax.set_ylabel("mean gain over idx 10–18,\nminus uniform edit (95% CI)", color=INK_SECONDARY)
+    ax.set_title("Token-structured edit: each time step gets its own covariance shift (reversed order = control)",
+                 color=INK, fontsize=11, loc="left")
+    ax.legend(handles=[Line2D([], [], color=INK, marker="s", ms=8, lw=0, label="time-structured − uniform"),
+                       Line2D([], [], color=INK, marker="s", ms=8, lw=0, mfc=SURFACE, mew=1.8,
+                              label="time-reversed − uniform")],
+              frameon=False, fontsize=9, labelcolor=INK, loc="lower right")
+    style_axes(ax)
+
+    handles = [
+        Line2D([], [], color=INK, lw=0, marker="o", ms=9, mfc=SURFACE, mew=1.6, label="spline endpoint"),
+        Line2D([], [], color=INK, lw=2.0, marker="o", ms=5, label="covariance line"),
+        Line2D([], [], color=INK, lw=1.4, ls=(0, (1, 2)), marker="s", ms=5, label="time-structured covariance"),
+        Line2D([], [], color=INK_SECONDARY, lw=1.6, ls=(0, (4, 3)), marker="^", ms=5, label="K − 1 probes (Phase 5)"),
+        Line2D([], [], color=INK_MUTED, lw=1.2, label="random, same length (floor)"),
+    ]
+    fig.suptitle("Propagation of the edit from the steering layer (index 9) to index 18; colour = variable",
+                 color=INK, fontsize=12, x=0.02, ha="left", y=0.985)
+    fig.legend(handles=handles, loc="upper center", ncol=5, frameon=False, fontsize=9, labelcolor=INK,
+               bbox_to_anchor=(0.5, 0.945))
+    FIGURE_PROFILE.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(FIGURE_PROFILE, dpi=FIGURE_DPI, facecolor=SURFACE, bbox_inches="tight")
+    plt.close(fig)
+
+    criteria = {name: all(v) for name, v in ok.items()} | {"figure_written": FIGURE_PROFILE.exists()}
+    return {
+        "figure": {"path": str(FIGURE_PROFILE.relative_to(REPO)), "sha256": file_sha256(FIGURE_PROFILE)},
+        "sources": {"spline_scores": saved["spline_scores"]["provenance"]["git_commit"]},
+        "criteria": criteria, "passed": all(criteria.values()),
+    }
     
     
 CHECKS = {
@@ -982,6 +1083,7 @@ CHECKS = {
     "spline_held_out": check_spline_held_out,
     "comparison_table": check_comparison_table,
     "figure_spline_paths": check_figure_spline_paths,
+    "figure_spline_profile": check_figure_spline_profile,
 }
 
 
