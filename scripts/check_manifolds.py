@@ -13,11 +13,12 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 from vjepa_physics.data import DATASETS
-from vjepa_physics.evidence import file_sha256, require_clean_code, save_result
+from vjepa_physics.evidence import file_sha256, require_clean_code, save_result, verified_artifact
 from vjepa_physics.extraction import plot_index
 from vjepa_physics.joined import load_joined
 from vjepa_physics.manifolds import (
-    EXACT, LINE, PCA_DIMS, centroid_noise, fit_curve, fit_spacing_line, loco_errors, loco_grid, loco_spacing_grid,
+    EXACT, HARMONICS, LINE, PCA_DIMS, centroid_noise, fit_curve, fit_spacing_line, harmonic_coefficients,
+    harmonic_power, loco_errors, loco_grid, loco_spacing_grid, participation_ratio, principal_cosines,
     select_setting, smoothing_grid, unit_tangents, value_centroids,
 )
 from vjepa_physics.metrics import bootstrap_indices, percentile_interval, resampled_mean
@@ -45,6 +46,12 @@ DISTANCE_PER_UNIT = {"speed": CLIP_SECONDS, "acceleration": CLIP_SECONDS**2 / 2}
 WINDOW_REFERENCE = (0.15625, 1.953125)  # F-65's overlap window of distances travelled (metres)
 WINDOW_TOLERANCE = 1e-12
 TANGENT_POINTS = 201  # matched distances for tangent angles (ends dropped)
+
+MAX_HARMONIC = max(HARMONICS)  # spectrum up to the loop grid's largest H (12)
+ROUND_HARMONICS = 6  # harmonic planes compared with each nullspace round block
+PERMUTATIONS = 1_000  # angle-shuffle null for the harmonic spectrum
+DENSE_POINTS = 2001  # curve samples for the curve's participation ratio
+HARMONIC_TOLERANCE = 1e-10  # relative: full-space trig fit vs the loop curve with all PCA axes
 
 
 def kind_of(variable: str) -> str:
@@ -398,11 +405,134 @@ def check_manifold_ladder() -> dict:
         "criteria": criteria, "passed": all(criteria.values()),
     }
     
+def saved_curves() -> tuple[dict, dict]:
+    """manifold_loco's saved arrays (read through their hash) and its result."""
+    with np.load(verified_artifact(OUT, "manifold_loco")) as f:
+        arrays = {key: f[key] for key in f.files}
+    return arrays, json.loads(OUT.read_text())["manifold_loco"]["result"]["variables"]
 
+
+def selected_curve(arrays: dict, variable: str, site: str):
+    """values, centroids and the selected curve at one site, rebuilt from the saved grid indices."""
+    prefix = f"{variable}_{site}"
+    values, cents = arrays[f"{prefix}_values"], arrays[f"{prefix}_centroids"]
+    a, b = (int(i) for i in arrays[f"{prefix}_selected"])
+    kind = kind_of(variable)
+    return values, cents, fit_curve(kind, values, cents, PCA_DIMS[a], smoothing_grid(kind, values)[b])
+
+
+def dense_values(variable: str, values: np.ndarray) -> np.ndarray:
+    if kind_of(variable) == "loop":
+        return np.linspace(0.0, 360.0, DENSE_POINTS, endpoint=False)
+    return np.linspace(values[0], values[-1], DENSE_POINTS)
+
+
+def check_manifold_dimension() -> dict:
+    """Observation (H-01): the manifold's dimension next to Phase 4's counts at indices 1 / 9 / 18.
+
+    Per variable and site: m, K and K * m from the saved probe sequence; the selected PCA dimension k (rebuilt from
+    manifold_loco's saved indices), the share of centroid variance in k axes, axes for 90% of it, the participation
+    ratio of the raw centroids (sampling noise inflates it) and of the fitted curve sampled densely in the label.
+    Passes if: the rebuilt selection equals manifold_loco's; the saved scaler equals the probe sequence's; finite.
+    """
+    arrays, saved = saved_curves()
+    ok: dict[str, list[bool]] = {name: [] for name in ("selection_matches", "scaler_matches_nullspace", "finite")}
+    result: dict = {}
+    for variable in DATASETS:
+        result[variable] = {}
+        for site in MANIFOLD_SITES:
+            values, cents, curve = selected_curve(arrays, variable, site)
+            reference = saved[variable][site]["selected"]
+            ok["selection_matches"].append(
+                dim_name(PCA_DIMS[int(arrays[f"{variable}_{site}_selected"][0])]) == reference["k"]
+                and curve.smooth == reference["smooth"])
+            seq = load_probe_sequence(variable, site)
+            ok["scaler_matches_nullspace"].append(
+                bool(np.array_equal(arrays[f"{variable}_{site}_scaler_mean"], seq.mean)
+                     and np.array_equal(arrays[f"{variable}_{site}_scaler_scale"], seq.scale)))
+            lam = np.linalg.svd(cents - cents.mean(axis=0), compute_uv=False) ** 2
+            share = np.cumsum(lam) / lam.sum()
+            k = curve.axes.shape[1]
+            record = {
+                "index": plot_index(site), "m": seq.dims_per_round, "K": seq.k, "K_dims": seq.k * seq.dims_per_round,
+                "selected_k": k, "centroid_variance_in_k": float(share[k - 1]),
+                "axes_for_90_percent": int(np.searchsorted(share, 0.9) + 1),
+                "centroid_participation_ratio": participation_ratio(cents),
+                "curve_participation_ratio": participation_ratio(curve(dense_values(variable, values))),
+            }
+            ok["finite"].append("NaN" not in json.dumps(record) and "Infinity" not in json.dumps(record))
+            result[variable][site] = record
+    criteria = {name: all(v) for name, v in ok.items()}
+    return {"observation": True, "variables": result, "criteria": criteria, "passed": all(criteria.values())}
+
+
+def check_direction_harmonics() -> dict:
+    """Observation (H-02): harmonic structure of the direction centroids and of Phase 4's nullspace rounds.
+
+    Per site (indices 1 / 9 / 18), standardized train centroids: least-squares trig fit with 12 harmonics, power per
+    harmonic as a share of centroid variance, and an angle-shuffle null (centroids permuted across angles, 95th
+    percentile per harmonic). Per nullspace round 1...K (2-dim block of the saved basis, same standardized space):
+    share of the block in each harmonic plane h = 1...6 (mean squared principal cosine), the closest harmonic, and
+    the share inside the span of all harmonic coefficient vectors. Passes if: the saved scaler equals the probe
+    sequence's; the 4-harmonic full-space fit equals the loop curve with all PCA axes; finite.
+    """
+    variable = "direction"
+    arrays, _ = saved_curves()
+    ok: dict[str, list[bool]] = {name: [] for name in ("scaler_matches_nullspace", "trig_fit_matches_curve", "finite")}
+    result: dict = {}
+    for site in MANIFOLD_SITES:
+        prefix = f"{variable}_{site}"
+        values, cents = arrays[f"{prefix}_values"], arrays[f"{prefix}_centroids"]
+        seq = load_probe_sequence(variable, site)
+        ok["scaler_matches_nullspace"].append(
+            bool(np.array_equal(arrays[f"{prefix}_scaler_mean"], seq.mean)
+                 and np.array_equal(arrays[f"{prefix}_scaler_scale"], seq.scale)))
+
+        const, cos4, sin4 = harmonic_coefficients(values, cents, 4)
+        h = np.arange(1, 5)
+        t = np.deg2rad(values)[:, None] * h
+        fit4 = const + np.cos(t) @ cos4 + np.sin(t) @ sin4
+        ok["trig_fit_matches_curve"].append(
+            relative(fit4, fit_curve("loop", values, cents, None, 4)(values)) <= HARMONIC_TOLERANCE)
+
+        total = float(((cents - cents.mean(axis=0)) ** 2).sum(axis=1).mean())
+        _, cos, sin = harmonic_coefficients(values, cents, MAX_HARMONIC)
+        power = harmonic_power(cos, sin)
+        rng = np.random.default_rng(np.random.SeedSequence([SEED, plot_index(site)]))
+        null = np.stack([harmonic_power(*harmonic_coefficients(values, cents[rng.permutation(len(values))],
+                                                               MAX_HARMONIC)[1:]) for _ in range(PERMUTATIONS)])
+        null95 = np.percentile(null, 95, axis=0)
+
+        planes = [np.stack([cos[i], sin[i]], axis=1) for i in range(ROUND_HARMONICS)]
+        span = np.concatenate([cos, sin]).T  # (d, 2 * MAX_HARMONIC)
+        m = seq.dims_per_round
+        rounds = []
+        for r in range(seq.k):
+            block = seq.basis[:, r * m:(r + 1) * m]
+            shares = [float((principal_cosines(block, p) ** 2).mean()) for p in planes]
+            rounds.append({"round": r + 1, "harmonic_plane_share": shares,
+                           "closest_harmonic": int(np.argmax(shares) + 1),
+                           "share_in_harmonic_span": float((principal_cosines(block, span) ** 2).mean())})
+        record = {
+            "index": plot_index(site), "K": seq.k, "centroid_variance": total,
+            "power_share": (power / total).tolist(), "null95_share": (null95 / total).tolist(),
+            "above_null": [int(i + 1) for i in np.flatnonzero(power > null95)],
+            "parseval_ratio": float(power.sum() / total),
+            "rounds": rounds,
+        }
+        ok["finite"].append("NaN" not in json.dumps(record) and "Infinity" not in json.dumps(record))
+        result[site] = record
+    criteria = {name: all(v) for name, v in ok.items()}
+    return {"observation": True, "sites": result, "permutations": PERMUTATIONS, "max_harmonic": MAX_HARMONIC,
+            "criteria": criteria, "passed": all(criteria.values())}
+    
+    
 CHECKS = {
     "manifold_loco": check_manifold_loco,
     "speed_acceleration_manifold": check_speed_acceleration_manifold,
     "manifold_ladder": check_manifold_ladder,
+    "manifold_dimension": check_manifold_dimension,
+    "direction_harmonics": check_direction_harmonics,
 }
 
 

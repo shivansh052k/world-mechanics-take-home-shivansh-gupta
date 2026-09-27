@@ -249,3 +249,28 @@ def loco_spacing_grid(values: np.ndarray, centroids: np.ndarray, smooths: list) 
             point = curve_from_pca("open", v, c, mean, axis, smooth)(values[j])[0]
             out[b, j] = float(((centroids[j] - point) ** 2).sum())
     return out
+
+def participation_ratio(points: np.ndarray) -> float:
+    """Effective number of dimensions of the rows: (Σλ)² / Σλ² over their covariance eigenvalues."""
+    p = np.asarray(points, dtype=np.float64)
+    lam = np.linalg.svd(p - p.mean(axis=0), compute_uv=False) ** 2
+    return float(lam.sum() ** 2 / (lam**2).sum())
+
+
+def harmonic_coefficients(degrees: np.ndarray, centroids: np.ndarray, harmonics: int):
+    """Least-squares trig polynomial of the centroids in the angle: constant (d,), cos (H, d) and sin (H, d)
+    coefficient vectors (the full-space form of a loop curve with H harmonics)."""
+    beta = np.linalg.lstsq(trig_design(degrees, harmonics), np.asarray(centroids, dtype=np.float64), rcond=None)[0]
+    return beta[0], beta[1 : harmonics + 1], beta[harmonics + 1 :]
+
+
+def harmonic_power(cos: np.ndarray, sin: np.ndarray) -> np.ndarray:
+    """(H,) variance each harmonic contributes over a full turn: (|a_h|² + |b_h|²) / 2."""
+    return 0.5 * ((cos**2).sum(axis=1) + (sin**2).sum(axis=1))
+
+
+def principal_cosines(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """Cosines of the principal angles between the column spans of a (d, p) and b (d, q), largest first."""
+    qa, _ = np.linalg.qr(np.asarray(a, dtype=np.float64))
+    qb, _ = np.linalg.qr(np.asarray(b, dtype=np.float64))
+    return np.clip(np.linalg.svd(qa.T @ qb, compute_uv=False), 0.0, 1.0)
