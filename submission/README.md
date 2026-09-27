@@ -15,7 +15,7 @@ probing → nullspace → steering progression, and extended it with Goodfire-st
 - Steering edits **work at the layer where they are made and fade within a few blocks**, for probe-subspace and
   spline steering alike; the representation is a curved, low-dimensional manifold, and following it keeps
   intermediate states natural but does not make the edit propagate.
-- Within each dataset, speed and acceleration labels equal distance travelled: the linear probes read distance, yet
+- Within each dataset, speed and acceleration labels are exactly proportional to distance travelled: the linear probes read distance, yet
   the model still separates the two motion profiles at matched distance.
 
 ## Context
@@ -66,11 +66,13 @@ The principles that make the numbers trustworthy:
 |---|---|---|
 | Probing | Readable after the first block (index 1 of 24) for all three variables, R² ≈ 0.99 by index 17–19; raw-pixel baseline 0.48–0.63, physics fit ≥ 0.997; test agrees. Direction is readable from patches the disk never came near (R² 0.65 at index 1). | [`layer_curves.png`](../results/layer_curves/layer_curves.png), [`local_to_global.png`](../results/patches/local_to_global.png) |
 | Nullspace | K = 6 / 7 / 7 rounds (direction / speed / acceleration) at index 9; random removals change nothing. K ranges 7 to > 150 with the ridge penalty; an RBF kernel still reads each variable after erasure (test 95 % CIs between 0.72 and 0.95). | [`nullspace_rounds.png`](../results/nullspace/nullspace_rounds.png), [`erasure_and_procedure.png`](../results/nullspace/erasure_and_procedure.png) |
-| Steering | Same-layer readout follows the edit (error reduction 0.92–0.95; random ≈ 0); nine blocks later only 0.03 / 0.13 / 0.14; the effect collapses within three blocks. | [`steering_reduction.png`](../results/steering/steering_reduction.png), [`steering_propagation.png`](../results/steering/steering_propagation.png) |
-| Spline | Curved, 6–8-dimensional manifolds (held-out centroid error, line → curve: 144 → 56 / 87 → 45 / 86 → 51). Spline paths stay natural at the steering layer where straight chords cut through the direction loop; downstream every method reaches 0.07–0.14. | [`manifolds.png`](../results/manifolds/manifolds.png), [`spline_paths.png`](../results/spline_steering/spline_paths.png), [`spline_profile.png`](../results/spline_steering/spline_profile.png), [`comparison_table.md`](../results/spline_steering/comparison_table.md) |
+| Steering | Same-layer readout follows the edit (error reduction 0.92–0.95; random ≈ 0); nine blocks later the error reduction is only 0.03 / 0.13 / 0.14 (output-space gain 0.07–0.14); the effect collapses within three blocks. | [`steering_reduction.png`](../results/steering/steering_reduction.png), [`steering_propagation.png`](../results/steering/steering_propagation.png) |
+| Spline | Curved, 6–8-dimensional manifolds (held-out centroid error, line → curve: 144 → 56 / 87 → 45 / 86 → 51). Spline paths stay natural at the steering layer where straight chords cut through the direction loop; downstream every method reaches an output-space gain of only 0.07–0.14 at index 18. | [`manifolds.png`](../results/manifolds/manifolds.png), [`spline_paths.png`](../results/spline_steering/spline_paths.png), [`spline_profile.png`](../results/spline_steering/spline_profile.png), [`comparison_table.md`](../results/spline_steering/comparison_table.md) |
 | Confounds | Across sets both probes read distance (slope 1.00 / 0.99) while the motion profiles separate at matched distance (0.95 / 0.98 at index 9 / 18). Direction transfers across motion types; clip flags do not drive errors beyond a ~1° excess for clipped clips; direction is near-orthogonal to speed and acceleration. | [`confounds.png`](../results/confounds/confounds.png), [`tubelet_scatter.png`](../results/robustness/tubelet_scatter.png) |
 
-**Relation to the papers.** Early readability of mean-pooled probes matches the physics paper; our per-patch
+**Relation to the papers.** Early readability of speed and acceleration matches the physics paper; for direction
+it differs: the paper reports mean-pooled direction as reliably decodable only at its "Physics Emergence Zone"
+(§5.3, Fig. 2c), while ours is already at R² 0.85 after the first block (our stimuli are far simpler). Our per-patch
 local-to-global transition is earlier than its one-third depth (our patch vectors are time-averaged and the stimuli
 simpler). Our nullspace counts are far smaller than its tens to hundreds and depend on the ridge penalty. Same-layer
 steering works as reported; the downstream fade is our addition. Direction's near-orthogonality to speed and
@@ -91,7 +93,7 @@ manifold it adds nothing beyond label order.
 | Downstream readout for steering | A readout at the edited layer follows the edit partly by construction; later layers show whether it propagates. |
 | Readouts fit on validation, steering on test | The subspace (train), the readout (validation) and the evaluated clips (test) never overlap. |
 | Splines through training centroids, chosen by leaving one value out | Each curve is judged on values it did not see; direction uses a periodic fit so the loop closes. |
-| Speed vs. acceleration compared in metres | Within each set the label equals distance travelled; a shared distance scale separates the two readings. |
+| Speed vs. acceleration compared in metres | Within each set the label is exactly proportional to distance travelled; a shared distance scale separates the two readings. |
 
 ## How representations are extracted and pooled
 
@@ -163,7 +165,7 @@ python scripts/run_pipeline.py --stage all
 
 - Smaller, simpler stimuli than the paper; one checkpoint; parity with Meta's reference implementation is taken from
   Hugging Face's conversion check (atol 1e-3), not re-run here.
-- Speed and acceleration labels equal distance travelled within each set; the linear probes read distance.
+- Speed and acceleration labels are exactly proportional to distance travelled within each set; the linear probes read distance.
 - Every steering method adds the same shift to every token at one layer — the leading candidate for why edits fade.
 - Per-patch vectors are time-averaged; unspecified details of the paper's protocol are our interpretation.
 - Open: why edits fade downstream; why direction edits nudge the speed and acceleration readouts slightly more than
