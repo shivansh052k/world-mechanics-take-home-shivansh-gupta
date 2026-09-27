@@ -13,6 +13,7 @@ import numpy as np
 import torch
 
 from vjepa_physics.baselines import squared_distances
+from vjepa_physics.behavior import N_BINS, behavior_curve, curve_grid, map_probabilities, nearest_on_curve
 from vjepa_physics.data import DATASETS
 from vjepa_physics.evidence import file_sha256, require_clean_code, save_result, verified_artifact
 from vjepa_physics.extraction import SITES, plot_index, pool_time_steps
@@ -56,6 +57,11 @@ HEADLINE_PAIRS = {  # name: (arm, reference arm, profile rows)
     "reversed_minus_covariance_downstream": ("time_reversed_1", "covariance_1", DOWNSTREAM),
     "time_minus_reversed_downstream": ("time_covariance_1", "time_reversed_1", DOWNSTREAM),
 }
+
+BEHAVIOR_CHECKS = REPO / "results/behavior/checks.json"  # key "behavior_readouts": readouts.npz
+NATURALNESS_SITES = ("block_8", "block_17")  # indices 9 (same layer, labelled) and 18 (evidence)
+BIMODAL_BINS, BIMODAL_RATIO = 4, 0.5  # pre-stated: two peaks >= 4 bins (90°) apart, the second >= half the first
+FAR_DEGREES = 90.0  # direction targets farther than this from the unedited reading = "far"
 
 def kind_of(variable: str) -> str:
     return "loop" if variable == "direction" else "open"
@@ -451,11 +457,160 @@ def check_spline_scores() -> dict:
         "bootstrap_resamples": BOOTSTRAP_RESAMPLES,
         "criteria": criteria, "passed": all(criteria.values()),
     }
+    
+
+def run_arms(variable: str) -> tuple[dict, np.ndarray, np.ndarray, np.ndarray]:
+    """Features of every Phase 6 arm (+ covariance f = 1 replication) and of Phase 5's K - 1 probe, covariance and
+    K - 1 random arms, both halves joined: {name: ((N, T, S, 10, d) fp32, fraction)}, ids, targets, unedited."""
+    six = joined_runs(OUT, "spline_{variable}_{half}", variable, (
+        "ids", "target_label", "uniform_arms", "timed_arms", "features_uniform", "features_timed",
+        "features_covariance_1", "unedited_features"))
+    five = joined_runs(STEERING_CHECKS, "steer_{variable}_{half}", variable, ("ids", "arm_kind", "arm_n", "features"))
+    arms: dict[str, tuple[np.ndarray, float]] = {}
+    uniform = np.concatenate([h["features_uniform"] for h in six])
+    for a, name in enumerate(six[0]["uniform_arms"].tolist()):
+        arms[name] = (uniform[:, :, a:a + 1], float(name.rsplit("_", 1)[1]))
+    timed = np.concatenate([h["features_timed"] for h in six])
+    for a, name in enumerate(six[0]["timed_arms"].tolist()):
+        arms[name] = (timed[:, :, a:a + 1], 1.0)
+    arms["covariance_1"] = (np.concatenate([h["features_covariance_1"] for h in six])[:, :, None], 1.0)
+    k = load_probe_sequence(variable).k
+    features5 = np.concatenate([h["features"] for h in five])
+    kinds, counts = five[0]["arm_kind"], five[0]["arm_n"]
+    for name, mask in ((f"phase5_probes_{k - 1}", (kinds == "probes") & (counts == k - 1)),
+                       ("phase5_covariance", kinds == "covariance"),
+                       (f"phase5_random_{k - 1}", (kinds == "random") & (counts == k - 1))):
+        arms[name] = (features5[:, :, np.flatnonzero(mask)], 1.0)
+    ids = np.concatenate([h["ids"] for h in six])
+    same = np.array_equal(ids, np.concatenate([h["ids"] for h in five]))
+    return arms, ids if same else None, six[0]["target_label"], np.concatenate([h["unedited_features"] for h in six])
+
+
+def is_bimodal(p: np.ndarray) -> bool:
+    """Pre-stated rule on a 16-bin distribution (circular): the highest peak and the largest peak >= BIMODAL_BINS bins
+    from it; bimodal if that second peak is >= BIMODAL_RATIO x the highest."""
+    peaks = np.flatnonzero((p >= np.roll(p, 1)) & (p > np.roll(p, -1)))
+    if len(peaks) < 2:
+        return False
+    order = peaks[np.argsort(p[peaks])[::-1]]
+    for q in order[1:]:
+        if min((q - order[0]) % N_BINS, (order[0] - q) % N_BINS) >= BIMODAL_BINS:
+            return bool(p[q] >= BIMODAL_RATIO * p[order[0]])
+    return False
+
+
+def check_spline_naturalness() -> dict:
+    """Naturalness of every arm at indices 9 and 18 under the 16-bin behavior readout (A), paired with progress.
+
+    Per arm: the edited clip's Hellinger distance to the behavior curve minus the same clip's unedited distance
+    (excess), its percentile among natural train clips' distances, behavior progress (gain of the curve's nearest
+    value toward f x (target - unedited nearest value)), mean entropy; direction also the bimodal fraction (pre-stated
+    rule) and the ridge (sin, cos) readout length. Headline: midpoint excess spline f = 0.5 - chord f = 0.5 with a
+    paired clip-bootstrap interval (direction also for near / far targets). Speed / acceleration carry the blurry-
+    readout label. Passes if: the saved readouts and curves reproduce the saved natural train distances within
+    EXACT_TOLERANCE; Phase 6 and Phase 5 runs hold the same clips; probabilities sum to 1; everything finite.
+    """
+    with np.load(verified_artifact(BEHAVIOR_CHECKS, "behavior_readouts")) as f:
+        readouts = {key: f[key] for key in f.files}
+    boot = bootstrap_indices(sum(N_CLIPS.values()), BOOTSTRAP_RESAMPLES, SEED)
+    ok: dict[str, list[bool]] = {name: [] for name in ("same_ids", "sums_to_one", "finite")}
+    worst_natural = 0.0
+    result: dict = {}
+
+    for variable in DATASETS:
+        table = load_joined(variable)
+        roles, labels, kind = table["role"], table["label"], kind_of(variable)
+        train = roles == "train"
+        arms, ids, targets, unedited = run_arms(variable)
+        ok["same_ids"].append(ids is not None)
+        record: dict = {"blurry_readout": variable != "direction", "sites": {}, "headline": {}}
+        for site in NATURALNESS_SITES:
+            j = PROFILE_SITES.index(site)
+            weights, offset = readouts[f"{variable}_{site}_weights"], readouts[f"{variable}_{site}_offset"]
+            values = readouts[f"{variable}_{site}_curve_values"]
+            curve = behavior_curve(kind, values, readouts[f"{variable}_{site}_curve_sqrt_centroids"])
+            grid = curve_grid(kind, values)
+            saved_natural = readouts[f"{variable}_{site}_natural_train_distance"]
+            natural_now, _ = nearest_on_curve(
+                np.sqrt(map_probabilities(weights, offset, site_features(table["activations"], site)[train])), curve, grid)
+            worst_natural = max(worst_natural, relative(natural_now, saved_natural))
+            natural = np.sort(saved_natural)
+
+            p0 = map_probabilities(weights, offset, unedited[:, j].astype(np.float64))
+            d0, v0 = nearest_on_curve(np.sqrt(p0), curve, grid)
+            to_target = label_difference(variable, targets[None, :], v0[:, None])  # (N, T)
+            far = np.abs(to_target) > FAR_DEGREES if variable == "direction" else None
+            site_record: dict = {"unedited": {
+                "distance_median": float(np.median(d0)),
+                "natural_percentile_median": float(np.median(np.searchsorted(natural, d0, side="right") / len(natural)))}}
+            if variable == "direction":
+                probe = fit_probe(site_features(table["activations"], site), probe_targets(variable, labels), roles,
+                                  fit_roles=READOUT_ROLES)
+                ridge_w, ridge_o = ridge_readout_map(probe)
+                site_record["unedited"]["readout_length_mean"] = float(
+                    np.linalg.norm(unedited[:, j].astype(np.float64) @ ridge_w + ridge_o, axis=-1).mean())
+
+            per_clip = {}
+            for name, (feats, fraction) in arms.items():
+                f = feats[:, :, :, j].astype(np.float64)
+                shape = f.shape[:3]
+                p = map_probabilities(weights, offset, f.reshape(-1, f.shape[-1]))
+                ok["sums_to_one"].append(float(np.abs(p.sum(axis=1) - 1.0).max()) <= 1e-10)
+                dist, near = nearest_on_curve(np.sqrt(p), curve, grid)
+                dist, near, p = dist.reshape(shape), near.reshape(shape), p.reshape(*shape, N_BINS)
+                excess = dist - d0[:, None, None]
+                percentile = np.searchsorted(natural, dist, side="right") / len(natural)
+                moved = label_difference(variable, near, v0[:, None, None])
+                aim = np.broadcast_to(fraction * to_target[:, :, None], moved.shape)
+                entropy = -(p * np.log(np.clip(p, 1e-300, None))).sum(axis=-1)
+                rec = {
+                    "excess_hellinger_mean": float(excess.mean()), "excess_hellinger_median": float(np.median(excess)),
+                    "natural_percentile_median": float(np.median(percentile)),
+                    "share_above_natural_95": float((percentile > 0.95).mean()),
+                    "behavior_gain": float((moved * aim).sum() / (aim**2).sum()),
+                    "entropy_mean": float(entropy.mean()),
+                }
+                if variable == "direction":
+                    bimodal = np.array([is_bimodal(q) for q in p.reshape(-1, N_BINS)]).reshape(shape)
+                    rec["bimodal_share"] = float(bimodal.mean())
+                    rec["bimodal_share_far_targets"] = float(bimodal[far].mean())
+                    rec["readout_length_mean"] = float(np.linalg.norm(f @ ridge_w + ridge_o, axis=-1).mean())
+                    rec["excess_far_targets"] = float(excess[far].mean())
+                    rec["excess_near_targets"] = float(excess[~far].mean())
+                site_record[name] = rec
+                per_clip[name] = excess
+
+            headline = {}
+            subsets = {"all": np.ones_like(to_target, dtype=bool)}
+            if far is not None:
+                subsets |= {"far_targets": far, "near_targets": ~far}
+            for subset, mask in subsets.items():
+                diff = np.where(mask, (per_clip["spline_0.5"] - per_clip["chord_0.5"])[:, :, 0], 0.0)
+                n = mask.sum(axis=1)
+                point = float(diff.sum() / n.sum())
+                samples = diff.sum(axis=1)[boot].sum(axis=1) / n[boot].sum(axis=1)
+                headline[subset] = {"point": point, "ci": list(percentile_interval(samples))}
+            record["sites"][str(plot_index(site))] = site_record
+            record["headline"][f"midpoint_spline_minus_chord_idx{plot_index(site)}"] = headline
+        ok["finite"].append("NaN" not in json.dumps(record) and "Infinity" not in json.dumps(record))
+        result[variable] = record
+
+    criteria = {name: all(v) for name, v in ok.items()} | {"natural_distances_reproduced": worst_natural <= EXACT_TOLERANCE}
+    return {
+        "variables": result, "sites": list(NATURALNESS_SITES), "worst_natural_reproduction": worst_natural,
+        "bimodal_rule": f"two peaks >= {BIMODAL_BINS} bins apart, the second >= {BIMODAL_RATIO} x the first",
+        "notes": ["excess = edited distance to the behavior curve - the same clip's unedited distance (Hellinger)",
+                  "speed / acceleration: blurry readout (top-1 0.28 / 0.26, within one bin 0.72 / 0.65)",
+                  "index 9 is the same-layer readout (labelled); index 18 is the evidence"],
+        "criteria": criteria, "passed": all(criteria.values()),
+    }
+
 
 CHECKS = {
     "spline_setup": check_spline_setup,
     **{f"spline_{v}_{h}": partial(spline_run, v, h) for v in DATASETS for h in HALVES},
     "spline_scores": check_spline_scores,
+    "spline_naturalness": check_spline_naturalness,
 }
 
 
