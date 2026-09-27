@@ -905,7 +905,7 @@ def check_figure_spline_paths() -> dict:
              "straight chord": ["chord_0.25", "chord_0.5", "chord_0.75", "spline_1"]}  # chord f = 1 = spline endpoint
 
     fig = plt.figure(figsize=(14, 11.5), facecolor=SURFACE)
-    grid = fig.add_gridspec(3, 2, height_ratios=[1.0, 1.0, 0.95], hspace=0.55, wspace=0.12)
+    grid = fig.add_gridspec(3, 2, height_ratios=[1.0, 1.0, 0.95], hspace=0.55, wspace=0.12, top=0.9)
     colours = sequential_cmap()(np.linspace(0.3, 1.0, len(PATH_FRACTIONS_SHOWN)))
     sums_ok = []
     for r, site in enumerate(("block_8", "block_17")):
@@ -921,10 +921,8 @@ def check_figure_spline_paths() -> dict:
             for colour, fraction, prob in zip(colours, PATH_FRACTIONS_SHOWN, p):
                 ax.plot(BIN_CENTRES, prob, color=colour, lw=2.0, marker="o", ms=4, zorder=3,
                         label={0.0: "f = 0 (unedited clip)", 1.0: "f = 1 (target)"}.get(fraction, f"f = {fraction:g}"))
-            for angle, text in ((starts[c], "start"), (targets[t], "target")):
+            for angle in (starts[c], targets[t]):
                 ax.axvline(angle, color=INK_SECONDARY, lw=1.0, ls=(0, (4, 3)), zorder=1)
-                ax.annotate(text, (angle, 1.0), xycoords=("data", "axes fraction"), xytext=(4, -12),
-                            textcoords="offset points", color=INK_SECONDARY, fontsize=9)
             ax.set_xlim(0, 360)
             ax.set_xticks(range(0, 361, 90), [f"{a}°" for a in range(0, 361, 90)])
             ax.set_xlabel("readout bin (direction)", color=INK_SECONDARY)
@@ -934,7 +932,7 @@ def check_figure_spline_paths() -> dict:
             ax.set_title(f"Index {plot_index(site)}: {label}", color=INK, fontsize=11, loc="left")
             style_axes(ax)
             if r == 0 and col == 0:
-                ax.legend(frameon=False, fontsize=8.5, labelcolor=INK, loc="upper right")
+                legend_handles, legend_labels = ax.get_legend_handles_labels()
 
     ax = fig.add_subplot(grid[2, :])
     for i, variable in enumerate(DATASETS):
@@ -956,8 +954,10 @@ def check_figure_spline_paths() -> dict:
                        Line2D([], [], color=INK, marker="o", ms=8, lw=0, mfc=SURFACE, mew=1.8, label="index 18")],
               frameon=False, fontsize=9, labelcolor=INK, loc="lower right")
     style_axes(ax)
-    fig.suptitle(f"Direction, clip {int(ids[c])}: start {starts[c]:.0f}° → target {targets[t]:.1f}° "
-                 f"(largest start–target angle among the 150 pairs)", color=INK, fontsize=12, x=0.02, ha="left")
+    fig.suptitle(f"Direction, clip {int(ids[c])}: start {starts[c]:.0f}° → target {targets[t]:.1f}° (dashed lines; "
+                 f"largest start–target angle among the 150 pairs)", color=INK, fontsize=12, x=0.02, ha="left", y=0.985)
+    fig.legend(legend_handles, legend_labels, loc="upper center", ncol=len(PATH_FRACTIONS_SHOWN), frameon=False,
+               fontsize=9, labelcolor=INK, bbox_to_anchor=(0.5, 0.955))
     FIGURE_PATHS.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(FIGURE_PATHS, dpi=FIGURE_DPI, facecolor=SURFACE, bbox_inches="tight")
     plt.close(fig)
