@@ -299,6 +299,15 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
 - **Correctness first:** prefer checks that prove code is right (shape asserts, no-op tests,
   comparisons against a second method) over trusting it.
 
+### Working lessons (Phase 6, user said, standing)
+- Edits as exact find → replace blocks with the file path and current line numbers (read the file first); never vague
+  "change X to Y" wording. New files: full content.
+- Terminal smoke tests as a heredoc piped into python (`python - <<'EOF' … EOF`), writing no files.
+- Every run step ends with the exact commands (commit first, then run) and **what to paste** (e.g. "the last 20
+  lines"); Claude Code reads the rest of the saved key itself.
+- Quote plan step numbers (6.8, 7.1 …) first; planner stage labels (6a, 6b …) only as mapped in the plan.
+- Commit + push checkpoints after each substantial group (analysis done, runs done, figures done, phase passed).
+
 ### Working lessons (Phases 3–4, standing)
 - **Tools:** never use the terminal-run tool, subagents or scheduled tasks (not all are denied in settings). Read PNGs
   and saved result keys yourself (Grep/Read) when terminal output is long; `read_terminal` only if the user asks.

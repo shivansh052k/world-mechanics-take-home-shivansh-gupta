@@ -347,6 +347,32 @@ Known decision points the plan cannot remove in advance:
 Newest entry on top. One entry per work session: what was done, what passed, what didn't,
 what's next.
 
+### 2026-09-27 — Phase 7 started (confounds and robustness)
+- Phase 7 layout (`confounds.py`, `robustness.py`; `check_confounds.py`, `check_robustness.py`; subjects `confounds`,
+  `robustness`; CPU only on stored pooled activations, saved predictions and Phase 5 runs, ≲ 15 min total) and one
+  design brief for 7.1, 7.2, 7.3 + 7.4, 7.5 drafted (pre-stated criteria and reading rules; 5 planner questions).
+  **Next:** brief to the planning chat; first step = `confounds.py` part 1 (distance scale, F-65 window) + smoke test.
+- Planning chat approved the brief with changes (→ D-52 at the phase docs pass): 7.1a slope rule replaced — speed-at-τ
+  readings (acceleration probe on speed clips slope T/(2τ): CI < 0.25 "reads acceleration", CI > 0.5 "reads a
+  speed/distance quantity", else "mixed"; speed probe on acceleration clips τ/T = slope/2, no verdict; slope 1 = distance
+  = mean = mid-clip speed); 7.1b control (i) criterion, idx 0 = observation; 7.2 band "partly shared" (0.5–0.9), test
+  once idx 1/9/18; 7.3 test breakdown from F-104 as confirmation, H-05 scatter with/without exit; 7.5 paper C.4 metrics
+  (mean principal angle, projection overlap, Grassmann distance), both nulls (train-span, k_A/d), weights with weights,
+  patterns with patterns, raw-space angles too, reverse validity check; slides: one main + backups. Claude Code note: a
+  pure final-speed reading (slope exactly 0.5) falls in "mixed" under the CI > 0.5 rule (user: keep the rule, τ/T
+  reported alongside).
+- 7.0a: `src/vjepa_physics/confounds.py` (`CLIP_SECONDS`, `clip_distance`, `overlap_window`, `in_window`). Smoke test
+  (terminal, not saved): T 0.625; distance = label × per-unit bit for bit (speed, acceleration); window [0.15625,
+  1.953125] = F-65; in window speed 1,176 clips / 49 values (train 640, val_seen 160, val_unseen 72, test_seen 160,
+  test_unseen 144), acceleration 1,440 / 60 (768 / 192 / 96 / 192 / 192); direction distance 0.390625–4.375 = F-65. All
+  predictions met. **Step 7.0a done.**
+- 7.0b: `confounds.py` part 2 (`DISTANCE_PER_UNIT`, `READS_ACCELERATION_BELOW` 0.25 / `READS_SPEED_ABOVE` 0.5,
+  `as_distance`, `expected_slope`, `tau_fraction_from_slope`, `reading_verdict`, `matched_value_pairs`). Smoke test
+  (terminal, not saved): hand cases exact; synthetic speed-at-τ readings on real clips give the predicted slopes (1 / 0.5
+  acceleration probe, 0 / 1 / 2 speed probe) within 2e-15; verdict rule as stated; window pairing 49 speed values ↔ 49 of
+  60 acceleration values, one to one, max gap 0.0144 m (≤ half an acceleration step 0.0151), median 0.0074, 11 unpaired.
+  All predictions met. **Step 7.0b done.**
+
 ### 2026-09-26 — Phase 6 started (spline steering)
 - Phase 6 layout (`manifolds.py`, `behavior.py`, spline arms in `steering.py`; `check_manifolds.py`,
   `check_spline_steering.py`) and design brief drafted (idx 9 / idx 18 as Phase 5; spline edit = translate along the
