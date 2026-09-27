@@ -7,6 +7,10 @@ import argparse
 import json
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")  # files only, no window
+import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import roc_auc_score
 
@@ -14,10 +18,11 @@ from vjepa_physics.confounds import (
     PAIR, as_distance, clip_distance, clip_pairs, in_window, overlap_window, pair_weights, reading_verdict,
     shared_pair_rows, tau_fraction_from_slope, weighted_balanced_accuracy,
 )
-from vjepa_physics.evidence import require_clean_code, save_result, verified_artifact
+from vjepa_physics.evidence import file_sha256, require_clean_code, save_result, verified_artifact
 from vjepa_physics.extraction import SITES, plot_index
 from vjepa_physics.joined import load_joined
 from vjepa_physics.metrics import bootstrap_indices, percentile_interval, r2
+from vjepa_physics.plotting import DATASET_COLOUR, INK, INK_MUTED, INK_SECONDARY, SURFACE, style_axes
 from vjepa_physics.probes import alpha_verdict, fit_probe, probe_scores, probe_targets, site_features
 from vjepa_physics.reproducibility import SEED
 from vjepa_physics.steering import STEERING_SITE
@@ -37,6 +42,11 @@ EXPECTED_PAIRS = {"train": (32, 512, 512), "validation": (37, 208, 188)}  # pair
 MAX_CONTROL_ACCURACY = 0.6  # the distance-only classifier must stay at or below this (matching works)
 SEPARABLE_ABOVE = 0.6  # reading: the balanced-accuracy CI's lower end above this and above the control
 NO_SIGNAL_ACCURACY = 0.55  # an upper-edge alpha is expected only at or below this balanced accuracy
+
+FIGURE = REPO / "results/confounds/confounds.png"
+FIGURE_DPI = 200
+FIGURE_SITE = "block_17"  # index 18
+PROBE_LABEL = {"acceleration": "acceleration probe on speed clips", "speed": "speed probe on acceleration clips"}
 
 
 def site_index(site: str) -> int | None:
@@ -248,10 +258,109 @@ def check_matched_distance_classifier() -> dict:
         "summary": summary, "sites": sites, "criteria": criteria, "passed": all(criteria.values()),
     }
 
+def check_figure_confounds() -> dict:
+    """Left: each probe applied to the other set's validation clips in the overlap window at index 18, reading vs true
+    distance (m), with the slope-1 line; slopes and intervals from cross_applied_probes. Right: the matched-distance
+    set classifier's balanced accuracy by layer index (0-24) with its index 9 / 18 intervals and the distance-only
+    control, all from matched_distance_classifier. Passes if: the refit index-18 probes reproduce the saved validation
+    predictions bit for bit and the saved slopes; the PNG is written and non-empty; every plotted value is finite.
+    """
+    saved = json.loads(OUT.read_text())
+    cross = saved["cross_applied_probes"]["result"]["probes"]
+    classifier = saved["matched_distance_classifier"]["result"]
+    tables = {v: load_joined(v) for v in PAIR}
+    distance = {v: clip_distance(tables[v]) for v in PAIR}
+    window = overlap_window(distance.values())
+    validation = {v: np.isin(tables[v]["role"], VALIDATION_ROLES) for v in PAIR}
+    scored = {v: validation[v] & in_window(distance[v], window) for v in PAIR}
+    k = SITES.index(FIGURE_SITE)
+    with np.load(verified_artifact(PROBE_CHECKS, "layer_curves")) as f:
+        saved_predictions = {v: f[f"{v}_predictions"] for v in PAIR}
+
+    ok: dict[str, list[bool]] = {"validation_reproduced": [], "slope_matches_saved": []}
+    plotted: list[float] = []
+    fig, (left, right) = plt.subplots(1, 2, figsize=(11.5, 4.6), facecolor=SURFACE,
+                                      gridspec_kw={"width_ratios": [1, 1.25]})
+
+    top = 0.0
+    for v in ("acceleration", "speed"):
+        other = PAIR[1 - PAIR.index(v)]
+        t = tables[v]
+        x_own = site_features(t["activations"], FIGURE_SITE)
+        probe = fit_probe(x_own, probe_targets(v, t["label"]), t["role"])
+        ok["validation_reproduced"].append(bool(np.array_equal(
+            probe.predict(x_own[validation[v]]), saved_predictions[v][validation[v], k])))
+        true_d = distance[other][scored[other]]
+        cross_d = as_distance(v, probe.predict(site_features(tables[other]["activations"], FIGURE_SITE)[scored[other]]))
+        record = cross[v][FIGURE_SITE]["cross"]
+        ok["slope_matches_saved"].append(
+            abs(ols(true_d, cross_d)[0] - record["slope"]) <= POINT_TOLERANCE * max(1.0, abs(record["slope"])))
+        low, high = record["slope_ci"]
+        left.scatter(true_d, cross_d, s=14, color=DATASET_COLOUR[v], alpha=0.55, linewidths=0, zorder=2,
+                     label=f"{PROBE_LABEL[v]}: slope {record['slope']:.2f} [{low:.2f}, {high:.2f}]")
+        plotted += true_d.tolist() + cross_d.tolist()
+        top = max(top, float(true_d.max()), float(cross_d.max()))
+    edge = 1.05 * top
+    left.plot([0, edge], [0, edge], "--", color=INK_MUTED, linewidth=1.2, zorder=1,
+              label="slope 1: reads distance travelled")
+    left.set_xlim(0, edge)
+    left.set_ylim(0, edge)
+    style_axes(left, grid_axis="both")
+    left.set_title("Probes applied across sets read distance (index 18)", fontsize=11, loc="left", color=INK)
+    left.set_xlabel("true distance travelled over the clip (m)", fontsize=9)
+    left.set_ylabel("cross-applied probe reading (m)", fontsize=9)
+    left.legend(loc="upper left", fontsize=8, frameon=False, labelcolor=INK_SECONDARY)
+
+    rows = sorted((r for r in classifier["sites"].values() if r["plot_index"] is not None),
+                  key=lambda r: r["plot_index"])
+    index = [r["plot_index"] for r in rows]
+    accuracy = [r["balanced_accuracy"] for r in rows]
+    plotted += accuracy
+    right.plot(index, accuracy, "-", color=INK_SECONDARY, linewidth=2, marker="o", markersize=5, zorder=3)
+    for r in rows:
+        if "balanced_accuracy_ci" in r:
+            low, high = r["balanced_accuracy_ci"]
+            plotted += [low, high]
+            right.plot([r["plot_index"]] * 2, [low, high], color=INK, linewidth=2, zorder=4)
+    control = classifier["summary"]["distance_only_control"]["balanced_accuracy"]
+    plotted.append(control)
+    right.axhline(control, linestyle="--", color=INK_MUTED, linewidth=1.2, zorder=1)
+    right.text(max(index), control + 0.012, f"distance-only control {control:.2f}", ha="right", va="bottom",
+               fontsize=8.5, color=INK_MUTED)
+    headline = classifier["summary"]["headline"]
+    note = "\n".join(f"index {i}: {headline[str(i)]['balanced_accuracy']:.2f} "
+                     f"[{headline[str(i)]['balanced_accuracy_ci'][0]:.2f}, "
+                     f"{headline[str(i)]['balanced_accuracy_ci'][1]:.2f}]" for i in (9, 18))
+    right.text(max(index), 0.62, note, ha="right", va="bottom", fontsize=8.5, color=INK_SECONDARY)
+    right.set_ylim(0.45, 1.02)
+    style_axes(right, grid_axis="y")
+    right.set_title("Speed vs acceleration set, matched distance", fontsize=11, loc="left", color=INK)
+    right.set_xlabel("layer index (0 = embedding)", fontsize=9)
+    right.set_ylabel("balanced accuracy (validation)", fontsize=9)
+
+    fig.suptitle("The probes read distance travelled, yet the two motion profiles stay separable",
+                 fontsize=12, color=INK, x=0.06, ha="left")
+    fig.subplots_adjust(bottom=0.13, top=0.84, wspace=0.25)
+    fig.savefig(FIGURE, dpi=FIGURE_DPI, facecolor=SURFACE)
+    plt.close(fig)
+
+    criteria = {name: all(values) for name, values in ok.items()} | {
+        "written": FIGURE.exists() and FIGURE.stat().st_size > 0,
+        "finite": bool(np.isfinite(np.asarray(plotted, dtype=float)).all()),
+    }
+    return {
+        "site": FIGURE_SITE, "summary": {"slopes_idx18": {v: cross[v][FIGURE_SITE]["cross"]["slope"] for v in PAIR},
+                                         "control": control},
+        "figure": {"path": str(FIGURE.relative_to(REPO)), "sha256": file_sha256(FIGURE)},
+        "sources": {key: saved[key]["provenance"]["git_commit"]
+                    for key in ("cross_applied_probes", "matched_distance_classifier")},
+        "values_plotted": len(plotted), "criteria": criteria, "passed": all(criteria.values()),
+    }
 
 CHECKS = {
     "cross_applied_probes": check_cross_applied_probes,
     "matched_distance_classifier": check_matched_distance_classifier,
+    "figure_confounds": check_figure_confounds,
 }
 
 

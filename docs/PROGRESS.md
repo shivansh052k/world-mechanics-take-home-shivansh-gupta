@@ -499,6 +499,9 @@ what's next.
   (+0.012 m/s, +0.055 m/s², CIs > 0), speed / acceleration steering does not move direction. F-157 added. Claude Code's
   predictions: criteria ✓, speed–acceleration ✓ (patterns stronger ✓), direction weights at chance ✓, validity ✓;
   speed–direction patterns beyond chance ✗, direction → speed / acceleration cross-talk ✗. **Step 7.5 done.**
+- Gate step 1: `HASH_CHECK_SUBJECTS` += `confounds`, `robustness`; `check_evidence.py code_hash_check` **passed** (HEAD
+  `24d262f`): 76 keys, all 8 Phase 7 keys match their own clean run commit, `rerun_needed` empty. Predictions ✓.
+  Planning-chat note pending (one line): direction → speed / acceleration cross-talk (F-157), small, no decision affected.
 
 ### 2026-09-26 — Phase 6 started (spline steering)
 - Phase 6 layout (`manifolds.py`, `behavior.py`, spline arms in `steering.py`; `check_manifolds.py`,

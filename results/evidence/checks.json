@@ -361,8 +361,8 @@
   },
   "code_hash_check": {
     "provenance": {
-      "utc": "2026-09-27T05:51:56+00:00",
-      "git_commit": "9ebc5fdbaab17c520e7324203ed747fd1cfcb7c8",
+      "utc": "2026-09-27T08:06:43+00:00",
+      "git_commit": "24d262f532f349cc69d27bf896617c230cc7d17e",
       "git_dirty": false,
       "git_dirty_paths": [],
       "code": {
@@ -372,6 +372,7 @@
           "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
           "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
           "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/confounds.py": "9f20249c1e81d142c995a8a0f6deb7c026cea41955d26ee719ab769614582c47",
           "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
           "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
           "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
@@ -390,13 +391,14 @@
           "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
           "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
           "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/robustness.py": "0bed621b86ed39f41cfb17fe7e68959827f2640f892fe264c49f31c4f19460bc",
           "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
           "src/vjepa_physics/steering.py": "2aaf059c980a059425efef4d1e808ce3768a93dbdb9ddbf47448423dabeae0a0",
           "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
           "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
-          "scripts/check_evidence.py": "8989967d99db2d1f38531ebb36660c778b5c29ffa14c33dc475cb290dbf73614"
+          "scripts/check_evidence.py": "c9f729a165966962d999226301e8641fe45b54e3e7784f461db42bf4fc4263a9"
         },
-        "combined_sha256": "a36d58385074b0f9a373af8f3459b348061c6830824d04fac29d410582b1eab4"
+        "combined_sha256": "38e57e25719813e5eb99c0411f5ba0c14ae602c3f0fd66af56f158ee04e030e0"
       },
       "versions": {
         "av": "18.1.0",
@@ -411,9 +413,9 @@
       }
     },
     "result": {
-      "head": "9ebc5fdbaab17c520e7324203ed747fd1cfcb7c8",
-      "keys_checked": 68,
-      "commits_searched": 53,
+      "head": "24d262f532f349cc69d27bf896617c230cc7d17e",
+      "keys_checked": 76,
+      "commits_searched": 61,
       "keys": [
         {
           "subject": "probes",
@@ -958,6 +960,70 @@
           "git_dirty": false,
           "files": 28,
           "matching_commit": "3113ea13e964efd94f067fa1d1d84b6f654c499a"
+        },
+        {
+          "subject": "confounds",
+          "key": "cross_applied_probes",
+          "recorded_commit": "192f9bea020ed2eb3ebd48ee59d5036bf1021202",
+          "git_dirty": false,
+          "files": 29,
+          "matching_commit": "192f9bea020ed2eb3ebd48ee59d5036bf1021202"
+        },
+        {
+          "subject": "confounds",
+          "key": "matched_distance_classifier",
+          "recorded_commit": "03b38e8bfd30252f8a0ee3acdc97a1ad54d26cd6",
+          "git_dirty": false,
+          "files": 29,
+          "matching_commit": "03b38e8bfd30252f8a0ee3acdc97a1ad54d26cd6"
+        },
+        {
+          "subject": "robustness",
+          "key": "motion_type_transfer",
+          "recorded_commit": "89628acf3e48c5a86b7e2b32005acdab6afbbb04",
+          "git_dirty": false,
+          "files": 30,
+          "matching_commit": "89628acf3e48c5a86b7e2b32005acdab6afbbb04"
+        },
+        {
+          "subject": "robustness",
+          "key": "motion_type_test",
+          "recorded_commit": "82a0b0f9fab241cfd1a86e71aaf7bc2495216b50",
+          "git_dirty": false,
+          "files": 30,
+          "matching_commit": "82a0b0f9fab241cfd1a86e71aaf7bc2495216b50"
+        },
+        {
+          "subject": "robustness",
+          "key": "flag_breakdown",
+          "recorded_commit": "f0cde4276839ad6399402396947ce1304cc50a63",
+          "git_dirty": false,
+          "files": 30,
+          "matching_commit": "f0cde4276839ad6399402396947ce1304cc50a63"
+        },
+        {
+          "subject": "robustness",
+          "key": "figure_tubelet",
+          "recorded_commit": "a4fbc86a55ab11a844368eb7e68683b0e2fb52fe",
+          "git_dirty": false,
+          "files": 30,
+          "matching_commit": "a4fbc86a55ab11a844368eb7e68683b0e2fb52fe"
+        },
+        {
+          "subject": "robustness",
+          "key": "flag_test",
+          "recorded_commit": "9cc2e4e06ed7fa253250d316b1d2fe538c7b19b7",
+          "git_dirty": false,
+          "files": 30,
+          "matching_commit": "9cc2e4e06ed7fa253250d316b1d2fe538c7b19b7"
+        },
+        {
+          "subject": "robustness",
+          "key": "subspace_overlap",
+          "recorded_commit": "6de292d357b16567a681119040bad4321c7f1958",
+          "git_dirty": false,
+          "files": 30,
+          "matching_commit": "6de292d357b16567a681119040bad4321c7f1958"
         }
       ],
       "rerun_needed": [],
