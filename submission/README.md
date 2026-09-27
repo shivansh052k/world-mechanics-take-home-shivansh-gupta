@@ -1,4 +1,4 @@
-# V-JEPA 2 physics take-home — Shivansh Gupta
+# V-JEPA 2 Physics Take-Home Assignment — Shivansh Gupta
 
 **How a frozen V-JEPA 2 video encoder represents the direction, speed and acceleration of a moving object.**
 
@@ -10,8 +10,8 @@ I probed a frozen V-JEPA 2 ViT-L/16 on 4,572 synthetic clips of a moving disk, r
 probing → nullspace → steering progression, and extended it with Goodfire-style manifold (spline) steering.
 - All three variables are **linearly readable after the first transformer block** and near-perfect (R² ≈ 0.99) by
   index 17–19 of 24.
-- The nullspace "dimension count" **measures the probe procedure, not the representation**: it moves from 7 to
-  > 150 with the ridge penalty, and a nonlinear probe still reads the variable after linear erasure.
+- The nullspace "dimension count" **measures the probe procedure, not the representation**: it moves from 7 to more
+  than 150 with the ridge penalty, and a nonlinear probe still reads the variable after linear erasure.
 - Steering edits **work at the layer where they are made and fade within a few blocks**, for probe-subspace and
   spline steering alike; the representation is a curved, low-dimensional manifold, and following it keeps
   intermediate states natural but does not make the edit propagate.
