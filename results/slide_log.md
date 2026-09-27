@@ -134,3 +134,56 @@ Candidate slides, added as results come in. Each names its figure, its message a
   - Strengths / limitations / failure cases: spline needs labelled balanced values and no extrapolation; probes need no
     centroids; both equal at linear readouts by construction.
 - Evidence: `spline_steering`: `spline_setup`, `spline_scores`, `comparison_table`, `figure_spline_profile`.
+
+
+## Confounds · The probes read distance, yet the motion profiles stay separable
+
+- Figure: `results/confounds/confounds.png`
+- Message: applied to the other set, the speed and acceleration probes read distance travelled (slope 1.00 / 0.99),
+  yet a classifier separates speed clips from acceleration clips at matched distance (0.95 at index 9, 0.98 at 18);
+  direction transfers across motion types, errors are not driven by exit or clipping, and direction's subspace is
+  near-orthogonal to speed's and acceleration's.
+- Points to say:
+  - Slope 1 = distance = mean speed = mid-clip speed (indistinguishable for uniform acceleration); a probe reading
+    acceleration itself would give slope 0 on constant-speed clips.
+  - Distance-only control at 0.50: the matching works; separability grows with depth (0.51 → 0.77 → 0.95 → 0.98).
+  - One line each: direction shared across motion types from index 9 (test agrees); flags: only a ~1° clipped-clip
+    excess at index 18 holds on both splits; slow sub-patch motion read continuously, not as moved / did-not-move;
+    speed–acceleration subspaces aligned (54°), direction at chance (84–89°) as in the paper.
+- Evidence: `confounds`: `cross_applied_probes`, `matched_distance_classifier`, `figure_confounds`; `robustness`:
+  `motion_type_transfer`, `motion_type_test`, `flag_breakdown`, `flag_test`, `subspace_overlap`.
+
+## Backup · Direction across motion types
+
+- Figure: none (table in `results/confounds/report.md`, 7.2)
+- Message: a direction probe fit on constant-velocity clips reads accelerating clips (and the reverse) almost as well
+  from index 9 on; a small type-specific part remains late.
+- Points to say:
+  - Across R² velocity → acceleration / acceleration → velocity: index 1 0.71 / 0.61, index 9 0.93 / 0.96, index 18
+    0.97 / 0.95 (validation); all six readings hold on test.
+  - Index 18 acceleration → velocity keeps a 3–4° gap even at matched distance.
+- Evidence: `robustness`: `motion_type_transfer`, `motion_type_test`.
+
+## Backup · Errors by clip flag and slow motion
+
+- Figure: `results/robustness/tubelet_scatter.png`
+- Message: probe errors are not concentrated in exit, clipped or frozen-start clips beyond a ~1° clipped-clip excess;
+  slow motion below one patch is still read as a continuous magnitude.
+- Points to say:
+  - Stratified within motion group / value; validation and one-time test; effects other than clipped flip between
+    splits.
+  - Inside the sub-patch range: slope of reading on label 0.58–0.98, Spearman CIs > 0 at every index, both splits.
+  - Relative error is 3–6× higher for sub-patch clips (confounded with label value).
+- Evidence: `robustness`: `flag_breakdown`, `figure_tubelet`, `flag_test`.
+
+## Backup · Subspace overlap and steering specificity
+
+- Figure: none (table in `results/confounds/report.md`, 7.5)
+- Message: speed and acceleration share a main direction; direction is near-orthogonal to both (the paper's C.4
+  result); direction steering nudges the speed / acceleration readouts slightly more than a random edit.
+- Points to say:
+  - Index 9 overlap vs a train-span null: speed–acceleration weights 0.37 (54°), patterns 0.71 (33°); direction pairs
+    at chance (84–89°); same in raw space.
+  - Readouts valid on the other sets' clips (R² 0.93–0.98), so specificity is interpretable.
+  - Cross-talk +0.012 m/s and +0.055 m/s² beyond random (small); speed / acceleration steering leaves direction alone.
+- Evidence: `robustness`: `subspace_overlap`; `steering`: `steering_specificity`.

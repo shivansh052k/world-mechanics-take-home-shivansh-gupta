@@ -17,6 +17,8 @@ Status markers: [done] results exist · [todo] not yet run.
 7. **Spline steering and the comparison with probe steering** (3 min) [done] — slides "The representation is a curved,
    low-dimensional manifold", "Held-out design and isometry against a label null", "Paths along the curve stay natural
    at the steering layer", "Downstream, every method collapses alike; only timing nudges it"
-8. **Confounds and robustness** (1 min) [todo] — distance vs acceleration, motion type, flags
+8. **Confounds and robustness** (1 min) [done] — slide "The probes read distance, yet the motion profiles stay
+   separable"; backups "Direction across motion types", "Errors by clip flag and slow motion", "Subspace overlap and
+   steering specificity"
 9. **Limitations and open questions** (1 min) [todo]
-   So far: time-averaged per-patch vectors; simpler stimuli than the paper; one checkpoint; interpretation of unspecified protocol details; nullspace counts depend on the probe's regularization; only linear erasure and one kernel family tested; speed / acceleration labels equal distance travelled; same-layer steering evaluation follows by construction; uniform token edit for every method; one steering / readout layer; "behavior" is our own readout (blurry for speed / acceleration); isometry dominated by label order.
+   So far: time-averaged per-patch vectors; simpler stimuli than the paper; one checkpoint; interpretation of unspecified protocol details; nullspace counts depend on the probe's regularization; only linear erasure and one kernel family tested; speed / acceleration labels equal distance travelled (linear probes read distance; the representation separates the motion profiles beyond it); same-layer steering evaluation follows by construction; uniform token edit for every method; one steering / readout layer; "behavior" is our own readout (blurry for speed / acceleration); isometry dominated by label order; few exit clips and a 30-clip steering set limit the flag breakdowns; subspace angles depend on scaling (both spaces reported); direction → speed / acceleration steering cross-talk unexplained.

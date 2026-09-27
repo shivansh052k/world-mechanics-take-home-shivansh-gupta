@@ -506,6 +506,9 @@ what's next.
   predictions bit for bit and the saved slopes; clean commit). `results/confounds/confounds.png` (main-slide figure:
   cross-applied readings vs true distance, slopes 1.00 / 0.99; set classifier by layer, 0.51 → 0.95 idx 9 → 0.98 idx 18,
   control 0.50) re-rendered twice after review (legend overlapped points; now below the axes), clean.
+- Gate step 3: report `results/confounds/report.md` (Claude Code draft, user-created; covers 7.1–7.5, kept on record,
+  open items). `code_hash_check` re-run (HEAD `4e1f8a2`): **77 keys, `rerun_needed` empty, passed** (adds
+  `figure_confounds`).
 
 ### 2026-09-26 — Phase 6 started (spline steering)
 - Phase 6 layout (`manifolds.py`, `behavior.py`, spline arms in `steering.py`; `check_manifolds.py`,
