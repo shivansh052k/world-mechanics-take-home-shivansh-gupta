@@ -274,3 +274,18 @@ def principal_cosines(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     qa, _ = np.linalg.qr(np.asarray(a, dtype=np.float64))
     qb, _ = np.linalg.qr(np.asarray(b, dtype=np.float64))
     return np.clip(np.linalg.svd(qa.T @ qb, compute_uv=False), 0.0, 1.0)
+
+def path_positions(points_at: Callable, values: np.ndarray, kind: str, dense: int = 4001) -> tuple[np.ndarray, float]:
+    """Arc-length position of each value along a curve (cumulative Euclidean length over a dense grid in the label)
+    and the total length (loop: once around, 0...360 degrees)."""
+    v = np.asarray(values, dtype=np.float64)
+    grid = np.linspace(0.0, PERIOD, dense + 1) if kind == "loop" else np.linspace(v.min(), v.max(), dense)
+    p = points_at(grid)
+    cumulative = np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(p, axis=0), axis=1))])
+    return np.interp(np.mod(v, PERIOD) if kind == "loop" else v, grid, cumulative), float(cumulative[-1])
+
+
+def geodesic_distances(positions: np.ndarray, total: float, kind: str) -> np.ndarray:
+    """(n, n) distances along the curve between arc-length positions; loop: the shorter way round."""
+    d = np.abs(positions[:, None] - positions[None, :])
+    return np.minimum(d, total - d) if kind == "loop" else d
