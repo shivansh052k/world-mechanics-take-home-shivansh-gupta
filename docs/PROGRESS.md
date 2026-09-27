@@ -366,6 +366,13 @@ Known decision points the plan cannot remove in advance:
 Newest entry on top. One entry per work session: what was done, what passed, what didn't,
 what's next.
 
+### 2026-09-27 — Phase 8 started (presentation and final delivery)
+- Order proposed (8.1 → 8.9 → 8.3 → 8.2/8.4 → 8.6 → 8.7 → 8.10 → 8.11/8.12 → 8.13 → 8.15 → 8.14, user sends); open
+  choices: slide tool, README placement, deadline.
+- 8.1: `check_data_files.py fingerprint_final` (new key = the same `check_fingerprint`, keeps F-62's record;
+  `require_clean_code` added) **passed** 6/6: 9,147 files, every SHA-256 and `shasum -c` match, none added / removed,
+  `data/` read-only; only byte-identical pair = the speed / acceleration manifests (= F-62). **Step 8.1 done.**
+
 ### 2026-09-27 — Phase 7 (confounds and robustness) — passed
 - Gate steps 4–5: slide log +1 main ("The probes read distance, yet the motion profiles stay separable") +3 backups;
   talk outline item 8 done, limitations extended; full docs pass (D-52, plan 7.1–7.7 ticked, O-12 closed, H-03 / H-04 /

@@ -134,7 +134,7 @@ commit before each saved run; no full re-runs; one design brief per phase; step 
 ## Phase 8 — Presentation and final delivery
 **Goal:** Build the presentation, clean up the code, and verify everything reproduces from scratch.
 
-- [ ] **8.1 Final data-integrity check** — Re-verify the Phase 0 fingerprint after the full pipeline has run.
+- [x] **8.1 Final data-integrity check** — *done: `fingerprint_final` passed, all 9,147 files unchanged, `data/` read-only.* — Re-verify the Phase 0 fingerprint after the full pipeline has run.
 - [ ] **8.2 Decide and document the presentation medium** — *D-48: slides exported as PDF (closes O-17).* Settle O-17.
 - [ ] **8.3 Outline the presentation** — *D-48: drafted now, updated per phase; slide log under `results/`.* — Against the README's exact requested content: methods, results, interpretations, comparisons, limitations.
 - [ ] **8.4 Build the presentation.**
