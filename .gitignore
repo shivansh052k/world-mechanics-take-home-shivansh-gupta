@@ -22,3 +22,12 @@ __pycache__/
 
 # Claude Code personal settings (guide-only permissions), per the Claude Code docs
 .claude/settings.local.json
+
+
+# Local working notes, kept on disk but not submitted: design log, planning docs, per-phase reports, slide drafts.
+# The submitted talk is submission/slides.pdf.
+docs/
+CLAUDE.md
+slides/
+results/*/report.md
+results/slide_log.md
