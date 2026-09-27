@@ -551,9 +551,9 @@ def ladder_rungs(arrays: dict, ladder: dict, variable: str) -> dict[str, np.ndar
     rec = ladder[variable]["rungs"]
     if kind == "open":
         rungs = {
-            "straight line\n(linear in label)": grid[line_a, 0],
-            "straight, free\nspacing (PC 1)": grid[0, smooths.index(rec["pc1_spacing"]["smooth"])],
-            "straight, free\nspacing (B)": loco_spacing_grid(
+            "straight\nline": grid[line_a, 0],
+            "free spacing\n(PC 1)": grid[0, smooths.index(rec["pc1_spacing"]["smooth"])],
+            "free spacing\n(B)": loco_spacing_grid(
                 values, cents, [smooths[smooths.index(rec["covariance_spacing"]["smooth"])]])[0],
             "curve\n(selected)": grid[a, b],
         }
@@ -605,11 +605,18 @@ def check_figure_manifolds() -> dict:
         ax.scatter(pc[:, 0], pc[:, 1], s=14, color=INK_MUTED, linewidths=0, zorder=4)
         pu = project(u_cents)
         ax.scatter(pu[:, 0], pu[:, 1], s=64, facecolors=SURFACE, edgecolors=colour, linewidths=1.8, zorder=5)
+        centre = cur.mean(axis=0)
         for v in LABEL_MARKS[variable]:
             p = project(curve(np.array([v])))[0]
             ax.scatter(p[0], p[1], s=22, color=INK, zorder=6, linewidths=0)
-            ax.annotate(f"{v:g}{UNITS[variable]}", p, xytext=(7, 5), textcoords="offset points",
-                        color=INK_SECONDARY, fontsize=9, zorder=7)
+            if kind == "loop":  # point labels outward, away from the loop's centre
+                out = (p - centre) / np.linalg.norm(p - centre)
+                offset, ha = tuple(14 * out), "left" if out[0] >= 0 else "right"
+            else:
+                offset, ha = (7, 5), "left"
+            ax.annotate(f"{v:g}{UNITS[variable]}", p, xytext=offset, textcoords="offset points", ha=ha, va="center",
+                        color=INK_SECONDARY, fontsize=9, zorder=7,
+                        bbox={"boxstyle": "round,pad=0.15", "fc": SURFACE, "ec": "none", "alpha": 0.85})
         a, b = (int(i) for i in arrays[f"{prefix}_selected"])
         setting = f"H {smooths[b]}" if kind == "loop" else f"λ {smooths[b]:.3g}"
         ax.set_title(f"{variable.capitalize()}: k {PCA_DIMS[a]}, {setting} (index 9)", color=INK, fontsize=11, loc="left")
