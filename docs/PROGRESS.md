@@ -453,6 +453,13 @@ what's next.
   F-104's saved test predictions, labelled confirmation; D: Phase 5 per-clip reduction by flag, post-hoc observation).
   D rule (Claude Code's own addition): stratified difference with CI only if ≥ 5 flagged and ≥ 5 unflagged clips in
   eligible strata, else counts and means, "too few to read".
+- 7.3c: `check_robustness.py figure_tubelet` **passed** (3/3, clean commit; re-rendered once with headroom after review:
+  ρ note overlapped acceleration points, legend overlapped a direction point). `results/robustness/tubelet_scatter.png`
+  reviewed, clean. Validation idx 9, Spearman error vs mean within-tubelet px (observations, confounded with label):
+  direction −0.25 (without exit −0.23); speed −0.05, relative −0.55; acceleration +0.22, relative −0.44. Predictions ✓
+  (speed "stripes" blur into a continuum: 64 values, 0.33–5.33 px). **Step 7.3c done.**
+- Freeze: F-154 (7.3b + 7.3c validation findings) and F-155 (7.3d scope: E on F-104's saved test predictions, D Phase 5
+  steering by flag with the ≥ 5 / ≥ 5 rule) written to DECISIONS §1.13 before any test row is read for 7.3.
 
 ### 2026-09-26 — Phase 6 started (spline steering)
 - Phase 6 layout (`manifolds.py`, `behavior.py`, spline arms in `steering.py`; `check_manifolds.py`,

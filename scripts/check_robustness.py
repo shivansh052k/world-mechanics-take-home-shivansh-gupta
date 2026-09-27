@@ -30,7 +30,7 @@ from vjepa_physics.robustness import (
     MOTION_TYPES, clip_errors, distance_overlap, motion_masks, stratified_difference, within_range_trend,
     within_tubelet_px,
 )
-from vjepa_physics.steering import STEERING_SITE
+from vjepa_physics.steering import STEERING_SITE, label_difference, readout_values
 
 REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "results/robustness/checks.json"
@@ -64,6 +64,11 @@ FIGURE_DPI = 200
 FIGURE_SITE = STEERING_SITE  # index 9
 ERROR_LABEL = {"direction": "circular error (°)", "speed": "absolute error (m/s)",
                "acceleration": "absolute error (m/s²)"}
+
+LAYER_CURVE_CHECKS = REPO / "results/layer_curves/checks.json"  # key "test_scores": one-time test predictions
+STEERING_CHECKS = REPO / "results/steering/checks.json"  # Phase 5 steering runs (test clips by design)
+STEERING_READOUT = "block_17"  # index 18, Phase 5's primary readout
+MIN_STEERING_CLIPS = 5  # stratified steering difference only with at least this many flagged and unflagged clips
 
 
 def site_index(site: str) -> int | None:
@@ -458,10 +463,176 @@ def check_figure_tubelet() -> dict:
         "figure": {"path": str(FIGURE_TUBELET.relative_to(REPO)), "sha256": file_sha256(FIGURE_TUBELET)},
         "values_plotted": len(plotted), "criteria": criteria, "passed": all(criteria.values()),
     }
+    
+def flag_records(variable: str, table: dict, errors: np.ndarray, predictions: np.ndarray, rows: np.ndarray) -> dict:
+    """flag_breakdown's (A) and (B) for one site on the clips in `rows` (same rules, resamples and seed)."""
+    labels = table["label"]
+    record: dict = {}
+    for flag, stratum in STRATIFIED_FLAGS.get(variable, ()):
+        flagged, strata = table[flag][rows], table[stratum][rows].astype(str)
+        d = stratified_difference(errors[rows], flagged, strata, BOOTSTRAP_RESAMPLES, SEED)
+        d["raw_difference"] = float(errors[rows & table[flag]].mean() - errors[rows & ~table[flag]].mean())
+        d["clips_per_stratum"] = {s: [int(((strata == s) & flagged).sum()), int(((strata == s) & ~flagged).sum())]
+                                  for s in d["strata"]}
+        d["reading"] = excess_reading(d["ci"])
+        record[flag] = d
+    if variable in TREND_VARIABLES:
+        sub = rows & table["sub_patch_motion"]
+        inside = within_range_trend(labels[sub], predictions[sub],
+                                    bootstrap_indices(int(sub.sum()), BOOTSTRAP_RESAMPLES, SEED))
+        full = within_range_trend(labels[rows], predictions[rows],
+                                  bootstrap_indices(int(rows.sum()), BOOTSTRAP_RESAMPLES, SEED))
+        relative = errors / labels
+        record["sub_patch"] = {
+            "n_clips": int(sub.sum()), "values": [float(v) for v in np.unique(labels[sub])],
+            "inside": inside, "reading": trend_reading(inside), "full_range": full,
+            "mean_error_per_value": {f"{v:g}": float(errors[sub & (labels == v)].mean())
+                                     for v in np.unique(labels[sub])},
+            "relative_error": {"flagged": float(relative[sub].mean()),
+                               "unflagged": float(relative[rows & ~table["sub_patch_motion"]].mean())},
+        }
+        if variable == "acceleration":
+            frozen = rows & table["frozen_start"]
+            record["frozen_start_trend"] = within_range_trend(
+                labels[frozen], predictions[frozen], bootstrap_indices(int(frozen.sum()), BOOTSTRAP_RESAMPLES, SEED))
+    return record
+
+
+def summary_line(record: dict) -> dict:
+    """Printed digest of one site's flag_records: difference, CI and reading; trend CIs and reading."""
+    line = {flag: [round(d["difference"], 4), [round(c, 4) for c in d["ci"]], d["reading"]]
+            for flag, d in record.items() if isinstance(d, dict) and "reading" in d and "ci" in d}
+    if "sub_patch" in record:
+        inside = record["sub_patch"]["inside"]
+        line["sub_patch"] = [[round(c, 4) for c in inside["slope_ci"]], [round(c, 4) for c in inside["spearman_ci"]],
+                             record["sub_patch"]["reading"]]
+    return line
+
+
+def steering_by_flag(variable: str, headline: dict, k: int) -> tuple[dict, bool]:
+    """Phase 5 index-18 steering (probes n = K - 1, both halves) broken down by flag; also whether the per-clip errors
+    reproduce steering_scores' headline and unedited errors."""
+    names = ("ids", "target_label", "arm_kind", "arm_n",
+             f"readout_{variable}_{STEERING_READOUT}", f"readout_unedited_{variable}_{STEERING_READOUT}")
+    runs = []
+    for half in ("seen", "unseen"):  # test_seen, then test_unseen, as steering_scores joins them
+        with np.load(verified_artifact(STEERING_CHECKS, f"steer_{variable}_{half}")) as f:
+            runs.append({name: f[name] for name in names})
+    ids = np.concatenate([r["ids"] for r in runs])
+    targets = runs[0]["target_label"]
+    arm = np.flatnonzero((runs[0]["arm_kind"] == "probes") & (runs[0]["arm_n"] == k - 1))
+    value = readout_values(variable, np.concatenate([r[f"readout_{variable}_{STEERING_READOUT}"] for r in runs]))
+    base = readout_values(variable, np.concatenate([r[f"readout_unedited_{variable}_{STEERING_READOUT}"] for r in runs]))
+    steered = np.abs(label_difference(variable, value[:, :, arm], targets[None, :, None])).mean(axis=(1, 2))
+    unedited = np.abs(label_difference(variable, base[:, None], targets[None, :])).mean(axis=1)
+    reproduced = (len(arm) == 1
+                  and bool(np.isclose(steered.mean(), headline[f"probes_{k - 1}"]["error_target"], rtol=1e-12, atol=0))
+                  and bool(np.isclose(unedited.mean(), headline["unedited"]["error_target"], rtol=1e-12, atol=0)))
+
+    table = load_joined(variable)
+    row_of = {int(i): r for r, i in enumerate(table["id"].tolist())}
+    rows = np.array([row_of[int(i)] for i in ids])
+    drop = unedited - steered  # per clip, label units (degrees for direction)
+    strata_of = dict(STRATIFIED_FLAGS.get(variable, ()))
+    record: dict = {"k": k, "arm": f"probes_{k - 1}", "n_clips": int(len(ids)), "flags": {}}
+    for flag in FLAG_TOTALS[variable]:
+        f = table[flag][rows]
+        entry: dict = {"n_flagged": int(f.sum()), "n_unflagged": int((~f).sum())}
+        for name, m in (("flagged", f), ("unflagged", ~f)):
+            if m.any():
+                entry[name] = {"reduction": float(1 - steered[m].mean() / unedited[m].mean()),
+                               "error_drop": float(drop[m].mean())}
+        if flag in strata_of:
+            strata = table[strata_of[flag]][rows].astype(str)
+            eligible = [s for s in np.unique(strata) if f[strata == s].any() and (~f[strata == s]).any()]
+            in_eligible = np.isin(strata, eligible)
+            if (in_eligible & f).sum() >= MIN_STEERING_CLIPS and (in_eligible & ~f).sum() >= MIN_STEERING_CLIPS:
+                entry["stratified_error_drop"] = stratified_difference(drop, f, strata, BOOTSTRAP_RESAMPLES, SEED)
+            else:
+                entry["stratified_error_drop"] = "too few to read"
+        record["flags"][flag] = entry
+    return record, reproduced
+
+
+def check_flag_test() -> dict:
+    """One-time test read for the flag breakdown (scope fixed before any test row was read for it).
+
+    (E) flag_breakdown's (A) and (B) at indices 1, 9, 18 on the saved one-time test predictions (test_scores; test_seen
+    + test_unseen), reported as a labelled confirmation, never selected on. (D) Phase 5 steering (index-18 readout,
+    probes n = K - 1) broken down by flag: counts, reduction flagged / unflagged, stratified per-clip error drop only
+    with >= MIN_STEERING_CLIPS flagged and unflagged clips in eligible strata; observation only. Passes if: artifacts
+    hash-verified and aligned; flag_records on the validation rows reproduces the saved flag_breakdown exactly; only
+    test rows predicted; recomputed test error means = test_scores' saved points; steering per-clip errors reproduce
+    steering_scores; everything finite.
+    """
+    with np.load(verified_artifact(PROBE_CHECKS, "layer_curves")) as f:
+        validation_saved = {key: f[key] for key in f.files}
+    with np.load(verified_artifact(LAYER_CURVE_CHECKS, "test_scores")) as f:
+        test_saved = {key: f[key] for key in f.files}
+    test_scores = json.loads(LAYER_CURVE_CHECKS.read_text())["test_scores"]["result"]
+    breakdown = json.loads(OUT.read_text())["flag_breakdown"]["result"]["variables"]
+    steering = json.loads(STEERING_CHECKS.read_text())["steering_scores"]["result"]["variables"]
+    column = {site: SITES.index(site) for site in HEADLINE_SITES}
+
+    ok: dict[str, list[bool]] = {name: [] for name in (
+        "aligned", "validation_reproduced", "only_test_rows_predicted", "test_scores_reproduced",
+        "steering_reproduced", "finite")}
+    ok["aligned"].append([str(s) for s in test_saved["sites"]] == list(SITES))
+    result, summary, counts = {}, {}, {}
+    for variable in DATASETS:
+        table = load_joined(variable)
+        labels, roles = table["label"], table["role"]
+        validation, test = np.isin(roles, VALIDATION_ROLES), np.isin(roles, TEST_ROLES)
+        for source in (validation_saved, test_saved):
+            ok["aligned"].append(bool(np.array_equal(source[f"{variable}_ids"], table["id"])
+                                      and np.array_equal(source[f"{variable}_roles"], roles)))
+        counts[variable] = {n: int((test & table[n]).sum()) for n in FLAG_TOTALS[variable]}
+        metric = "circular_mae" if variable == "direction" else "mae"
+
+        variable_record: dict = {}
+        for site in HEADLINE_SITES:
+            val_pred = validation_saved[f"{variable}_predictions"][:, column[site]]
+            val_errors = np.full(len(labels), np.nan)
+            val_errors[validation] = clip_errors(variable, labels[validation], val_pred[validation])
+            again = json.loads(json.dumps(flag_records(variable, table, val_errors, val_pred, validation)))
+            ok["validation_reproduced"].append(
+                again == {key: v for key, v in breakdown[variable][site].items() if key != "plot_index"})
+
+            pred = test_saved[f"{variable}_probe_predictions"][:, column[site]]
+            ok["only_test_rows_predicted"].append(bool(np.isnan(pred[~test]).all() and np.isfinite(pred[test]).all()))
+            errors = np.full(len(labels), np.nan)
+            errors[test] = clip_errors(variable, labels[test], pred[test])
+            for role in TEST_ROLES:
+                point = test_scores[variable][role]["all"]["methods"][f"probe {site}"][metric]["point"]
+                ok["test_scores_reproduced"].append(abs(float(errors[roles == role].mean()) - point) <= SCORE_TOLERANCE)
+
+            record = {"plot_index": site_index(site)} | flag_records(variable, table, errors, pred, test)
+            ok["finite"].append(all_finite(record))
+            variable_record[site] = record
+            summary.setdefault(variable, {})[str(site_index(site))] = summary_line(record)
+
+        steer, reproduced = steering_by_flag(variable, steering[variable]["headline"], steering[variable]["k"])
+        ok["steering_reproduced"].append(reproduced)
+        ok["finite"].append(all_finite(steer))
+        variable_record["steering"] = steer
+        summary[variable]["steering"] = {
+            flag: [e["n_flagged"], e.get("flagged", {}).get("reduction"), e.get("unflagged", {}).get("reduction"),
+                   e["stratified_error_drop"] if isinstance(e.get("stratified_error_drop"), str)
+                   else [round(c, 4) for c in e["stratified_error_drop"]["ci"]] if "stratified_error_drop" in e
+                   else "no stratum"]
+            for flag, e in steer["flags"].items()}
+        result[variable] = variable_record
+
+    criteria = {name: all(values) for name, values in ok.items()}
+    return {
+        "roles_scored": list(TEST_ROLES), "sites_scored": list(HEADLINE_SITES), "counts": counts,
+        "summary": summary, "variables": result, "criteria": criteria, "passed": all(criteria.values()),
+    }
 
 CHECKS = {
     "figure_tubelet": check_figure_tubelet,
     "flag_breakdown": check_flag_breakdown,
+    "flag_test": check_flag_test,
     "motion_type_transfer": check_motion_type_transfer,
     "motion_type_test": check_motion_type_test,
 }

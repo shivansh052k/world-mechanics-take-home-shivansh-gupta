@@ -6001,8 +6001,8 @@
   },
   "figure_tubelet": {
     "provenance": {
-      "utc": "2026-09-27T07:34:21+00:00",
-      "git_commit": "6af84b1266320e4727e21216c0370baa3eb57d60",
+      "utc": "2026-09-27T07:36:28+00:00",
+      "git_commit": "a4fbc86a55ab11a844368eb7e68683b0e2fb52fe",
       "git_dirty": false,
       "git_dirty_paths": [],
       "code": {
@@ -6036,9 +6036,9 @@
           "src/vjepa_physics/steering.py": "2aaf059c980a059425efef4d1e808ce3768a93dbdb9ddbf47448423dabeae0a0",
           "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
           "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
-          "scripts/check_robustness.py": "2eb891b6972179e39a7fa8ca01e866e10a1ada16cd39ef7237db147a521f8901"
+          "scripts/check_robustness.py": "f0ac3fd35a4ca179929ffa7fc82e032467fb25367a16306d73974e0ae44aa4a5"
         },
-        "combined_sha256": "c312a2e542c398535d49dbf87ca85ed98447978366d5fe51d2e072a9dbb73d75"
+        "combined_sha256": "c6afd6d2e0ed895bb2464cd83a83e1cc346c9e7c112a2f9574fed62663346a18"
       },
       "versions": {
         "av": "18.1.0",
@@ -6085,7 +6085,7 @@
       },
       "figure": {
         "path": "results/robustness/tubelet_scatter.png",
-        "sha256": "f4f5ccc8cb6e8209428f02f4ae9eca1f7e9af293b6c6196a434dbb0985a34d30"
+        "sha256": "8ca773fefc141ea8b72f0c76b456109d1379c9f41d9d3b398cac28bbf8bf62d5"
       },
       "values_plotted": 1810,
       "criteria": {
