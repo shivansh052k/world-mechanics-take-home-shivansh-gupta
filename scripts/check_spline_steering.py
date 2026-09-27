@@ -748,11 +748,12 @@ def check_spline_held_out() -> dict:
     
 
 def fmt(x: float, digits: int = 3) -> str:
-    return f"{x:.{digits}f}"
+    s = f"{x:.{digits}f}"
+    return s.lstrip("-") if float(s) == 0 else s  # no "-0.000"
 
 
-def fmt_ci(ci: list) -> str:
-    return f"[{ci[0]:.3f}, {ci[1]:.3f}]"
+def fmt_ci(ci: list, digits: int = 3) -> str:
+    return f"[{fmt(ci[0], digits)}, {fmt(ci[1], digits)}]"
 
 
 def probe_shift_ratio(variable: str, distance: float) -> float:
@@ -809,7 +810,7 @@ def check_comparison_table() -> dict:
         row("H-02", "harmonic power share h1 / h2 / h3+h4", lambda v: f"{fmt(harm[0], 2)} / {fmt(harm[1], 2)} / {fmt(harm[2] + harm[3], 2)}" if v == "direction" else "—", "direction_harmonics"),
         row("Q2", "all pairs: r(act. geodesic, beh. geodesic) / r(label, beh.)", lambda v: f"{fmt(iso[v]['conditions']['A_idx18']['point']['geodesic_r'])} / {fmt(iso[v]['conditions']['A_idx18']['point']['label_r'])}", "isometry"),
         row("Q2", "geodesic − label [95% CI]", lambda v: f"{fmt(iso[v]['conditions']['A_idx18']['point']['geodesic_minus_label'])} {fmt_ci(iso[v]['conditions']['A_idx18']['ci']['geodesic_minus_label'])}", "isometry"),
-        row("Q2", "local speed r [95% CI] (split-half ceiling)", lambda v: f"{fmt(local[v]['conditions']['A_idx18']['point']['cross'], 2)} {fmt_ci(local[v]['conditions']['A_idx18']['ci']['cross'])} ({fmt(local[v]['conditions']['A_idx18']['point']['ceiling'], 2)})", "isometry_local"),
+        row("Q2", "local speed r [95% CI] (split-half ceiling)", lambda v: f"{fmt(local[v]['conditions']['A_idx18']['point']['cross'], 2)} {fmt_ci(local[v]['conditions']['A_idx18']['ci']['cross'], 2)} ({fmt(local[v]['conditions']['A_idx18']['point']['ceiling'], 2)})", "isometry_local"),
         row("Q3", "edit size ÷ clip distance: spline / covariance / free spacing / K−1 probes", lambda v: " / ".join([
             fmt(setup[v]['median_shift_over_clip_distance']['spline_1'], 2),
             fmt(setup[v]['median_shift_over_clip_distance']['covariance_0.75'] / 0.75, 2),
