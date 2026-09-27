@@ -8,9 +8,11 @@ import json
 from pathlib import Path
 
 import numpy as np
+from sklearn.metrics import roc_auc_score
 
 from vjepa_physics.confounds import (
-    PAIR, as_distance, clip_distance, in_window, overlap_window, reading_verdict, tau_fraction_from_slope,
+    PAIR, as_distance, clip_distance, clip_pairs, in_window, overlap_window, pair_weights, reading_verdict,
+    shared_pair_rows, tau_fraction_from_slope, weighted_balanced_accuracy,
 )
 from vjepa_physics.evidence import require_clean_code, save_result, verified_artifact
 from vjepa_physics.extraction import SITES, plot_index
@@ -30,6 +32,11 @@ BOOTSTRAP_RESAMPLES = 10_000
 EXPECTED_FIT = {"speed": 832, "acceleration": 832}  # train clips per set
 EXPECTED_SCORED = {"speed": 232, "acceleration": 288}  # validation clips inside the overlap window
 POINT_TOLERANCE = 1e-12  # relative: identity resample vs the full-sample slope
+
+EXPECTED_PAIRS = {"train": (32, 512, 512), "validation": (37, 208, 188)}  # pairs, speed clips, acceleration clips
+MAX_CONTROL_ACCURACY = 0.6  # the distance-only classifier must stay at or below this (matching works)
+SEPARABLE_ABOVE = 0.6  # reading: the balanced-accuracy CI's lower end above this and above the control
+NO_SIGNAL_ACCURACY = 0.55  # an upper-edge alpha is expected only at or below this balanced accuracy
 
 
 def site_index(site: str) -> int | None:
@@ -148,7 +155,104 @@ def check_cross_applied_probes() -> dict:
     }
 
 
-CHECKS = {"cross_applied_probes": check_cross_applied_probes}
+def classifier_alpha_verdict(edge: str | None, accuracy: float) -> str:
+    """The alpha rule for the set classifier: upper edge allowed only without signal; lower edge = failure."""
+    if edge is None:
+        return "ok"
+    if edge == "upper" and accuracy <= NO_SIGNAL_ACCURACY:
+        return "no_signal"
+    return "failure"
+
+
+def check_matched_distance_classifier() -> dict:
+    """Speed-set vs acceleration-set classifier at matched distance travelled, at every site.
+
+    Clips: the two sets' values inside the overlap window, paired one to one by nearest distance; train = pairs whose
+    values both have train clips (16 + 16 each, balanced); validation = pairs with validation clips in both sets,
+    weighted 1 / (clips of the pair in that class) so both classes share one distance distribution. Classifier: ridge
+    on -1 (speed) / +1 (acceleration), train z-scoring, leave-one-out alpha. Scores: weighted balanced accuracy (sign of
+    the output) and weighted AUC; clip-bootstrap 95% intervals at indices 9 and 18. Control: the same classifier on
+    [distance, distance²] only. Passes if: pair and clip counts as expected; control balanced accuracy at or below
+    MAX_CONTROL_ACCURACY; no alpha failure; everything finite. Reading at 9 / 18: separable if the interval's lower
+    end is above SEPARABLE_ABOVE and above the control; index 0 is an observation.
+    """
+    tables = {v: load_joined(v) for v in PAIR}
+    distance = {v: clip_distance(tables[v]) for v in PAIR}
+    window = overlap_window(distance.values())
+    ids = dict(zip(PAIR, clip_pairs(distance["speed"], distance["acceleration"], window)[:2]))
+    masks = {}
+    for name, roles in (("train", ("train",)), ("validation", VALIDATION_ROLES)):
+        role_masks = [np.isin(tables[v]["role"], roles) for v in PAIR]
+        masks[name] = dict(zip(PAIR, shared_pair_rows(ids["speed"], ids["acceleration"], *role_masks)))
+    counts = {name: (len(np.unique(ids["speed"][m["speed"]])), int(m["speed"].sum()), int(m["acceleration"].sum()))
+              for name, m in masks.items()}
+    is_acceleration = {name: np.concatenate([np.zeros(masks[name]["speed"].sum(), bool),
+                                             np.ones(masks[name]["acceleration"].sum(), bool)]) for name in masks}
+    weights = np.concatenate([pair_weights(ids[v][masks["validation"][v]]) for v in PAIR])
+    y_val = is_acceleration["validation"]
+    boot = bootstrap_indices(len(y_val), BOOTSTRAP_RESAMPLES, SEED)
+
+    def fit_and_score(features: dict[str, np.ndarray]):
+        x_train, x_val = (np.concatenate([features[v][masks[name][v]] for v in PAIR]) for name in masks)
+        target = np.where(is_acceleration["train"], 1.0, -1.0)
+        probe = fit_probe(x_train, target, np.full(len(target), "train"))
+        score = probe.predict(x_val)
+        accuracy = weighted_balanced_accuracy(y_val, score > 0, weights)
+        return probe, score, accuracy, float(roc_auc_score(y_val, score, sample_weight=weights))
+
+    ok: dict[str, list[bool]] = {name: [] for name in ("n_fit", "no_alpha_failure", "finite")}
+    control, _, control_accuracy, control_auc = fit_and_score(
+        {v: np.stack([distance[v], distance[v] ** 2], axis=1) for v in PAIR})
+    control_verdict = classifier_alpha_verdict(control.alpha_edge, control_accuracy)
+    ok["no_alpha_failure"].append(control_verdict != "failure")
+
+    sites, headline = {}, {}
+    for site in SITES:
+        x = {v: site_features(tables[v]["activations"], site) for v in PAIR}
+        probe, score, accuracy, auc = fit_and_score(x)
+        verdict = classifier_alpha_verdict(probe.alpha_edge, accuracy)
+        record = {"plot_index": site_index(site), "alpha": probe.alpha, "alpha_edge": probe.alpha_edge,
+                  "alpha_verdict": verdict, "balanced_accuracy": accuracy, "auc": auc}
+        if site in HEADLINE_SITES:
+            accuracy_ci = percentile_interval(np.array(
+                [weighted_balanced_accuracy(y_val[i], score[i] > 0, weights[i]) for i in boot]))
+            auc_ci = percentile_interval(np.array([roc_auc_score(y_val[i], score[i], sample_weight=weights[i])
+                                                   for i in boot]))
+            separable = accuracy_ci[0] > SEPARABLE_ABOVE and accuracy_ci[0] > control_accuracy
+            record |= {"balanced_accuracy_ci": [float(c) for c in accuracy_ci], "auc_ci": [float(c) for c in auc_ci],
+                       "reading": "motion profile linearly separable at matched distance" if separable
+                       else "not separable by the pre-set rule"}
+            headline[site_index(site)] = {key: record[key] for key in (
+                "balanced_accuracy", "balanced_accuracy_ci", "auc", "auc_ci", "reading")}
+        ok["n_fit"].append(probe.n_fit == sum(EXPECTED_PAIRS["train"][1:]))
+        ok["no_alpha_failure"].append(verdict != "failure")
+        ok["finite"].append(all_finite(record))
+        sites[site] = record
+
+    control_record = {"alpha": control.alpha, "alpha_verdict": control_verdict,
+                      "balanced_accuracy": control_accuracy, "auc": control_auc}
+    criteria = {name: all(values) for name, values in ok.items()} | {
+        "counts_as_expected": all(counts[name] == EXPECTED_PAIRS[name] for name in masks),
+        "control_at_chance": control_accuracy <= MAX_CONTROL_ACCURACY,
+        "control_finite": all_finite(control_record),
+    }
+    summary = {
+        "distance_only_control": control_record,
+        "balanced_accuracy_by_index": {str(r["plot_index"]): round(r["balanced_accuracy"], 3) for r in sites.values()},
+        "headline": headline,
+    }
+    return {
+        "window_m": list(window), "counts": {name: dict(zip(("pairs", "speed_clips", "acceleration_clips"), c))
+                                             for name, c in counts.items()},
+        "weighting": "validation clips weighted 1 / (clips of their pair in their class)",
+        "summary": summary, "sites": sites, "criteria": criteria, "passed": all(criteria.values()),
+    }
+
+
+CHECKS = {
+    "cross_applied_probes": check_cross_applied_probes,
+    "matched_distance_classifier": check_matched_distance_classifier,
+}
 
 
 def main() -> None:

@@ -372,6 +372,20 @@ what's next.
   acceleration probe, 0 / 1 / 2 speed probe) within 2e-15; verdict rule as stated; window pairing 49 speed values ↔ 49 of
   60 acceleration values, one to one, max gap 0.0144 m (≤ half an acceleration step 0.0151), median 0.0074, 11 unpaired.
   All predictions met. **Step 7.0b done.**
+- 7.1a: `scripts/check_confounds.py cross_applied_probes` **passed** (8/8, clean commit; refits = `layer_curves` alpha
+  and validation predictions exactly). Window validation clips 232 speed / 288 acceleration. Slope of cross-predicted on
+  true distance (m) [95 % CI], idx 9 / 18: **acceleration probe on speed clips 0.959 [0.940, 0.978] / 1.004 [0.988,
+  1.020] → "reads a speed / distance quantity"** (τ = T / (2 slope) ≈ mid-clip; R² vs distance 0.977 / 0.981; intercept
+  0.042 / −0.024 m); **speed probe on acceleration clips 1.016 / 0.991 → τ/T 0.508 [0.499, 0.517] / 0.495 [0.486,
+  0.504]** (R² 0.973 / 0.940; intercept 0.016 / 0.115 m). Own-set slopes in the window 0.987–1.017. Idx 1: acceleration probe on speed
+  clips 1.016, speed probe on acceleration clips 0.991 (same as 9 / 18). Both probes, applied out of distribution, read distance = mean = mid-clip speed → H-03 supported for
+  the linear readouts. Claude Code's predictions: criteria ✓, verdict ✓, slope 0.6–1.3 ✓, τ/T 0.3–0.7 ✓, own slope
+  0.95–1.02 ✓; "idx 1 closest to 1" not borne out (all ≈ 1). **Step 7.1a done.**
+- 7.1b-1: `confounds.py` part 3 (`clip_pairs`, `shared_pair_rows`, `pair_weights`, `weighted_balanced_accuracy`). Smoke
+  test (terminal, not saved): weighted balanced accuracy = sklearn to 5.6e-17; `roc_auc_score` takes `sample_weight`; 49
+  pairs, 1,176 + 1,176 clips; train 32 pairs, 512 + 512 clips, weight sums 32 / 32, mean-distance gap 0.0003 m;
+  validation 37 pairs, 208 + 188 clips, weight sums 37 / 37, gap raw 0.037 → weighted 0.0004 m. All predictions met.
+  **Step 7.1b-1 done.**
 
 ### 2026-09-26 — Phase 6 started (spline steering)
 - Phase 6 layout (`manifolds.py`, `behavior.py`, spline arms in `steering.py`; `check_manifolds.py`,

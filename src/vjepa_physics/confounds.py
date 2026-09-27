@@ -87,3 +87,41 @@ def matched_value_pairs(sparse: np.ndarray, dense: np.ndarray) -> tuple[np.ndarr
     if len(np.unique(nearest)) != len(nearest):
         raise ValueError("two values share their nearest partner; the pairing is not one to one")
     return np.stack([np.arange(len(sparse)), nearest], axis=1), np.abs(sparse - dense[nearest])
+
+
+
+def clip_pairs(first: np.ndarray, second: np.ndarray, window: tuple[float, float]):
+    """Per-clip pair ids for two sets' clip distances (first = the sparser set's): each set's distinct values inside the
+    window are paired by matched_value_pairs. Returns (first ids, second ids, gaps); -1 = outside the window or a value
+    left unpaired."""
+    values = [np.unique(d[in_window(d, window)]) for d in (first, second)]
+    pairs, gaps = matched_value_pairs(*values)
+    ids = []
+    for d, vals, column in zip((first, second), values, (0, 1)):
+        pair_of_value = np.full(len(vals), -1)
+        pair_of_value[pairs[:, column]] = np.arange(len(pairs))
+        pid = np.full(len(d), -1)
+        inside = in_window(d, window)
+        pid[inside] = pair_of_value[np.searchsorted(vals, d[inside])]
+        ids.append(pid)
+    return ids[0], ids[1], gaps
+
+
+def shared_pair_rows(first_ids: np.ndarray, second_ids: np.ndarray, first_mask: np.ndarray, second_mask: np.ndarray):
+    """Masks of each set's rows (within its mask) whose pair also has rows in the other set's mask."""
+    shared = np.intersect1d(first_ids[first_mask], second_ids[second_mask])
+    shared = shared[shared >= 0]
+    return first_mask & np.isin(first_ids, shared), second_mask & np.isin(second_ids, shared)
+
+
+def pair_weights(pair_ids: np.ndarray) -> np.ndarray:
+    """Weight 1 / (clips of the same pair) per clip of one class, so every pair weighs 1 in that class."""
+    _, inverse, counts = np.unique(pair_ids, return_inverse=True, return_counts=True)
+    return 1.0 / counts[inverse]
+
+
+def weighted_balanced_accuracy(y_true: np.ndarray, y_pred: np.ndarray, weights: np.ndarray) -> float:
+    """Mean over the two classes of the weighted share of that class predicted correctly."""
+    y_true, y_pred, weights = np.asarray(y_true, bool), np.asarray(y_pred, bool), np.asarray(weights, np.float64)
+    return float(np.mean([(weights[y_true == c] * (y_pred[y_true == c] == c)).sum() / weights[y_true == c].sum()
+                          for c in (False, True)]))
