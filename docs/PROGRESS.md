@@ -131,7 +131,13 @@ beats line on held-out values for all three; curvature 77–87 % of the gain; 6�
 reports but adds nothing beyond label order (speed agrees locally); spline steering stays natural at the steering
 layer (direction chord midpoints bimodal in 47 % of far targets) but collapses downstream exactly like the covariance
 line and probes (idx 18: 0.07–0.14, spline and covariance within 0.005); a time-structured edit helps slightly
-(+0.01–0.03), not confirmed. **Next:** Phase 7 (confounds and robustness; no new forward passes, D-48).
+(+0.01–0.03), not confirmed. **Phase 7 (confounds and robustness) passed (2026-09-27):** D-52, F-149–F-157; report
+`results/confounds/report.md`. Headline: the linear speed / acceleration probes read distance travelled (cross-applied
+slopes ≈ 1; H-03 supported for the readouts) while the representation separates the motion profiles at matched distance
+(0.95 / 0.98 at idx 9 / 18); direction shared across motion types from idx 9 (test agrees); H-04 not supported beyond a
+~1° clipped-clip excess; H-05's binary reading rejected; speed–acceleration subspaces aligned, direction at chance (the
+paper's C.4 result); small direction → speed / acceleration steering cross-talk. **Next:** Phase 8 (presentation and
+final delivery).
 
 ---
 
@@ -146,7 +152,7 @@ line and probes (idx 18: 0.07–0.14, spline and covariance within 0.005); a tim
 | 4 — Part 1b: Iterative nullspace probing | ✅ Passed gate (2026-09-26) | 4.1–4.8 done (D-49 + addenda; F-116–F-128); K idx 9 = 6 / 7 / 7, procedure-dependent (F-120); linear erasure with m dims, nonlinear recovery (F-119–F-123); test once (F-127); hash-check gate, 2 keys re-run identical (F-128); five failures kept on record; report `results/nullspace/report.md`, figures `nullspace_rounds.png`, `erasure_and_procedure.png` |
 | 5 — Part 1c: Multi-probe subspace steering | ✅ Passed gate (2026-09-26) | 5.1–5.10 done (D-50; F-129–F-138); steer idx 9, read idx 18 via bit-exact partial forward; headline K−1 idx-18 reduction 0.029 / 0.129 / 0.136 vs same-layer 0.95 / 0.95 / 0.92; post-hoc profile, decomposition, specificity, kernel; gate: 46 keys traced, setup and cache re-run identical (F-138); figures `steering_reduction.png`, `steering_propagation.png`; report `results/steering/report.md`; slide log +2; talk outline item 6 done |
 | 6 — Part 2: Spline steering | ✅ Passed gate (2026-09-27) | 6.1–6.17 done (6.10, 6.11 skipped; D-51; F-139–F-148); Q1 curved (LOCO, ladder), Q2 isometry vs label null, Q3 spline vs covariance vs probes over idx 9–18 + naturalness + held-out targets, Q4 time-structured nudge (not confirmed); gate: 68 keys, none to re-run; `comparison_table.md`, figures `manifolds.png`, `spline_paths.png`, `spline_profile.png`; report `results/spline_steering/report.md`; slide log +4; talk outline item 7 done |
-| 7 — Confounds and robustness | ⬜ Not started | |
+| 7 — Confounds and robustness | ✅ Passed gate (2026-09-27) | 7.1–7.7 done (D-52; F-149–F-157); no new forward passes; test once for 7.2 and 7.3 after freezes (F-152, F-155); 7.3–7.5 criteria re-drafted (brief text lost), approved before runs; gate: `code_hash_check` 77 keys, none to re-run; figures `confounds.png`, `tubelet_scatter.png`; report `results/confounds/report.md`; slide log +1 main, +3 backups; talk outline item 8 done |
 | 8 — Presentation and final delivery | ⬜ Not started | |
 
 Status legend: ⬜ Not started · 🟨 In progress · ✅ Passed gate · ⚠️ Blocked (see Open issues below)
@@ -303,6 +309,17 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/spline_steering/spline_paths.png`, `spline_profile.png` + `checks.json` | `figure_spline_paths`, `figure_spline_profile` | Path figure (Q3), propagation profile + Q4 | ℹ️ visual (reviewed) | F-148 |
 | `results/evidence/checks.json` | `code_hash_check` | Phase 6 gate: 68 keys, all matched, none to re-run | ✅ passed | F-148 |
 | `results/spline_steering/report.md` | — | Part 2 report: Q1–Q4, Goodfire comparison, strengths / limitations / failures, kept on record | ✅ gate passed | F-148; user-written from Claude Code's draft |
+| `results/confounds/checks.json` | `cross_applied_probes` | Speed / acceleration probes applied across sets in the F-65 window: slopes ≈ 1 on true distance → "reads a speed / distance quantity"; τ/T ≈ 0.5 | ✅ passed | F-149 |
+| `results/confounds/checks.json` | `matched_distance_classifier` | Set classifier at matched distance: control 0.500; idx 9 0.947, idx 18 0.983 → profile separable | ✅ passed | F-150 |
+| `results/confounds/confounds.png` + `checks.json` | `figure_confounds` | Main-slide figure (cross-applied readings; classifier by layer); refits reproduce saved predictions and slopes | ℹ️ visual (reviewed) | D-52 |
+| `results/robustness/checks.json` + `artifacts/robustness/motion_type_predictions.npz` | `motion_type_transfer` | Direction transfer between motion types, validation; readings per idx 1 / 9 / 18 | ✅ passed | F-151 |
+| `results/robustness/checks.json` | `motion_type_test` | One-time test of the transfer; validation reproduced bit for bit; readings = validation | ✅ passed (committed code) | F-153 |
+| `results/robustness/checks.json` | `flag_breakdown` | Stratified flag errors and sub-patch trend on validation (idx 1 / 9 / 18) | ✅ passed | F-154 |
+| `results/robustness/tubelet_scatter.png` + `checks.json` | `figure_tubelet` | Error vs mean within-tubelet px, idx 9; Spearman observations | ℹ️ visual (reviewed) | F-154 |
+| `results/robustness/checks.json` | `flag_test` | One-time test read of the flag breakdown + Phase 5 steering by flag; validation reproduced exactly first | ✅ passed (committed code) | F-156 |
+| `results/robustness/checks.json` | `subspace_overlap` | C.4 subspace metrics with both nulls (common + raw space), reverse validity, direction specificity | ✅ passed | F-157 |
+| `results/evidence/checks.json` | `code_hash_check` | Phase 7 gate: 77 keys, all matched, none to re-run | ✅ passed | D-52 |
+| `results/confounds/report.md` | — | Confounds and robustness report: 7.1–7.5, strengths / limitations, kept on record, open items | ✅ gate passed | D-52; user-created from Claude Code's draft |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
@@ -339,6 +356,8 @@ Known decision points the plan cannot remove in advance:
   LOCO result, not met) — all three are nonlinear in the label; the line → free-spacing line → curve ladder (6a-4)
   splits uneven spacing from curvature; spline and covariance endpoints are expected to differ.
 - (iii) Time reserved for slides + two rehearsals (8.13).
+- (iv) One-line note for the planning chat (not blocking): direction → speed / acceleration steering cross-talk beyond a
+  random edit (F-157), small; no decision affected.
 
 ---
 
@@ -346,6 +365,11 @@ Known decision points the plan cannot remove in advance:
 
 Newest entry on top. One entry per work session: what was done, what passed, what didn't,
 what's next.
+
+### 2026-09-27 — Phase 7 (confounds and robustness) — passed
+- Gate steps 4–5: slide log +1 main ("The probes read distance, yet the motion profiles stay separable") +3 backups;
+  talk outline item 8 done, limitations extended; full docs pass (D-52, plan 7.1–7.7 ticked, O-12 closed, H-03 / H-04 /
+  H-05 statuses, phase table, Saved evidence, CLAUDE.md §5 / §7). **Phase 7 passed.** Next: Phase 8.
 
 ### 2026-09-27 — Phase 7 started (confounds and robustness)
 - Phase 7 layout (`confounds.py`, `robustness.py`; `check_confounds.py`, `check_robustness.py`; subjects `confounds`,

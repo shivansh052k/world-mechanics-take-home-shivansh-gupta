@@ -1,6 +1,6 @@
 # CLAUDE.md — World Mechanics take-home (V-JEPA physics)
 
-Last updated: 2026-09-27 (Phase 6 passed, D-51, F-139–F-148, report `results/spline_steering/report.md`; next: Phase 7, no new forward passes; lean mode D-48). Read this fully at the start of every session.
+Last updated: 2026-09-27 (Phase 7 passed, D-52, F-149–F-157, report `results/confounds/report.md`; next: Phase 8, presentation and delivery; lean mode D-48). Read this fully at the start of every session.
 
 ---
 
@@ -192,6 +192,13 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   0.005); more natural only at idx 9 (direction chord midpoints bimodal); time-structured edit +0.01–0.03 (not
   confirmed, C11 threshold 0.05 not met). Saved for Phase 7: `artifacts/manifolds/curves.npz`,
   `artifacts/behavior/readouts.npz`, `artifacts/spline_steering/` (setup + six runs); read via `verified_artifact`.
+- **[verified, F-149–F-157] Phase 7 results (D-52):** cross-applied speed / acceleration probes read distance (slopes
+  ≈ 1 on true distance in the F-65 window; H-03 supported for the linear readouts) while a matched-distance set
+  classifier separates the profiles (0.95 / 0.98 at idx 9 / 18; control 0.50); direction shared across motion types
+  from idx 9 (test agrees); H-04 not supported beyond a ~1° clipped-clip excess at idx 18; H-05 binary reading rejected
+  (sub-patch trend continuous, both splits); speed–acceleration subspaces aligned (weights 54°, patterns 33°),
+  direction at chance (84–89°, = paper C.4); readouts valid across sets (R² 0.93–0.98); small direction → speed /
+  acceleration steering cross-talk (not explained). Test used once each for 7.2 and 7.3 (F-152, F-155).
 - **[verified, F-65/F-72]** Tiny motion: 48 acceleration clips move < 3 px in total; some are frozen
   for up to 11 frames after frame 0.
 
@@ -282,6 +289,15 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `isometry_local`), `check_spline_steering.py` (`spline_setup`, `spline_<variable>_<half>`, `spline_scores`,
   `spline_naturalness`, `spline_held_out`, `comparison_table`, `figure_spline_paths`, `figure_spline_profile`);
   `HASH_CHECK_SUBJECTS` includes `manifolds`, `behavior`, `spline_steering`.
+  Phase 7: `confounds` (`CLIP_SECONDS`, `DISTANCE_PER_UNIT`, `clip_distance`, `overlap_window`, `in_window`,
+  `as_distance`, `expected_slope`, `tau_fraction_from_slope`, `reading_verdict`, `matched_value_pairs`, `clip_pairs`,
+  `shared_pair_rows`, `pair_weights`, `weighted_balanced_accuracy`); `robustness` (`MOTION_TYPES`, `motion_masks`,
+  `distance_overlap`, `clip_errors`, `within_tubelet_px`, `stratified_difference`, `within_range_trend`, `orthonormal`,
+  `rescale` / `re_express` (weights × σ_target/σ_own, patterns inverse), `principal_angles` (scipy), `subspace_metrics`
+  (C.4), `null_metrics`, `null_reading`). Scripts `check_confounds.py` (`cross_applied_probes`,
+  `matched_distance_classifier`, `figure_confounds`), `check_robustness.py` (`motion_type_transfer`,
+  `motion_type_test`, `flag_breakdown`, `figure_tubelet`, `flag_test`, `subspace_overlap`); `HASH_CHECK_SUBJECTS` also
+  includes `confounds`, `robustness`.
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.
@@ -307,6 +323,12 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   lines"); Claude Code reads the rest of the saved key itself.
 - Quote plan step numbers (6.8, 7.1 …) first; planner stage labels (6a, 6b …) only as mapped in the plan.
 - Commit + push checkpoints after each substantial group (analysis done, runs done, figures done, phase passed).
+
+### Working lessons (Phase 7, standing)
+- Record every approved criterion in PROGRESS **before** the run (the Phase 7 brief text lived only in chat and was
+  lost; 7.3–7.5 criteria had to be re-drafted).
+- Test-once also covers re-reading saved test outputs (e.g. steering runs): freeze the validation F-entry first.
+- Before using a saved artifact, check which roles its rows hold (Phase 5 steering runs are test clips).
 
 ### Working lessons (Phases 3–4, standing)
 - **Tools:** never use the terminal-run tool, subagents or scheduled tasks (not all are denied in settings). Read PNGs
