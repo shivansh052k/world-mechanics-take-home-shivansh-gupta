@@ -16,6 +16,7 @@ import numpy as np
 from matplotlib.lines import Line2D
 from scipy.stats import spearmanr
 
+from vjepa_physics.confounds import as_distance, clip_distance
 from vjepa_physics.data import DATASETS
 from vjepa_physics.evidence import file_sha256, require_clean_code, save_result, verified_artifact
 from vjepa_physics.extraction import SITES, plot_index
@@ -23,14 +24,15 @@ from vjepa_physics.joined import load_joined
 from vjepa_physics.metrics import (
     angles_from_sincos, bootstrap_indices, circular_errors, percentile_interval, r2, resampled_mean, resampled_r2,
 )
+from vjepa_physics.nullspace import covariance_basis, random_span_basis, train_scaler, train_span
 from vjepa_physics.plotting import DATASET_COLOUR, INK, INK_MUTED, INK_SECONDARY, SURFACE, style_axes
 from vjepa_physics.probes import alpha_verdict, fit_probe, probe_scores, probe_targets, site_features
 from vjepa_physics.reproducibility import SEED
 from vjepa_physics.robustness import (
-    MOTION_TYPES, clip_errors, distance_overlap, motion_masks, stratified_difference, within_range_trend,
-    within_tubelet_px,
+    MOTION_TYPES, NULL_KEYS, clip_errors, distance_overlap, motion_masks, null_metrics, null_reading, re_express,
+    rescale, stratified_difference, subspace_metrics, within_range_trend, within_tubelet_px,
 )
-from vjepa_physics.steering import STEERING_SITE, label_difference, readout_values
+from vjepa_physics.steering import STEERING_SITE, label_difference, load_probe_sequence, readout_values
 
 REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "results/robustness/checks.json"
@@ -69,6 +71,18 @@ LAYER_CURVE_CHECKS = REPO / "results/layer_curves/checks.json"  # key "test_scor
 STEERING_CHECKS = REPO / "results/steering/checks.json"  # Phase 5 steering runs (test clips by design)
 STEERING_READOUT = "block_17"  # index 18, Phase 5's primary readout
 MIN_STEERING_CLIPS = 5  # stratified steering difference only with at least this many flagged and unflagged clips
+
+OVERLAP_PAIRS = (("speed", "acceleration"), ("speed", "direction"), ("acceleration", "direction"))
+SUBSPACES = (("weights_1", "weights"), ("weights_k_minus_1", "weights"), ("patterns", "patterns"))  # (name, transform)
+NULL_DRAWS = 1000
+ALGEBRA_TOLERANCE = 1e-10  # orthonormality, re-expression invariance, direct vs transformed, span residual
+ANGLE_TOLERANCE = 1e-7  # radians: scipy vs the SVD-cosine formula (arccos loses precision near 0)
+VALIDITY_R2 = 0.5  # a readout counts as valid on the other set's clips at or above this (7.2's band edge)
+MAX_VALIDITY_SPEED = 4.0  # m/s: direction velocity clips inside the speed set's range
+VALIDITY_CHECKS = (("speed", "direction"), ("acceleration", "direction"), ("direction", "speed"),
+                   ("direction", "acceleration"))  # (readout, clips it is applied to)
+DIRECTION_SPECIFICITY = (("direction", "speed"), ("direction", "acceleration"), ("speed", "direction"),
+                         ("acceleration", "direction"))  # (steered, read); speed <-> acceleration: steering_specificity
 
 
 def site_index(site: str) -> int | None:
@@ -629,12 +643,178 @@ def check_flag_test() -> dict:
         "summary": summary, "variables": result, "criteria": criteria, "passed": all(criteria.values()),
     }
 
+def space_transform(own_scale: np.ndarray, target_scale: np.ndarray, kind: str):
+    """Re-expression from a basis's own standardized space into a target space; the same callable for real and null."""
+    return lambda q: re_express(q, own_scale, target_scale, kind)
+
+
+def null_summary(samples: np.ndarray) -> dict:
+    return {"median": float(np.median(samples)), "interval": [float(c) for c in percentile_interval(samples)]}
+
+
+def check_subspace_overlap() -> dict:
+    """Principal-angle overlap of the variables' probe subspaces (physics paper App. C.4 metrics), reverse readout
+    validity, and direction steering specificity. Subspaces are train-fit only.
+
+    Per site (indices 1, 9, 18; 9 = headline), pair and subspace (weights: nullspace Q rounds 1 and 1...K-1; patterns:
+    train covariance directions), in the common space (one train scaler over all three sets) and the raw space: mean
+    principal angle, overlap ||Q_AᵀQ_B||²_F / dim(B) both ways, Grassmann distance; nulls k_A / d and NULL_DRAWS random
+    subspaces in the randomized set's own standardized train span, re-expressed like the real one; reading on overlap
+    (null_reading). Validity (validation clips): speed / acceleration readouts on direction velocity clips <= 4 m/s vs
+    clip distance (m); direction readout on speed / acceleration clips vs theta; R² >= VALIDITY_R2 = valid. Specificity
+    (Phase 5 runs, index 18): per-clip mean |cross-readout change|, probes K-1 minus random K-1, paired clip bootstrap;
+    read only with a valid readout. Passes if: Q orthonormal; round-1 predictions invariant under re-expression;
+    covariance directions direct = transformed; null draws inside the span; angles = the SVD-cosine formula; full-space
+    draws = k_A / d within 3 SE; specificity = steering_scores; everything finite.
+    """
+    tables = {v: load_joined(v) for v in DATASETS}
+    ok: dict[str, list[bool]] = {name: [] for name in (
+        "q_orthonormal", "weights_invariant", "patterns_consistent", "null_in_span", "angles_agree", "analytic_null",
+        "specificity_reproduced", "finite")}
+    sites_record, summary = {}, {}
+
+    for site in HEADLINE_SITES:
+        x = {v: np.asarray(site_features(tables[v]["activations"], site), np.float64) for v in DATASETS}
+        pooled = train_scaler(np.concatenate([x[v] for v in DATASETS]),
+                              np.concatenate([tables[v]["role"] for v in DATASETS]))
+        d = len(pooled.scale_)
+        targets = {"common": pooled.scale_, "raw": np.ones(d)}
+        own, spans, scales, ks = {}, {}, {}, {}
+        for v in DATASETS:
+            seq = load_probe_sequence(v, site)
+            roles, m = tables[v]["role"], seq.dims_per_round
+            z = (x[v] - seq.mean) / seq.scale
+            ok["q_orthonormal"].append(
+                float(np.abs(seq.basis.T @ seq.basis - np.eye(seq.basis.shape[1])).max()) <= ALGEBRA_TOLERANCE)
+            raw_pred = x[v] @ seq.maps[0]
+            diff = pooled.transform(x[v]) @ rescale(seq.scale[:, None] * seq.maps[0], seq.scale, pooled.scale_,
+                                                    "weights") - raw_pred
+            ok["weights_invariant"].append(float((diff - diff.mean(axis=0)).std() / raw_pred.std()) <= ALGEBRA_TOLERANCE)
+            y = probe_targets(v, tables[v]["label"])
+            patterns = covariance_basis(z, y, roles)
+            direct = covariance_basis(pooled.transform(x[v]), y, roles)
+            via = re_express(patterns, seq.scale, pooled.scale_, "patterns")
+            ok["patterns_consistent"].append(float(np.abs(direct @ direct.T - via @ via.T).max()) <= ALGEBRA_TOLERANCE)
+            spans[v] = train_span(z, roles)
+            draw = random_span_basis(spans[v], m, SEED)
+            ok["null_in_span"].append(
+                float(np.abs(draw - spans[v] @ (spans[v].T @ draw)).max()) <= ALGEBRA_TOLERANCE)
+            own[v] = {"weights_1": seq.basis[:, :m], "weights_k_minus_1": seq.basis[:, :(seq.k - 1) * m],
+                      "patterns": patterns}
+            scales[v], ks[v] = seq.scale, seq.k
+
+        site_record: dict = {"plot_index": site_index(site), "k": ks,
+                             "span_rank": {v: int(spans[v].shape[1]) for v in DATASETS}, "pairs": {}}
+        for a, b in OVERLAP_PAIRS:
+            pair_record: dict = {}
+            for name, kind in SUBSPACES:
+                pair_record[name] = {}
+                for space, target in targets.items():
+                    ta, tb = space_transform(scales[a], target, kind), space_transform(scales[b], target, kind)
+                    qa, qb = ta(own[a][name]), tb(own[b][name])
+                    metrics = subspace_metrics(qa, qb)
+                    svd = np.sort(np.arccos(np.clip(np.linalg.svd(qa.T @ qb, compute_uv=False), -1.0, 1.0)))
+                    ok["angles_agree"].append(
+                        float(np.abs(np.radians(metrics["angles_degrees"]) - svd).max()) <= ANGLE_TOLERANCE)
+                    null_b = null_metrics(qa, spans[b], qb.shape[1], tb, NULL_DRAWS, SEED)  # B randomized
+                    null_a = null_metrics(qb, spans[a], qa.shape[1], ta, NULL_DRAWS, SEED)  # A randomized
+                    if site == STEERING_SITE and (a, b) == OVERLAP_PAIRS[0] and name == "weights_k_minus_1" \
+                            and space == "common":
+                        full = null_metrics(qa, np.eye(d), qb.shape[1], lambda q: q, NULL_DRAWS, SEED)["overlap_a_on_b"]
+                        ok["analytic_null"].append(
+                            abs(full.mean() - qa.shape[1] / d) <= 3 * full.std() / np.sqrt(NULL_DRAWS))
+                    pair_record[name][space] = metrics | {
+                        "dims": [int(qa.shape[1]), int(qb.shape[1])],
+                        "analytic_null": {"overlap_a_on_b": qa.shape[1] / d, "overlap_b_on_a": qb.shape[1] / d},
+                        "null_b_randomized": {key: null_summary(null_b[key]) for key in NULL_KEYS},
+                        "null_a_randomized": {key: null_summary(null_a[key]) for key in NULL_KEYS},
+                        "reading_a_on_b": null_reading(metrics["overlap_a_on_b"], null_b["overlap_a_on_b"]),
+                        "reading_b_on_a": null_reading(metrics["overlap_b_on_a"], null_a["overlap_a_on_b"]),
+                    }
+            site_record["pairs"][f"{a}-{b}"] = pair_record
+            if site == STEERING_SITE:
+                summary.setdefault("overlap_idx9", {})[f"{a}-{b}"] = {
+                    name: {space: [round(r["overlap_a_on_b"], 4), r["reading_a_on_b"], round(r["overlap_b_on_a"], 4),
+                                   r["reading_b_on_a"], round(r["mean_angle_degrees"], 1)]
+                           for space, r in pair_record[name].items()}
+                    for name, _ in SUBSPACES}
+        sites_record[site] = site_record
+
+    with np.load(verified_artifact(STEERING_CHECKS, "steering_setup")) as f:
+        setup = {key: f[key] for key in f.files}
+    validity: dict = {}
+    for read, on in VALIDITY_CHECKS:
+        t = tables[on]
+        rows = np.isin(t["role"], VALIDATION_ROLES)
+        if on == "direction":
+            rows &= (t["motion"] == "velocity") & (t["speed_mps"] <= MAX_VALIDITY_SPEED)
+        entry: dict = {"n_clips": int(rows.sum())}
+        for site in (STEERING_SITE, STEERING_READOUT):
+            feats = np.asarray(site_features(t["activations"], site), np.float64)[rows]
+            out = feats @ setup[f"readout_{read}_{site}_weights"] + setup[f"readout_{read}_{site}_offset"]
+            if read == "direction":
+                theta = t["theta_degrees"][rows]
+                score = r2(probe_targets("direction", theta), out)
+                extra = {"circular_mae": float(circular_errors(theta, angles_from_sincos(out)).mean())}
+            else:
+                true = clip_distance(t)[rows]
+                pred = as_distance(read, out[:, 0])
+                score = r2(true, pred)
+                extra = {"mae_m": float(np.abs(pred - true).mean())}
+            entry[str(site_index(site))] = {"r2": score, "valid": bool(score >= VALIDITY_R2)} | extra
+        validity[f"{read}_on_{on}"] = entry
+
+    steering = json.loads(STEERING_CHECKS.read_text())["steering_scores"]["result"]["variables"]
+    specificity: dict = {}
+    for steered, read in DIRECTION_SPECIFICITY:
+        names = ("arm_kind", "arm_n", f"readout_{read}_{STEERING_READOUT}", f"readout_unedited_{read}_{STEERING_READOUT}")
+        runs = []
+        for half in ("seen", "unseen"):
+            with np.load(verified_artifact(STEERING_CHECKS, f"steer_{steered}_{half}")) as f:
+                runs.append({name: f[name] for name in names})
+        kinds, ns, k = runs[0]["arm_kind"], runs[0]["arm_n"], steering[steered]["k"]
+        value = readout_values(read, np.concatenate([r[names[2]] for r in runs]))
+        base = readout_values(read, np.concatenate([r[names[3]] for r in runs]))
+        change = np.abs(label_difference(read, value, base[:, None, None]))  # (clips, targets, arms)
+        per_clip = {arm: change[:, :, (kinds == arm) & (ns == k - 1)].mean(axis=(1, 2)) for arm in ("probes", "random")}
+        saved = steering[steered]["specificity_idx18"][read]
+        ok["specificity_reproduced"].append(all(
+            bool(np.isclose(per_clip[arm].mean(), saved[f"{arm}_{k - 1}"], rtol=1e-12, atol=0)) for arm in per_clip))
+        diff = per_clip["probes"] - per_clip["random"]
+        ci = [float(c) for c in percentile_interval(
+            resampled_mean(diff, bootstrap_indices(len(diff), BOOTSTRAP_RESAMPLES, SEED)))]
+        valid = validity[f"{read}_on_{steered}"][str(site_index(STEERING_READOUT))]["valid"]
+        if not valid:
+            reading = "readout not valid on these clips (not read)"
+        else:
+            reading = "cross-talk beyond a random edit" if ci[0] > 0.0 else "no cross-talk beyond a random edit"
+        specificity[f"{steered}_to_{read}"] = {
+            "arm": f"probes_{k - 1}", "n_clips": int(len(diff)), "probes": float(per_clip["probes"].mean()),
+            "random": float(per_clip["random"].mean()), "difference": float(diff.mean()), "ci": ci,
+            "valid_readout": valid, "reading": reading,
+        }
+
+    summary["validity_r2_idx9_idx18"] = {key: [round(e["9"]["r2"], 3), round(e["18"]["r2"], 3)]
+                                         for key, e in validity.items()}
+    summary["specificity"] = {key: [round(e["difference"], 4), [round(c, 4) for c in e["ci"]], e["reading"]]
+                              for key, e in specificity.items()}
+    result_body = {"sites": sites_record, "validity": validity, "specificity": specificity}
+    ok["finite"].append(all_finite(result_body))
+    criteria = {name: bool(values) and all(values) for name, values in ok.items()}
+    return {
+        "null_draws": NULL_DRAWS, "validity_r2": VALIDITY_R2,
+        "counts": {"validity_clips": {key: e["n_clips"] for key, e in validity.items()}},
+        "summary": summary, **result_body, "criteria": criteria, "passed": all(criteria.values()),
+    }
+
 CHECKS = {
     "figure_tubelet": check_figure_tubelet,
     "flag_breakdown": check_flag_breakdown,
     "flag_test": check_flag_test,
     "motion_type_transfer": check_motion_type_transfer,
     "motion_type_test": check_motion_type_test,
+    "subspace_overlap": check_subspace_overlap,
+}
 }
 
 

@@ -6095,5 +6095,1490 @@
       },
       "passed": true
     }
+  },
+  "flag_test": {
+    "provenance": {
+      "utc": "2026-09-27T07:42:54+00:00",
+      "git_commit": "9cc2e4e06ed7fa253250d316b1d2fe538c7b19b7",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/confounds.py": "9f20249c1e81d142c995a8a0f6deb7c026cea41955d26ee719ab769614582c47",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/robustness.py": "0b288d950d3d671b731ca938057d5263f33f5826528714b3478ca3ab045ca9a7",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "2aaf059c980a059425efef4d1e808ce3768a93dbdb9ddbf47448423dabeae0a0",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_robustness.py": "7caaa15aaab679684675291b55b7d641f6e5eb295aba90ae4631d4784267a649"
+        },
+        "combined_sha256": "81d6d2bb28b6a09a8125dcb0cf6496ba58e806fcd96280a3223c82a43f927bc6"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "roles_scored": [
+        "test_seen",
+        "test_unseen"
+      ],
+      "sites_scored": [
+        "block_0",
+        "block_8",
+        "block_17"
+      ],
+      "counts": {
+        "direction": {
+          "exit": 35,
+          "clipped": 58,
+          "sub_patch_motion": 41,
+          "frozen_start": 28
+        },
+        "speed": {
+          "exit": 0,
+          "clipped": 0,
+          "sub_patch_motion": 56,
+          "frozen_start": 0
+        },
+        "acceleration": {
+          "exit": 0,
+          "clipped": 0,
+          "sub_patch_motion": 96,
+          "frozen_start": 69
+        }
+      },
+      "summary": {
+        "direction": {
+          "1": {
+            "exit": [
+              1.5565,
+              [
+                -1.6436,
+                4.8427
+              ],
+              "no excess"
+            ],
+            "clipped": [
+              1.1151,
+              [
+                -2.118,
+                4.2235
+              ],
+              "no excess"
+            ],
+            "frozen_start": [
+              -2.418,
+              [
+                -18.8388,
+                12.589
+              ],
+              "no excess"
+            ]
+          },
+          "9": {
+            "exit": [
+              2.59,
+              [
+                1.0223,
+                4.2271
+              ],
+              "excess error beyond stratum"
+            ],
+            "clipped": [
+              1.6902,
+              [
+                0.5664,
+                2.866
+              ],
+              "excess error beyond stratum"
+            ],
+            "frozen_start": [
+              -2.7814,
+              [
+                -6.5014,
+                0.7432
+              ],
+              "no excess"
+            ]
+          },
+          "18": {
+            "exit": [
+              0.7879,
+              [
+                -0.1435,
+                1.7576
+              ],
+              "no excess"
+            ],
+            "clipped": [
+              0.7213,
+              [
+                0.0081,
+                1.4669
+              ],
+              "excess error beyond stratum"
+            ],
+            "frozen_start": [
+              -0.3754,
+              [
+                -3.0881,
+                2.1459
+              ],
+              "no excess"
+            ]
+          },
+          "steering": {
+            "exit": [
+              0,
+              null,
+              0.029393193941834483,
+              "too few to read"
+            ],
+            "clipped": [
+              1,
+              0.02843575837255541,
+              0.02942829684299264,
+              "too few to read"
+            ],
+            "sub_patch_motion": [
+              7,
+              0.03457301531238488,
+              0.02773009389286396,
+              "no stratum"
+            ],
+            "frozen_start": [
+              4,
+              0.03641329017319772,
+              0.028255696245827133,
+              "too few to read"
+            ]
+          }
+        },
+        "speed": {
+          "1": {
+            "sub_patch": [
+              [
+                0.5908,
+                0.9617
+              ],
+              [
+                0.4688,
+                0.7841
+              ],
+              "continuous inside the sub-patch range"
+            ]
+          },
+          "9": {
+            "sub_patch": [
+              [
+                0.3867,
+                0.9707
+              ],
+              [
+                0.2591,
+                0.6658
+              ],
+              "continuous inside the sub-patch range"
+            ]
+          },
+          "18": {
+            "sub_patch": [
+              [
+                0.7327,
+                1.1798
+              ],
+              [
+                0.5041,
+                0.8118
+              ],
+              "continuous inside the sub-patch range"
+            ]
+          },
+          "steering": {
+            "exit": [
+              0,
+              null,
+              0.1291524472684351,
+              "no stratum"
+            ],
+            "clipped": [
+              0,
+              null,
+              0.1291524472684351,
+              "no stratum"
+            ],
+            "sub_patch_motion": [
+              2,
+              0.1176880290344754,
+              0.13031209362158303,
+              "no stratum"
+            ],
+            "frozen_start": [
+              0,
+              null,
+              0.1291524472684351,
+              "no stratum"
+            ]
+          }
+        },
+        "acceleration": {
+          "1": {
+            "frozen_start": [
+              0.1001,
+              [
+                0.027,
+                0.1725
+              ],
+              "excess error beyond stratum"
+            ],
+            "sub_patch": [
+              [
+                0.7044,
+                0.8972
+              ],
+              [
+                0.7825,
+                0.8967
+              ],
+              "continuous inside the sub-patch range"
+            ]
+          },
+          "9": {
+            "frozen_start": [
+              0.0315,
+              [
+                -0.0456,
+                0.1067
+              ],
+              "no excess"
+            ],
+            "sub_patch": [
+              [
+                0.8449,
+                1.0126
+              ],
+              [
+                0.8256,
+                0.9222
+              ],
+              "continuous inside the sub-patch range"
+            ]
+          },
+          "18": {
+            "frozen_start": [
+              0.0194,
+              [
+                -0.0356,
+                0.0747
+              ],
+              "no excess"
+            ],
+            "sub_patch": [
+              [
+                0.8379,
+                0.9808
+              ],
+              [
+                0.8761,
+                0.9393
+              ],
+              "continuous inside the sub-patch range"
+            ]
+          },
+          "steering": {
+            "exit": [
+              0,
+              null,
+              0.13624404705091153,
+              "no stratum"
+            ],
+            "clipped": [
+              0,
+              null,
+              0.13624404705091153,
+              "no stratum"
+            ],
+            "sub_patch_motion": [
+              7,
+              0.1410171357431581,
+              0.13451031871023578,
+              "no stratum"
+            ],
+            "frozen_start": [
+              5,
+              0.14233350351623897,
+              0.13476607151022557,
+              "too few to read"
+            ]
+          }
+        }
+      },
+      "variables": {
+        "direction": {
+          "block_0": {
+            "plot_index": 1,
+            "exit": {
+              "difference": 1.556509496320694,
+              "ci": [
+                -1.6436093340095232,
+                4.842663009328503
+              ],
+              "strata": [
+                "velocity 5 m/s",
+                "velocity 6 m/s",
+                "velocity 7 m/s"
+              ],
+              "n_flagged": 35,
+              "n_unflagged": 51,
+              "raw_difference": -1.117945589069505,
+              "clips_per_stratum": {
+                "velocity 5 m/s": [
+                  8,
+                  20
+                ],
+                "velocity 6 m/s": [
+                  8,
+                  20
+                ],
+                "velocity 7 m/s": [
+                  19,
+                  11
+                ]
+              },
+              "reading": "no excess"
+            },
+            "clipped": {
+              "difference": 1.1150548990531113,
+              "ci": [
+                -2.117977771327777,
+                4.22352535594184
+              ],
+              "strata": [
+                "acceleration 10 m/s^2",
+                "velocity 4 m/s",
+                "velocity 5 m/s",
+                "velocity 6 m/s",
+                "velocity 7 m/s"
+              ],
+              "n_flagged": 58,
+              "n_unflagged": 93,
+              "raw_difference": -1.5644852296635055,
+              "clips_per_stratum": {
+                "acceleration 10 m/s^2": [
+                  1,
+                  36
+                ],
+                "velocity 4 m/s": [
+                  5,
+                  23
+                ],
+                "velocity 5 m/s": [
+                  14,
+                  14
+                ],
+                "velocity 6 m/s": [
+                  16,
+                  12
+                ],
+                "velocity 7 m/s": [
+                  22,
+                  8
+                ]
+              },
+              "reading": "no excess"
+            },
+            "frozen_start": {
+              "difference": -2.41804524374038,
+              "ci": [
+                -18.838774440263204,
+                12.589032181637041
+              ],
+              "strata": [
+                "acceleration 2 m/s^2",
+                "acceleration 4 m/s^2"
+              ],
+              "n_flagged": 28,
+              "n_unflagged": 50,
+              "raw_difference": 15.292493609775187,
+              "clips_per_stratum": {
+                "acceleration 2 m/s^2": [
+                  27,
+                  14
+                ],
+                "acceleration 4 m/s^2": [
+                  1,
+                  36
+                ]
+              },
+              "reading": "no excess"
+            }
+          },
+          "block_8": {
+            "plot_index": 9,
+            "exit": {
+              "difference": 2.590032223763993,
+              "ci": [
+                1.0223205243164815,
+                4.227093076428782
+              ],
+              "strata": [
+                "velocity 5 m/s",
+                "velocity 6 m/s",
+                "velocity 7 m/s"
+              ],
+              "n_flagged": 35,
+              "n_unflagged": 51,
+              "raw_difference": 2.199267248760064,
+              "clips_per_stratum": {
+                "velocity 5 m/s": [
+                  8,
+                  20
+                ],
+                "velocity 6 m/s": [
+                  8,
+                  20
+                ],
+                "velocity 7 m/s": [
+                  19,
+                  11
+                ]
+              },
+              "reading": "excess error beyond stratum"
+            },
+            "clipped": {
+              "difference": 1.6901799594401732,
+              "ci": [
+                0.5664013018849414,
+                2.8659958391348015
+              ],
+              "strata": [
+                "acceleration 10 m/s^2",
+                "velocity 4 m/s",
+                "velocity 5 m/s",
+                "velocity 6 m/s",
+                "velocity 7 m/s"
+              ],
+              "n_flagged": 58,
+              "n_unflagged": 93,
+              "raw_difference": 0.8700538898482959,
+              "clips_per_stratum": {
+                "acceleration 10 m/s^2": [
+                  1,
+                  36
+                ],
+                "velocity 4 m/s": [
+                  5,
+                  23
+                ],
+                "velocity 5 m/s": [
+                  14,
+                  14
+                ],
+                "velocity 6 m/s": [
+                  16,
+                  12
+                ],
+                "velocity 7 m/s": [
+                  22,
+                  8
+                ]
+              },
+              "reading": "excess error beyond stratum"
+            },
+            "frozen_start": {
+              "difference": -2.7813777535973547,
+              "ci": [
+                -6.501394263331911,
+                0.7432213303924453
+              ],
+              "strata": [
+                "acceleration 2 m/s^2",
+                "acceleration 4 m/s^2"
+              ],
+              "n_flagged": 28,
+              "n_unflagged": 50,
+              "raw_difference": 2.381170464729106,
+              "clips_per_stratum": {
+                "acceleration 2 m/s^2": [
+                  27,
+                  14
+                ],
+                "acceleration 4 m/s^2": [
+                  1,
+                  36
+                ]
+              },
+              "reading": "no excess"
+            }
+          },
+          "block_17": {
+            "plot_index": 18,
+            "exit": {
+              "difference": 0.7879166336986563,
+              "ci": [
+                -0.14352419468854216,
+                1.7575789438076481
+              ],
+              "strata": [
+                "velocity 5 m/s",
+                "velocity 6 m/s",
+                "velocity 7 m/s"
+              ],
+              "n_flagged": 35,
+              "n_unflagged": 51,
+              "raw_difference": -0.2581983039282689,
+              "clips_per_stratum": {
+                "velocity 5 m/s": [
+                  8,
+                  20
+                ],
+                "velocity 6 m/s": [
+                  8,
+                  20
+                ],
+                "velocity 7 m/s": [
+                  19,
+                  11
+                ]
+              },
+              "reading": "no excess"
+            },
+            "clipped": {
+              "difference": 0.7213115230703289,
+              "ci": [
+                0.008113633937510852,
+                1.4668541768068197
+              ],
+              "strata": [
+                "acceleration 10 m/s^2",
+                "velocity 4 m/s",
+                "velocity 5 m/s",
+                "velocity 6 m/s",
+                "velocity 7 m/s"
+              ],
+              "n_flagged": 58,
+              "n_unflagged": 93,
+              "raw_difference": -0.5509183274206282,
+              "clips_per_stratum": {
+                "acceleration 10 m/s^2": [
+                  1,
+                  36
+                ],
+                "velocity 4 m/s": [
+                  5,
+                  23
+                ],
+                "velocity 5 m/s": [
+                  14,
+                  14
+                ],
+                "velocity 6 m/s": [
+                  16,
+                  12
+                ],
+                "velocity 7 m/s": [
+                  22,
+                  8
+                ]
+              },
+              "reading": "excess error beyond stratum"
+            },
+            "frozen_start": {
+              "difference": -0.37538356487447816,
+              "ci": [
+                -3.0880665648637695,
+                2.1459440500056983
+              ],
+              "strata": [
+                "acceleration 2 m/s^2",
+                "acceleration 4 m/s^2"
+              ],
+              "n_flagged": 28,
+              "n_unflagged": 50,
+              "raw_difference": 2.5964906367145515,
+              "clips_per_stratum": {
+                "acceleration 2 m/s^2": [
+                  27,
+                  14
+                ],
+                "acceleration 4 m/s^2": [
+                  1,
+                  36
+                ]
+              },
+              "reading": "no excess"
+            }
+          },
+          "steering": {
+            "k": 6,
+            "arm": "probes_5",
+            "n_clips": 30,
+            "flags": {
+              "exit": {
+                "n_flagged": 0,
+                "n_unflagged": 30,
+                "unflagged": {
+                  "reduction": 0.029393193941834483,
+                  "error_drop": 2.644932846743979
+                },
+                "stratified_error_drop": "too few to read"
+              },
+              "clipped": {
+                "n_flagged": 1,
+                "n_unflagged": 29,
+                "flagged": {
+                  "reduction": 0.02843575837255541,
+                  "error_drop": 2.714873523338696
+                },
+                "unflagged": {
+                  "reduction": 0.02942829684299264,
+                  "error_drop": 2.642521099275196
+                },
+                "stratified_error_drop": "too few to read"
+              },
+              "sub_patch_motion": {
+                "n_flagged": 7,
+                "n_unflagged": 23,
+                "flagged": {
+                  "reduction": 0.03457301531238488,
+                  "error_drop": 3.240448820183967
+                },
+                "unflagged": {
+                  "reduction": 0.02773009389286396,
+                  "error_drop": 2.463688854827461
+                }
+              },
+              "frozen_start": {
+                "n_flagged": 4,
+                "n_unflagged": 26,
+                "flagged": {
+                  "reduction": 0.03641329017319772,
+                  "error_drop": 3.4267111512593402
+                },
+                "unflagged": {
+                  "reduction": 0.028255696245827133,
+                  "error_drop": 2.524659261433924
+                },
+                "stratified_error_drop": "too few to read"
+              }
+            }
+          }
+        },
+        "speed": {
+          "block_0": {
+            "plot_index": 1,
+            "sub_patch": {
+              "n_clips": 56,
+              "values": [
+                0.25,
+                0.30952380952380953,
+                0.36904761904761907,
+                0.42857142857142855,
+                0.4880952380952381,
+                0.5476190476190477,
+                0.6071428571428571,
+                0.6666666666666666,
+                0.7261904761904762
+              ],
+              "inside": {
+                "slope": 0.7810129916037853,
+                "slope_ci": [
+                  0.5908449448898179,
+                  0.9617410207683759
+                ],
+                "spearman": 0.65438239586715,
+                "spearman_ci": [
+                  0.4687711717679657,
+                  0.7840599049121759
+                ]
+              },
+              "reading": "continuous inside the sub-patch range",
+              "full_range": {
+                "slope": 0.9995566546157839,
+                "slope_ci": [
+                  0.9880729604383514,
+                  1.01122270185519
+                ],
+                "spearman": 0.9911732567657867,
+                "spearman_ci": [
+                  0.9888178669385725,
+                  0.9922859783003752
+                ]
+              },
+              "mean_error_per_value": {
+                "0.25": 0.06047939084293841,
+                "0.309524": 0.17913670781714552,
+                "0.369048": 0.08181298208019344,
+                "0.428571": 0.12758675725596744,
+                "0.488095": 0.09401196207771163,
+                "0.547619": 0.08956620190790232,
+                "0.607143": 0.05914808411351313,
+                "0.666667": 0.05287559200241465,
+                "0.72619": 0.03872452016597422
+              },
+              "relative_error": {
+                "flagged": 0.20638074254493805,
+                "unflagged": 0.053612942785283856
+              }
+            }
+          },
+          "block_8": {
+            "plot_index": 9,
+            "sub_patch": {
+              "n_clips": 56,
+              "values": [
+                0.25,
+                0.30952380952380953,
+                0.36904761904761907,
+                0.42857142857142855,
+                0.4880952380952381,
+                0.5476190476190477,
+                0.6071428571428571,
+                0.6666666666666666,
+                0.7261904761904762
+              ],
+              "inside": {
+                "slope": 0.6915246846051807,
+                "slope_ci": [
+                  0.3867367556784117,
+                  0.9707387315813503
+                ],
+                "spearman": 0.4855095195143371,
+                "spearman_ci": [
+                  0.25910324186061157,
+                  0.6657972880396607
+                ]
+              },
+              "reading": "continuous inside the sub-patch range",
+              "full_range": {
+                "slope": 0.9937133878543477,
+                "slope_ci": [
+                  0.9812681001825112,
+                  1.005804427686613
+                ],
+                "spearman": 0.9924043567765759,
+                "spearman_ci": [
+                  0.9903222332828553,
+                  0.9933928353070021
+                ]
+              },
+              "mean_error_per_value": {
+                "0.25": 0.09729456514169615,
+                "0.309524": 0.1574731334390394,
+                "0.369048": 0.2070479213283028,
+                "0.428571": 0.08096914799901223,
+                "0.488095": 0.1356863688006341,
+                "0.547619": 0.1487237679255332,
+                "0.607143": 0.034636904612131314,
+                "0.666667": 0.08524396934660061,
+                "0.72619": 0.12296416731689308
+              },
+              "relative_error": {
+                "flagged": 0.28154810178477757,
+                "unflagged": 0.04680870785164716
+              }
+            }
+          },
+          "block_17": {
+            "plot_index": 18,
+            "sub_patch": {
+              "n_clips": 56,
+              "values": [
+                0.25,
+                0.30952380952380953,
+                0.36904761904761907,
+                0.42857142857142855,
+                0.4880952380952381,
+                0.5476190476190477,
+                0.6071428571428571,
+                0.6666666666666666,
+                0.7261904761904762
+              ],
+              "inside": {
+                "slope": 0.959771575908195,
+                "slope_ci": [
+                  0.7327048880768263,
+                  1.1798357915949753
+                ],
+                "spearman": 0.683336106931019,
+                "spearman_ci": [
+                  0.504105078523089,
+                  0.8117593873484205
+                ]
+              },
+              "reading": "continuous inside the sub-patch range",
+              "full_range": {
+                "slope": 0.9938678492415919,
+                "slope_ci": [
+                  0.9843699077255461,
+                  1.0033824173501207
+                ],
+                "spearman": 0.9951750824715899,
+                "spearman_ci": [
+                  0.9937230092098868,
+                  0.9957867830859705
+                ]
+              },
+              "mean_error_per_value": {
+                "0.25": 0.1395398241197977,
+                "0.309524": 0.09275679104944112,
+                "0.369048": 0.14531294484902224,
+                "0.428571": 0.1005494628325227,
+                "0.488095": 0.11630289065910986,
+                "0.547619": 0.08394490701897733,
+                "0.607143": 0.0576443693629754,
+                "0.666667": 0.03366285522544804,
+                "0.72619": 0.04548815605804407
+              },
+              "relative_error": {
+                "flagged": 0.23408888126988384,
+                "unflagged": 0.03477396317066728
+              }
+            }
+          },
+          "steering": {
+            "k": 7,
+            "arm": "probes_6",
+            "n_clips": 30,
+            "flags": {
+              "exit": {
+                "n_flagged": 0,
+                "n_unflagged": 30,
+                "unflagged": {
+                  "reduction": 0.1291524472684351,
+                  "error_drop": 0.16180602329994168
+                }
+              },
+              "clipped": {
+                "n_flagged": 0,
+                "n_unflagged": 30,
+                "unflagged": {
+                  "reduction": 0.1291524472684351,
+                  "error_drop": 0.16180602329994168
+                }
+              },
+              "sub_patch_motion": {
+                "n_flagged": 2,
+                "n_unflagged": 28,
+                "flagged": {
+                  "reduction": 0.1176880290344754,
+                  "error_drop": 0.20316175318310947
+                },
+                "unflagged": {
+                  "reduction": 0.13031209362158303,
+                  "error_drop": 0.15885204259400112
+                }
+              },
+              "frozen_start": {
+                "n_flagged": 0,
+                "n_unflagged": 30,
+                "unflagged": {
+                  "reduction": 0.1291524472684351,
+                  "error_drop": 0.16180602329994168
+                }
+              }
+            }
+          }
+        },
+        "acceleration": {
+          "block_0": {
+            "plot_index": 1,
+            "frozen_start": {
+              "difference": 0.10005895480560784,
+              "ci": [
+                0.02704759598887384,
+                0.17247281836120662
+              ],
+              "strata": [
+                "0.5595238095238095",
+                "0.8690476190476191",
+                "1.1785714285714286",
+                "1.3333333333333335",
+                "1.4880952380952381",
+                "1.7976190476190477",
+                "1.9523809523809526",
+                "2.107142857142857",
+                "2.261904761904762",
+                "2.416666666666667",
+                "2.5714285714285716",
+                "2.7261904761904763",
+                "3.0357142857142856",
+                "3.1904761904761907",
+                "3.5"
+              ],
+              "n_flagged": 53,
+              "n_unflagged": 67,
+              "raw_difference": -0.0445000193015489,
+              "clips_per_stratum": {
+                "0.5595238095238095": [
+                  3,
+                  1
+                ],
+                "0.8690476190476191": [
+                  20,
+                  4
+                ],
+                "1.1785714285714286": [
+                  3,
+                  1
+                ],
+                "1.3333333333333335": [
+                  2,
+                  2
+                ],
+                "1.4880952380952381": [
+                  3,
+                  1
+                ],
+                "1.7976190476190477": [
+                  3,
+                  1
+                ],
+                "1.9523809523809526": [
+                  1,
+                  3
+                ],
+                "2.107142857142857": [
+                  2,
+                  2
+                ],
+                "2.261904761904762": [
+                  1,
+                  3
+                ],
+                "2.416666666666667": [
+                  6,
+                  18
+                ],
+                "2.5714285714285716": [
+                  1,
+                  3
+                ],
+                "2.7261904761904763": [
+                  2,
+                  2
+                ],
+                "3.0357142857142856": [
+                  1,
+                  3
+                ],
+                "3.1904761904761907": [
+                  4,
+                  20
+                ],
+                "3.5": [
+                  1,
+                  3
+                ]
+              },
+              "reading": "excess error beyond stratum"
+            },
+            "sub_patch": {
+              "n_clips": 96,
+              "values": [
+                0.25,
+                0.40476190476190477,
+                0.5595238095238095,
+                0.7142857142857143,
+                0.8690476190476191,
+                1.0238095238095237,
+                1.1785714285714286,
+                1.3333333333333335,
+                1.4880952380952381,
+                1.7976190476190477,
+                1.9523809523809526,
+                2.107142857142857,
+                2.261904761904762,
+                2.416666666666667
+              ],
+              "inside": {
+                "slope": 0.8002065975832351,
+                "slope_ci": [
+                  0.7043755402743307,
+                  0.8972370310082886
+                ],
+                "spearman": 0.8525804128858779,
+                "spearman_ci": [
+                  0.7824678355086014,
+                  0.8967225888391622
+                ]
+              },
+              "reading": "continuous inside the sub-patch range",
+              "full_range": {
+                "slope": 0.9901504651832181,
+                "slope_ci": [
+                  0.974094411084811,
+                  1.0063299119215874
+                ],
+                "spearman": 0.984932180247676,
+                "spearman_ci": [
+                  0.9807805058411471,
+                  0.987162052270388
+                ]
+              },
+              "mean_error_per_value": {
+                "0.25": 0.4770066445929625,
+                "0.404762": 0.1977426357442596,
+                "0.559524": 0.401936085321163,
+                "0.714286": 0.2219516165263865,
+                "0.869048": 0.24493564913992846,
+                "1.02381": 0.3292340743823724,
+                "1.17857": 0.1883521761296545,
+                "1.33333": 0.26044475280747736,
+                "1.4881": 0.3072789831756617,
+                "1.79762": 0.6117319749632699,
+                "1.95238": 0.23764521838932384,
+                "2.10714": 0.4340971149572628,
+                "2.2619": 0.2844360402417532,
+                "2.41667": 0.3160189595055608
+              },
+              "relative_error": {
+                "flagged": 0.31576316565697776,
+                "unflagged": 0.07034877553419826
+              }
+            },
+            "frozen_start_trend": {
+              "slope": 0.8216536068786687,
+              "slope_ci": [
+                0.6868484889179036,
+                0.929204459025501
+              ],
+              "spearman": 0.8085231691789058,
+              "spearman_ci": [
+                0.6753299731879159,
+                0.8957636424456162
+              ]
+            }
+          },
+          "block_8": {
+            "plot_index": 9,
+            "frozen_start": {
+              "difference": 0.03151173478765076,
+              "ci": [
+                -0.04560274207002256,
+                0.10673888961288193
+              ],
+              "strata": [
+                "0.5595238095238095",
+                "0.8690476190476191",
+                "1.1785714285714286",
+                "1.3333333333333335",
+                "1.4880952380952381",
+                "1.7976190476190477",
+                "1.9523809523809526",
+                "2.107142857142857",
+                "2.261904761904762",
+                "2.416666666666667",
+                "2.5714285714285716",
+                "2.7261904761904763",
+                "3.0357142857142856",
+                "3.1904761904761907",
+                "3.5"
+              ],
+              "n_flagged": 53,
+              "n_unflagged": 67,
+              "raw_difference": -0.007030226230965553,
+              "clips_per_stratum": {
+                "0.5595238095238095": [
+                  3,
+                  1
+                ],
+                "0.8690476190476191": [
+                  20,
+                  4
+                ],
+                "1.1785714285714286": [
+                  3,
+                  1
+                ],
+                "1.3333333333333335": [
+                  2,
+                  2
+                ],
+                "1.4880952380952381": [
+                  3,
+                  1
+                ],
+                "1.7976190476190477": [
+                  3,
+                  1
+                ],
+                "1.9523809523809526": [
+                  1,
+                  3
+                ],
+                "2.107142857142857": [
+                  2,
+                  2
+                ],
+                "2.261904761904762": [
+                  1,
+                  3
+                ],
+                "2.416666666666667": [
+                  6,
+                  18
+                ],
+                "2.5714285714285716": [
+                  1,
+                  3
+                ],
+                "2.7261904761904763": [
+                  2,
+                  2
+                ],
+                "3.0357142857142856": [
+                  1,
+                  3
+                ],
+                "3.1904761904761907": [
+                  4,
+                  20
+                ],
+                "3.5": [
+                  1,
+                  3
+                ]
+              },
+              "reading": "no excess"
+            },
+            "sub_patch": {
+              "n_clips": 96,
+              "values": [
+                0.25,
+                0.40476190476190477,
+                0.5595238095238095,
+                0.7142857142857143,
+                0.8690476190476191,
+                1.0238095238095237,
+                1.1785714285714286,
+                1.3333333333333335,
+                1.4880952380952381,
+                1.7976190476190477,
+                1.9523809523809526,
+                2.107142857142857,
+                2.261904761904762,
+                2.416666666666667
+              ],
+              "inside": {
+                "slope": 0.928371730024957,
+                "slope_ci": [
+                  0.8449465097574964,
+                  1.012618681191353
+                ],
+                "spearman": 0.8871038669734331,
+                "spearman_ci": [
+                  0.8255874146450433,
+                  0.922183222693193
+                ]
+              },
+              "reading": "continuous inside the sub-patch range",
+              "full_range": {
+                "slope": 0.9773433883430447,
+                "slope_ci": [
+                  0.9633178004365589,
+                  0.9912065589146348
+                ],
+                "spearman": 0.989019957753013,
+                "spearman_ci": [
+                  0.9859724138578898,
+                  0.9906177795443808
+                ]
+              },
+              "mean_error_per_value": {
+                "0.25": 0.347462067136578,
+                "0.404762": 0.3262359680728963,
+                "0.559524": 0.24397952396500688,
+                "0.714286": 0.36033966739573603,
+                "0.869048": 0.28973057937198904,
+                "1.02381": 0.2005205285892725,
+                "1.17857": 0.23009886080979525,
+                "1.33333": 0.18781688009764919,
+                "1.4881": 0.2467639256022225,
+                "1.79762": 0.12891680470985434,
+                "1.95238": 0.16260637353809348,
+                "2.10714": 0.3420732968925003,
+                "2.2619": 0.24609856154834975,
+                "2.41667": 0.2183947418700394
+              },
+              "relative_error": {
+                "flagged": 0.28345181968261035,
+                "unflagged": 0.05625937665317319
+              }
+            },
+            "frozen_start_trend": {
+              "slope": 0.9271919447197077,
+              "slope_ci": [
+                0.8107017789350199,
+                1.0500042212987848
+              ],
+              "spearman": 0.8379576703579432,
+              "spearman_ci": [
+                0.7139323444654905,
+                0.9119806691210988
+              ]
+            }
+          },
+          "block_17": {
+            "plot_index": 18,
+            "frozen_start": {
+              "difference": 0.019387460262346227,
+              "ci": [
+                -0.035642544287141524,
+                0.07469989504430502
+              ],
+              "strata": [
+                "0.5595238095238095",
+                "0.8690476190476191",
+                "1.1785714285714286",
+                "1.3333333333333335",
+                "1.4880952380952381",
+                "1.7976190476190477",
+                "1.9523809523809526",
+                "2.107142857142857",
+                "2.261904761904762",
+                "2.416666666666667",
+                "2.5714285714285716",
+                "2.7261904761904763",
+                "3.0357142857142856",
+                "3.1904761904761907",
+                "3.5"
+              ],
+              "n_flagged": 53,
+              "n_unflagged": 67,
+              "raw_difference": 0.027562604294484205,
+              "clips_per_stratum": {
+                "0.5595238095238095": [
+                  3,
+                  1
+                ],
+                "0.8690476190476191": [
+                  20,
+                  4
+                ],
+                "1.1785714285714286": [
+                  3,
+                  1
+                ],
+                "1.3333333333333335": [
+                  2,
+                  2
+                ],
+                "1.4880952380952381": [
+                  3,
+                  1
+                ],
+                "1.7976190476190477": [
+                  3,
+                  1
+                ],
+                "1.9523809523809526": [
+                  1,
+                  3
+                ],
+                "2.107142857142857": [
+                  2,
+                  2
+                ],
+                "2.261904761904762": [
+                  1,
+                  3
+                ],
+                "2.416666666666667": [
+                  6,
+                  18
+                ],
+                "2.5714285714285716": [
+                  1,
+                  3
+                ],
+                "2.7261904761904763": [
+                  2,
+                  2
+                ],
+                "3.0357142857142856": [
+                  1,
+                  3
+                ],
+                "3.1904761904761907": [
+                  4,
+                  20
+                ],
+                "3.5": [
+                  1,
+                  3
+                ]
+              },
+              "reading": "no excess"
+            },
+            "sub_patch": {
+              "n_clips": 96,
+              "values": [
+                0.25,
+                0.40476190476190477,
+                0.5595238095238095,
+                0.7142857142857143,
+                0.8690476190476191,
+                1.0238095238095237,
+                1.1785714285714286,
+                1.3333333333333335,
+                1.4880952380952381,
+                1.7976190476190477,
+                1.9523809523809526,
+                2.107142857142857,
+                2.261904761904762,
+                2.416666666666667
+              ],
+              "inside": {
+                "slope": 0.9070349526466703,
+                "slope_ci": [
+                  0.8378730380620546,
+                  0.9807754644525242
+                ],
+                "spearman": 0.916719034457486,
+                "spearman_ci": [
+                  0.8760643715490131,
+                  0.9393133228192814
+                ]
+              },
+              "reading": "continuous inside the sub-patch range",
+              "full_range": {
+                "slope": 0.9946477206273568,
+                "slope_ci": [
+                  0.984033809522927,
+                  1.0049936582020413
+                ],
+                "spearman": 0.9940096661504008,
+                "spearman_ci": [
+                  0.9922677638239764,
+                  0.9947209312061007
+                ]
+              },
+              "mean_error_per_value": {
+                "0.25": 0.45097560743548515,
+                "0.404762": 0.25828181630655345,
+                "0.559524": 0.22335565845718097,
+                "0.714286": 0.26341141301570636,
+                "0.869048": 0.20118501135030065,
+                "1.02381": 0.18821656930967934,
+                "1.17857": 0.296687024114082,
+                "1.33333": 0.19843339246320368,
+                "1.4881": 0.1430622316054867,
+                "1.79762": 0.3070809310245999,
+                "1.95238": 0.15897164189178714,
+                "2.10714": 0.15641970705243924,
+                "2.2619": 0.2807068950144932,
+                "2.41667": 0.15980530419639152
+              },
+              "relative_error": {
+                "flagged": 0.2552858094561828,
+                "unflagged": 0.04139981092233294
+              }
+            },
+            "frozen_start_trend": {
+              "slope": 0.9219739212547707,
+              "slope_ci": [
+                0.8365186070835727,
+                1.0041629267651577
+              ],
+              "spearman": 0.8910878705993504,
+              "spearman_ci": [
+                0.7999556033905739,
+                0.9399051898164956
+              ]
+            }
+          },
+          "steering": {
+            "k": 7,
+            "arm": "probes_6",
+            "n_clips": 30,
+            "flags": {
+              "exit": {
+                "n_flagged": 0,
+                "n_unflagged": 30,
+                "unflagged": {
+                  "reduction": 0.13624404705091153,
+                  "error_drop": 0.4630035972269976
+                }
+              },
+              "clipped": {
+                "n_flagged": 0,
+                "n_unflagged": 30,
+                "unflagged": {
+                  "reduction": 0.13624404705091153,
+                  "error_drop": 0.4630035972269976
+                }
+              },
+              "sub_patch_motion": {
+                "n_flagged": 7,
+                "n_unflagged": 23,
+                "flagged": {
+                  "reduction": 0.1410171357431581,
+                  "error_drop": 0.5472356566049814
+                },
+                "unflagged": {
+                  "reduction": 0.13451031871023578,
+                  "error_drop": 0.4373677530684809
+                }
+              },
+              "frozen_start": {
+                "n_flagged": 5,
+                "n_unflagged": 25,
+                "flagged": {
+                  "reduction": 0.14233350351623897,
+                  "error_drop": 0.5668183988815849
+                },
+                "unflagged": {
+                  "reduction": 0.13476607151022557,
+                  "error_drop": 0.4422406368960802
+                },
+                "stratified_error_drop": "too few to read"
+              }
+            }
+          }
+        }
+      },
+      "criteria": {
+        "aligned": true,
+        "validation_reproduced": true,
+        "only_test_rows_predicted": true,
+        "test_scores_reproduced": true,
+        "steering_reproduced": true,
+        "finite": true
+      },
+      "passed": true
+    }
   }
 }

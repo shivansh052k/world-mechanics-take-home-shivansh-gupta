@@ -460,6 +460,38 @@ what's next.
   (speed "stripes" blur into a continuum: 64 values, 0.33–5.33 px). **Step 7.3c done.**
 - Freeze: F-154 (7.3b + 7.3c validation findings) and F-155 (7.3d scope: E on F-104's saved test predictions, D Phase 5
   steering by flag with the ≥ 5 / ≥ 5 rule) written to DECISIONS §1.13 before any test row is read for 7.3.
+- 7.3d: `check_robustness.py flag_test` (one-time test read, F-155 scope) **passed** (6/6; validation reproduced exactly
+  first). B continuous 6 / 6 = validation; A: clipped excess at idx 18 on both splits (+0.72° test); exit excess only at
+  test idx 9 (+2.59°), acceleration frozen excess only at test idx 1 (+0.10 m/s²), direction frozen idx-1 "lower" not
+  confirmed → no consistent flag effect beyond clipped; D all "too few to read" / no stratum, reductions flagged ≈
+  unflagged. F-156 added. Claude Code's predictions: criteria ✓, B ✓, D ✓, exit idx 18 ✓; exit idx 9 "no excess" ✗;
+  test exit count 25–30 ✗ (35). **Step 7.3 (+ 7.4) done.**
+- 7.5 criteria (re-drafted, Claude Code's own additions except where planner; user approved; fixed before any run).
+  Headline idx 9 (idx 1 / 18 observations). Subspaces (train-fit): weights = Q via `load_probe_sequence`, n = 1 and
+  n = K−1 (10 / 6 / 6 dims); patterns = `covariance_basis` (m = 2 / 1 / 1); weights with weights, patterns with
+  patterns. Spaces: common standardized (pooled train scaler of all three sets at the site; headline) and raw
+  (paper-comparable); re-expression weights × σ_c/σ_own, patterns × σ_own/σ_c, then QR. Pairs speed–acceleration,
+  speed–direction, acceleration–direction. Metrics (C.4): mean principal angle, overlap ‖Q_AᵀQ_B‖²_F / dim(B) both
+  orders, Grassmann distance. Nulls: k_A/d (d = 1024); train-span null = 1,000 seeded random subspaces of B's size in
+  B's own standardized train span, passed through the same transform (corrected in the review pass: a common-space span
+  would be unfair). Reading on overlap: > null 97.5th pct "aligned beyond chance", within "at chance", < 2.5th "less
+  aligned than chance". Specificity (Phase 5 test runs, by design): direction ↔ speed / acceleration, per-clip mean
+  |cross change| idx 18, probes K−1 − random K−1, paired clip bootstrap; CI low > 0 "cross-talk beyond a random edit",
+  else "no cross-talk beyond a random edit"; read only if the validity check passes. Validity (validation clips):
+  speed / acceleration readouts on direction velocity clips ≤ 4 m/s vs clip distance in metres (planner), direction
+  readout on speed / acceleration clips vs θ (own addition); R² ≥ 0.5 "valid". Criteria: hashes; Q orthonormal ≤ 1e-10;
+  principal angles from `scipy.linalg.subspace_angles`, SVD-cosine formula agrees ≤ 1e-7 rad (arccos loses precision
+  near 0; revised from 1e-10 when writing 7.5a); round-1 prediction invariant under re-expression ≤ 1e-10; covariance
+  direct = transformed ≤ 1e-10; null draws in span ≤ 1e-10; full-space draws = k_A/d within 3 SE; specificity =
+  `steering_scores` ≤ 1e-12; finite. Tables only (backup slide). No planner questions (pooled scaler = implementation
+  detail, both spaces reported).
+- 7.5a: `robustness.py` part 3 (`orthonormal`, `rescale`, `re_express`, `principal_angles`, `subspace_metrics`,
+  `null_metrics`, `null_reading`). Smoke test (terminal, not saved): hand case exact (angles 0 / 30°, overlap 0.875,
+  Grassmann π/6); scipy vs SVD-cosine 2.2e-16 rad; pooled train rows 2,477; K / m 6 / 2, 7 / 1, 7 / 1; Q orthonormal
+  ≤ 1.4e-15; round-1 prediction invariant ≤ 1.3e-15; covariance direct = transformed ≤ 4.0e-17; span rank 831, draw
+  residual 5.0e-16; full-space overlap 0.00585 vs k_A/d 0.00586 (0.19 SE). Preview (not a result): speed–acceleration
+  weights K−1 idx 9 overlap 0.371 (mean angle 54.3°) vs null median 0.0069 → "aligned beyond chance". All predictions
+  met. **Step 7.5a done.**
 
 ### 2026-09-26 — Phase 6 started (spline steering)
 - Phase 6 layout (`manifolds.py`, `behavior.py`, spline arms in `steering.py`; `check_manifolds.py`,

@@ -1,13 +1,14 @@
 """Robustness checks on stored outputs: direction's transfer between motion types, error breakdowns by clip flag and
 per-tubelet motion, and the overlap of the variables' subspaces."""
 import numpy as np
+from scipy.linalg import subspace_angles
 from scipy.stats import rankdata
 
 from vjepa_physics.confounds import FPS, FRAMES, clip_distance, in_window, overlap_window
 from vjepa_physics.flags import TUBELET
 from vjepa_physics.geometry import PX_PER_M, distance_travelled, frame_times
 from vjepa_physics.metrics import angles_from_sincos, circular_errors, percentile_interval
-
+from vjepa_physics.nullspace import RANK_TOLERANCE, random_span_basis
 MOTION_TYPES = ("velocity", "acceleration")  # direction set: constant speed, or from rest with constant acceleration
 
 
@@ -86,3 +87,74 @@ def within_range_trend(labels: np.ndarray, predictions: np.ndarray, indices: np.
         "spearman": float(_pearson(rankdata(x), rankdata(y))),
         "spearman_ci": [float(c) for c in percentile_interval(_pearson(rankdata(xs, axis=1), rankdata(ys, axis=1)))],
     }
+    
+SUBSPACE_KINDS = ("weights", "patterns")
+NULL_KEYS = ("mean_angle_degrees", "overlap_a_on_b", "overlap_b_on_a", "grassmann")
+
+
+def orthonormal(columns: np.ndarray) -> np.ndarray:
+    """(d, k) orthonormal basis of the columns' span (reduced QR); ValueError if the columns are rank-deficient."""
+    c = np.asarray(columns, dtype=np.float64)
+    s = np.linalg.svd(c, compute_uv=False)
+    if s[-1] <= RANK_TOLERANCE * s[0]:
+        raise ValueError("columns are numerically rank-deficient")
+    q, _ = np.linalg.qr(c)
+    return q
+
+
+def rescale(basis: np.ndarray, own_scale: np.ndarray, target_scale: np.ndarray, kind: str) -> np.ndarray:
+    """Columns written in one standardized space (own_scale) -> another (target_scale; ones = raw space), unnormalized.
+
+    weights (probe weight directions, covectors): x · (w / own) = z_target · (w * target / own), so scale by target / own.
+    patterns (feature-space directions, e.g. covariance directions): a shift Δz_own = Δx / own, so scale by own / target.
+    """
+    ratio = np.asarray(target_scale, dtype=np.float64) / np.asarray(own_scale, dtype=np.float64)
+    if kind == "weights":
+        return np.asarray(basis, dtype=np.float64) * ratio[:, None]
+    if kind == "patterns":
+        return np.asarray(basis, dtype=np.float64) / ratio[:, None]
+    raise ValueError(f"kind must be one of {SUBSPACE_KINDS}, got {kind!r}")
+
+
+def re_express(basis: np.ndarray, own_scale: np.ndarray, target_scale: np.ndarray, kind: str) -> np.ndarray:
+    """rescale, then an orthonormal basis of the result (the span is what principal angles compare)."""
+    return orthonormal(rescale(basis, own_scale, target_scale, kind))
+
+
+def principal_angles(qa: np.ndarray, qb: np.ndarray) -> np.ndarray:
+    """(min(k_a, k_b),) principal angles in radians, ascending (scipy's method, accurate near 0)."""
+    return np.sort(subspace_angles(qa, qb))
+
+
+def subspace_metrics(qa: np.ndarray, qb: np.ndarray) -> dict:
+    """The physics paper's App. C.4 metrics for two orthonormal bases: mean principal angle (degrees), projection overlap
+    ||Q_Aᵀ Q_B||²_F / dim(B) (and / dim(A)), Grassmann distance sqrt(sum θ²) (radians); all angles in degrees."""
+    angles = principal_angles(qa, qb)
+    overlap = float(((qa.T @ qb) ** 2).sum())
+    return {
+        "mean_angle_degrees": float(np.degrees(angles).mean()),
+        "overlap_a_on_b": overlap / qb.shape[1], "overlap_b_on_a": overlap / qa.shape[1],
+        "grassmann": float(np.sqrt((angles**2).sum())), "angles_degrees": np.degrees(angles).tolist(),
+    }
+
+
+def null_metrics(qa: np.ndarray, span_b: np.ndarray, n_cols: int, transform, n_draws: int,
+                 seed: int) -> dict[str, np.ndarray]:
+    """Metrics of qa against n_draws random n_cols-dim subspaces drawn inside span_b (B's own standardized train span)
+    and passed through `transform` (the same re-expression as the real B); draw i uses seed + i."""
+    out = {key: np.empty(n_draws) for key in NULL_KEYS}
+    for i in range(n_draws):
+        m = subspace_metrics(qa, transform(random_span_basis(span_b, n_cols, seed + i)))
+        for key in NULL_KEYS:
+            out[key][i] = m[key]
+    return out
+
+
+def null_reading(overlap: float, null_overlaps: np.ndarray) -> str:
+    """Reading of an observed overlap against its null's central 95% (rule fixed before any run)."""
+    low, high = percentile_interval(null_overlaps)
+    if overlap > high:
+        return "aligned beyond chance"
+    if overlap < low:
+        return "less aligned than chance"
+    return "at chance"
