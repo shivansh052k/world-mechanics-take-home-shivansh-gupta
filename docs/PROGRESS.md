@@ -372,6 +372,35 @@ what's next.
 - 8.1: `check_data_files.py fingerprint_final` (new key = the same `check_fingerprint`, keeps F-62's record;
   `require_clean_code` added) **passed** 6/6: 9,147 files, every SHA-256 and `shasum -c` match, none added / removed,
   `data/` read-only; only byte-identical pair = the speed / acceleration manifests (= F-62). **Step 8.1 done.**
+- 8.9: requirements checklist written under F-01–F-09 in DECISIONS §1.1 (README checked line by line): every analysis
+  requirement met with evidence; open items only in Phase 8 (Meta-repo parity skip to state, D-29; extraction / pooling
+  slide + README section; slides, rehearsal, sending; code README and packaging). **Step 8.9 done.**
+- 8.3: `slides/talk_outline.md` replaced with the final slide-by-slide plan (15 main slides, 14:15 + 0:45 buffer;
+  isometry → backup; new protocol slide for extraction / pooling; conclusions + limitations; 6 backups; full limitations
+  list for Q&A). **Step 8.3 done.**
+- User choices (2026-09-27): slides in **PowerPoint** (PDF export, D-48); **≤ 1 day** to submission → lean Phase 8
+  (one rehearsal, condensed defence prep; 8.6 limited to what the README needs).
+- Code submission plan (user approved, 2026-09-27; slides paused until it is done): **minimal submission**. Task
+  `README.md` / `DATA.md` untouched at the root; `submission/` holds only our one-page `README.md` and `slides.pdf`;
+  code stays in place (moving it would break the recorded artifact paths and code hashes). Sent: `src/`, `scripts/`
+  (+ new `run_pipeline.py`), new `tests/`, `results/` (figures, `checks.json`, `clip_flags.csv`),
+  `artifacts/manifests/`, `pyproject.toml`, `requirements.lock.txt`. **Kept local, untracked:** `docs/`, `CLAUDE.md`,
+  `.claude/`, all `results/*/report.md`, `results/slide_log.md`, `slides/talk_outline.md` (prep material for the slides
+  and the next round). Steps C1 pipeline map → C2 runner → C3 light cleanup + identical-results re-check → C4
+  dependencies → C6 tests → C5 `submission/README.md` → C7 packaging → slides (8.4).
+- C1: pipeline map approved after two review passes. 147 `CHECKS` keys = 141 in 9 stages (setup 32, audit 21,
+  extraction 9, probing 18, nullspace 15, steering 13, spline 22, confounds 9, final 2) + 6 excluded (`benchmark`,
+  5 `rerun_identical*`); every cross-key read (`verified_artifact` and saved-JSON reads) traced to an earlier producer.
+  Runner rules: continue past failures, compare each new `passed` with the committed record, stop only on a crash (no
+  new record); scripts need a git clone (the zip is for browsing); setup-stage flags expected on other hardware;
+  `figures` = 15 keys (14 `figure*` + preprocessing `default`), most need stage 1–2 artifacts. **Step C1 done.**
+- C2: `scripts/run_pipeline.py` (stages as data; `--list`, `--stage … | all | figures`, `--dry-run`; expected outcome
+  = committed `passed`; crash = no new UTC record → stop). Smoke test (dry run, nothing written): stage counts as
+  predicted; 0 keys "not recorded" (no typos); first dry run exposed a bug (`all` swallowed `figures`), fixed →
+  156 steps = 119 passed / 28 no verdict / 9 failed on record: video_loader opencv, numerics devices, metadata
+  documented_fields, videos format, tracking documented_colour, patches patch_probes, nullspace nullspace_rounds,
+  nullspace kernel_erasure, behavior behavior_readouts (the last missed in Claude Code's from-memory list; F-143).
+  **Step C2 done** (committed with C3).
 
 ### 2026-09-27 — Phase 7 (confounds and robustness) — passed
 - Gate steps 4–5: slide log +1 main ("The probes read distance, yet the motion profiles stay separable") +3 backups;

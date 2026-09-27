@@ -136,13 +136,13 @@ commit before each saved run; no full re-runs; one design brief per phase; step 
 
 - [x] **8.1 Final data-integrity check** — *done: `fingerprint_final` passed, all 9,147 files unchanged, `data/` read-only.* — Re-verify the Phase 0 fingerprint after the full pipeline has run.
 - [ ] **8.2 Decide and document the presentation medium** — *D-48: slides exported as PDF (closes O-17).* Settle O-17.
-- [ ] **8.3 Outline the presentation** — *D-48: drafted now, updated per phase; slide log under `results/`.* — Against the README's exact requested content: methods, results, interpretations, comparisons, limitations.
+- [x] **8.3 Outline the presentation** — *done: final slide-by-slide plan in `slides/talk_outline.md` (15 main, 6 backups, 14:15).* — *D-48: drafted now, updated per phase; slide log under `results/`.* — Against the README's exact requested content: methods, results, interpretations, comparisons, limitations.
 - [ ] **8.4 Build the presentation.**
 - [ ] **8.5 Build a lightweight results notebook** — *D-48: replaced by the existing figure checks (every figure regenerates from saved results).* — Loads saved artifacts and reproduces the key figures, so no one needs to rerun the full pipeline to see them.
 - [ ] **8.6 Code cleanup** — Remove dead/debug code, add docstrings, consistent style.
 - [ ] **8.7 Write a project-level README for the code** — Headed with the full title (D-18); decide how it coexists with the supplied task `README.md` at the root.
 - [x] **8.8 Verify reproducibility** — **Skipped (D-48):** no full re-run; a "how to reproduce" section in the code README (8.7) instead. — Decide: full rerun vs. a scoped from-scratch smoke test, given compute limits.
-- [ ] **8.9 Requirements-compliance checklist** — Map F-01 through F-09 to exactly where each is addressed, to catch any accidental omission.
+- [x] **8.9 Requirements-compliance checklist** — *done: table under F-01–F-09 (DECISIONS §1.1); no analysis gaps, four Phase 8 items.* — Map F-01 through F-09 to exactly where each is addressed, to catch any accidental omission.
 - [ ] **8.10 Decide what's in the code submission** — *D-48: private repo invite + zip of `src/`, `scripts/`, `results/`.* — Likely `src/` + `scripts/` + a small subset of `results/`, excluding bulky `artifacts/`; decide the delivery method (attachment, or a link such as inviting the reviewer to the private repo, D-18).
 - [ ] **8.11 Prepare to defend every decision** — Review `DECISIONS.md` and walk through the key code (probes, nullspace, steering, splines) so every choice and every line can be explained.
 - [ ] **8.12 Prepare likely follow-up questions and answers** — Using `DECISIONS.md`'s paper notes (P-01–P-13) and open decisions as source material, since the README says the talk is "the basis for an open discussion."

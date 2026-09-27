@@ -22,7 +22,7 @@ from vjepa_physics.evidence import file_sha256, require_clean_code, save_result,
 from vjepa_physics.extraction import plot_index
 from vjepa_physics.joined import load_joined
 from vjepa_physics.manifolds import (
-    PCA_DIMS, PERIOD, fit_curve, geodesic_distances, path_positions, smoothing_grid, value_centroids,
+    PCA_DIMS, fit_curve, geodesic_distances, path_positions, smoothing_grid, value_centroids,
 )
 from vjepa_physics.metrics import percentile_interval
 from vjepa_physics.nullspace import train_scaler

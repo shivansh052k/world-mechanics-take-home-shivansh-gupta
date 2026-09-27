@@ -10,8 +10,6 @@ from vjepa_physics.geometry import distance_travelled, frame_times
 FPS, FRAMES = 24, 16  # every clip: 16 frames at 24 fps
 CLIP_SECONDS = float(frame_times(FPS, FRAMES)[-1])  # frame 0 to the last frame: 15 / 24 s
 PAIR = ("speed", "acceleration")
-
-PAIR = ("speed", "acceleration")
 DISTANCE_PER_UNIT = {"speed": CLIP_SECONDS, "acceleration": CLIP_SECONDS**2 / 2}  # metres per m/s; per m/s² from rest
 
 # Reading rule for an acceleration probe applied to speed clips (slope of cross-predicted on true distance, with CI):

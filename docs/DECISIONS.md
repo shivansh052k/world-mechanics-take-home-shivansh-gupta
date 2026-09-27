@@ -37,6 +37,34 @@ Scouting source: planning-chat sandbox scripts (not in the repo), run on 2026-09
 | F-08 | AI tools are allowed; the candidate remains responsible for understanding everything. (README) |
 | F-09 | Direction target suggested as (sin θ, cos θ), converted back to an angle for circular error. Suggested metrics: circular MAE and R² on sin/cos (direction); MAE and R² (speed, acceleration). (DATA.md) |
 
+**Requirements compliance (step 8.9, 2026-09-27; README wording checked line by line).** ✅ = met with evidence;
+⏳ = open, with the Phase 8 step that closes it.
+
+| Req. | Requirement (README / DATA.md) | Where it is met | Status |
+|---|---|---|---|
+| F-01 | V-JEPA 2 ViT-L/16, 256-res, `facebook/vjepa2-vitl-fpc64-256` | Pinned revision and weights SHA-256 (F-44), load and fingerprint checks (F-51); HF port of Meta's `vjepa2_vit_large`, conversion parity asserted by HF at atol 1e-3 (F-58); our own parity run skipped (D-29) | ✅ (D-29 skip to be stated in the code README and limitations, 8.7 / 8.4) |
+| F-02a | Encoder frozen | Weights fingerprint unchanged after forward passes, edits and extraction (F-51, F-52, F-56, F-82); eval mode, no grad | ✅ |
+| F-02b | Document how representations are extracted and pooled | `results/splits_and_extraction/report.md` (own hooks per block, 26 sites, per-time-step and all-token mean pooling, preprocessing without resize / crop; D-40, F-50, F-53) | ✅ in the reports; ⏳ one slide + code README section (8.4 / 8.7) |
+| F-03 | Fit data separate from evaluation data; probes, layer choice, nullspace and splines never touch the final held-out examples | Splits with held-out values (D-38); probes / nullspace / manifolds fit on train, layer choices on validation (F-103, D-49, D-51); readouts fit on validation (D-50); test read once per analysis from committed code after freezes (F-104, F-113, F-127, F-152 / F-153, F-155 / F-156); steering evaluated on test clips and unseen values | ✅ |
+| F-04 | Do not modify `data/`; artifacts elsewhere | Read-only since step 0.2; fingerprint unchanged at the start (F-62) and after the full pipeline (`fingerprint_final`, 8.1); all derived files in `artifacts/`, `results/` | ✅ |
+| F-05.1 | Layer-wise probing at every layer, plot over layers, identify where each variable becomes available | 26 sites × 3 variables (F-92), `layer_curves.png` (F-102), transition idx 1 (F-100, F-103), test (F-104); per-patch local-to-global (F-105–F-114) | ✅ |
+| F-05.2 | Iterative nullspace probing at a suitable layer; dimensionality and redundancy | idx 9 headline + idx 1 / 18 (D-49); K, redundancy counts, random / PC controls, depth profile, procedure dependence, erasure and kernel recovery (F-116–F-128) | ✅ |
+| F-05.3 | Multi-probe subspace steering evaluated on held-out data not used to build the subspace | Subspace from train-fit nullspace probes; test clips (seen and unseen values), validation-fit downstream readouts (D-50, F-129–F-138) | ✅ |
+| F-05 | Reproduce methodology and qualitative findings, not numbers | Paper comparison sections in each phase report; paper notes P-01–P-13 | ✅ |
+| F-06a | Manifolds / splines for speed, acceleration, direction | Train-centroid curves at idx 9 for all three (F-139–F-141) | ✅ |
+| F-06b | Construction, visualization, evaluation decided | LOCO-selected smoothing spline / trig polynomial (D-51); `manifolds.png`, `spline_paths.png`, `spline_profile.png` | ✅ |
+| F-06c | Circular structure of direction | Closed-loop trig polynomial, shorter-arc targets and paths, circular errors (D-51, F-142, F-146) | ✅ |
+| F-06d | Meaningful held-out steering evaluation | Test clips, targets at unseen values, readouts fit on other clips at later layers, naturalness (D-51, F-146, F-147) | ✅ |
+| F-06e | Compare with Part 1: strengths, limitations, failure cases | `comparison_table.md`, D-51 strengths / limitations / failures, Part 2 report | ✅ |
+| F-07a | ~15-min presentation: methods, results, interpretations, comparisons, limitations | Slide log (11 result slides + 3 backups), talk outline with timings | ⏳ build the slides (8.3 / 8.4), rehearse (8.13) |
+| F-07b | Source code delivered | `src/`, `scripts/`, `results/`; hash-checked evidence (77 keys) | ⏳ code README (8.7), packaging (8.10), user sends the email (8.14) |
+| F-08 | Candidate understands everything | Guide-only workflow (D-21, D-22): all code written by the user | ⏳ defence prep (8.11, 8.12) |
+| F-09 | Direction as (sin θ, cos θ); circular MAE + R² on sin/cos; MAE + R² for speed / acceleration | `metrics.py` (F-89), used by every probe score | ✅ |
+
+Gaps found: none in the analyses. Four items for the remaining Phase 8 steps: (1) state the skipped Meta-repo parity
+(D-29) in the code README and limitations; (2) one extraction / pooling slide or backup plus a README section; (3) build,
+rehearse and send the talk; (4) code README and packaging.
+
 ### 1.2 Model and libraries
 
 | ID | Status | Fact | Source |

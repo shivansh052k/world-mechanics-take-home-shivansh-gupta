@@ -28,7 +28,7 @@ from vjepa_physics.manifolds import (
 )
 from vjepa_physics.metrics import bootstrap_indices, percentile_interval, resampled_mean
 from vjepa_physics.nullspace import train_scaler
-from vjepa_physics.plotting import DATASET_COLOUR, GRID, INK, INK_MUTED, INK_SECONDARY, SURFACE, style_axes
+from vjepa_physics.plotting import DATASET_COLOUR, INK, INK_MUTED, INK_SECONDARY, SURFACE, style_axes
 from vjepa_physics.probes import probe_targets, site_features
 from vjepa_physics.reproducibility import SEED
 from vjepa_physics.steering import STEERING_SITE, covariance_map, load_probe_sequence
