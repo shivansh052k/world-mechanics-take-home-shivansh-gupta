@@ -1016,7 +1016,7 @@ def check_figure_spline_profile() -> dict:
             ax.plot(indices, values, zorder=2 + z, **style)
         at18 = {name: profile["18"]["arms"][arm]["gain"] for name, arm in
                 (("spline", "spline_1"), ("covariance", "covariance_1"), ("probes", f"phase5_probes_{k1}"))}
-        ax.text(0.98, 0.95, "index 18: " + " · ".join(f"{n} {g:.3f}" for n, g in at18.items()), transform=ax.transAxes,
+        ax.text(0.98, 0.55, "index 18: " + " · ".join(f"{n} {g:.3f}" for n, g in at18.items()), transform=ax.transAxes,
                 ha="right", va="top", color=INK_SECONDARY, fontsize=8.5)
         ax.axhline(0, color=INK_MUTED, lw=0.8, zorder=1)
         ax.set_xticks(indices)
