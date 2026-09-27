@@ -14,7 +14,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from vjepa_physics.data import DATASETS, MANIFEST, ROW_KEYS, read_manifest, resolve
-from vjepa_physics.evidence import file_sha256, git, save_result
+from vjepa_physics.evidence import file_sha256, git, require_clean_code, save_result
 
 REPO = Path(__file__).resolve().parents[1]
 DATA = REPO / "data"
@@ -231,6 +231,7 @@ def check_fingerprint() -> dict:
 CHECKS = {
     "manifests": check_manifests,
     "fingerprint": check_fingerprint,
+    "fingerprint_final": check_fingerprint,  # the same check after the full pipeline; keeps the first record
 }
 
 
@@ -238,6 +239,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("check", choices=sorted(CHECKS))
     name = parser.parse_args().check
+    require_clean_code()  # after parsing, so --help still works with uncommitted code
     result = CHECKS[name]()
     print(json.dumps(result, indent=2))
     save_result(OUT, name, result)
