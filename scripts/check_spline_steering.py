@@ -9,8 +9,13 @@ import time
 from functools import partial
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from matplotlib.lines import Line2D
 
 from vjepa_physics.baselines import squared_distances
 from vjepa_physics.behavior import N_BINS, behavior_curve, curve_grid, map_probabilities, nearest_on_curve
@@ -21,6 +26,7 @@ from vjepa_physics.joined import load_joined
 from vjepa_physics.manifolds import PCA_DIMS, fit_curve, fit_spacing_line, smoothing_grid
 from vjepa_physics.metrics import bootstrap_indices, percentile_interval
 from vjepa_physics.model import load_model, weights_fingerprint
+from vjepa_physics.plotting import DATASET_COLOUR, INK, INK_MUTED, INK_SECONDARY, SURFACE, sequential_cmap, style_axes
 from vjepa_physics.probes import fit_probe, probe_scores, probe_targets, site_features
 from vjepa_physics.reproducibility import SEED, set_seeds
 from vjepa_physics.steering import (
@@ -68,6 +74,11 @@ MANIFOLD_KEYS = ("manifold_loco", "manifold_ladder", "manifold_dimension", "dire
 BEHAVIOR_KEYS = ("behavior_readouts", "isometry", "isometry_local")
 SPLINE_KEYS = ("spline_setup", "spline_scores", "spline_naturalness", "spline_held_out")
 EXPECTED_FAILURES = {"behavior_readouts": {"validation_clips_per_bin_at_least_10"}}  # kept on record (planning chat)
+
+FIGURE_PATHS = REPO / "results/spline_steering/spline_paths.png"
+FIGURE_DPI = 200
+BIN_CENTRES = (np.arange(N_BINS) * 4 + 1.5) * 5.625  # direction: centre angle (degrees) of each 4-value bin
+PATH_FRACTIONS_SHOWN = (0.0, 0.25, 0.5, 0.75, 1.0)
 
 def kind_of(variable: str) -> str:
     return "loop" if variable == "direction" else "open"
@@ -866,7 +877,103 @@ def check_comparison_table() -> dict:
     }
     
 
+def check_figure_spline_paths() -> dict:
+    """Figure (slide 3, Q3): direction's path along the curve vs the straight chord, and midpoint naturalness.
 
+    Rows 1-2: for one direction clip x target — chosen by a fixed rule, the largest start-to-target angle (shorter
+    arc) in spline_setup — the 16-bin readout distribution at f = 0 (unedited), 0.25, 0.5, 0.75, 1 along the spline
+    path (left) and the chord (right), at index 9 (row 1) and 18 (row 2). Row 3: midpoint excess naturalness spline -
+    chord with 95% intervals for all three variables at index 9 and 18 (spline_naturalness). Saved results only.
+    Passes if: clip ids = spline_setup's; every plotted distribution sums to 1; the figure is written.
+    """
+    with np.load(verified_artifact(BEHAVIOR_CHECKS, "behavior_readouts")) as f:
+        readouts = {key: f[key] for key in f.files if key.startswith("direction_")}
+    with np.load(verified_artifact(OUT, "spline_setup")) as f:
+        setup = {key: f[key] for key in ("direction_ids", "direction_starts", "direction_target_label")}
+    saved = json.loads(OUT.read_text())
+    headline = {v: saved["spline_naturalness"]["result"]["variables"][v]["headline"] for v in DATASETS}
+    six = joined_runs(OUT, "spline_{variable}_{half}", "direction", ("ids", "uniform_arms", "features_uniform",
+                                                                     "unedited_features"))
+    ids = np.concatenate([h["ids"] for h in six])
+    arms = six[0]["uniform_arms"].tolist()
+    features = np.concatenate([h["features_uniform"] for h in six])
+    unedited = np.concatenate([h["unedited_features"] for h in six])
+    starts, targets = setup["direction_starts"], setup["direction_target_label"]
+    gap = np.abs(label_difference("direction", targets[None, :], starts[:, None]))
+    c, t = (int(i) for i in np.unravel_index(np.argmax(gap), gap.shape))
+    paths = {"along the curve (spline)": ["spline_0.25", "spline_0.5", "spline_0.75", "spline_1"],
+             "straight chord": ["chord_0.25", "chord_0.5", "chord_0.75", "spline_1"]}  # chord f = 1 = spline endpoint
+
+    fig = plt.figure(figsize=(14, 11.5), facecolor=SURFACE)
+    grid = fig.add_gridspec(3, 2, height_ratios=[1.0, 1.0, 0.95], hspace=0.55, wspace=0.12)
+    colours = sequential_cmap()(np.linspace(0.3, 1.0, len(PATH_FRACTIONS_SHOWN)))
+    sums_ok = []
+    for r, site in enumerate(("block_8", "block_17")):
+        j = PROFILE_SITES.index(site)
+        weights, offset = readouts[f"direction_{site}_weights"], readouts[f"direction_{site}_offset"]
+        first = None
+        for col, (label, names) in enumerate(paths.items()):
+            ax = fig.add_subplot(grid[r, col], sharey=first)
+            first = first or ax
+            rows = np.stack([unedited[c, j]] + [features[c, t, arms.index(n), j] for n in names]).astype(np.float64)
+            p = map_probabilities(weights, offset, rows)
+            sums_ok.append(float(np.abs(p.sum(axis=1) - 1.0).max()) <= 1e-10)
+            for colour, fraction, prob in zip(colours, PATH_FRACTIONS_SHOWN, p):
+                ax.plot(BIN_CENTRES, prob, color=colour, lw=2.0, marker="o", ms=4, zorder=3,
+                        label={0.0: "f = 0 (unedited clip)", 1.0: "f = 1 (target)"}.get(fraction, f"f = {fraction:g}"))
+            for angle, text in ((starts[c], "start"), (targets[t], "target")):
+                ax.axvline(angle, color=INK_SECONDARY, lw=1.0, ls=(0, (4, 3)), zorder=1)
+                ax.annotate(text, (angle, 1.0), xycoords=("data", "axes fraction"), xytext=(4, -12),
+                            textcoords="offset points", color=INK_SECONDARY, fontsize=9)
+            ax.set_xlim(0, 360)
+            ax.set_xticks(range(0, 361, 90), [f"{a}°" for a in range(0, 361, 90)])
+            ax.set_xlabel("readout bin (direction)", color=INK_SECONDARY)
+            if col == 0:
+                ax.set_ylabel("bin probability", color=INK_SECONDARY)
+            ax.set_ylim(bottom=0)
+            ax.set_title(f"Index {plot_index(site)}: {label}", color=INK, fontsize=11, loc="left")
+            style_axes(ax)
+            if r == 0 and col == 0:
+                ax.legend(frameon=False, fontsize=8.5, labelcolor=INK, loc="upper right")
+
+    ax = fig.add_subplot(grid[2, :])
+    for i, variable in enumerate(DATASETS):
+        for k, (site_key, filled) in enumerate((("midpoint_spline_minus_chord_idx9", True),
+                                                 ("midpoint_spline_minus_chord_idx18", False))):
+            h = headline[variable][site_key]["all"]
+            x = i + (k - 0.5) * 0.25
+            colour = DATASET_COLOUR[variable]
+            ax.errorbar(x, h["point"], yerr=[[h["point"] - h["ci"][0]], [h["ci"][1] - h["point"]]], fmt="o", ms=8,
+                        color=colour, mfc=colour if filled else SURFACE, mec=colour, mew=1.8, elinewidth=1.8,
+                        capsize=4, zorder=3)
+    ax.axhline(0, color=INK_MUTED, lw=1.0, zorder=1)
+    ax.set_xticks(range(len(DATASETS)), [v.capitalize() for v in DATASETS])
+    ax.set_xlim(-0.6, len(DATASETS) - 0.4)
+    ax.set_ylabel("midpoint excess Hellinger,\nspline − chord (95% CI)", color=INK_SECONDARY)
+    ax.set_title("Midpoint naturalness: below 0 = the spline midpoint looks more like a real clip than the chord's",
+                 color=INK, fontsize=11, loc="left")
+    ax.legend(handles=[Line2D([], [], color=INK, marker="o", ms=8, lw=0, label="index 9 (steering layer)"),
+                       Line2D([], [], color=INK, marker="o", ms=8, lw=0, mfc=SURFACE, mew=1.8, label="index 18")],
+              frameon=False, fontsize=9, labelcolor=INK, loc="lower right")
+    style_axes(ax)
+    fig.suptitle(f"Direction, clip {int(ids[c])}: start {starts[c]:.0f}° → target {targets[t]:.1f}° "
+                 f"(largest start–target angle among the 150 pairs)", color=INK, fontsize=12, x=0.02, ha="left")
+    FIGURE_PATHS.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(FIGURE_PATHS, dpi=FIGURE_DPI, facecolor=SURFACE, bbox_inches="tight")
+    plt.close(fig)
+
+    criteria = {"same_ids": bool(np.array_equal(ids, setup["direction_ids"])), "sums_to_one": all(sums_ok),
+                "figure_written": FIGURE_PATHS.exists()}
+    return {
+        "figure": {"path": str(FIGURE_PATHS.relative_to(REPO)), "sha256": file_sha256(FIGURE_PATHS)},
+        "example": {"rule": "largest shorter-arc angle between start and target (spline_setup)", "clip_id": int(ids[c]),
+                    "target_index": t, "start_degrees": float(starts[c]), "target_degrees": float(targets[t]),
+                    "angle": float(gap[c, t])},
+        "sources": {key: saved[key]["provenance"]["git_commit"] for key in ("spline_setup", "spline_naturalness")},
+        "criteria": criteria, "passed": all(criteria.values()),
+    }
+    
+    
 CHECKS = {
     "spline_setup": check_spline_setup,
     **{f"spline_{v}_{h}": partial(spline_run, v, h) for v in DATASETS for h in HALVES},
@@ -874,6 +981,7 @@ CHECKS = {
     "spline_naturalness": check_spline_naturalness,
     "spline_held_out": check_spline_held_out,
     "comparison_table": check_comparison_table,
+    "figure_spline_paths": check_figure_spline_paths,
 }
 
 
