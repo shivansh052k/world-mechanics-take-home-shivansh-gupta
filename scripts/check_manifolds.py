@@ -17,8 +17,8 @@ from vjepa_physics.evidence import file_sha256, require_clean_code, save_result
 from vjepa_physics.extraction import plot_index
 from vjepa_physics.joined import load_joined
 from vjepa_physics.manifolds import (
-    EXACT, LINE, PCA_DIMS, centroid_noise, fit_curve, loco_errors, loco_grid, select_setting, smoothing_grid,
-    unit_tangents, value_centroids,
+    EXACT, LINE, PCA_DIMS, centroid_noise, fit_curve, fit_spacing_line, loco_errors, loco_grid, loco_spacing_grid,
+    select_setting, smoothing_grid, unit_tangents, value_centroids,
 )
 from vjepa_physics.metrics import bootstrap_indices, percentile_interval, resampled_mean
 from vjepa_physics.nullspace import train_scaler
@@ -305,11 +305,104 @@ def check_speed_acceleration_manifold() -> dict:
         "post_hoc": False, "observation": True, "site": STEERING_SITE,
         "criteria": criteria, "passed": all(criteria.values()),
     }
+
+
+def ladder_share(first: np.ndarray, middle: np.ndarray, last: np.ndarray) -> dict:
+    """Share of the first -> last gain in mean squared LOCO error reached at the middle rung, (first - middle) /
+    (first - last), with a value-bootstrap interval (the same resamples for all three)."""
+    keep = np.isfinite(first)
+    f, m, l = first[keep], middle[keep], last[keep]
+    idx = bootstrap_indices(len(f), BOOTSTRAP_RESAMPLES, SEED)
+    rf, rm, rl = (resampled_mean(a, idx) for a in (f, m, l))
+    return {"share": float((f.mean() - m.mean()) / (f.mean() - l.mean())),
+            "ci": list(percentile_interval((rf - rm) / (rf - rl)))}
+
+
+def check_manifold_ladder() -> dict:
+    """Q1 ladder at index 9: which part of the curve's LOCO gain over the line is uneven spacing and which curvature.
+
+    Speed / acceleration: line (linear in the label, best k) -> free-spacing lines -> selected curve. Two free-spacing
+    rungs: the PC1 line (k = 1 row of the grid, its own LOCO-rule lam; best-fitting straight line -> the gain beyond it
+    is the conservative curvature estimate) and the B line (covariance direction, refit per fold; nested with the
+    covariance arm -> the steering-relevant split). Direction: ellipse (H = 1) -> selected curve. Per rung: mean
+    squared LOCO, paired value-bootstrap gaps, spacing shares (line -> rung) / (line -> curve), and squared errors at
+    the val-unseen centroids of curves fit on all train centroids. Passes if: the recomputed selection and k = 1 row
+    equal manifold_loco's; the B line with linear p equals the covariance map within LINE_TOLERANCE; a spacing-grid
+    entry equals a brute-force fold; everything finite.
+    """
+    saved = json.loads(OUT.read_text())["manifold_loco"]["result"]["variables"]
+    ok: dict[str, list[bool]] = {name: [] for name in (
+        "curve_matches_manifold_loco", "pc1_row_matches_manifold_loco", "spacing_line_equals_covariance",
+        "spacing_grid_matches_brute_force", "finite")}
+    result: dict = {}
+
+    for variable in DATASETS:
+        table = load_joined(variable)
+        roles, value_index, labels = table["role"], table["value_index"], table["label"]
+        train = roles == "train"
+        kind = kind_of(variable)
+        z, _ = standardized(table, STEERING_SITE)
+        values, cents, _ = value_centroids(z, value_index, labels, roles)
+        u_values, u_cents, _ = value_centroids(z, value_index, labels, roles, role="val_unseen")
+
+        smooths = smoothing_grid(kind, values)
+        grid = loco_grid(kind, values, cents, PCA_DIMS, smooths)
+        mse = np.nanmean(grid, axis=2)
+        a, b = select_setting(mse)
+        line_a = int(np.argmin(mse[:, 0]))
+        reference = saved[variable][STEERING_SITE]
+        ok["curve_matches_manifold_loco"].append(
+            dim_name(PCA_DIMS[a]) == reference["selected"]["k"] and smooths[b] == reference["selected"]["smooth"])
+        ok["pc1_row_matches_manifold_loco"].append(relative(mse[0], np.array(reference["mse"][0])) <= GRID_TOLERANCE)
+
+        rungs = {"line": (grid[line_a, 0], fit_curve(kind, values, cents, PCA_DIMS[line_a], smooths[0]))}
+        if kind == "open":
+            _, pc1_b = select_setting(mse[:1])
+            rungs["pc1_spacing"] = (grid[0, pc1_b], fit_curve(kind, values, cents, 1, smooths[pc1_b]))
+            spacing = loco_spacing_grid(values, cents, smooths)
+            _, sb = select_setting(np.nanmean(spacing, axis=1)[None, :])
+            rungs["covariance_spacing"] = (spacing[sb], fit_spacing_line(values, cents, smooths[sb]))
+
+            y = probe_targets(variable, labels).reshape(len(labels), -1)
+            b_map = covariance_map(z[train], y[train])
+            covariance_line = z[train].mean(axis=0) + (values[:, None] - y[train].mean(axis=0)) @ b_map
+            ok["spacing_line_equals_covariance"].append(
+                relative(fit_spacing_line(values, cents, LINE)(values), covariance_line) <= LINE_TOLERANCE)
+            j = len(values) // 2
+            keep = np.arange(len(values)) != j
+            brute = float(((cents[j] - fit_spacing_line(values[keep], cents[keep], smooths[sb])(values[j])[0]) ** 2).sum())
+            ok["spacing_grid_matches_brute_force"].append(abs(brute - spacing[sb, j]) <= GRID_TOLERANCE * brute)
+        rungs["curve"] = (grid[a, b], fit_curve(kind, values, cents, PCA_DIMS[a], smooths[b]))
+
+        record: dict = {"rungs": {}, "gaps": {}, "val_unseen": {"values": u_values.tolist()}}
+        for name, (sq, curve) in rungs.items():
+            record["rungs"][name] = {"k": int(curve.axes.shape[1]), "smooth": curve.smooth, "mse": float(np.nanmean(sq))}
+            record["val_unseen"][f"{name}_sq"] = ((u_cents - curve(u_values)) ** 2).sum(axis=1).tolist()
+        pairs = [("line", "curve")]
+        if kind == "open":
+            pairs += [("line", "covariance_spacing"), ("covariance_spacing", "curve"),
+                      ("line", "pc1_spacing"), ("pc1_spacing", "curve")]
+            record["spacing_share"] = {
+                "covariance_split": ladder_share(rungs["line"][0], rungs["covariance_spacing"][0], rungs["curve"][0]),
+                "pc1_split": ladder_share(rungs["line"][0], rungs["pc1_spacing"][0], rungs["curve"][0]),
+            }
+        for first, second in pairs:
+            record["gaps"][f"{first}_minus_{second}"] = paired_gap(rungs[first][0], rungs[second][0])
+        ok["finite"].append("NaN" not in json.dumps(record) and "Infinity" not in json.dumps(record))
+        result[variable] = record
+
+    criteria = {name: all(values) for name, values in ok.items()}
+    return {
+        "site": STEERING_SITE, "variables": result,
+        "share_definition": "(line - rung) / (line - curve), mean squared LOCO; curvature share = 1 - spacing share",
+        "criteria": criteria, "passed": all(criteria.values()),
+    }
     
 
 CHECKS = {
     "manifold_loco": check_manifold_loco,
     "speed_acceleration_manifold": check_speed_acceleration_manifold,
+    "manifold_ladder": check_manifold_ladder,
 }
 
 

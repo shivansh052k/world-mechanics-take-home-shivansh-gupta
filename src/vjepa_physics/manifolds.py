@@ -215,3 +215,37 @@ def unit_tangents(curve: Curve, values: np.ndarray) -> np.ndarray:
     h = 1e-4 * float(v.max() - v.min())
     t = curve(v + h) - curve(v - h)
     return t / np.linalg.norm(t, axis=1, keepdims=True)
+
+
+def covariance_axis(values: np.ndarray, centroids: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Mean of the centroids (d,) and the unit direction of their least-squares line in the label, as (d, 1) axes.
+
+    With equal clip counts per value this is the train covariance direction B / |B|.
+    """
+    c = np.asarray(centroids, dtype=np.float64)
+    slope = np.polyfit(np.asarray(values, dtype=np.float64), c, 1)[0]
+    return c.mean(axis=0), (slope / np.linalg.norm(slope))[:, None]
+
+
+def fit_spacing_line(values: np.ndarray, centroids: np.ndarray, smooth) -> Curve:
+    """Free-spacing line c̄ + u p(v): u = the centroids' least-squares line direction, p = an open curve in v through
+    their projections on u. smooth = LINE gives exactly the least-squares line (the covariance arm's line)."""
+    values = check_values("open", values)
+    mean, axis = covariance_axis(values, centroids)
+    return curve_from_pca("open", values, centroids, mean, axis, smooth)
+
+
+def loco_spacing_grid(values: np.ndarray, centroids: np.ndarray, smooths: list) -> np.ndarray:
+    """(len(smooths), V) squared LOCO errors of the free-spacing line; u, the mean and p are all refit without the
+    left-out centroid. NaN where not scored (the two ends)."""
+    values = check_values("open", values)
+    centroids = np.asarray(centroids, dtype=np.float64)
+    out = np.full((len(smooths), len(values)), np.nan)
+    for j in scored_folds("open", len(values)):
+        keep = np.arange(len(values)) != j
+        v, c = values[keep], centroids[keep]
+        mean, axis = covariance_axis(v, c)
+        for b, smooth in enumerate(smooths):
+            point = curve_from_pca("open", v, c, mean, axis, smooth)(values[j])[0]
+            out[b, j] = float(((centroids[j] - point) ** 2).sum())
+    return out
