@@ -1024,8 +1024,6 @@ def check_figure_spline_profile() -> dict:
         ax.set_xlabel("layer index (steered at 9)", color=INK_SECONDARY)
         if col == 0:
             ax.set_ylabel("gain (1 = readout reaches the target)", color=INK_SECONDARY)
-        ax.set_title(variable.capitalize() + (" (gain on (sin, cos))" if variable == "direction" else ""),
-                     color=INK, fontsize=11, loc="left")
         style_axes(ax)
 
     ax = fig.add_subplot(grid[1, :])
