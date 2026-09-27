@@ -1,6 +1,6 @@
 # EXECUTION_PLAN.md
 
-Last updated: 2026-09-25. **Lean mode from Phase 3 on (D-48):** gates = commit + hash check + short report + slides;
+Last updated: 2026-09-26. **Lean mode from Phase 3 on (D-48):** gates = commit + hash check + short report + slides;
 commit before each saved run; no full re-runs; one design brief per phase; step changes marked below.
 
 ---
@@ -99,6 +99,8 @@ commit before each saved run; no full re-runs; one design brief per phase; step 
 
 ## Phase 6 — Part 2: Spline steering
 **Goal:** Construct, visualize, and evaluate manifolds/splines for speed, acceleration, and direction; steer along them; and compare with Part 1's method, including strengths, limitations, and failure cases.
+
+*Working stages (planning chat, D-51; ticks at the phase docs pass):* **6a** geometry, no model = 6.1–6.3, 6.7, 6.12, 6.13 (done); **6b** behavior readouts + isometry, no model = 6.4–6.6 (done); **6c** steering setup + runs = 6.8–6.9 (next); **6d** scoring, comparison table + figures = 6.14; then 6.15–6.17.
 
 - [ ] **6.1 Decide and document the layer(s)** — Match Phase 5's layer choice (step 5.1) where possible, for a fair comparison.
 - [ ] **6.2 Decide and document activation-manifold construction** — Settle O-09: exact vs. smoothing, PCA dimensions, parameterization, and a periodic curve for direction. PCA is fit on train only; smoothing and PCA dimension are chosen by leave-one-centroid-out within train values, with val-unseen centroids as confirmation (D-15).

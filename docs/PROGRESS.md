@@ -218,7 +218,7 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/design/checks.json` | `start_positions` | Diagnostic: start positions distinct in every dataset, within ±2 m (direction) / ±1.2 m (speed, acceleration), uniform by KS (p ≥ 0.26), x–y uncorrelated, quadrants even; no flags | ℹ️ diagnostic | F-64, D-33; `scripts/check_design.py start_positions` |
 | `results/design/checks.json` | `label_independence` | Diagnostic: 0 of 70 tests flagged (p < 1e-4) — start position vs magnitude and cos/sin θ, along/across-motion projections (no starts placed behind the motion), ANOVA across label values | ℹ️ diagnostic | F-64, D-33; `scripts/check_design.py label_independence` |
 | `results/design/checks.json` | `distance_confound` | Diagnostic (from metadata): distance = 0.625 × speed and 0.1953 × acceleration exactly, corr with distance / mean / final speed 1.0; overlap window [0.15625, 1.953125] m, 1,176 speed + 1,440 acceleration clips, nearest-value distance gap ≤ 0.018 m (0.58 px); direction distance per group, motion type vs distance r = −0.565 | ℹ️ diagnostic | F-65; `scripts/check_design.py distance_confound` |
-| `results/videos/checks.json` | `format` | All clips decode; 256×256, 24 fps, constant 1/24 s step (from t = 0); no black frames; frame medians all (29, 32, 29); 113 direction clips with disk-less frames | ❌ failed: `no_uniform_frames` — 185 uniform frames in 52 direction clips (disk has left); kept on record; re-score pending the planning chat | F-66, D-34; `scripts/check_videos.py format` |
+| `results/videos/checks.json` | `format` | All clips decode; 256×256, 24 fps, constant 1/24 s step (from t = 0); no black frames; frame medians all (29, 32, 29); 113 direction clips with disk-less frames | ❌ failed: `no_uniform_frames` — 185 uniform frames in 52 direction clips (disk has left); closed without re-score, failure kept on record (D-34) | F-66, D-34; `scripts/check_videos.py format` |
 | `results/videos/checks.json` | `uniform_frames` | Diagnostic of the `format` failure: all 185 uniform frames = background, no disk pixels, at clip end; no disk pixels anywhere with the disk predicted fully outside; 149 exit frames keep faint residue | ⚠️ `explanation_holds: false` — pre-stated rule (c) missed 3 frames by 0.39–0.55 px (within mapping error + pixel-centre offset); kept on record | F-66; `scripts/check_videos.py uniform_frames` |
 | `results/videos/checks.json` | `duplicates` | 4,572 distinct whole-clip hashes across datasets; test clip hash = Phase 0 `repeat`; per-clip hashes in `artifacts/videos/decoded_hashes.csv` (git-ignored, verified) | ✅ passed | F-67, D-34; `scripts/check_videos.py duplicates` |
 | `results/videos/checks.json` | `decoders` | PyAV vs OpenCV under D-05 on all 4,572 clips: all ok (0 flag, 0 fail); max \|diff\| R 3 / G ≤ 3 / B ≤ 3; means (+1.00–1.02, +0.01–0.02, +1.00); per-clip stats in `artifacts/videos/decoder_comparison.csv` | ✅ passed | F-68, D-05; `scripts/check_videos.py decoders` |
@@ -312,15 +312,13 @@ Settled by the planning chat (2026-09-24): `documented_fields` stays failed on r
 149 residue frames → O-02 at 2.1 (D-34); 1.10 flag definitions (D-36); Claude Code may set Phase 1 criteria taken
 directly from DATA.md or the plan without asking (D-37).
 
-Known decision points the plan cannot remove in advance (each has a planned fallback):
-- **Phase 1 may overturn scouting facts** (F-21–F-36); D-14's split counts are provisional until step 1.12.
-- **Steering readout** — 0.15 passed, but D-30 makes a later-layer probe on the full clip the primary readout (the
-  predictor readout is optional); which layer is settled at step 5.2 (O-07), and Part 2's behavior manifold (D-17)
-  moves with it.
-- **Phase 3 may show no clean transition** → O-15/O-16 become documented judgment calls.
-- **Downstream steering effects may wash out** → a finding, not a failure; the same-layer control keeps it interpretable.
-- **MPS operator gaps and the compute budget:** no operator gaps so far (fallback never enabled, F-43); budget
-  measured at 0.16 (F-59: ~0.9 s per forward pass, ~65 min for full extraction).
+Known decision points the plan cannot remove in advance:
+- (i) Uniform edits collapse by idx 12 (F-135), so Phase 6 is scored over idx 9→18, not idx 18 alone.
+- (ii) Speed/acceleration centroid curves may be near-linear, making spline ≈ covariance line (predicted on train
+  before any test run). **Resolved (6a-2):** the planner's prediction was wrong (it was conditional on a near-linear
+  LOCO result, not met) — all three are nonlinear in the label; the line → free-spacing line → curve ladder (6a-4)
+  splits uneven spacing from curvature; spline and covariance endpoints are expected to differ.
+- (iii) Time reserved for slides + two rehearsals (8.13).
 
 ---
 
@@ -328,6 +326,241 @@ Known decision points the plan cannot remove in advance (each has a planned fall
 
 Newest entry on top. One entry per work session: what was done, what passed, what didn't,
 what's next.
+
+### 2026-09-26 — Phase 6 started (spline steering)
+- Phase 6 layout (`manifolds.py`, `behavior.py`, spline arms in `steering.py`; `check_manifolds.py`,
+  `check_spline_steering.py`) and design brief drafted (idx 9 / idx 18 as Phase 5; spline edit = translate along the
+  train-centroid curve; Phase 5 arms re-scored from saved runs; path arms curve vs chord; token-weighted variant for
+  H-13; 3 planner questions). scipy 1.18.1 read: `CubicSpline` / `make_interp_spline` periodic = exact interpolation
+  only; `make_smoothing_spline` has no periodic option; `make_splprep(bc_type="periodic", s=…)` is the periodic
+  smoother; legacy `splprep` limited to ≤ 10 dims. **Next:** brief to the planning chat; first step = scipy spline
+  smoke test (terminal, no files).
+- Strategy memo → planning chat kickoff (→ D-51 at the phase docs pass; closes O-09, O-11): four questions Q1 geometry,
+  Q2 isometry, Q3 held-out steering (spline vs K−1 probes vs covariance line), Q4 H-13 (time-structured edit);
+  design C1–C14. Section A doc fixes applied (O-07 cleanup, `format` row, known decision points, plan date, D-48
+  superseded note, D-13 cache exception, LEACE check in D-49 c). **Next:** implementation plan (section E).
+- Implementation plan approved with five changes (→ D-51): λ = ∞ = explicit least-squares line (line = B ≤ 1e-10
+  criterion); waypoint metric = gain with intended_f = f × Phase 5's intended (direction angle gain on the shorter
+  arc + output-space gain at f = 1), reduction at f = 1 only; ŷ clamped to the curve range, results with / without;
+  isometry on seeded split halves (activation vs behavior curves from disjoint train clips), adjacent-segment lengths
+  + all-pairs with label null, chord vs geodesic on all pairs; val-unseen in-sample for the 16-bin readout (behavior
+  quality from train LOCO only). Own trig polynomial for direction accepted. Order 6a → Q1 line-vs-curve + C4a to the
+  planning chat before 6c. **Next:** 6a-1 `manifolds.py` part 1 + terminal smoke test.
+- 6a-1: `src/vjepa_physics/manifolds.py` (`value_centroids`, `centroid_pca`, `Curve`, `trig_design`, open / loop
+  curves: LINE = polyfit, EXACT = natural / periodic cubic, `make_smoothing_spline` lam, trig polynomial H;
+  `loco_predictions`, `loco_errors`). Smoke test (terminal, not saved; idx 9, train rows): 52 values each, counts 16 /
+  16, direction 11–20; centroids = manual 0.0; exact interpolation ≤ 1.3e-14, 51 axes; **line = covariance map B
+  ≤ 7.0e-15** (planner criterion 1e-10); line = full-space polyfit ≤ 7.1e-15; batched smoothing = per column 0.0;
+  loop wraps ≤ 1.4e-15; trig H = 3 = LinearRegression 1.3e-15; LOCO = brute force 0.0, left-out centroid never seen
+  0.0. Observation: median LOCO error (k = 4; line / H = 2) 7.66 / 9.29 / 8.49 vs median adjacent centroid spacing
+  9.74 / 8.70 / 9.38 (ratio 0.79 / 1.07 / 0.90; Claude Code's 0.5–1.5 ✓) → centroid noise is of the order of one
+  value step. All predictions met. **Step 6a-1 done.**
+- 6a-2: `manifolds.py` (`centroid_noise`, `check_values`, `curve_from_pca`, `scored_folds`, `smoothing_grid`,
+  `loco_grid`, `select_setting`; `value_centroids(role=…)`; grid k 1…16 + all, open LINE + 13 lam = f × range³,
+  loop H 1…12; mean squared LOCO; smallest k then smoothest within 1 %); `scripts/check_manifolds.py manifold_loco`
+  **passed** (8/8, clean commit, 26 s CPU; scaler = Phase 5's bit for bit; speed / acceleration line = covariance map
+  ≤ 7.0e-15 at all three sites; direction H = 1 vs covariance 2.7–3.4 %). `curves.npz` `b1a00661…`. **Idx 9
+  selection:** direction k 8, H 4; speed k 6, lam 0.030; acceleration k 6, lam 0.52 (no grid-end choice). **Line vs
+  curve (mean squared LOCO, paired value-bootstrap CI):** direction 144.0 vs 56.4, gap 87.6 [70.8, 105.1]; speed 86.7
+  vs 45.5, gap 41.3 [30.9, 53.6]; acceleration 85.5 vs 50.5, gap 35.0 [21.4, 53.5] — **curve beats line for all
+  three** (idx 1 and 18 same sign, CIs above 0). Val-unseen (fit on train, 4 held-out values, idx 9): curve beats line
+  at 12 / 12 values (direction 27–33 vs 127–166; speed 16–33 vs 38–88; acceleration 15–39 vs 28–101). Exact variants
+  1.2–2.2 × the selected LOCO MSE. **Surprise:** selected LOCO MSE below the iid centroid-noise estimate (excess −8.8 /
+  −5.1 speed / acceleration idx 9; val-unseen too, where the prediction is independent) → `centroid_noise` (σ²/n) is
+  an upper bound, not a floor; hypothesis: nuisances (angle in speed / acceleration, magnitude in direction) are
+  balanced within each value by design, so centroids err less than iid sampling implies (observation, untested).
+  Claude Code's predictions: criteria ✓; noise 55–90 missed (38–62); speed / acceleration small gap **wrong** (clear);
+  direction H 2–4 ✓, k 4–8 ✓; excess |< 30 %| ✓ but sign negative; exact 1.3–2.5 × ✓ (1.2 at speed idx 18 just
+  below); val-unseen ≤ 2 × noise ✓. Contradicts planner prediction (ii) (speed / acceleration near-linear).
+- 6a-3: `manifolds.unit_tangents`; `speed_acceleration_manifold` (C4a observation, clean `56f119a`) **passed** (4/4):
+  window = F-65's [0.15625, 1.953125] m exactly; shared scaler on both sets' window train clips (640 + 768); curves
+  in metres re-selected by LOCO: speed 40 values, k 3; acceleration 48 values, k 4 (line vs curve gap in the window
+  41.2 [31.1, 52.5] / 12.3 [6.4, 20.5]). **Two separate curves:** centroids vs the other set's curve at the same
+  distance MSE 161 / 155 vs own LOCO 51 / 47 (gap 110 [94, 126] / 108 [89, 127]); after removing the mean offset
+  (norm 8.2 ≈ one adjacent spacing 9.1) still 94 / 89 (gap 43 [34, 52] / 42 [34, 50]) → offset explains ~60 % of
+  the excess, shape differs too. Directions: straight-line slopes 31° apart, tangents at matched distance median 51°
+  (19–68°), principal angles 17 / 40 / 80°; each curve turns 102° / 90° from start to end tangent; arc length over the
+  common range 56.5 (speed) vs 37.9 (acceleration). Claude Code's predictions: counts ✓, raw gap > 0 ✓, aligned
+  shrink ≥ 50 % and > 0 ✓, slope 20–45° ✓, largest principal ≥ 60° ✓; tangent median ≤ 40° **wrong** (51°).
+  Q1 + C4a → planning chat before 6c.
+- Planning chat on Q1 / C4a (→ D-51): "nonlinear in the label" ≠ "curved" → new no-model key, ladder line →
+  free-spacing line (c̄ + u·p(v), u = covariance direction, p by the LOCO rule; nests the covariance arm) → curve, with
+  val-unseen; direction ladder ellipse (H = 1) → H = 4, wording "needs harmonics beyond the first-harmonic ellipse";
+  final Q1 wording with [X] spacing / [Y] curvature shares. Prediction (ii) recorded as wrong. C4a accepted as an
+  observation ("encodes motion profile beyond distance"; never "H-03 does not hold"; H-03 stays for 7.1). Noise:
+  no balance diagnostic, stratification = untested hypothesis, iid estimate only as an upper bound, no noise-floor
+  claims anywhere. Proceed to 6b; 6c adds endpoint arm (h) free-spacing line (speed / acceleration, +75 passes per
+  half). Planner predictions for 6c: (a) − (c) endpoint difference non-zero at idx 9; downstream share still
+  collapses by idx 12 unless the spline edit is better aligned with what blocks 9–17 use (H-12, Phase 6 form); no
+  confident sign. Planner on the rungs: PC1 free-spacing line (best-fitting straight line) = conservative curvature
+  estimate, used for "curved"; B line = steering-relevant split; same LOCO rule on every rung; direction magnitudes only.
+- 6a-4: `manifolds.covariance_axis`, `fit_spacing_line`, `loco_spacing_grid` (u, c̄, p refit per fold);
+  `manifold_ladder` **passed** (5/5, clean commit; selection and k = 1 row = `manifold_loco`'s; B line with linear
+  p = covariance map; spacing grid = brute force). Idx 9, mean squared LOCO line → PC1 spacing / B spacing → curve:
+  speed 86.7 → 81.4 / 81.2 → 45.5; acceleration 85.5 → 77.1 / 77.5 → 50.5; direction ellipse 144.0 → H = 4 56.4
+  (gap 87.6 [70.8, 105.1]). **Uneven-spacing share** (B split / PC1 split, value-bootstrap CI): speed 0.13 [0.10, 0.18]
+  / 0.13 [0.02, 0.22]; acceleration 0.23 [0.18, 0.31] / 0.24 [0.00, 0.39] → **curvature 77–87 %** (PC1 lower bound
+  0.78 / 0.61). Spacing lines − curve: speed 35.7 [25.9, 47.3] / 35.9 [27.9, 44.8]; acceleration 27.0 [15.0, 43.5] /
+  26.6 [17.8, 36.7]. Val-unseen: curve beats both spacing lines at 4 / 4 values for speed and acceleration. Speed's
+  PC1 and B lines nearly coincide (same lam, MSE 81.4 vs 81.2; observation). Q1 wording filled: [X] 13 % / 23 % from
+  uneven spacing along the covariance direction, [Y] 87 % / 77 % from curvature. Claude Code's predictions all met.
+- 6a-5: `manifolds.participation_ratio`, `harmonic_coefficients`, `harmonic_power`, `principal_cosines`;
+  `manifold_dimension` and `direction_harmonics` **passed** (3/3 each; observation keys; rebuilt selections =
+  `manifold_loco`'s; saved scalers = Phase 4's at idx 1 / 9 / 18, so round blocks share our space). **C4b (H-01), idx 9
+  (direction / speed / acceleration):** selected k 8 / 6 / 6 vs K·m 12 / 7 / 7 (m 2 / 1 / 1); centroid variance in k
+  0.93 / 0.88 / 0.86; axes for 90 % 6 / 8 / 10; participation ratio centroids 4.0 / 2.5 / 2.5, fitted curve 3.1 /
+  1.6 / 1.5. Idx 1: speed / acceleration nearly 1-D (90 % in one axis, curve PR 1.04 / 1.02), direction PR 4.4 / 3.2;
+  idx 18: k 16 / 3 / 3, curve PR 3.4 / 1.5 / 1.4. Reading (observation): low effective dimension (curve PR 1.5–3.4),
+  a handful of axes for the curvature; k is of the order of K·m; the paper's 40+ is not reproduced. **C4c (H-02):**
+  harmonic power share at idx 1 / 9 / 18: h1 0.50 / 0.64 / 0.57, h2 0.24 / 0.23 / 0.22, h3 + h4 0.04 / 0.03 / 0.07,
+  Parseval ratio 0.88 / 0.94 / 0.93. The angle-shuffle null (95th percentile ≈ 0.08 per harmonic) passes only h1–h2:
+  **own-addition design flaw, kept on record** — shuffling spreads the whole (h1-dominated) variance over all
+  harmonics, so it tests "any structure", not "harmonic h above noise"; LOCO (H = 4 chosen over 2–3) is the
+  predictive test; no claim rests on the null. Nullspace rounds at idx 9 (share of the 2-dim block in harmonic planes):
+  round 1 only 0.056 in h1 (0.07 in the whole harmonic span), round 2 0.51 in h1, round 3 0.25, rounds 5–6 closest to
+  h3 / h5 with shares ≤ 0.09; same pattern at idx 1 / 18 → rounds do not step through successive harmonics (H-02 not
+  supported as tested; observation). Explanation for round 1's small share (hypothesis): probe weights are decoding
+  directions (∝ Σ⁻¹ × encoding pattern), harmonic planes are encoding patterns; they differ by the within-value
+  covariance. Claude Code's predictions: K ✓, k ✓, curve PR ✓; centroid PR 4–15 **wrong** (2.5–4); variance in k
+  0.6–0.85 missed (0.86–0.93); h1 ≥ 60 % met at idx 9 only; harmonics 1–4 above null **wrong**; Parseval ✓; round 1
+  share ≥ 0.5 **wrong**; later rounds toward h2–3 **wrong**. **Step 6a done except the figure (after 6b).**
+- 6b-1: `src/vjepa_physics/behavior.py` (`value_bins`, `BinReadout`, `fit_bin_readout` = validation z-score +
+  `LogisticRegressionCV` L2 / lbfgs / multinomial, shuffled stratified 5-fold log-loss, Cs 1e-4…1e4; `hellinger`,
+  `bhattacharyya`, `sphere_log` / `sphere_exp`); sklearn 1.9.1 source read first (`l1_ratios`, `scoring`,
+  `use_legacy_attributes` set explicitly). First run: ModuleNotFoundError (file saved under `scripts/`; moved).
+  Smoke test (terminal, not saved; idx 18): numerics all ≤ 8.3e-16 (rows sum to 1, Hellinger² = 1 − BC, log / exp
+  round trip, tangents ⟂ base, |log| = angle); fits 1.3–2.7 s, converged, C interior (0.1 / 0.01 / 0.01). **Suspicious:
+  speed / acceleration readout weak** — out-of-sample on train top-1 0.28 / 0.26, within one bin 0.72 / 0.65,
+  log-loss 2.12 / 2.22 (log 16 = 2.77), although the idx-18 ridge readout has MAE 0.07–0.08 m/s (bin width 0.24 m/s);
+  direction 0.64 / 0.99 / 0.96. Validation clips per bin: direction min 7 → the plan's own criterion "≥ 10 per bin"
+  would fail (bins holding test-unseen values). Claude Code's predictions: top-1 0.6–0.85 / within-one ≥ 0.97 /
+  log-loss 0.4–0.9 **wrong** for speed / acceleration, met for direction except log-loss (0.96); ≥ 2 train values per
+  bin ✓ (≥ 3). Next: PCA-dimension diagnostic (terminal), then planning chat.
+- 6b-1 diagnostic (terminal, not saved; validation-PCA inputs k 8…128 / all, selection by validation CV log-loss):
+  **PCA does not fix it.** Best val CV log-loss speed 1.60 (k 8) vs 1.69 (all), acceleration 1.71 vs 1.77; train
+  top-1 ≤ 0.36, within one bin ≤ 0.83. Direction best at k 8 (CV 0.82 vs 0.97). Claude Code's prediction (k 16–32,
+  top-1 0.4–0.6) **wrong**. New hypothesis: a softmax with logits linear in the features can only make peaked
+  middle bins of a 1-D ordered variable with very large weights (tangent-line construction), which L2 forbids;
+  direction escapes because logits linear in (sin, cos) are von Mises bumps. Next: quadratic-feature diagnostic.
+- 6b-1 diagnostic 2 (terminal, not saved): quadratic features of the top-k validation PCs (k 2–16) do **not** help
+  speed / acceleration (train top-1 ≤ 0.27, within one ≤ 0.66; direction worse than raw) → the hypothesis is only
+  half right: the top unsupervised PCs are dominated by nuisance (e.g. motion angle in the speed set), so they miss the
+  speed direction. Two-stage readout (validation-fit ridge readout ŷ, then multinomial on ŷ and its squares): train
+  (out of sample) top-1 0.78 / 0.63 / 0.59, within one bin 0.99 / 0.99 / 0.98, log-loss 1.47 / 1.33 / 1.79. **Its
+  validation CV log-loss (0.03 / 0.22 / 0.26, C at the upper edge) is leaked** — ŷ was fit on all validation clips,
+  including the CV folds (Claude Code's diagnostic slip; a real version needs cross-fitting). Reading: the
+  information is there (ridge direction), but a 16-way linear classifier on 1024 raw dims with ~300 clips cannot find
+  and sharpen it; a supervised 1-D readout is accurate but makes every distribution a function of ŷ alone
+  (naturalness near-degenerate). Claude Code's predictions: ridge + square best ✓ (accuracy), quadratic PCs close
+  **wrong**. → planning chat (readout choice, bin-count criterion).
+- Planning chat (→ D-51): option C with roles reassigned. Progress = Phase 5's validation-fit ridge readouts at idx
+  9–18 (unchanged). Naturalness = raw multinomial (A) for all three; direction = headline naturalness case; speed /
+  acceleration labelled "blurry readout (top-1 0.28 / 0.26, within one bin 0.72 / 0.65)" on every number; naturalness
+  reported as excess Hellinger over the same clip's unedited distance to the behavior curve + position within the
+  natural (unedited) clips' distances, always paired with progress. (B) cross-fitted two-stage (out-of-fold ridge ŷ on
+  validation, 5 folds, multinomial on [ŷ, ŷ²] / direction [sin, cos] + squares; applied via the all-validation ridge,
+  stacking) only for speed / acceleration isometry alongside (A), labelled "discriminability of the idx-18 ridge
+  readout, close to label distance by construction"; (B) naturalness not computed (degenerate). No further tuning of
+  (A). Bin criterion "≥ 10 validation clips per bin" kept, failure recorded with cause (minimum 7); observation:
+  per-bin validation counts and per-bin train accuracy. Claude Code's wording correction: those bins have *fewer*
+  validation clips (only their seen values), not none.
+- 6b-2: `behavior.py` (`softmax`, `readout_map`, `map_probabilities`, `two_stage_features`, `BehaviorCurve`,
+  `behavior_curve`, `curve_grid`, `nearest_on_curve`); `scripts/check_behavior.py behavior_readouts` (clean commit,
+  60 s CPU) **failed only the kept own criterion** "≥ 10 validation clips per bin" (direction; cause recorded:
+  bins holding test-unseen values have fewer validation clips by design, D-38); the other 10 criteria passed (fit on
+  exactly the validation clips, C interior, converged, raw-space map = sklearn, rows sum to 1, curves interpolate,
+  two-stage C interior / converged, finite, saved = computed). `readouts.npz` `d038fbea…`. Readout (A) on train clips,
+  idx 9 → 18: direction top-1 0.52 → 0.64, within one bin 0.96–0.99, C 0.01 (idx 9–12) / 0.1; speed top-1 0.25–0.29,
+  within one 0.65–0.72; acceleration 0.21–0.28, within one 0.57–0.67 (C 0.01 throughout). Natural train-clip
+  Hellinger distance to the behavior curve, median idx 9 / 18: direction 0.133 / 0.140, speed 0.197 / 0.187,
+  acceleration 0.219 / 0.199; nearest-curve-point value error (median) direction 3.6° / 3.9°, speed 0.14 / 0.12 m/s,
+  acceleration 0.39 / 0.30 m/s². Readout (B) at idx 18 on train clips: top-1 0.80 / 0.60 / 0.51, within one bin
+  1.00 / 0.97 / 0.96, C 100 / 1000 / 1000 (interior). Claude Code's predictions: criteria pattern ✓; direction top-1
+  0.55–0.75 met from idx 13 on (idx 9–12 0.49–0.54); speed / acceleration ✓ (acceleration within-one at idx 9–11
+  0.57–0.58 just below 0.6); natural distance direction 0.2–0.35 **wrong** (0.13–0.14), speed / acceleration ✓;
+  (B) ✓.
+- 6b-3: `manifolds.path_positions`, `geodesic_distances` (first placed in `behavior.py` → ImportError at import time,
+  nothing saved; moved and re-committed); `check_behavior.py isometry` **passed** (4/4: halves disjoint and cover
+  train, both hold every value, behavior curves interpolate, finite). Split halves: direction min 5 / 6 clips per
+  value, speed / acceleration 8 / 8. Idx 9 activation curve vs behavior curve (readout A idx 18 / A idx 9 same-layer /
+  B idx 18), 2,000 bootstraps. **All pairs:** behavior geodesic vs activation geodesic r direction 0.990 / 0.986 /
+  0.992, speed 0.968 / 0.959 / 0.897, acceleration 0.890 / 0.894 / 0.910; vs label distance 0.991–0.997 everywhere →
+  **activation geodesic never beats label distance** (A idx 18: direction −0.001 [−0.004, 0.002], speed −0.015
+  [−0.024, −0.006], acceleration −0.105 [−0.131, −0.074]); geodesic beats activation chord (A idx 18: +0.139 [0.105,
+  0.173] / +0.015 [0.004, 0.025] / +0.032 [0.010, 0.052]). **Adjacent segments** (activation vs behavior arc length):
+  A idx 18 direction 0.63 [0.42, 0.79] (label-step null 0.65), speed 0.73 [0.50, 0.86] (null 0.47 [0.19, 0.70]),
+  acceleration 0.55 [0.13, 0.78] (null 0.49); same-layer A idx 9: 0.69 / 0.74 / 0.23 [−0.04, 0.45]; B idx 18: 0.59 /
+  0.26 [0.07, 0.46] (null 0.67) / 0.42. No paired CI for segment r − null (not computed). Claude Code's predictions:
+  criteria ✓; all-pairs ≥ 0.9 and label almost as high ✓ (acceleration 0.89–0.91); geodesic − label within ±0.05
+  **wrong** for acceleration (−0.10); chord below geodesic for direction ✓; segments direction 0.2–0.5 and speed /
+  acceleration 0–0.4 **wrong** (higher); B higher than A **wrong**; same-layer higher **wrong** (mixed); wide CIs ✓.
+- Planning chat on Q2 (→ D-51): segment test confounded by grid gaps (label-step null = gap indicator) → local speed
+  = segment length ÷ label step in both spaces, split-half reliability as ceiling, post hoc, rule fixed first ("beats
+  the label locally" only if the CI of r(local speed) > 0), applied to A idx 18, A idx 9, B. By-construction note:
+  equal-width bins make behavior distances inherit label spacing (limitation, no fix). Wording: Goodfire's isometry
+  pattern holds (0.89–0.99; geodesic beats chord) but label order dominates; with the label null the activation
+  geodesic adds nothing globally; never "not reproduced".
+- 6b-4: `isometry_local` (post hoc, clean commit) **passed** (3/3; label steps exactly 1 / 2 grid steps). r(activation
+  local speed, behavior local speed), A idx 18: direction 0.09 [−0.19, 0.40], **speed 0.59 [0.27, 0.77]** (Spearman
+  0.36; ceiling 0.62), acceleration 0.41 [−0.10, 0.65] (Spearman −0.09) → by the rule **speed beats the label
+  locally; direction and acceleration do not**. Same-layer A idx 9: 0.27 [−0.02, 0.54] / 0.56 [0.26, 0.73] / 0.08.
+  B idx 18: −0.06 / −0.04 / 0.34 [0.07, 0.56] (acceleration passes the rule but its behavior reliability CI includes
+  0: fragile). Split-half reliability of local speed: activation 0.84 / 0.98 / 0.98 (smoothed curves), behavior (A)
+  0.17 / 0.39 / 0.41 (exact interpolation of noisy centroids) → power limited by the behavior side (observation).
+  Speed's Pearson > Spearman (0.59 vs 0.36): driven by a few large segments (observation). Filled wording: "Local test
+  (per-unit-label speed): speed's activation and behavior curves speed up and slow down together beyond the label
+  (r 0.59 [0.27, 0.77], near its split-half ceiling 0.62); direction and acceleration show no local agreement
+  (intervals include 0); the behavior side's split-half reliability is low (0.17–0.41), which limits this test."
+  Claude Code's predictions: criteria ✓; direction 0.1–0.4 ~ (0.09); speed 0.2–0.5 **wrong** (0.59); acceleration
+  −0.1–0.3 **wrong** (0.41, CI incl. 0); verdict speed only ✓; activation reliability 0.3–0.6 **wrong** (0.84–0.98);
+  behavior 0.2–0.5 ✓ (0.17 direction just below); B ≈ 0 ✓ except acceleration.
+- 6a-6: `check_manifolds.py figure_manifolds` → `results/manifolds/manifolds.png` (row 1: idx-9 curves in the first
+  two centroid PCs with straight reference, train and val-unseen centroids, label marks; row 2: paired per-value
+  squared LOCO errors by curve family with means and the spacing / curvature shares). Criteria passed each time
+  (ladder means = `manifold_ladder`, exact = `manifold_loco`, ≤ 1e-12). Claude Code's reviews: (1) colliding row-2
+  tick labels, "90°" on a held-out ring, labels on data / the dashed line, legend gap → fixed; (2) remaining tick
+  collision, legend gap from the subplot top margin, label boxes hiding the curve → fixed (radial labels, top 0.92);
+  (3) first-point labels across the y-axis → fixed; (4) clean. **Steps 6a and 6b done.**
+- Plan mapping line added under the Phase 6 heading in EXECUTION_PLAN (6a = 6.1–6.3, 6.7, 6.12, 6.13; 6b = 6.4–6.6;
+  6c = 6.8–6.9; 6d = 6.14).
+- 6.8 part 1: `steering.py` (`PATH_FRACTIONS`; `steered_features` accepts (A, T, d) per-time-step shifts, (A, d) path
+  unchanged; `curve_parameter`, `clamp_to_curve`, `path_values`, `spline_path_shifts`, `chord_shifts`,
+  `covariance_path_shifts`, `time_covariance_maps`, `time_structured_shift`). Smoke test (terminal, not saved; 3 seeded
+  val-seen clips per variable × 5 targets, no model): mean over steps of B_s = B ≤ 2.2e-15; spline endpoint = S(t)
+  ≤ 6.1e-16; chord end = spline end ≤ 4.1e-16; time-structured mean (forward and reversed) = covariance shift
+  ≤ 1.5e-15; covariance f = 1 = Phase 5's shift bit for bit; reversed = flipped; 0 clamped starts. **Pre-test
+  prediction (validation clips):** |spline end − covariance| / |covariance| median 0.74 / 0.84 / 0.70 (range 0.10–4.26;
+  large ratios where the covariance shift is small, target near the clip's reading); |spline| / |covariance| 1.29 /
+  1.09 / 0.93; chord vs arc at f = 0.5 (÷ endpoint length) median 0.45 / 0.26 / 0.18 (max 0.65 / 0.42 / 0.40); free-
+  spacing line (h) vs covariance 0.25 / 0.39. Claude Code's predictions: exact checks ✓, clamps ✓, endpoint difference
+  0.3–0.9 ✓ (medians), length ratio ✓, (h) ✓; chord-vs-arc maxima above the guesses (0.65 direction, 0.42 / 0.40).
+- 6.8 part 2: `steering.spline_arm_table`, `spline_arm_shifts`; `scripts/check_spline_steering.py spline_setup`
+  **passed** (8/8, clean commit, 3.8 s CPU, no model, no readout): clip ids = Phase 5's runs; covariance f = 1 =
+  Phase 5's saved shift bit for bit at all 450 clip × target pairs; spline endpoint = S(t) ≤ 1.5e-15, chord end =
+  spline end ≤ 5.9e-14, time-structured means = covariance ≤ 1.5e-15, reversed = flipped. `setup.npz` `cf0a2d19…`.
+  0 clamped starts. Median shift / train clip distance (direction / speed / acceleration): spline endpoint 0.58 /
+  0.31 / 0.26; covariance f = 1 0.47 / 0.23 / 0.23; per-step time-structured 0.58 / 0.26 / 0.28; free-spacing line
+  — / 0.23 / 0.22 (Phase 5's K − 1 probe edit: 0.52 / 0.52 / 0.53). Spline vs covariance endpoint (relative, median
+  [IQR]) on test clips: 0.75 [0.42, 1.14] / 0.76 [0.49, 0.93] / 0.66 [0.50, 0.89]; seen ≈ unseen targets. Claude
+  Code's predictions: criteria ✓, clamps ✓, endpoint difference ✓ (acceleration 0.66 just below 0.7), per-step ratio
+  1–1.6 ✓ (1.15–1.24); spline 0.4–0.8 of clip distance **wrong** for speed / acceleration (0.31 / 0.26). **Step 6.8
+  done.**
+- 6.9 part 1: validation smoke run (terminal, not saved; MPS; one seeded val-seen clip per variable — ids 1148 /
+  1217 / 1048 — × 2 targets × all 12–13 arms, no readout): unedited partial pass = stored features at idx 9 and 18
+  bit for bit (3 / 3); max site difference 1.25–1.33e-5 (uniform and timed means); max per-step difference (timed arms,
+  each step's pooled mean vs stored per-step mean + δ_s) 3.5–5.2e-5 → token mapping correct; finite. 0.305 s per pass
+  (max 0.308) → 915 / 990 / 990 passes per half ≈ 4.7 / 5.0 / 5.0 min. Tolerances fixed now, before any test run
+  (Claude Code's own addition): site ≤ 1e-4 (Phase 5's value, ~7.5× measured), per-step ≤ 3e-4 (~6× measured).
+  Claude Code's predictions: unedited ✓, site ✓, per-step ~1e-5 **wrong** (3.5–5.2e-5), time 0.45–0.75 s **wrong**
+  (faster, 0.31), within budget ✓.
+- 6.9 part 2: `spline_run` (+ Phase 5 covariance f = 1 replication per clip × target, Claude Code's own addition) —
+  six saved test runs `spline_<variable>_<seen|unseen>` **all passed** (10/10 each; one clean commit `48308a0`,
+  chained under `caffeinate`): 990 / 990 / 1,065 / 1,065 / 1,065 / 1,065 passes, 6.7–9.9 min each (~52 min total,
+  0.41–0.56 s per pass); unedited pass = stored and = Phase 5's saved unedited features bit for bit (90 / 90); **Phase
+  5's covariance arm re-run reproduces Phase 5's saved steered features bit for bit at all 450 clip × target pairs,
+  idx 9–18**; max site difference 2.2–2.8e-5 (≤ 1e-4), max per-step 5.2–7.6e-5 (≤ 3e-4); ids, hooks, weights
+  unchanged; finite; saved = computed. Claude Code's predictions: criteria ✓; time 5–6 min per half **wrong** (6.7–9.9).
+  **Step 6.9 done.**
 
 ### 2026-09-26 — Phase 5 started (multi-probe subspace steering)
 - Phase 5 layout (`steering.py`, partial forward in `intervention.py`, `check_steering.py`) and design brief drafted

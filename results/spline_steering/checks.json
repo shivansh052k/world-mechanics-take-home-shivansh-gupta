@@ -1,0 +1,1021 @@
+{
+  "spline_setup": {
+    "provenance": {
+      "utc": "2026-09-27T03:27:48+00:00",
+      "git_commit": "db58c839abc297c080156d0e74be40f912458a44",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "f3a9b1c237ec947d9f09524370ee181bd8e64d1b1b744f3127787ae326d0169e",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_spline_steering.py": "a75d33b500d090f6687da8327f3bfcca885172848d0ce79478ecc899fca655cb"
+        },
+        "combined_sha256": "655c700820759e69e1f93657c46ceb6b6b098da11fc22a6fea011ed40aaa1c08"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variables": {
+        "direction": {
+          "n_clips": 30,
+          "targets": [
+            39.375,
+            95.625,
+            163.125,
+            253.125,
+            326.25
+          ],
+          "uniform_arms": [
+            "spline_0.25",
+            "spline_0.5",
+            "spline_0.75",
+            "spline_1",
+            "chord_0.25",
+            "chord_0.5",
+            "chord_0.75",
+            "covariance_0.25",
+            "covariance_0.5",
+            "covariance_0.75"
+          ],
+          "timed_arms": [
+            "time_covariance_1",
+            "time_reversed_1"
+          ],
+          "clamped_starts": 0,
+          "median_train_clip_distance": 44.40839090418788,
+          "median_shift_over_clip_distance": {
+            "spline_0.25": 0.21557139122028954,
+            "spline_0.5": 0.38125179429293055,
+            "spline_0.75": 0.5124743780181453,
+            "spline_1": 0.5779288194027324,
+            "chord_0.25": 0.14448220485068314,
+            "chord_0.5": 0.2889644097013663,
+            "chord_0.75": 0.43344661455204947,
+            "covariance_0.25": 0.11818745919219038,
+            "covariance_0.5": 0.23637491838438077,
+            "covariance_0.75": 0.3545623775765711,
+            "time_covariance_1_per_step": 0.5764964745288494,
+            "time_reversed_1_per_step": 0.5764964745288494
+          },
+          "spline_vs_covariance_endpoint_relative": {
+            "all": [
+              0.41899671436356,
+              0.7498384720149145,
+              1.1405113768981079
+            ],
+            "seen_targets": [
+              0.41167333758272995,
+              0.7571313941552144,
+              1.1519348480450482
+            ],
+            "unseen_targets": [
+              0.42309536395482494,
+              0.7321461708672282,
+              1.1259863642717263
+            ]
+          }
+        },
+        "speed": {
+          "n_clips": 30,
+          "targets": [
+            0.4880952380952381,
+            1.2023809523809523,
+            2.2738095238095237,
+            2.988095238095238,
+            3.761904761904762
+          ],
+          "uniform_arms": [
+            "spline_0.25",
+            "spline_0.5",
+            "spline_0.75",
+            "spline_1",
+            "chord_0.25",
+            "chord_0.5",
+            "chord_0.75",
+            "covariance_0.25",
+            "covariance_0.5",
+            "covariance_0.75",
+            "spacing_line_1"
+          ],
+          "timed_arms": [
+            "time_covariance_1",
+            "time_reversed_1"
+          ],
+          "clamped_starts": 0,
+          "median_train_clip_distance": 44.830575088329745,
+          "median_shift_over_clip_distance": {
+            "spline_0.25": 0.08403661758649505,
+            "spline_0.5": 0.17094521427368403,
+            "spline_0.75": 0.24049290177116273,
+            "spline_1": 0.31252795724870297,
+            "chord_0.25": 0.07813198931217574,
+            "chord_0.5": 0.15626397862435149,
+            "chord_0.75": 0.2343959679365272,
+            "covariance_0.25": 0.057318315767224855,
+            "covariance_0.5": 0.11463663153444971,
+            "covariance_0.75": 0.17195494730167457,
+            "spacing_line_1": 0.23372683570438801,
+            "time_covariance_1_per_step": 0.2631524253911708,
+            "time_reversed_1_per_step": 0.2631524253911708
+          },
+          "spline_vs_covariance_endpoint_relative": {
+            "all": [
+              0.4892052055408149,
+              0.764205381462349,
+              0.9292234048662227
+            ],
+            "seen_targets": [
+              0.46546560144561105,
+              0.7515328334999778,
+              0.9208953497711925
+            ],
+            "unseen_targets": [
+              0.5540807116699702,
+              0.7702969131228232,
+              0.9292234048662227
+            ]
+          }
+        },
+        "acceleration": {
+          "n_clips": 30,
+          "targets": [
+            0.8690476190476191,
+            2.7261904761904763,
+            5.511904761904762,
+            7.3690476190476195,
+            9.380952380952381
+          ],
+          "uniform_arms": [
+            "spline_0.25",
+            "spline_0.5",
+            "spline_0.75",
+            "spline_1",
+            "chord_0.25",
+            "chord_0.5",
+            "chord_0.75",
+            "covariance_0.25",
+            "covariance_0.5",
+            "covariance_0.75",
+            "spacing_line_1"
+          ],
+          "timed_arms": [
+            "time_covariance_1",
+            "time_reversed_1"
+          ],
+          "clamped_starts": 0,
+          "median_train_clip_distance": 44.41171056168747,
+          "median_shift_over_clip_distance": {
+            "spline_0.25": 0.06508328380714523,
+            "spline_0.5": 0.13501936279068744,
+            "spline_0.75": 0.20134299437833927,
+            "spline_1": 0.2584197323475592,
+            "chord_0.25": 0.0646049330868898,
+            "chord_0.5": 0.1292098661737796,
+            "chord_0.75": 0.1938147992606694,
+            "covariance_0.25": 0.05736962000316319,
+            "covariance_0.5": 0.11473924000632638,
+            "covariance_0.75": 0.17210886000948958,
+            "spacing_line_1": 0.21579181122833777,
+            "time_covariance_1_per_step": 0.2841511328146547,
+            "time_reversed_1_per_step": 0.2841511328146547
+          },
+          "spline_vs_covariance_endpoint_relative": {
+            "all": [
+              0.5042905753770589,
+              0.6598205592805977,
+              0.8899984926600231
+            ],
+            "seen_targets": [
+              0.49787561583310824,
+              0.6043665704652329,
+              0.9283153617227745
+            ],
+            "unseen_targets": [
+              0.56310455778316,
+              0.7154258898718299,
+              0.845200902508789
+            ]
+          }
+        }
+      },
+      "worst_relative": {
+        "spline_end_hits_target": 1.4981238419906987e-15,
+        "chord_end_equals_spline_end": 5.920687010134447e-14,
+        "time_mean_equals_covariance": 1.531901858704807e-15
+      },
+      "exact_tolerance": 1e-12,
+      "seconds": 3.8023625829955563,
+      "criteria": {
+        "clip_ids_match_phase5": true,
+        "covariance_equals_phase5": true,
+        "reversed_is_flipped": true,
+        "finite": true,
+        "spline_end_hits_target": true,
+        "chord_end_equals_spline_end": true,
+        "time_mean_equals_covariance": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/spline_steering/setup.npz",
+        "sha256": "cf0a2d19155b91510e421dc258c0748a221b6c5b3aa2c50aeddb23ced6408366"
+      },
+      "passed": true
+    }
+  },
+  "spline_direction_seen": {
+    "provenance": {
+      "utc": "2026-09-27T03:41:13+00:00",
+      "git_commit": "48308a040cabb3a5aa39329476029a158ed416f5",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "f3a9b1c237ec947d9f09524370ee181bd8e64d1b1b744f3127787ae326d0169e",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_spline_steering.py": "2fe764d4d2ff4b8f26df008f9a2c964a97923b2045f9b13a87d843790c415ffd"
+        },
+        "combined_sha256": "36d4b682aa5b8720ce0a33017cd27337ac530283549b72802c5c0295e1cfdca2"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variable": "direction",
+      "role": "test_seen",
+      "ids": [
+        115,
+        162,
+        289,
+        303,
+        418,
+        537,
+        577,
+        665,
+        841,
+        889,
+        1102,
+        1130,
+        1165,
+        1339,
+        1472
+      ],
+      "targets": [
+        39.375,
+        95.625,
+        163.125,
+        253.125,
+        326.25
+      ],
+      "uniform_arms": [
+        "spline_0.25",
+        "spline_0.5",
+        "spline_0.75",
+        "spline_1",
+        "chord_0.25",
+        "chord_0.5",
+        "chord_0.75",
+        "covariance_0.25",
+        "covariance_0.5",
+        "covariance_0.75"
+      ],
+      "timed_arms": [
+        "time_covariance_1",
+        "time_reversed_1"
+      ],
+      "runs": 990,
+      "seconds": 402.88591716700466,
+      "tolerances": {
+        "site": 0.0001,
+        "per_step": 0.0003
+      },
+      "max_site_diff": 2.2438005998992594e-05,
+      "max_per_step_diff": 5.759190463550112e-05,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "criteria": {
+        "unedited_equals_stored": true,
+        "unedited_equals_phase5": true,
+        "covariance_replicates_phase5": true,
+        "site": true,
+        "per_step": true,
+        "finite": true,
+        "same_clip_ids": true,
+        "hooks_unchanged": true,
+        "weights_unchanged": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/spline_steering/runs_direction_seen.npz",
+        "sha256": "464631fb136c98159a9924bcddfa5021943010f4e0a0b5ece19678046a90673b"
+      },
+      "passed": true
+    }
+  },
+  "spline_direction_unseen": {
+    "provenance": {
+      "utc": "2026-09-27T03:49:05+00:00",
+      "git_commit": "48308a040cabb3a5aa39329476029a158ed416f5",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "f3a9b1c237ec947d9f09524370ee181bd8e64d1b1b744f3127787ae326d0169e",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_spline_steering.py": "2fe764d4d2ff4b8f26df008f9a2c964a97923b2045f9b13a87d843790c415ffd"
+        },
+        "combined_sha256": "36d4b682aa5b8720ce0a33017cd27337ac530283549b72802c5c0295e1cfdca2"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variable": "direction",
+      "role": "test_unseen",
+      "ids": [
+        170,
+        176,
+        318,
+        327,
+        560,
+        570,
+        714,
+        925,
+        945,
+        1067,
+        1085,
+        1299,
+        1300,
+        1431,
+        1435
+      ],
+      "targets": [
+        39.375,
+        95.625,
+        163.125,
+        253.125,
+        326.25
+      ],
+      "uniform_arms": [
+        "spline_0.25",
+        "spline_0.5",
+        "spline_0.75",
+        "spline_1",
+        "chord_0.25",
+        "chord_0.5",
+        "chord_0.75",
+        "covariance_0.25",
+        "covariance_0.5",
+        "covariance_0.75"
+      ],
+      "timed_arms": [
+        "time_covariance_1",
+        "time_reversed_1"
+      ],
+      "runs": 990,
+      "seconds": 463.8246107500163,
+      "tolerances": {
+        "site": 0.0001,
+        "per_step": 0.0003
+      },
+      "max_site_diff": 2.6360144261161622e-05,
+      "max_per_step_diff": 7.141657857800965e-05,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "criteria": {
+        "unedited_equals_stored": true,
+        "unedited_equals_phase5": true,
+        "covariance_replicates_phase5": true,
+        "site": true,
+        "per_step": true,
+        "finite": true,
+        "same_clip_ids": true,
+        "hooks_unchanged": true,
+        "weights_unchanged": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/spline_steering/runs_direction_unseen.npz",
+        "sha256": "0c5c153a94447446cf270ae20b00c80219dfbf460c586c5dd299a67151a210dc"
+      },
+      "passed": true
+    }
+  },
+  "spline_speed_seen": {
+    "provenance": {
+      "utc": "2026-09-27T03:57:45+00:00",
+      "git_commit": "48308a040cabb3a5aa39329476029a158ed416f5",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "f3a9b1c237ec947d9f09524370ee181bd8e64d1b1b744f3127787ae326d0169e",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_spline_steering.py": "2fe764d4d2ff4b8f26df008f9a2c964a97923b2045f9b13a87d843790c415ffd"
+        },
+        "combined_sha256": "36d4b682aa5b8720ce0a33017cd27337ac530283549b72802c5c0295e1cfdca2"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variable": "speed",
+      "role": "test_seen",
+      "ids": [
+        69,
+        298,
+        378,
+        407,
+        455,
+        480,
+        677,
+        967,
+        1004,
+        1031,
+        1127,
+        1163,
+        1215,
+        1235,
+        1456
+      ],
+      "targets": [
+        0.4880952380952381,
+        1.2023809523809523,
+        2.2738095238095237,
+        2.988095238095238,
+        3.761904761904762
+      ],
+      "uniform_arms": [
+        "spline_0.25",
+        "spline_0.5",
+        "spline_0.75",
+        "spline_1",
+        "chord_0.25",
+        "chord_0.5",
+        "chord_0.75",
+        "covariance_0.25",
+        "covariance_0.5",
+        "covariance_0.75",
+        "spacing_line_1"
+      ],
+      "timed_arms": [
+        "time_covariance_1",
+        "time_reversed_1"
+      ],
+      "runs": 1065,
+      "seconds": 511.69196508300956,
+      "tolerances": {
+        "site": 0.0001,
+        "per_step": 0.0003
+      },
+      "max_site_diff": 2.773948119738634e-05,
+      "max_per_step_diff": 7.555433404604628e-05,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "criteria": {
+        "unedited_equals_stored": true,
+        "unedited_equals_phase5": true,
+        "covariance_replicates_phase5": true,
+        "site": true,
+        "per_step": true,
+        "finite": true,
+        "same_clip_ids": true,
+        "hooks_unchanged": true,
+        "weights_unchanged": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/spline_steering/runs_speed_seen.npz",
+        "sha256": "a418f5d664663d8ddfa51b33b5dd1fb54da7beb7b836893874188cb428ed5280"
+      },
+      "passed": true
+    }
+  },
+  "spline_speed_unseen": {
+    "provenance": {
+      "utc": "2026-09-27T04:07:21+00:00",
+      "git_commit": "48308a040cabb3a5aa39329476029a158ed416f5",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "f3a9b1c237ec947d9f09524370ee181bd8e64d1b1b744f3127787ae326d0169e",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_spline_steering.py": "2fe764d4d2ff4b8f26df008f9a2c964a97923b2045f9b13a87d843790c415ffd"
+        },
+        "combined_sha256": "36d4b682aa5b8720ce0a33017cd27337ac530283549b72802c5c0295e1cfdca2"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variable": "speed",
+      "role": "test_unseen",
+      "ids": [
+        110,
+        348,
+        352,
+        464,
+        476,
+        712,
+        718,
+        817,
+        836,
+        1066,
+        1078,
+        1190,
+        1199,
+        1416,
+        1433
+      ],
+      "targets": [
+        0.4880952380952381,
+        1.2023809523809523,
+        2.2738095238095237,
+        2.988095238095238,
+        3.761904761904762
+      ],
+      "uniform_arms": [
+        "spline_0.25",
+        "spline_0.5",
+        "spline_0.75",
+        "spline_1",
+        "chord_0.25",
+        "chord_0.5",
+        "chord_0.75",
+        "covariance_0.25",
+        "covariance_0.5",
+        "covariance_0.75",
+        "spacing_line_1"
+      ],
+      "timed_arms": [
+        "time_covariance_1",
+        "time_reversed_1"
+      ],
+      "runs": 1065,
+      "seconds": 567.9491652500001,
+      "tolerances": {
+        "site": 0.0001,
+        "per_step": 0.0003
+      },
+      "max_site_diff": 2.3728218963015024e-05,
+      "max_per_step_diff": 5.245201865022864e-05,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "criteria": {
+        "unedited_equals_stored": true,
+        "unedited_equals_phase5": true,
+        "covariance_replicates_phase5": true,
+        "site": true,
+        "per_step": true,
+        "finite": true,
+        "same_clip_ids": true,
+        "hooks_unchanged": true,
+        "weights_unchanged": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/spline_steering/runs_speed_unseen.npz",
+        "sha256": "2abf53914465190550feb9eee530ab35747548d41e4a9f0d6f11b53eeba4a52e"
+      },
+      "passed": true
+    }
+  },
+  "spline_acceleration_seen": {
+    "provenance": {
+      "utc": "2026-09-27T04:17:17+00:00",
+      "git_commit": "48308a040cabb3a5aa39329476029a158ed416f5",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "f3a9b1c237ec947d9f09524370ee181bd8e64d1b1b744f3127787ae326d0169e",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_spline_steering.py": "2fe764d4d2ff4b8f26df008f9a2c964a97923b2045f9b13a87d843790c415ffd"
+        },
+        "combined_sha256": "36d4b682aa5b8720ce0a33017cd27337ac530283549b72802c5c0295e1cfdca2"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variable": "acceleration",
+      "role": "test_seen",
+      "ids": [
+        39,
+        161,
+        203,
+        314,
+        413,
+        524,
+        732,
+        745,
+        865,
+        920,
+        967,
+        1378,
+        1392,
+        1413,
+        1521
+      ],
+      "targets": [
+        0.8690476190476191,
+        2.7261904761904763,
+        5.511904761904762,
+        7.3690476190476195,
+        9.380952380952381
+      ],
+      "uniform_arms": [
+        "spline_0.25",
+        "spline_0.5",
+        "spline_0.75",
+        "spline_1",
+        "chord_0.25",
+        "chord_0.5",
+        "chord_0.75",
+        "covariance_0.25",
+        "covariance_0.5",
+        "covariance_0.75",
+        "spacing_line_1"
+      ],
+      "timed_arms": [
+        "time_covariance_1",
+        "time_reversed_1"
+      ],
+      "runs": 1065,
+      "seconds": 587.8496590830036,
+      "tolerances": {
+        "site": 0.0001,
+        "per_step": 0.0003
+      },
+      "max_site_diff": 2.2235548129856397e-05,
+      "max_per_step_diff": 6.840855940026813e-05,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "criteria": {
+        "unedited_equals_stored": true,
+        "unedited_equals_phase5": true,
+        "covariance_replicates_phase5": true,
+        "site": true,
+        "per_step": true,
+        "finite": true,
+        "same_clip_ids": true,
+        "hooks_unchanged": true,
+        "weights_unchanged": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/spline_steering/runs_acceleration_seen.npz",
+        "sha256": "a4b102dd6058123a611c8992699f810323391acfedf2e450d3e4fa94e62483be"
+      },
+      "passed": true
+    }
+  },
+  "spline_acceleration_unseen": {
+    "provenance": {
+      "utc": "2026-09-27T04:27:19+00:00",
+      "git_commit": "48308a040cabb3a5aa39329476029a158ed416f5",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "f3a9b1c237ec947d9f09524370ee181bd8e64d1b1b744f3127787ae326d0169e",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_spline_steering.py": "2fe764d4d2ff4b8f26df008f9a2c964a97923b2045f9b13a87d843790c415ffd"
+        },
+        "combined_sha256": "36d4b682aa5b8720ce0a33017cd27337ac530283549b72802c5c0295e1cfdca2"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "variable": "acceleration",
+      "role": "test_unseen",
+      "ids": [
+        115,
+        354,
+        356,
+        460,
+        471,
+        702,
+        712,
+        817,
+        824,
+        1062,
+        1069,
+        1194,
+        1198,
+        1418,
+        1433
+      ],
+      "targets": [
+        0.8690476190476191,
+        2.7261904761904763,
+        5.511904761904762,
+        7.3690476190476195,
+        9.380952380952381
+      ],
+      "uniform_arms": [
+        "spline_0.25",
+        "spline_0.5",
+        "spline_0.75",
+        "spline_1",
+        "chord_0.25",
+        "chord_0.5",
+        "chord_0.75",
+        "covariance_0.25",
+        "covariance_0.5",
+        "covariance_0.75",
+        "spacing_line_1"
+      ],
+      "timed_arms": [
+        "time_covariance_1",
+        "time_reversed_1"
+      ],
+      "runs": 1065,
+      "seconds": 593.426619957987,
+      "tolerances": {
+        "site": 0.0001,
+        "per_step": 0.0003
+      },
+      "max_site_diff": 2.7040137410949683e-05,
+      "max_per_step_diff": 5.2681977848578754e-05,
+      "forward_hooks_before_and_after": [
+        0,
+        0
+      ],
+      "weights_fingerprint": "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede",
+      "criteria": {
+        "unedited_equals_stored": true,
+        "unedited_equals_phase5": true,
+        "covariance_replicates_phase5": true,
+        "site": true,
+        "per_step": true,
+        "finite": true,
+        "same_clip_ids": true,
+        "hooks_unchanged": true,
+        "weights_unchanged": true,
+        "saved_equals_computed": true
+      },
+      "artifact": {
+        "path": "artifacts/spline_steering/runs_acceleration_unseen.npz",
+        "sha256": "73a2d686a8ed61394a143de19c368019f363f889c867ef0f387c83d9be11a4b8"
+      },
+      "passed": true
+    }
+  }
+}
