@@ -552,8 +552,8 @@ def ladder_rungs(arrays: dict, ladder: dict, variable: str) -> dict[str, np.ndar
     if kind == "open":
         rungs = {
             "straight\nline": grid[line_a, 0],
-            "free spacing\n(PC 1)": grid[0, smooths.index(rec["pc1_spacing"]["smooth"])],
-            "free spacing\n(B)": loco_spacing_grid(
+            "free\nspacing\n(PC 1)": grid[0, smooths.index(rec["pc1_spacing"]["smooth"])],
+            "free\nspacing\n(B)": loco_spacing_grid(
                 values, cents, [smooths[smooths.index(rec["covariance_spacing"]["smooth"])]])[0],
             "curve\n(selected)": grid[a, b],
         }
@@ -579,7 +579,7 @@ def check_figure_manifolds() -> dict:
     ok: dict[str, list[bool]] = {"ladder_reproduced": [], "exact_reproduced": []}
 
     fig, axes = plt.subplots(2, 3, figsize=(15.5, 10), facecolor=SURFACE,
-                             gridspec_kw={"height_ratios": [1.15, 1.0], "hspace": 0.42, "wspace": 0.28})
+                             gridspec_kw={"height_ratios": [1.15, 1.0], "hspace": 0.42, "wspace": 0.28, "top": 0.92})
     for col, variable in enumerate(DATASETS):
         kind, colour = kind_of(variable), DATASET_COLOUR[variable]
         values, cents, curve = selected_curve(arrays, variable, STEERING_SITE)
@@ -609,14 +609,10 @@ def check_figure_manifolds() -> dict:
         for v in LABEL_MARKS[variable]:
             p = project(curve(np.array([v])))[0]
             ax.scatter(p[0], p[1], s=22, color=INK, zorder=6, linewidths=0)
-            if kind == "loop":  # point labels outward, away from the loop's centre
-                out = (p - centre) / np.linalg.norm(p - centre)
-                offset, ha = tuple(14 * out), "left" if out[0] >= 0 else "right"
-            else:
-                offset, ha = (7, 5), "left"
-            ax.annotate(f"{v:g}{UNITS[variable]}", p, xytext=offset, textcoords="offset points", ha=ha, va="center",
-                        color=INK_SECONDARY, fontsize=9, zorder=7,
-                        bbox={"boxstyle": "round,pad=0.15", "fc": SURFACE, "ec": "none", "alpha": 0.85})
+            out = (p - centre) / np.linalg.norm(p - centre)  # label outward, away from the curve's centre
+            ax.annotate(f"{v:g}{UNITS[variable]}", p, xytext=tuple(14 * out), textcoords="offset points",
+                        ha="left" if out[0] >= 0 else "right", va="center", color=INK_SECONDARY, fontsize=9,
+                        zorder=7, bbox={"boxstyle": "round,pad=0.15", "fc": SURFACE, "ec": "none", "alpha": 0.85})
         a, b = (int(i) for i in arrays[f"{prefix}_selected"])
         setting = f"H {smooths[b]}" if kind == "loop" else f"λ {smooths[b]:.3g}"
         ax.set_title(f"{variable.capitalize()}: k {PCA_DIMS[a]}, {setting} (index 9)", color=INK, fontsize=11, loc="left")
