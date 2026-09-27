@@ -502,6 +502,10 @@ what's next.
 - Gate step 1: `HASH_CHECK_SUBJECTS` += `confounds`, `robustness`; `check_evidence.py code_hash_check` **passed** (HEAD
   `24d262f`): 76 keys, all 8 Phase 7 keys match their own clean run commit, `rerun_needed` empty. Predictions ✓.
   Planning-chat note pending (one line): direction → speed / acceleration cross-talk (F-157), small, no decision affected.
+- Gate step 2: `check_confounds.py figure_confounds` **passed** (4/4: idx-18 refits reproduce saved validation
+  predictions bit for bit and the saved slopes; clean commit). `results/confounds/confounds.png` (main-slide figure:
+  cross-applied readings vs true distance, slopes 1.00 / 0.99; set classifier by layer, 0.51 → 0.95 idx 9 → 0.98 idx 18,
+  control 0.50) re-rendered twice after review (legend overlapped points; now below the axes), clean.
 
 ### 2026-09-26 — Phase 6 started (spline steering)
 - Phase 6 layout (`manifolds.py`, `behavior.py`, spline arms in `steering.py`; `check_manifolds.py`,

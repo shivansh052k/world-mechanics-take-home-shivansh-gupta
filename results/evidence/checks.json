@@ -361,8 +361,8 @@
   },
   "code_hash_check": {
     "provenance": {
-      "utc": "2026-09-27T08:06:43+00:00",
-      "git_commit": "24d262f532f349cc69d27bf896617c230cc7d17e",
+      "utc": "2026-09-27T08:19:30+00:00",
+      "git_commit": "4e1f8a2768c910164a95d91f519277a3318cf192",
       "git_dirty": false,
       "git_dirty_paths": [],
       "code": {
@@ -413,9 +413,9 @@
       }
     },
     "result": {
-      "head": "24d262f532f349cc69d27bf896617c230cc7d17e",
-      "keys_checked": 76,
-      "commits_searched": 61,
+      "head": "4e1f8a2768c910164a95d91f519277a3318cf192",
+      "keys_checked": 77,
+      "commits_searched": 62,
       "keys": [
         {
           "subject": "probes",
@@ -976,6 +976,14 @@
           "git_dirty": false,
           "files": 29,
           "matching_commit": "03b38e8bfd30252f8a0ee3acdc97a1ad54d26cd6"
+        },
+        {
+          "subject": "confounds",
+          "key": "figure_confounds",
+          "recorded_commit": "f9bcc8a4b0bdd5d7a27ed2e02cf6996db00e4f19",
+          "git_dirty": false,
+          "files": 30,
+          "matching_commit": "f9bcc8a4b0bdd5d7a27ed2e02cf6996db00e4f19"
         },
         {
           "subject": "robustness",
