@@ -414,6 +414,8 @@ def check_figure_tubelet() -> dict:
         if exits.any():
             ax.scatter(px[exits], errors[exits], s=24, facecolors="none", edgecolors=colour, linewidths=1.2, zorder=3)
         plotted += px.tolist() + errors.tolist()
+        top = float(errors.max())
+        ax.set_ylim(-0.04 * top, 1.3 * top)  # headroom: the ρ note and legend sit above every point
 
         rho = {"all": float(spearmanr(px, errors).statistic)}
         if variable == "direction":
