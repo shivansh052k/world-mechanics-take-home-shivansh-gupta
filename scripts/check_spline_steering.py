@@ -606,11 +606,147 @@ def check_spline_naturalness() -> dict:
     }
 
 
+def held_out_arms(variable: str) -> tuple[dict, np.ndarray, np.ndarray, np.ndarray]:
+    """The spline endpoint, the covariance line (f = 1) and Phase 5's K - 1 probes from run_arms."""
+    arms, ids, targets, unedited = run_arms(variable)
+    k = load_probe_sequence(variable).k
+    keep = ("spline_1", "covariance_1", f"phase5_probes_{k - 1}")
+    return {name: arms[name] for name in keep}, ids, targets, unedited
+
+
+def progress_terms(variable: str, table: dict, arms: dict, unedited: np.ndarray, targets: np.ndarray):
+    """Per arm: gain numerator and denominator per (clip, target, profile index), as in spline_scores."""
+    roles, labels = table["role"], table["label"]
+    y = probe_targets(variable, labels)
+    target_out = probe_targets(variable, targets).reshape(len(targets), -1)
+    shape = (len(unedited), len(targets), len(PROFILE_SITES))
+    num = {name: np.empty(shape) for name in arms}
+    den = {name: np.empty(shape) for name in arms}
+    for j, site in enumerate(PROFILE_SITES):
+        probe = fit_probe(site_features(table["activations"], site), y, roles, fit_roles=READOUT_ROLES)
+        weights, offset = ridge_readout_map(probe)
+        out0 = unedited[:, j].astype(np.float64) @ weights + offset
+        intended = target_out[None, :, :] - out0[:, None, :]
+        for name, (feats, fraction) in arms.items():
+            achieved = feats[:, :, :, j].astype(np.float64) @ weights + offset - out0[:, None, None, :]
+            i = np.broadcast_to(fraction * intended[:, :, None, :], achieved.shape)
+            num[name][:, :, j] = (achieved * i).sum(axis=(2, 3))
+            den[name][:, :, j] = (i**2).sum(axis=(2, 3))
+    return num, den
+
+
+def naturalness_terms(variable: str, readouts: dict, arms: dict, unedited: np.ndarray) -> dict:
+    """Per site and arm: (clip, target) excess Hellinger (mean over seeds), as in spline_naturalness."""
+    kind = kind_of(variable)
+    out: dict = {}
+    for site in NATURALNESS_SITES:
+        j = PROFILE_SITES.index(site)
+        weights, offset = readouts[f"{variable}_{site}_weights"], readouts[f"{variable}_{site}_offset"]
+        values = readouts[f"{variable}_{site}_curve_values"]
+        curve = behavior_curve(kind, values, readouts[f"{variable}_{site}_curve_sqrt_centroids"])
+        grid = curve_grid(kind, values)
+        d0, _ = nearest_on_curve(np.sqrt(map_probabilities(weights, offset, unedited[:, j].astype(np.float64))), curve, grid)
+        out[site] = {}
+        for name, (feats, _) in arms.items():
+            f = feats[:, :, :, j].astype(np.float64)
+            dist, _ = nearest_on_curve(np.sqrt(map_probabilities(weights, offset, f.reshape(-1, f.shape[-1]))), curve, grid)
+            out[site][name] = (dist.reshape(f.shape[:3]) - d0[:, None, None]).mean(axis=2)
+    return out
+
+
+def check_spline_held_out() -> dict:
+    """C7: progress and naturalness of the spline endpoint, the covariance line and K - 1 probes on held-out targets
+    and clips (no model; saved runs only).
+
+    Subsets of (clip, target): all; seen / test-unseen target values (unseen = no centroid in the curve fit);
+    test-seen / test-unseen clips; unseen clip x unseen target. Per subset and arm: ridge gain at index 9, 18 and mean
+    over 10-18 (spline_scores' readouts), excess Hellinger at index 9 and 18 (spline_naturalness' readout A). Paired
+    clip-bootstrap intervals on the unseen targets: spline - covariance and spline - probes (gain at 18, downstream
+    mean, excess at 9). Passes if: the all-target numbers reproduce spline_scores and spline_naturalness within
+    REPRODUCE_TOLERANCE; same clip ids; everything finite.
+    """
+    saved = json.loads(OUT.read_text())
+    scores = saved["spline_scores"]["result"]["variables"]
+    natural = saved["spline_naturalness"]["result"]["variables"]
+    with np.load(verified_artifact(BEHAVIOR_CHECKS, "behavior_readouts")) as f:
+        readouts = {key: f[key] for key in f.files}
+    with np.load(verified_artifact(STEERING_CHECKS, "steering_setup")) as f:
+        steering_setup = {key: f[key] for key in f.files}
+    boot = bootstrap_indices(sum(N_CLIPS.values()), BOOTSTRAP_RESAMPLES, SEED)
+    ok: dict[str, list[bool]] = {"same_ids": [], "finite": []}
+    worst = 0.0
+    result: dict = {}
+
+    for variable in DATASETS:
+        table = load_joined(variable)
+        arms, ids, targets, unedited = held_out_arms(variable)
+        ok["same_ids"].append(ids is not None)
+        n_clips, n_targets = len(unedited), len(targets)
+        num, den = progress_terms(variable, table, arms, unedited, targets)
+        excess = naturalness_terms(variable, readouts, arms, unedited)
+
+        for name in arms:  # reproduction of the saved all-target numbers
+            g = num[name].sum(axis=(0, 1)) / den[name].sum(axis=(0, 1))
+            s = scores[variable]["summary"][name]
+            for mine, theirs in ((g[0], s["idx9"]), (g[-1], s["idx18"]), (g[DOWNSTREAM].mean(), s["downstream_mean"])):
+                worst = max(worst, abs(float(mine) - theirs) / max(1.0, abs(theirs)))
+            for site in NATURALNESS_SITES:
+                theirs = natural[variable]["sites"][str(plot_index(site))][name]["excess_hellinger_mean"]
+                worst = max(worst, abs(float(excess[site][name].mean()) - theirs) / max(1.0, abs(theirs)))
+
+        unseen_target = np.broadcast_to(steering_setup[f"{variable}_target_unseen"].astype(bool)[None, :], (n_clips, n_targets))
+        unseen_clip = np.broadcast_to((np.arange(n_clips) >= N_CLIPS["test_seen"])[:, None], (n_clips, n_targets))
+        subsets = {"all": np.ones((n_clips, n_targets), dtype=bool), "seen_targets": ~unseen_target,
+                   "unseen_targets": unseen_target, "seen_clips": ~unseen_clip, "unseen_clips": unseen_clip,
+                   "unseen_clip_and_target": unseen_clip & unseen_target}
+
+        def gain(name: str, mask: np.ndarray) -> np.ndarray:
+            return (np.where(mask[..., None], num[name], 0).sum(axis=(0, 1))
+                    / np.where(mask[..., None], den[name], 0).sum(axis=(0, 1)))
+
+        def mean_excess(site: str, name: str, mask: np.ndarray) -> float:
+            return float(excess[site][name][mask].mean())
+
+        record: dict = {"subsets": {}, "paired_unseen_targets": {}}
+        for subset, mask in subsets.items():
+            record["subsets"][subset] = {"n_pairs": int(mask.sum()), "arms": {name: {
+                "gain_idx9": float(gain(name, mask)[0]), "gain_idx18": float(gain(name, mask)[-1]),
+                "gain_downstream_mean": float(gain(name, mask)[DOWNSTREAM].mean()),
+                "excess_idx9": mean_excess("block_8", name, mask), "excess_idx18": mean_excess("block_17", name, mask),
+            } for name in arms}}
+
+        mask = subsets["unseen_targets"]
+        spline, references = "spline_1", [a for a in arms if a != "spline_1"]
+        for reference in references:
+            pair: dict = {}
+            for label, rows in (("gain_idx18", slice(9, 10)), ("gain_downstream_mean", DOWNSTREAM)):
+                def resampled(name: str) -> np.ndarray:
+                    n_c = np.where(mask[..., None], num[name], 0).sum(axis=1)
+                    d_c = np.where(mask[..., None], den[name], 0).sum(axis=1)
+                    return (n_c[boot].sum(axis=1) / d_c[boot].sum(axis=1))[:, rows].mean(axis=1)
+                point = float(gain(spline, mask)[rows].mean() - gain(reference, mask)[rows].mean())
+                pair[label] = {"point": point, "ci": list(percentile_interval(resampled(spline) - resampled(reference)))}
+            count = mask.sum(axis=1)
+            e_c = {name: np.where(mask, excess["block_8"][name], 0).sum(axis=1) for name in (spline, reference)}
+            samples = (e_c[spline] - e_c[reference])[boot].sum(axis=1) / count[boot].sum(axis=1)
+            pair["excess_idx9"] = {"point": float((e_c[spline] - e_c[reference]).sum() / count.sum()),
+                                   "ci": list(percentile_interval(samples))}
+            record["paired_unseen_targets"][f"spline_1_minus_{reference}"] = pair
+        ok["finite"].append("NaN" not in json.dumps(record) and "Infinity" not in json.dumps(record))
+        result[variable] = record
+
+    criteria = {name: all(v) for name, v in ok.items()} | {"reproduces_saved": worst <= REPRODUCE_TOLERANCE}
+    return {"variables": result, "worst_reproduction": worst,
+            "note": "unseen targets are values with no centroid in the curve fit (interpolation); index 9 = same layer",
+            "criteria": criteria, "passed": all(criteria.values())}
+    
+
 CHECKS = {
     "spline_setup": check_spline_setup,
     **{f"spline_{v}_{h}": partial(spline_run, v, h) for v in DATASETS for h in HALVES},
     "spline_scores": check_spline_scores,
     "spline_naturalness": check_spline_naturalness,
+    "spline_held_out": check_spline_held_out,
 }
 
 
