@@ -8,7 +8,13 @@ import csv
 import json
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")  # files only, no window
+import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.lines import Line2D
+from scipy.stats import spearmanr
 
 from vjepa_physics.data import DATASETS
 from vjepa_physics.evidence import file_sha256, require_clean_code, save_result, verified_artifact
@@ -17,6 +23,7 @@ from vjepa_physics.joined import load_joined
 from vjepa_physics.metrics import (
     angles_from_sincos, bootstrap_indices, circular_errors, percentile_interval, r2, resampled_mean, resampled_r2,
 )
+from vjepa_physics.plotting import DATASET_COLOUR, INK, INK_MUTED, INK_SECONDARY, SURFACE, style_axes
 from vjepa_physics.probes import alpha_verdict, fit_probe, probe_scores, probe_targets, site_features
 from vjepa_physics.reproducibility import SEED
 from vjepa_physics.robustness import (
@@ -51,6 +58,12 @@ STRATIFIED_FLAGS = {  # (flag, stratum): flags that vary inside a stratum; speed
     "acceleration": (("frozen_start", "label"),),
 }
 TREND_VARIABLES = ("speed", "acceleration")  # sub_patch_motion is fixed by the label value in these sets
+
+FIGURE_TUBELET = REPO / "results/robustness/tubelet_scatter.png"
+FIGURE_DPI = 200
+FIGURE_SITE = STEERING_SITE  # index 9
+ERROR_LABEL = {"direction": "circular error (°)", "speed": "absolute error (m/s)",
+               "acceleration": "absolute error (m/s²)"}
 
 
 def site_index(site: str) -> int | None:
@@ -376,7 +389,76 @@ def check_flag_breakdown() -> dict:
         "summary": summary, "variables": result, "criteria": criteria, "passed": all(criteria.values()),
     }
 
+def check_figure_tubelet() -> dict:
+    """Per-clip validation error of the index-9 layer-curve probe vs the clip's mean within-tubelet disk displacement
+    (px), one panel per variable; direction exit clips hollow. Spearman of error on displacement as observations (all
+    clips; direction also without exit; speed / acceleration also on relative error), confounded with label value.
+    Passes if: saved predictions hash-verified and aligned; the PNG is written and non-empty; every plotted value finite.
+    """
+    with np.load(verified_artifact(PROBE_CHECKS, "layer_curves")) as f:
+        saved = {key: f[key] for key in f.files}
+    k = SITES.index(FIGURE_SITE)
+    aligned, plotted, spearman, counts = [], [], {}, {}
+
+    fig, axes = plt.subplots(1, 3, figsize=(12, 4.2), facecolor=SURFACE)
+    for ax, variable in zip(axes, DATASETS):
+        table = load_joined(variable)
+        labels = table["label"]
+        validation = np.isin(table["role"], VALIDATION_ROLES)
+        aligned.append(bool(np.array_equal(saved[f"{variable}_ids"], table["id"])))
+        px = within_tubelet_px(table)[validation].mean(axis=1)
+        errors = clip_errors(variable, labels[validation], saved[f"{variable}_predictions"][validation, k])
+        exits = table["exit"][validation]
+        colour = DATASET_COLOUR[variable]
+        ax.scatter(px[~exits], errors[~exits], s=14, color=colour, alpha=0.55, linewidths=0, zorder=2)
+        if exits.any():
+            ax.scatter(px[exits], errors[exits], s=24, facecolors="none", edgecolors=colour, linewidths=1.2, zorder=3)
+        plotted += px.tolist() + errors.tolist()
+
+        rho = {"all": float(spearmanr(px, errors).statistic)}
+        if variable == "direction":
+            rho["without_exit"] = float(spearmanr(px[~exits], errors[~exits]).statistic)
+        else:
+            rho["relative_error"] = float(spearmanr(px, errors / labels[validation]).statistic)
+        spearman[variable] = rho
+        counts[variable] = {"clips": int(validation.sum()), "exit": int(exits.sum())}
+
+        style_axes(ax, grid_axis="both")
+        ax.set_title(variable, fontsize=11, loc="left", color=INK)
+        ax.set_xlabel("mean disk displacement within a tubelet (px)", fontsize=9)
+        ax.set_ylabel(ERROR_LABEL[variable], fontsize=9)
+        note = "   ".join(f"ρ {name.replace('_', ' ')} {value:+.2f}" for name, value in rho.items())
+        ax.text(0.98, 0.97, note, transform=ax.transAxes, ha="right", va="top", fontsize=8.5, color=INK_SECONDARY)
+        if variable == "direction":
+            handles = [Line2D([], [], linestyle="none", marker="o", markersize=5, color=colour, alpha=0.55,
+                              label="disk stays in frame"),
+                       Line2D([], [], linestyle="none", marker="o", markersize=6, markerfacecolor="none",
+                              markeredgecolor=colour, label="disk exits")]
+            ax.legend(handles=handles, loc="upper right", bbox_to_anchor=(1.0, 0.9), fontsize=8.5, frameon=False,
+                      labelcolor=INK_SECONDARY)
+
+    fig.suptitle("Probe error vs per-tubelet motion (validation clips, index 9)", fontsize=12, color=INK, x=0.07,
+                 ha="left")
+    fig.text(0.07, 0.02, "Each dot = one clip. ρ = Spearman correlation of error with displacement; "
+             "displacement grows with the label, so ρ is confounded with label value.",
+             fontsize=8.5, color=INK_MUTED)
+    fig.subplots_adjust(bottom=0.2, top=0.85, wspace=0.28)
+    fig.savefig(FIGURE_TUBELET, dpi=FIGURE_DPI, facecolor=SURFACE)
+    plt.close(fig)
+
+    criteria = {
+        "aligned": all(aligned),
+        "written": FIGURE_TUBELET.exists() and FIGURE_TUBELET.stat().st_size > 0,
+        "finite": bool(np.isfinite(np.asarray(plotted, dtype=float)).all()),
+    }
+    return {
+        "site": FIGURE_SITE, "plot_index": site_index(FIGURE_SITE), "counts": counts, "summary": spearman,
+        "figure": {"path": str(FIGURE_TUBELET.relative_to(REPO)), "sha256": file_sha256(FIGURE_TUBELET)},
+        "values_plotted": len(plotted), "criteria": criteria, "passed": all(criteria.values()),
+    }
+
 CHECKS = {
+    "figure_tubelet": check_figure_tubelet,
     "flag_breakdown": check_flag_breakdown,
     "motion_type_transfer": check_motion_type_transfer,
     "motion_type_test": check_motion_type_test,

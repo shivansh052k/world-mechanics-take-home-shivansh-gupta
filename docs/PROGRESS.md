@@ -435,6 +435,24 @@ what's next.
   → flag totals per dataset = F-72's counts; criterion 3 field confirmed (`layer_curves` saves `r2` + `mae` /
   `circular_mae` per role; recomputed and per-clip-error means ≤ 1e-12); trend outcomes outside both rules (e.g. slope
   CI > 0 but Spearman CI ∋ 0, or slope CI < 0) read "neither rule met".
+- 7.3b: `check_robustness.py flag_breakdown` **passed** (5/5, clean commit `f0cde42`). Validation flagged: direction exit
+  17 / clipped 41 / frozen 15; acceleration frozen 56 (40 vs 60 in eligible values). (A) stratified difference [95 % CI],
+  idx 1 / 9 / 18: direction exit +3.07° [−1.83, 8.40] / −0.62 / −0.53 → "no excess" at all three; clipped +4.06
+  [0.85, 7.48] "excess" / +0.72 "no excess" / **+1.24 [0.33, 2.22] "excess"**; frozen −12.8 [−26.2, −0.47] "lower"
+  (raw +4.45; 15 vs 13 clips, fragile) / "no excess" / "no excess"; acceleration frozen within value "no excess" at all
+  three (−0.05 to +0.02 m/s²). (B) sub-patch trend "continuous inside the sub-patch range" for speed and acceleration
+  at all three (slope inside / full: speed 0.68 / 1.01, 0.87 / 1.00, 0.95 / 1.00; acceleration 0.58 / 1.00, 0.86 /
+  0.99, 0.98 / 0.99); relative error sub-patch vs rest 3–6× (speed 0.18 / 0.058 at idx 1 → 0.13 / 0.032 at idx 18;
+  acceleration 0.39 / 0.064 → 0.16 / 0.038; confounded with label value); acceleration frozen-start trend slope 0.86 /
+  0.97 / 0.98 (observation). H-04 not supported for exit (validation n = 17); clipped carries a small excess at idx 1
+  and 18; H-05's binary-detector alternative rejected. Claude Code's predictions: criteria ✓, trend ✓, acceleration
+  frozen ✓, idx 18 exit ✓; idx 1 exit excess ✗ (CI wide), direction frozen "no excess" ✗ at idx 1, clipped excess at
+  idx 18 not predicted. **Step 7.3b done.**
+- 7.3 order changed (user approved; no criterion changed): Phase 5 steering runs are on test clips (`HALVES`), so D
+  moves after the freeze: 7.3c figure (validation) → freeze F-154 → 7.3d one test run from committed code (E: A / B on
+  F-104's saved test predictions, labelled confirmation; D: Phase 5 per-clip reduction by flag, post-hoc observation).
+  D rule (Claude Code's own addition): stratified difference with CI only if ≥ 5 flagged and ≥ 5 unflagged clips in
+  eligible strata, else counts and means, "too few to read".
 
 ### 2026-09-26 — Phase 6 started (spline steering)
 - Phase 6 layout (`manifolds.py`, `behavior.py`, spline arms in `steering.py`; `check_manifolds.py`,
