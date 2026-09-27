@@ -1,6 +1,6 @@
 # CLAUDE.md — World Mechanics take-home (V-JEPA physics)
 
-Last updated: 2026-09-26 (Phase 5 passed, D-50, F-129–F-138, report `results/steering/report.md`; next: Phase 6 design brief; lean mode D-48). Read this fully at the start of every session.
+Last updated: 2026-09-27 (Phase 6 passed, D-51, F-139–F-148, report `results/spline_steering/report.md`; next: Phase 7, no new forward passes; lean mode D-48). Read this fully at the start of every session.
 
 ---
 
@@ -183,6 +183,15 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   0.24–0.42); at idx 18 direct 0.19–0.46, block updates push back 48–73 %; speed ↔ acceleration co-move 1 : 1 in metres
   (expected from F-65); H-12 mechanism not supported as tested (kernel follows at idx 9); H-13 uniform-token limitation.
   Saved for Phase 6 in `artifacts/steering/` (setup, per-token caches, six run files); read via `verified_artifact`.
+- **[verified, F-139–F-148] Phase 6 results (D-51):** idx-9 train centroids lie on curved, low-dimensional manifolds
+  (LOCO curve beats the covariance line on held-out values for all three; curvature 77–87 % of the gain; k 8 / 6 / 6;
+  direction = closed loop, harmonics 1–2 dominate); speed and acceleration form two offset curves on a distance scale.
+  Isometry (split halves) holds as Goodfire reports but adds nothing beyond label distance (speed agrees locally).
+  16-bin behavior readout (A) is blurry for speed / acceleration (bin-count criterion failed on record). Spline steering
+  (translate along the curve) = covariance line = probes downstream (idx 18: 0.07–0.14, spline − covariance within
+  0.005); more natural only at idx 9 (direction chord midpoints bimodal); time-structured edit +0.01–0.03 (not
+  confirmed, C11 threshold 0.05 not met). Saved for Phase 7: `artifacts/manifolds/curves.npz`,
+  `artifacts/behavior/readouts.npz`, `artifacts/spline_steering/` (setup + six runs); read via `verified_artifact`.
 - **[verified, F-65/F-72]** Tiny motion: 48 acceleration clips move < 3 px in total; some are frozen
   for up to 11 frames after frame 0.
 
@@ -258,6 +267,21 @@ must be reproduced in the data audit phase; **[untested]** = verified by reading
   `steer_<variable>_<seen|unseen>`, `steering_scores`, `steering_propagation`, `steering_specificity`,
   `steering_kernel`, `figure_steering`); gate keys `code_hash_check` (subjects incl. `steering`),
   `rerun_identical_steering` in `check_evidence.py`.
+  Phase 6: `manifolds` (`value_centroids(role=…)`, `centroid_noise`, `centroid_pca`, `Curve`, `fit_curve`,
+  `curve_from_pca`, open / loop curves: `LINE`, `EXACT`, smoothing spline lam, trig polynomial H; `loco_grid`,
+  `loco_errors`, `select_setting`, `smoothing_grid`, `covariance_axis`, `fit_spacing_line`, `loco_spacing_grid`,
+  `unit_tangents`, `participation_ratio`, `harmonic_coefficients`, `harmonic_power`, `principal_cosines`,
+  `path_positions`, `geodesic_distances`); `behavior` (`value_bins`, `fit_bin_readout` / `BinReadout`,
+  `readout_map`, `map_probabilities`, `two_stage_features`, `BehaviorCurve`, `behavior_curve`, `curve_grid`,
+  `nearest_on_curve`, `hellinger`, `bhattacharyya`, `sphere_log` / `sphere_exp`); `steering` also `PATH_FRACTIONS`,
+  `curve_parameter`, `clamp_to_curve`, `spline_path_shifts`, `chord_shifts`, `covariance_path_shifts`,
+  `time_covariance_maps`, `time_structured_shift`, `spline_arm_table`, `spline_arm_shifts`, `PROFILE_SITES`,
+  `READOUT_ROLES`, `ridge_readout_map`; `steered_features` accepts (A, T, d) per-time-step shifts. Scripts
+  `check_manifolds.py` (`manifold_loco`, `speed_acceleration_manifold`, `manifold_ladder`, `manifold_dimension`,
+  `direction_harmonics`, `figure_manifolds`), `check_behavior.py` (`behavior_readouts`, `isometry`,
+  `isometry_local`), `check_spline_steering.py` (`spline_setup`, `spline_<variable>_<half>`, `spline_scores`,
+  `spline_naturalness`, `spline_held_out`, `comparison_table`, `figure_spline_paths`, `figure_spline_profile`);
+  `HASH_CHECK_SUBJECTS` includes `manifolds`, `behavior`, `spline_steering`.
 - `scripts/` — one entry script per step · `artifacts/` — large regenerable outputs, git-ignored
   except `artifacts/manifests/` · `results/` — reports, figures, metrics · `slides/` — presentation.
 - Full folder roles: step 0.1 in `docs/EXECUTION_PLAN.md`. Follow them; do not invent folders.

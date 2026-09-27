@@ -1,6 +1,6 @@
 # PROGRESS.md — where we are right now
 
-Last updated: 2026-09-26.
+Last updated: 2026-09-27.
 
 This file is the live status tracker. Update it at the end of every phase (and any time work
 pauses mid-phase), so this chat, Claude Code, and any future session can pick up instantly
@@ -125,8 +125,13 @@ and gate evidence complete (2026-09-26):** D-50, F-129–F-138. Headline: an ind
 edits do nothing, but a readout nine blocks later (idx 18) moves only 0.029 / 0.129 / 0.136; the effect collapses within
 three blocks, the carried edit is only partly aligned with the later readout and block updates push back 48–73 % of
 it; H-12's mechanism not supported as tested (kernel readout follows at idx 9). **Phase 5 passed (2026-09-26):**
-report `results/steering/report.md`. **Next:** Phase 6 design brief (spline steering; planner notes: score over the
-idx 9 → 18 profile; token-structured edit via the per-token cache tests H-13).
+report `results/steering/report.md`. **Phase 6 (spline steering, Part 2) passed (2026-09-27):** D-51, F-139–F-148;
+report `results/spline_steering/report.md`. Headline: the representation is a curved, low-dimensional manifold (curve
+beats line on held-out values for all three; curvature 77–87 % of the gain; 6–8 dims); isometry holds as Goodfire
+reports but adds nothing beyond label order (speed agrees locally); spline steering stays natural at the steering
+layer (direction chord midpoints bimodal in 47 % of far targets) but collapses downstream exactly like the covariance
+line and probes (idx 18: 0.07–0.14, spline and covariance within 0.005); a time-structured edit helps slightly
+(+0.01–0.03), not confirmed. **Next:** Phase 7 (confounds and robustness; no new forward passes, D-48).
 
 ---
 
@@ -140,7 +145,7 @@ idx 9 → 18 profile; token-structured edit via the per-token cache tests H-13).
 | 3 — Part 1a: Layer-wise probing | ✅ Passed gate (2026-09-25) | 3.1–3.9 done (F-88–F-115; D-42–D-48); transition idx 1 for all three (mean-pooled) and for per-patch direction; test once (F-104, F-113); hash-check gate (F-115); report `results/layer_probing/report.md`, slide log `results/slide_log.md`, talk outline `slides/talk_outline.md` |
 | 4 — Part 1b: Iterative nullspace probing | ✅ Passed gate (2026-09-26) | 4.1–4.8 done (D-49 + addenda; F-116–F-128); K idx 9 = 6 / 7 / 7, procedure-dependent (F-120); linear erasure with m dims, nonlinear recovery (F-119–F-123); test once (F-127); hash-check gate, 2 keys re-run identical (F-128); five failures kept on record; report `results/nullspace/report.md`, figures `nullspace_rounds.png`, `erasure_and_procedure.png` |
 | 5 — Part 1c: Multi-probe subspace steering | ✅ Passed gate (2026-09-26) | 5.1–5.10 done (D-50; F-129–F-138); steer idx 9, read idx 18 via bit-exact partial forward; headline K−1 idx-18 reduction 0.029 / 0.129 / 0.136 vs same-layer 0.95 / 0.95 / 0.92; post-hoc profile, decomposition, specificity, kernel; gate: 46 keys traced, setup and cache re-run identical (F-138); figures `steering_reduction.png`, `steering_propagation.png`; report `results/steering/report.md`; slide log +2; talk outline item 6 done |
-| 6 — Part 2: Spline steering | ⬜ Not started | |
+| 6 — Part 2: Spline steering | ✅ Passed gate (2026-09-27) | 6.1–6.17 done (6.10, 6.11 skipped; D-51; F-139–F-148); Q1 curved (LOCO, ladder), Q2 isometry vs label null, Q3 spline vs covariance vs probes over idx 9–18 + naturalness + held-out targets, Q4 time-structured nudge (not confirmed); gate: 68 keys, none to re-run; `comparison_table.md`, figures `manifolds.png`, `spline_paths.png`, `spline_profile.png`; report `results/spline_steering/report.md`; slide log +4; talk outline item 7 done |
 | 7 — Confounds and robustness | ⬜ Not started | |
 | 8 — Presentation and final delivery | ⬜ Not started | |
 
@@ -283,6 +288,21 @@ Every saved check result (D-24). Each entry: file, key, what it proves, status.
 | `results/steering/checks.json` | `steering_kernel` | Post hoc: H-12 RBF readout at idx 9 / 18 — "not supported" (kernel follows the edit at idx 9) | ✅ passed | F-137 |
 | `results/steering/steering_reduction.png`, `steering_propagation.png` + `checks.json` | `figure_steering` | Reduction vs n; propagation profile and decomposition | ℹ️ visual (reviewed) | F-138 |
 | `results/evidence/checks.json` | `code_hash_check`, `rerun_identical_steering` | Phase 5 gate: 46 keys, 44 matched; setup and cache re-run identical incl. artifact hashes | ✅ passed | F-138 |
+| `results/manifolds/checks.json` + `artifacts/manifolds/curves.npz` | `manifold_loco` | Q1: LOCO selection at idx 1 / 9 / 18; curve beats line (CIs > 0), 12 / 12 val-unseen; line = covariance map ≤ 7e-15; `b1a00661…` | ✅ passed | F-139 |
+| `results/manifolds/checks.json` | `speed_acceleration_manifold` | Speed vs acceleration on a distance scale: two offset, differently shaped curves | ℹ️ observation (passed) | F-141 |
+| `results/manifolds/checks.json` | `manifold_ladder` | Line → free-spacing (PC1 / B) → curve; curvature 77–87 % | ✅ passed | F-140 |
+| `results/manifolds/checks.json` | `manifold_dimension`, `direction_harmonics` | H-01 k vs K·m, participation ratio; H-02 harmonic spectrum and round blocks (permutation null flawed, kept on record) | ℹ️ observation (passed) | F-142 |
+| `results/manifolds/manifolds.png` + `checks.json` | `figure_manifolds` | Curves in PC view + Q1 ladder | ℹ️ visual (reviewed) | F-148 |
+| `results/behavior/checks.json` + `artifacts/behavior/readouts.npz` | `behavior_readouts` | 16-bin readouts idx 9–18, behavior curves, natural distances, two-stage readout; `d038fbea…` | ❌ failed own criterion "≥ 10 validation clips per bin" (direction min 7, cause recorded); other 10 passed | F-143 |
+| `results/behavior/checks.json` | `isometry`, `isometry_local` | Q2: split-half isometry vs label null; local speed (post hoc) | ✅ passed | F-144 |
+| `results/spline_steering/checks.json` + `artifacts/spline_steering/setup.npz` | `spline_setup` | All Phase 6 edits; covariance f = 1 = Phase 5 bit for bit; `cf0a2d19…` | ✅ passed | F-145 |
+| `results/spline_steering/checks.json` + `artifacts/spline_steering/runs_*.npz` | `spline_{direction,speed,acceleration}_{seen,unseen}` | Six runs (6,240 passes); Phase 5 covariance replicated bit for bit | ✅ passed (clean, `48308a0`) | F-145 |
+| `results/spline_steering/checks.json` | `spline_scores` | Q3 progress idx 9–18, headline pairs, Q4, C11; Phase 5 reproduced to 4.4e-16 | ✅ passed | F-146 |
+| `results/spline_steering/checks.json` | `spline_naturalness`, `spline_held_out` | Q3 naturalness (idx 9 / 18); seen vs unseen targets and clips | ✅ passed | F-147 |
+| `results/spline_steering/comparison_table.md` + `checks.json` | `comparison_table` | 6.12–6.14 table from 11 clean sources | ✅ passed | F-148 |
+| `results/spline_steering/spline_paths.png`, `spline_profile.png` + `checks.json` | `figure_spline_paths`, `figure_spline_profile` | Path figure (Q3), propagation profile + Q4 | ℹ️ visual (reviewed) | F-148 |
+| `results/evidence/checks.json` | `code_hash_check` | Phase 6 gate: 68 keys, all matched, none to re-run | ✅ passed | F-148 |
+| `results/spline_steering/report.md` | — | Part 2 report: Q1–Q4, Goodfire comparison, strengths / limitations / failures, kept on record | ✅ gate passed | F-148; user-written from Claude Code's draft |
 | `results/data_audit/report.md` | — | Data audit report: what was verified (with check keys), failures kept on record, open items and what each affects | ✅ gate passed | F-74; user-written from saved evidence |
 
 All check scripts save through `src/vjepa_physics/evidence.py` (`save_result`). Provenance (D-27): `git_dirty`
@@ -638,6 +658,15 @@ what's next.
   redone; (3) text across the steep drop → moved into titles; (4) old `set_title` overwrote the new one (duplicate)
   → removed; (5) titles too wide, running into each other → shorter wording, font 9.5, wspace 0.2; (6) clean.
   **Step 6.14 figures done.**
+- 6.17 gate: `check_evidence.py` `HASH_CHECK_SUBJECTS` += `manifolds`, `behavior`, `spline_steering`;
+  `code_hash_check` **passed**: 68 keys checked (46 from Phases 3–5 + 22 from Phase 6), every key matches a commit
+  holding exactly its recorded code, `rerun_needed` empty (no re-runs needed this phase: every Phase 6 run went through
+  `require_clean_code()`). Claude Code's predictions: 68 keys ✓, none flagged ✓. **Gate evidence complete.**
+- 6.17: report `results/spline_steering/report.md` (user-written from Claude Code's draft), slide log +4 (Part 2
+  exception to D-48), talk outline item 7 done (3 min; trim at rehearsal). Phase 6 docs pass: DECISIONS §1.12
+  F-139–F-148, D-51 (closes O-09, O-11), H-01 / H-02 / H-12 / H-13 statuses, P-12 extended, change log; EXECUTION_PLAN
+  6.1–6.17 ticked (6.6, 6.8, 6.12 reworded); PROGRESS status, phase table, Saved evidence; CLAUDE.md. **Phase 6
+  passed.** Next session: Phase 7 (confounds and robustness).
 
 ### 2026-09-26 — Phase 5 started (multi-probe subspace steering)
 - Phase 5 layout (`steering.py`, partial forward in `intervention.py`, `check_steering.py`) and design brief drafted
