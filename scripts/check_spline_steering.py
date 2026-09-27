@@ -1044,8 +1044,8 @@ def check_figure_spline_profile() -> dict:
     ax.set_xticks(range(len(DATASETS)), [v.capitalize() for v in DATASETS])
     ax.set_xlim(-0.6, len(DATASETS) - 0.4)
     ax.set_ylabel("mean gain over idx 10–18,\nminus uniform edit (95% CI)", color=INK_SECONDARY)
-    ax.set_title("Token-structured edit: each time step gets its own covariance shift (reversed order = control)",
-                 color=INK, fontsize=11, loc="left")
+    ax.set_title("Token-structured edit: each time step gets its own covariance shift (reversed order = control); "
+                 "95% CIs are narrower than the markers", color=INK, fontsize=11, loc="left")
     ax.legend(handles=[Line2D([], [], color=INK, marker="s", ms=8, lw=0, label="time-structured − uniform"),
                        Line2D([], [], color=INK, marker="s", ms=8, lw=0, mfc=SURFACE, mew=1.8,
                               label="time-reversed − uniform")],
