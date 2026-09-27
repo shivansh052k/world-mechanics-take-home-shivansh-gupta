@@ -63,6 +63,12 @@ NATURALNESS_SITES = ("block_8", "block_17")  # indices 9 (same layer, labelled) 
 BIMODAL_BINS, BIMODAL_RATIO = 4, 0.5  # pre-stated: two peaks >= 4 bins (90°) apart, the second >= half the first
 FAR_DEGREES = 90.0  # direction targets farther than this from the unedited reading = "far"
 
+TABLE = REPO / "results/spline_steering/comparison_table.md"
+MANIFOLD_KEYS = ("manifold_loco", "manifold_ladder", "manifold_dimension", "direction_harmonics")
+BEHAVIOR_KEYS = ("behavior_readouts", "isometry", "isometry_local")
+SPLINE_KEYS = ("spline_setup", "spline_scores", "spline_naturalness", "spline_held_out")
+EXPECTED_FAILURES = {"behavior_readouts": {"validation_clips_per_bin_at_least_10"}}  # kept on record (planning chat)
+
 def kind_of(variable: str) -> str:
     return "loop" if variable == "direction" else "open"
 
@@ -741,12 +747,132 @@ def check_spline_held_out() -> dict:
             "criteria": criteria, "passed": all(criteria.values())}
     
 
+def fmt(x: float, digits: int = 3) -> str:
+    return f"{x:.{digits}f}"
+
+
+def fmt_ci(ci: list) -> str:
+    return f"[{ci[0]:.3f}, {ci[1]:.3f}]"
+
+
+def probe_shift_ratio(variable: str, distance: float) -> float:
+    """Median |shift_z| / median train clip distance of Phase 5's K - 1 probe edits (both halves, saved shifts)."""
+    seq = load_probe_sequence(variable)
+    ratios = []
+    for half in HALVES:
+        with np.load(verified_artifact(STEERING_CHECKS, f"steer_{variable}_{half}")) as f:
+            kinds, counts, shifts = f["arm_kind"], f["arm_n"], f["shifts"]
+        a = int(np.flatnonzero((kinds == "probes") & (counts == seq.k - 1))[0])
+        ratios.append(np.linalg.norm(shifts[:, :, a] / seq.scale, axis=-1).ravel())
+    return float(np.median(np.concatenate(ratios))) / distance
+
+
+def check_comparison_table() -> dict:
+    """The 6.12-6.14 table (one Markdown table, three blocks) from saved results only.
+
+    Representation (Q1 ladder, H-01 dimension, H-02 harmonics, Q2 isometry), steering (Q3: edit size, progress over
+    indices 9-18, naturalness, held-out targets; random arm as floor) and token structure (Q4). Writes
+    results/spline_steering/comparison_table.md. Passes if: every source key exists and was saved from clean code;
+    no source failed except behavior_readouts' recorded bin-count criterion; computed values finite; saved = rendered.
+    """
+    sources: dict[str, dict] = {}
+    ok: dict[str, list[bool]] = {"sources_clean": [], "sources_passed_or_recorded": []}
+    for checks, keys in ((MANIFOLD_CHECKS, MANIFOLD_KEYS), (BEHAVIOR_CHECKS, BEHAVIOR_KEYS), (OUT, SPLINE_KEYS)):
+        saved = json.loads(checks.read_text())
+        for key in keys:
+            entry = saved[key]
+            sources[key] = {"result": entry["result"], "commit": entry["provenance"]["git_commit"]}
+            ok["sources_clean"].append(entry["provenance"]["git_dirty"] is False)
+            failed = {name for name, value in entry["result"]["criteria"].items() if value is not True}
+            ok["sources_passed_or_recorded"].append(failed <= EXPECTED_FAILURES.get(key, set()))
+    r = {key: value["result"] for key, value in sources.items()}
+    loco, ladder, dim = (r["manifold_loco"]["variables"], r["manifold_ladder"]["variables"],
+                         r["manifold_dimension"]["variables"])
+    iso, local = r["isometry"]["variables"], r["isometry_local"]["variables"]
+    setup, scores = r["spline_setup"]["variables"], r["spline_scores"]["variables"]
+    natural, held = r["spline_naturalness"]["variables"], r["spline_held_out"]["variables"]
+    harm = r["direction_harmonics"]["sites"][STEERING_SITE]["power_share"]
+    k_minus_1 = {v: load_probe_sequence(v).k - 1 for v in DATASETS}
+    probe_ratio = {v: probe_shift_ratio(v, setup[v]["median_train_clip_distance"]) for v in DATASETS}
+
+    def row(block: str, quantity: str, cell, source: str) -> str:
+        return f"| {block} | {quantity} | " + " | ".join(cell(v) for v in DATASETS) + f" | `{source}` |"
+
+    def site9(v): return loco[v][STEERING_SITE]
+    none = lambda v: "—"
+    rows = [
+        row("Q1", "LOCO MSE, straight line → curve (idx 9)", lambda v: f"{site9(v)['line']['mse']:.1f} → {site9(v)['selected']['mse']:.1f}", "manifold_loco"),
+        row("Q1", "line − curve [95% CI]", lambda v: f"{site9(v)['gap_line_minus_selected']['mean']:.1f} [{site9(v)['gap_line_minus_selected']['ci'][0]:.1f}, {site9(v)['gap_line_minus_selected']['ci'][1]:.1f}]", "manifold_loco"),
+        row("Q1", "uneven-spacing share, B line / PC1 line (curvature = 1 − share)", lambda v: none(v) if v == "direction" else f"{fmt(ladder[v]['spacing_share']['covariance_split']['share'], 2)} / {fmt(ladder[v]['spacing_share']['pc1_split']['share'], 2)}", "manifold_ladder"),
+        row("H-01", "selected PCA dim k / Phase 4 K·m", lambda v: f"{dim[v][STEERING_SITE]['selected_k']} / {dim[v][STEERING_SITE]['K_dims']}", "manifold_dimension"),
+        row("H-01", "participation ratio of the fitted curve", lambda v: fmt(dim[v][STEERING_SITE]['curve_participation_ratio'], 2), "manifold_dimension"),
+        row("H-02", "harmonic power share h1 / h2 / h3+h4", lambda v: f"{fmt(harm[0], 2)} / {fmt(harm[1], 2)} / {fmt(harm[2] + harm[3], 2)}" if v == "direction" else "—", "direction_harmonics"),
+        row("Q2", "all pairs: r(act. geodesic, beh. geodesic) / r(label, beh.)", lambda v: f"{fmt(iso[v]['conditions']['A_idx18']['point']['geodesic_r'])} / {fmt(iso[v]['conditions']['A_idx18']['point']['label_r'])}", "isometry"),
+        row("Q2", "geodesic − label [95% CI]", lambda v: f"{fmt(iso[v]['conditions']['A_idx18']['point']['geodesic_minus_label'])} {fmt_ci(iso[v]['conditions']['A_idx18']['ci']['geodesic_minus_label'])}", "isometry"),
+        row("Q2", "local speed r [95% CI] (split-half ceiling)", lambda v: f"{fmt(local[v]['conditions']['A_idx18']['point']['cross'], 2)} {fmt_ci(local[v]['conditions']['A_idx18']['ci']['cross'])} ({fmt(local[v]['conditions']['A_idx18']['point']['ceiling'], 2)})", "isometry_local"),
+        row("Q3", "edit size ÷ clip distance: spline / covariance / free spacing / K−1 probes", lambda v: " / ".join([
+            fmt(setup[v]['median_shift_over_clip_distance']['spline_1'], 2),
+            fmt(setup[v]['median_shift_over_clip_distance']['covariance_0.75'] / 0.75, 2),
+            "—" if v == "direction" else fmt(setup[v]['median_shift_over_clip_distance']['spacing_line_1'], 2),
+            fmt(probe_ratio[v], 2)]), "spline_setup; steer_*"),
+        row("Q3", "spline vs covariance endpoint, ‖δ_spline − δ_cov‖ / ‖δ_cov‖ (median)", lambda v: fmt(setup[v]['spline_vs_covariance_endpoint_relative']['all'][1], 2), "spline_setup"),
+    ]
+    methods = lambda v: {"spline": "spline_1", "covariance line": "covariance_1", "free-spacing line": "spacing_line_1",
+                         "K−1 probes": f"phase5_probes_{k_minus_1[v]}", "random (floor)": f"phase5_random_{k_minus_1[v]}"}
+    for label in ("spline", "covariance line", "free-spacing line", "K−1 probes", "random (floor)"):
+        rows.append(row("Q3", f"gain idx 9 / 18 / mean 10–18: {label}", lambda v, label=label: "—" if methods(v)[label] not in scores[v]["summary"] else " / ".join(
+            fmt(scores[v]["summary"][methods(v)[label]][key]) for key in ("idx9", "idx18", "downstream_mean")), "spline_scores"))
+    for label in ("spline", "covariance line", "K−1 probes", "random (floor)"):
+        rows.append(row("Q3", f"excess naturalness idx 9 / 18: {label}", lambda v, label=label: " / ".join(
+            fmt(natural[v]["sites"][site][methods(v)[label]]["excess_hellinger_mean"]) for site in ("9", "18")), "spline_naturalness"))
+    rows += [
+        row("Q3", "midpoint excess, spline − chord, idx 9 [CI]", lambda v: f"{fmt(natural[v]['headline']['midpoint_spline_minus_chord_idx9']['all']['point'])} {fmt_ci(natural[v]['headline']['midpoint_spline_minus_chord_idx9']['all']['ci'])}", "spline_naturalness"),
+        row("Q3", "midpoint excess, spline − chord, idx 18 [CI]", lambda v: f"{fmt(natural[v]['headline']['midpoint_spline_minus_chord_idx18']['all']['point'])} {fmt_ci(natural[v]['headline']['midpoint_spline_minus_chord_idx18']['all']['ci'])}", "spline_naturalness"),
+        row("Q3", "held-out targets: spline gain idx 9, seen / unseen", lambda v: f"{fmt(held[v]['subsets']['seen_targets']['arms']['spline_1']['gain_idx9'])} / {fmt(held[v]['subsets']['unseen_targets']['arms']['spline_1']['gain_idx9'])}", "spline_held_out"),
+        row("Q4", "time-structured − uniform, mean gain 10–18 [CI]", lambda v: f"{fmt(scores[v]['headline']['time_minus_covariance_downstream']['point'])} {fmt_ci(scores[v]['headline']['time_minus_covariance_downstream']['ci'])}", "spline_scores"),
+        row("Q4", "time-reversed − uniform [CI]", lambda v: f"{fmt(scores[v]['headline']['reversed_minus_covariance_downstream']['point'])} {fmt_ci(scores[v]['headline']['reversed_minus_covariance_downstream']['ci'])}", "spline_scores"),
+        row("Q4", "confirmation run triggered (C11)", lambda v: "yes" if scores[v]["c11"]["triggered"] else "no", "spline_scores"),
+    ]
+    notes = [
+        "Gain = Σ achieved·intended / Σ |intended|² in the readout's output space (direction: (sin, cos)); 1 = the "
+        "readout reaches the target, 0 = no change. Readouts: validation-fit ridge probes at each index (D-16).",
+        "Index 9 is the steering layer (same-layer readout, partly by construction); index 18 is the evidence.",
+        "Excess naturalness = Hellinger distance of the edited clip's 16-bin readout to the behavior curve minus the same "
+        "clip's unedited distance (negative = more natural than the unedited clip). Speed / acceleration: blurry readout "
+        "(top-1 0.28 / 0.26, within one bin 0.72 / 0.65).",
+        "Unseen targets: values with no centroid in the curve fit (interpolation). Q4 arms were designed after Phase 5's "
+        "results; the pre-declared confirmation threshold (≥ 0.05) was not met, so Q4 is not confirmed on fresh clips.",
+        "Isometry: split halves of the train clips; readout A at index 18. Local speed = arc length per unit label.",
+    ]
+    text = "\n".join([
+        "# Spline vs multi-probe steering: comparison table (6.12-6.14)", "",
+        "Generated by `scripts/check_spline_steering.py comparison_table` from saved results only.", "",
+        "| Block | Quantity | Direction | Speed | Acceleration | Source key |", "|---|---|---|---|---|---|",
+        *rows, "", "Notes:", "", *[f"- {n}" for n in notes], "",
+        "Sources (commit): " + ", ".join(f"`{k}` {v['commit'][:7]}" for k, v in sources.items()), "",
+    ])
+    TABLE.parent.mkdir(parents=True, exist_ok=True)
+    TABLE.write_text(text)
+    criteria = {name: all(v) for name, v in ok.items()} | {
+        "computed_finite": bool(np.isfinite(list(probe_ratio.values())).all()),
+        "saved_equals_rendered": TABLE.read_text() == text,
+    }
+    return {
+        "table": {"path": str(TABLE.relative_to(REPO)), "sha256": file_sha256(TABLE)},
+        "k_minus_1_probe_shift_over_clip_distance": probe_ratio,
+        "sources": {k: v["commit"] for k, v in sources.items()},
+        "criteria": criteria, "passed": all(criteria.values()),
+    }
+    
+
+
 CHECKS = {
     "spline_setup": check_spline_setup,
     **{f"spline_{v}_{h}": partial(spline_run, v, h) for v in DATASETS for h in HALVES},
     "spline_scores": check_spline_scores,
     "spline_naturalness": check_spline_naturalness,
     "spline_held_out": check_spline_held_out,
+    "comparison_table": check_comparison_table,
 }
 
 
