@@ -386,6 +386,21 @@ what's next.
   pairs, 1,176 + 1,176 clips; train 32 pairs, 512 + 512 clips, weight sums 32 / 32, mean-distance gap 0.0003 m;
   validation 37 pairs, 208 + 188 clips, weight sums 37 / 37, gap raw 0.037 → weighted 0.0004 m. All predictions met.
   **Step 7.1b-1 done.**
+- 7.1b-2: `check_confounds.py matched_distance_classifier` **passed** (6/6, clean commit). Distance-only control:
+  upper-edge alpha (`no_signal`), balanced accuracy 0.500 (constant prediction), AUC 0.4996 → matching works. Weighted
+  balanced accuracy by index: 0 0.509, 1 0.765, 2 0.855, 3 0.90, 6 0.93, 9 0.947, 12 0.98, 15–18 0.983–0.986, 24 0.969,
+  final norm 0.973. **Idx 9: 0.947 [0.920, 0.971], AUC 0.990 [0.983, 0.996]; idx 18: 0.983 [0.967, 0.997], AUC 0.999
+  [0.997, 1.0] → "motion profile linearly separable at matched distance"** (with 7.1a: the linear speed / acceleration
+  probes read distance, while the representation also carries the profile; F-141 confirmed per clip). Idx 0 ≈ chance
+  (observation). Claude Code's predictions: criteria ✓, control 0.45–0.58 ✓, idx 9 / 18 ✓, idx 0 ✓; idx 1 ≥ 0.8 **wrong**
+  (0.765: profile separability grows with depth, unlike the probes' idx-1 transition). **Step 7.1b done.**
+- 7.2a: `src/vjepa_physics/robustness.py` (`MOTION_TYPES`, `motion_masks`, `distance_overlap` = F-65's rule via
+  `confounds.overlap_window`, replacing the brief's hand-picked groups). Smoke test (terminal, not saved): 750 / 750;
+  roles velocity train 397 / val_seen 107 / val_unseen 48 / test_seen 107 / test_unseen 91, acceleration 416 / 96 / 46 /
+  96 / 96; exit 113 / 0; overlap [0.625, 1.953] m = velocity 1–3 m/s (322) + acceleration 4–10 m/s² (600), 2 m/s²
+  excluded, no exit clip. Prediction "≈ 406 train each" missed: velocity cells are smaller (13–14 vs 18–20 clips, F-63),
+  so D-38's per-cell floor + remainder allocation gives them a larger validation / test share (explanation by
+  arithmetic, not re-derived). **Step 7.2a done.**
 
 ### 2026-09-26 — Phase 6 started (spline steering)
 - Phase 6 layout (`manifolds.py`, `behavior.py`, spline arms in `steering.py`; `check_manifolds.py`,
