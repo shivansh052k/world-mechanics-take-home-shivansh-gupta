@@ -1055,7 +1055,7 @@ def check_figure_spline_profile() -> dict:
         Line2D([], [], color=INK, lw=0, marker="o", ms=9, mfc=SURFACE, mew=1.6, label="spline endpoint"),
         Line2D([], [], color=INK, lw=2.0, marker="o", ms=5, label="covariance line"),
         Line2D([], [], color=INK, lw=1.4, ls=(0, (1, 2)), marker="s", ms=5, label="time-structured covariance"),
-        Line2D([], [], color=INK_SECONDARY, lw=1.6, ls=(0, (4, 3)), marker="^", ms=5, label="K − 1 probes (Phase 5)"),
+        Line2D([], [], color=INK_SECONDARY, lw=1.6, ls=(0, (4, 3)), marker="^", ms=5, label="K − 1 probes (Part 1)"),
         Line2D([], [], color=INK_MUTED, lw=1.2, label="random, same length (floor)"),
     ]
     fig.suptitle("Propagation of the edit from the steering layer (index 9) to index 18; colour = variable",
