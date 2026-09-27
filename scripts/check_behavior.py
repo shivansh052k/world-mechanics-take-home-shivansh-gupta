@@ -319,9 +319,104 @@ def check_isometry() -> dict:
     }
     
 
+def local_speed(points_at, values: np.ndarray, kind: str, variable: str) -> np.ndarray:
+    """Per adjacent pair of seen values (loop: including the wrap-around pair): arc length along the curve divided
+    by the label step between them."""
+    positions, total = path_positions(points_at, values, kind)
+    g = geodesic_distances(positions, total, kind)
+    n = len(values)
+    si = np.arange(n - 1) if kind == "open" else np.arange(n)
+    sj = (si + 1) % n
+    return g[si, sj] / label_distances(variable, values)[si, sj]
+
+
+def check_isometry_local() -> dict:
+    """Post hoc (planning chat, after `isometry`; rule fixed before computing): local speed per unit label.
+
+    Adjacent seen values are 1 grid step apart except across a held-out value (2 steps), so raw segment lengths
+    track the gaps in both spaces. Here each segment's arc length is divided by its label step (local speed); the
+    label null becomes a constant and drops out. Evidence: r(activation local speed from the first half of each
+    value's train clips, behavior local speed from the second half), as in `isometry`. Ceiling: each space's
+    split-half reliability (first vs second half) and sqrt(rel_activation x rel_behavior). Conditions: readout A at
+    index 18 (evidence), A at index 9 (same-layer control), B at index 18. Segment bootstrap, same resamples for
+    every statistic. Rule: "beats the label locally" only if the 95% interval of r(local speed) lies above 0.
+    Passes if: both halves hold every seen value; every label step > 0; everything finite.
+    """
+    with np.load(verified_artifact(OUT, "behavior_readouts")) as f:
+        readouts = {key: f[key] for key in f.files}
+    with np.load(verified_artifact(MANIFOLD_CHECKS, "manifold_loco")) as f:
+        curves = {key: f[key] for key in f.files}
+
+    ok: dict[str, list[bool]] = {name: [] for name in ("halves_hold_every_value", "positive_label_steps", "finite")}
+    result: dict = {}
+    for code_v, variable in enumerate(DATASETS):
+        table = load_joined(variable)
+        roles, labels, value_index = table["role"], table["label"], table["value_index"]
+        kind = kind_of(variable)
+        halves = dict(zip(("first", "second"), split_halves(table, variable)))
+
+        x = site_features(table["activations"], ACTIVATION_SITE)
+        scaler = train_scaler(x, roles)
+        z = (x - scaler.mean_) / scaler.scale_
+        a, b = (int(k) for k in curves[f"{variable}_{ACTIVATION_SITE}_selected"])
+        activation, values = {}, None
+        for half, mask in halves.items():
+            v, cents, _ = value_centroids(z, value_index, labels, as_roles(mask))
+            values = v if values is None else values
+            ok["halves_hold_every_value"].append(bool(np.array_equal(v, values)))
+            activation[half] = fit_curve(kind, v, cents, PCA_DIMS[a], smoothing_grid(kind, v)[b])
+        n = len(values)
+        si = np.arange(n - 1) if kind == "open" else np.arange(n)
+        steps = label_distances(variable, values)[si, (si + 1) % n]
+        ok["positive_label_steps"].append(bool((steps > 0).all()))
+        act_speed = {h: local_speed(activation[h], values, kind, variable) for h in halves}
+
+        record: dict = {"n_segments": int(len(si)), "label_steps": sorted(set(np.round(steps, 9).tolist())),
+                        "conditions": {}}
+        for code_c, (name, (suffix, label)) in enumerate(ISOMETRY_CONDITIONS.items()):
+            p = readouts[f"{variable}_{suffix}"]
+            beh_speed = {}
+            for half, mask in halves.items():
+                v, sqrt_cents, _ = value_centroids(np.sqrt(p), value_index, labels, as_roles(mask))
+                ok["halves_hold_every_value"].append(bool(np.array_equal(v, values)))
+                curve = behavior_curve(kind, v, sqrt_cents)
+                beh_speed[half] = local_speed(lambda g, c=curve: c.points(g) / np.sqrt(2.0), values, kind, variable)
+
+            pairs = {"cross": (act_speed["first"], beh_speed["second"]),
+                     "reliability_activation": (act_speed["first"], act_speed["second"]),
+                     "reliability_behavior": (beh_speed["first"], beh_speed["second"])}
+            point = {k: correlation(*v) for k, v in pairs.items()}
+            point["cross_spearman"] = correlation(*pairs["cross"], rank=True)
+            point["ceiling"] = float(np.sqrt(max(point["reliability_activation"], 0.0)
+                                             * max(point["reliability_behavior"], 0.0)))
+            rng = np.random.default_rng(np.random.SeedSequence([SEED, DATASETS.index(variable), 100 + code_c]))
+            boot = {k: [] for k in pairs}
+            for _ in range(ISOMETRY_RESAMPLES):
+                s = rng.integers(0, len(si), len(si))
+                for k, (u, w) in pairs.items():
+                    boot[k].append(correlation(u[s], w[s]))
+            ci = {k: list(percentile_interval(np.array(v))) for k, v in boot.items()}
+            record["conditions"][name] = {
+                "label": label, "point": point, "ci": ci,
+                "verdict": "beats the label locally" if ci["cross"][0] > 0 else "does not beat the label locally",
+            }
+        ok["finite"].append("NaN" not in json.dumps(record) and "Infinity" not in json.dumps(record))
+        result[variable] = record
+
+    criteria = {name: all(v) for name, v in ok.items()}
+    return {
+        "post_hoc": True, "variables": result, "resamples": ISOMETRY_RESAMPLES,
+        "rule": "beats the label locally only if the 95% interval of r(local speed) lies above 0",
+        "notes": ["readout A's 16 bins are equal-width in the label, so behavior distances inherit label spacing "
+                  "partly by construction (limitation; arc-length bins would be circular)"],
+        "criteria": criteria, "passed": all(criteria.values()),
+    }
+    
+
 CHECKS = {
     "behavior_readouts": check_behavior_readouts,
     "isometry": check_isometry,
+    "isometry_local": check_isometry_local,
 }
 
 
