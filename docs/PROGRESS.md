@@ -492,6 +492,13 @@ what's next.
   residual 5.0e-16; full-space overlap 0.00585 vs k_A/d 0.00586 (0.19 SE). Preview (not a result): speed–acceleration
   weights K−1 idx 9 overlap 0.371 (mean angle 54.3°) vs null median 0.0069 → "aligned beyond chance". All predictions
   met. **Step 7.5a done.**
+- 7.5b: `check_robustness.py subspace_overlap` **passed** (8/8, clean commit; ~3–5 min CPU). idx 9: speed–acceleration
+  aligned beyond chance in every subspace and space (weights K−1 0.371 / 54°, patterns 0.71 / 33°); direction pairs at
+  chance for weights (angles 84–89°, = paper C.4), speed–direction patterns beyond chance but tiny (83°); readouts valid
+  on the other sets (R² 0.93–0.98); direction steering moves speed / acceleration readouts slightly more than random
+  (+0.012 m/s, +0.055 m/s², CIs > 0), speed / acceleration steering does not move direction. F-157 added. Claude Code's
+  predictions: criteria ✓, speed–acceleration ✓ (patterns stronger ✓), direction weights at chance ✓, validity ✓;
+  speed–direction patterns beyond chance ✗, direction → speed / acceleration cross-talk ✗. **Step 7.5 done.**
 
 ### 2026-09-26 — Phase 6 started (spline steering)
 - Phase 6 layout (`manifolds.py`, `behavior.py`, spline arms in `steering.py`; `check_manifolds.py`,

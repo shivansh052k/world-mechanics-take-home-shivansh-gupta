@@ -7580,5 +7580,4921 @@
       },
       "passed": true
     }
+  },
+  "subspace_overlap": {
+    "provenance": {
+      "utc": "2026-09-27T08:04:24+00:00",
+      "git_commit": "6de292d357b16567a681119040bad4321c7f1958",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/confounds.py": "9f20249c1e81d142c995a8a0f6deb7c026cea41955d26ee719ab769614582c47",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/robustness.py": "0bed621b86ed39f41cfb17fe7e68959827f2640f892fe264c49f31c4f19460bc",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "2aaf059c980a059425efef4d1e808ce3768a93dbdb9ddbf47448423dabeae0a0",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_robustness.py": "ff57d5a41bbe4c04262fe818e185075e6b7947b5b367bc9f3f55c27f4a883b91"
+        },
+        "combined_sha256": "3b482b07ab3485b2b185e21d7299ed6ae2c0c46738a0002666fa69fd629d864b"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "null_draws": 1000,
+      "validity_r2": 0.5,
+      "counts": {
+        "validity_clips": {
+          "speed_on_direction": 87,
+          "acceleration_on_direction": 87,
+          "direction_on_speed": 304,
+          "direction_on_acceleration": 304
+        }
+      },
+      "summary": {
+        "overlap_idx9": {
+          "speed-acceleration": {
+            "weights_1": {
+              "common": [
+                0.3601,
+                "aligned beyond chance",
+                0.3601,
+                "aligned beyond chance",
+                53.1
+              ],
+              "raw": [
+                0.2982,
+                "aligned beyond chance",
+                0.2982,
+                "aligned beyond chance",
+                56.9
+              ]
+            },
+            "weights_k_minus_1": {
+              "common": [
+                0.3706,
+                "aligned beyond chance",
+                0.3706,
+                "aligned beyond chance",
+                54.3
+              ],
+              "raw": [
+                0.3638,
+                "aligned beyond chance",
+                0.3638,
+                "aligned beyond chance",
+                54.8
+              ]
+            },
+            "patterns": {
+              "common": [
+                0.7095,
+                "aligned beyond chance",
+                0.7095,
+                "aligned beyond chance",
+                32.6
+              ],
+              "raw": [
+                0.78,
+                "aligned beyond chance",
+                0.78,
+                "aligned beyond chance",
+                28.0
+              ]
+            }
+          },
+          "speed-direction": {
+            "weights_1": {
+              "common": [
+                0.0008,
+                "at chance",
+                0.0017,
+                "at chance",
+                87.7
+              ],
+              "raw": [
+                0.0016,
+                "at chance",
+                0.0033,
+                "at chance",
+                86.7
+              ]
+            },
+            "weights_k_minus_1": {
+              "common": [
+                0.0088,
+                "at chance",
+                0.0147,
+                "at chance",
+                83.9
+              ],
+              "raw": [
+                0.0099,
+                "at chance",
+                0.0165,
+                "at chance",
+                83.4
+              ]
+            },
+            "patterns": {
+              "common": [
+                0.0079,
+                "aligned beyond chance",
+                0.0158,
+                "aligned beyond chance",
+                82.8
+              ],
+              "raw": [
+                0.0156,
+                "aligned beyond chance",
+                0.0313,
+                "aligned beyond chance",
+                79.8
+              ]
+            }
+          },
+          "acceleration-direction": {
+            "weights_1": {
+              "common": [
+                0.0004,
+                "at chance",
+                0.0007,
+                "at chance",
+                88.5
+              ],
+              "raw": [
+                0.0006,
+                "at chance",
+                0.0012,
+                "at chance",
+                88.0
+              ]
+            },
+            "weights_k_minus_1": {
+              "common": [
+                0.0084,
+                "at chance",
+                0.014,
+                "at chance",
+                84.4
+              ],
+              "raw": [
+                0.0089,
+                "at chance",
+                0.0148,
+                "at chance",
+                83.9
+              ]
+            },
+            "patterns": {
+              "common": [
+                0.0027,
+                "at chance",
+                0.0054,
+                "at chance",
+                85.8
+              ],
+              "raw": [
+                0.0064,
+                "at chance",
+                0.0129,
+                "at chance",
+                83.5
+              ]
+            }
+          }
+        },
+        "validity_r2_idx9_idx18": {
+          "speed_on_direction": [
+            0.971,
+            0.982
+          ],
+          "acceleration_on_direction": [
+            0.957,
+            0.945
+          ],
+          "direction_on_speed": [
+            0.96,
+            0.971
+          ],
+          "direction_on_acceleration": [
+            0.929,
+            0.954
+          ]
+        },
+        "specificity": {
+          "direction_to_speed": [
+            0.0119,
+            [
+              0.0052,
+              0.019
+            ],
+            "cross-talk beyond a random edit"
+          ],
+          "direction_to_acceleration": [
+            0.0552,
+            [
+              0.0309,
+              0.0803
+            ],
+            "cross-talk beyond a random edit"
+          ],
+          "speed_to_direction": [
+            -0.0003,
+            [
+              -0.2901,
+              0.3172
+            ],
+            "no cross-talk beyond a random edit"
+          ],
+          "acceleration_to_direction": [
+            -0.1648,
+            [
+              -0.4127,
+              0.0858
+            ],
+            "no cross-talk beyond a random edit"
+          ]
+        }
+      },
+      "sites": {
+        "block_0": {
+          "plot_index": 1,
+          "k": {
+            "direction": 8,
+            "speed": 14,
+            "acceleration": 13
+          },
+          "span_rank": {
+            "direction": 812,
+            "speed": 831,
+            "acceleration": 831
+          },
+          "pairs": {
+            "speed-acceleration": {
+              "weights_1": {
+                "common": {
+                  "mean_angle_degrees": 52.50111021165676,
+                  "overlap_a_on_b": 0.37057176094722827,
+                  "overlap_b_on_a": 0.37057176094722827,
+                  "grassmann": 0.9163172341458274,
+                  "angles_degrees": [
+                    52.50111021165676
+                  ],
+                  "dims": [
+                    1,
+                    1
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.0009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.56488312195893,
+                      "interval": [
+                        85.57112609875021,
+                        89.93126795099839
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0006272468656011345,
+                      "interval": [
+                        1.4392709133480289e-06,
+                        0.005963157231830726
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0006272468656011345,
+                      "interval": [
+                        1.4392709133480289e-06,
+                        0.005963157231830726
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5457488121221377,
+                      "interval": [
+                        1.4934978950624416,
+                        1.5695967262381763
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.74978204526565,
+                      "interval": [
+                        85.65912846067152,
+                        89.93689624735897
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.00047605667810817225,
+                      "interval": [
+                        1.2131488475371645e-06,
+                        0.005729027382035551
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.00047605667810817225,
+                      "interval": [
+                        1.2131488475371645e-06,
+                        0.005729027382035551
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5489759071172327,
+                      "interval": [
+                        1.4950338260275,
+                        1.5696949585409465
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 53.69405778072372,
+                  "overlap_a_on_b": 0.3505785725843691,
+                  "overlap_b_on_a": 0.3505785725843691,
+                  "grassmann": 0.9371380970297083,
+                  "angles_degrees": [
+                    53.69405778072372
+                  ],
+                  "dims": [
+                    1,
+                    1
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.0009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.21207261045204,
+                      "interval": [
+                        84.30067435002212,
+                        89.94073641266189
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0009734516080487138,
+                      "interval": [
+                        1.0699542470902527e-06,
+                        0.009862087140530834
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0009734516080487138,
+                      "interval": [
+                        1.0699542470902527e-06,
+                        0.009862087140530834
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5395911070606974,
+                      "interval": [
+                        1.4713243290594167,
+                        1.5697619820693034
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.34579662936284,
+                      "interval": [
+                        84.69193782559394,
+                        89.93576296822567
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0008333204079596327,
+                      "interval": [
+                        1.2570144929789709e-06,
+                        0.008558232706085068
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0008333204079596327,
+                      "interval": [
+                        1.2570144929789709e-06,
+                        0.008558232706085068
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.54192503147969,
+                      "interval": [
+                        1.4781531649509412,
+                        1.5696751790887262
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              },
+              "weights_k_minus_1": {
+                "common": {
+                  "mean_angle_degrees": 50.107953841579636,
+                  "overlap_a_on_b": 0.41041236555955346,
+                  "overlap_b_on_a": 0.37884218359343397,
+                  "grassmann": 3.3302925721853267,
+                  "angles_degrees": [
+                    5.913234603236402,
+                    17.35440126546575,
+                    19.41606146954707,
+                    40.8712105446631,
+                    54.961700306118956,
+                    55.548885167456206,
+                    59.72800426890346,
+                    61.720324775986334,
+                    63.65009296115222,
+                    69.78062527160372,
+                    73.3330892678344,
+                    79.0178161969879
+                  ],
+                  "dims": [
+                    13,
+                    12
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0126953125,
+                    "overlap_b_on_a": 0.01171875
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.88151512478713,
+                      "interval": [
+                        83.11596425660912,
+                        84.5601375798641
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.01545734879894144,
+                      "interval": [
+                        0.012282754664670064,
+                        0.01920782033155035
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.014268321968253636,
+                      "interval": [
+                        0.011337927382772365,
+                        0.01773029569066186
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 5.076454430042935,
+                      "interval": [
+                        5.031155133165346,
+                        5.11682708172698
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.96107589543874,
+                      "interval": [
+                        83.20768365359893,
+                        84.63734344083547
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.01387223079040666,
+                      "interval": [
+                        0.010919352937771012,
+                        0.01720833672431224
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.015028250022940549,
+                      "interval": [
+                        0.011829299015918594,
+                        0.018642364784671597
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 5.0811417925739555,
+                      "interval": [
+                        5.0359587511891855,
+                        5.121382323751307
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 50.16412623844809,
+                  "overlap_a_on_b": 0.40994922282387586,
+                  "overlap_b_on_a": 0.37841466722203926,
+                  "grassmann": 3.32191624671632,
+                  "angles_degrees": [
+                    7.316877364240148,
+                    18.331869763340883,
+                    18.88349238545811,
+                    41.141051181477174,
+                    54.4950694512845,
+                    56.69676346884246,
+                    60.71018161590844,
+                    61.605385996556336,
+                    62.91683324912505,
+                    68.86681034823889,
+                    72.357173987467,
+                    78.64800604943814
+                  ],
+                  "dims": [
+                    13,
+                    12
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0126953125,
+                    "overlap_b_on_a": 0.01171875
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 81.73674607893017,
+                      "interval": [
+                        80.76894991298403,
+                        82.69687639604244
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.027998725062770617,
+                      "interval": [
+                        0.02214853105765013,
+                        0.03427311848849723
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.025844976981019036,
+                      "interval": [
+                        0.02044479789936935,
+                        0.03163672475861282
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.95095526557839,
+                      "interval": [
+                        4.893971470372061,
+                        5.006805942302892
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 81.81019140151288,
+                      "interval": [
+                        80.83384840072402,
+                        82.64055007501489
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.025494648584739096,
+                      "interval": [
+                        0.020697378635744848,
+                        0.03147532682050453
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.027619202633467354,
+                      "interval": [
+                        0.022422160188723582,
+                        0.03409827072221324
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.955075614130406,
+                      "interval": [
+                        4.897109782707544,
+                        5.004523264170362
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              },
+              "patterns": {
+                "common": {
+                  "mean_angle_degrees": 4.752695215368467,
+                  "overlap_a_on_b": 0.9931350346837103,
+                  "overlap_b_on_a": 0.9931350346837103,
+                  "grassmann": 0.08295017985196075,
+                  "angles_degrees": [
+                    4.752695215368467
+                  ],
+                  "dims": [
+                    1,
+                    1
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.0009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.70223153811058,
+                      "interval": [
+                        85.71406230468834,
+                        89.93213997717753
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0005129577804700945,
+                      "interval": [
+                        1.4028806503883323e-06,
+                        0.00558516805681352
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0005129577804700945,
+                      "interval": [
+                        1.4028806503883323e-06,
+                        0.00558516805681352
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5481459942063838,
+                      "interval": [
+                        1.4959926024763706,
+                        1.569611945966166
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.69659887823738,
+                      "interval": [
+                        85.74425541249246,
+                        89.93806522485514
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0005174129538040967,
+                      "interval": [
+                        1.1686296566519815e-06,
+                        0.005506898196992796
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0005174129538040967,
+                      "interval": [
+                        1.1686296566519815e-06,
+                        0.005506898196992796
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5480476857459515,
+                      "interval": [
+                        1.496519571618962,
+                        1.5697153610471364
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 2.2243121796762857,
+                  "overlap_a_on_b": 0.9984936425943151,
+                  "overlap_b_on_a": 0.9984936425943151,
+                  "grassmann": 0.03882157112756288,
+                  "angles_degrees": [
+                    2.2243121796762857
+                  ],
+                  "dims": [
+                    1,
+                    1
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.0009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 82.93511146170323,
+                      "interval": [
+                        70.42193638705906,
+                        89.68185424377874
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.015127458685645481,
+                      "interval": [
+                        3.0832108237793334e-05,
+                        0.1122858968656634
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.015127458685645481,
+                      "interval": [
+                        3.0832108237793334e-05,
+                        0.1122858968656634
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.4474907605152083,
+                      "interval": [
+                        1.2290946555841806,
+                        1.5652436358475885
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.41502265991515,
+                      "interval": [
+                        70.6058454041273,
+                        89.70823445033653
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.01315079149208911,
+                      "interval": [
+                        2.5931020551850267e-05,
+                        0.11026709881725802
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.01315079149208911,
+                      "interval": [
+                        2.5931020551850267e-05,
+                        0.11026709881725802
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.4558667910411975,
+                      "interval": [
+                        1.2323044734561275,
+                        1.5657040573093781
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              }
+            },
+            "speed-direction": {
+              "weights_1": {
+                "common": {
+                  "mean_angle_degrees": 88.78153818959136,
+                  "overlap_a_on_b": 0.0002260909154827538,
+                  "overlap_b_on_a": 0.0004521818309655076,
+                  "grassmann": 1.549530156393455,
+                  "angles_degrees": [
+                    88.78153818959136
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.68553516013087,
+                      "interval": [
+                        84.37908998453132,
+                        89.57125186061296
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.000815435899531576,
+                      "interval": [
+                        2.7997662140439866e-05,
+                        0.004796736492220878
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.001630871799063152,
+                      "interval": [
+                        5.599532428087973e-05,
+                        0.009593472984441756
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.530401294917537,
+                      "interval": [
+                        1.4726929400666429,
+                        1.5633132601007933
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.72139479332728,
+                      "interval": [
+                        84.93450645206332,
+                        89.54820292150632
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.001580752803242067,
+                      "interval": [
+                        6.217740472918381e-05,
+                        0.007795909309127733
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0007903764016210335,
+                      "interval": [
+                        3.1088702364591906e-05,
+                        0.0038979546545638666
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5310271635853714,
+                      "interval": [
+                        1.482386786144872,
+                        1.5629109802242906
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 89.27225297274609,
+                  "overlap_a_on_b": 8.066075162904208e-05,
+                  "overlap_b_on_a": 0.00016132150325808415,
+                  "grassmann": 1.558094745047715,
+                  "angles_degrees": [
+                    89.27225297274609
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 86.94602295354245,
+                      "interval": [
+                        83.00500886308949,
+                        89.40924442722832
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0014192049485536522,
+                      "interval": [
+                        5.315266854342804e-05,
+                        0.007415501245463241
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0028384098971073043,
+                      "interval": [
+                        0.00010630533708685607,
+                        0.014831002490926481
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5174943720538807,
+                      "interval": [
+                        1.4487107003079869,
+                        1.5604856969755259
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.16470536710261,
+                      "interval": [
+                        83.52149838414307,
+                        89.44407241533948
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0024467903912629473,
+                      "interval": [
+                        9.414073862551744e-05,
+                        0.012730700808978082
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0012233951956314736,
+                      "interval": [
+                        4.707036931275872e-05,
+                        0.006365350404489041
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5213111001867132,
+                      "interval": [
+                        1.4577251430024203,
+                        1.561093560039911
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                }
+              },
+              "weights_k_minus_1": {
+                "common": {
+                  "mean_angle_degrees": 77.04051644794485,
+                  "overlap_a_on_b": 0.07129969754424961,
+                  "overlap_b_on_a": 0.07678428966303805,
+                  "grassmann": 4.889102966992016,
+                  "angles_degrees": [
+                    57.69321668652991,
+                    62.771356369875505,
+                    67.69438030602535,
+                    69.55189343516693,
+                    73.57240229103817,
+                    74.43800576195686,
+                    78.49143267653942,
+                    80.37722326454649,
+                    83.67418832244795,
+                    86.55306042252387,
+                    87.82641302467125,
+                    89.26434226061205,
+                    89.61879900134934
+                  ],
+                  "dims": [
+                    13,
+                    14
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0126953125,
+                    "overlap_b_on_a": 0.013671875
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.57916788594528,
+                      "interval": [
+                        82.85929277439719,
+                        84.26561723650998
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.015767350108941702,
+                      "interval": [
+                        0.012837593046834149,
+                        0.019316898419511595
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.01698022319424491,
+                      "interval": [
+                        0.013825100204282929,
+                        0.02080281368255095
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 5.265038842967133,
+                      "interval": [
+                        5.220299137517042,
+                        5.307593330394784
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.76526003783648,
+                      "interval": [
+                        83.06940666268757,
+                        84.39538787037375
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0160143520968528,
+                      "interval": [
+                        0.01318383849160149,
+                        0.019353012660046923
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.014870469804220455,
+                      "interval": [
+                        0.012242135742201383,
+                        0.017970654612900712
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 5.2766241877578,
+                      "interval": [
+                        5.233617995049607,
+                        5.315547304540342
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 75.83964206900374,
+                  "overlap_a_on_b": 0.08025860905515883,
+                  "overlap_b_on_a": 0.08643234821324798,
+                  "grassmann": 4.815619835178441,
+                  "angles_degrees": [
+                    57.10804022868317,
+                    59.92511218705768,
+                    63.85535014310478,
+                    68.60099635295857,
+                    73.94130188268568,
+                    76.19822157758817,
+                    77.61252206091285,
+                    79.0339438751264,
+                    82.40964385334782,
+                    84.27309917746996,
+                    85.77206665888815,
+                    87.59456378248309,
+                    89.59048511674243
+                  ],
+                  "dims": [
+                    13,
+                    14
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0126953125,
+                    "overlap_b_on_a": 0.013671875
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 81.26814203595112,
+                      "interval": [
+                        80.30278006360153,
+                        82.19785282615713
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.028971191149246997,
+                      "interval": [
+                        0.023548467214176305,
+                        0.035285268731057785
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.031199744314573688,
+                      "interval": [
+                        0.02535988776911294,
+                        0.03799952017190838
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 5.125249509263199,
+                      "interval": [
+                        5.065437066915283,
+                        5.182819660805887
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 81.34041043212821,
+                      "interval": [
+                        80.386610266481,
+                        82.2221745539656
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.03058210377804793,
+                      "interval": [
+                        0.025135066857312777,
+                        0.036785330421555046
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.02839766779390165,
+                      "interval": [
+                        0.023339704938933295,
+                        0.034157806820015395
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 5.129338024244981,
+                      "interval": [
+                        5.071077993624585,
+                        5.183702303543596
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              },
+              "patterns": {
+                "common": {
+                  "mean_angle_degrees": 65.08587854399806,
+                  "overlap_a_on_b": 0.0887297225082332,
+                  "overlap_b_on_a": 0.1774594450164664,
+                  "grassmann": 1.1359628771458992,
+                  "angles_degrees": [
+                    65.08587854399806
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.6577799566961,
+                      "interval": [
+                        84.59967720719365,
+                        89.570079026465
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0008351002992339799,
+                      "interval": [
+                        2.8151038268105632e-05,
+                        0.004428726267559084
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0016702005984679598,
+                      "interval": [
+                        5.6302076536211265e-05,
+                        0.008857452535118169
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5299168752330394,
+                      "interval": [
+                        1.4765429133899302,
+                        1.5632927902833311
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.57250302704944,
+                      "interval": [
+                        84.49680357729291,
+                        89.52562765037649
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0017939585076562302,
+                      "interval": [
+                        6.855792665982041e-05,
+                        0.009197056736585055
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0008969792538281151,
+                      "interval": [
+                        3.4278963329910206e-05,
+                        0.004598528368292528
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5284285120347136,
+                      "interval": [
+                        1.474747429834684,
+                        1.5625169674135446
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 38.582799386765615,
+                  "overlap_a_on_b": 0.3055334879067056,
+                  "overlap_b_on_a": 0.6110669758134112,
+                  "grassmann": 0.673396883935509,
+                  "angles_degrees": [
+                    38.582799386765615
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 79.01739204396404,
+                      "interval": [
+                        67.05188808430565,
+                        87.98898858988947
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.018147224204327208,
+                      "interval": [
+                        0.0006157093025916829,
+                        0.07601001980638514
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.036294448408654416,
+                      "interval": [
+                        0.0012314186051833658,
+                        0.15202003961277027
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.3791136575063445,
+                      "interval": [
+                        1.1702762167498868,
+                        1.535697556393294
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 82.8586435815268,
+                      "interval": [
+                        70.51292678049272,
+                        88.80224772846212
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.01545489479914853,
+                      "interval": [
+                        0.0004369438369976508,
+                        0.11128509212469495
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.007727447399574265,
+                      "interval": [
+                        0.0002184719184988254,
+                        0.055642546062347475
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.4461561442341093,
+                      "interval": [
+                        1.2306827375372829,
+                        1.5498916060333194
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              }
+            },
+            "acceleration-direction": {
+              "weights_1": {
+                "common": {
+                  "mean_angle_degrees": 86.34495496604995,
+                  "overlap_a_on_b": 0.002031987372916466,
+                  "overlap_b_on_a": 0.004063974745832932,
+                  "grassmann": 1.5070037566438004,
+                  "angles_degrees": [
+                    86.34495496604995
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.59370607395303,
+                      "interval": [
+                        84.73953874961381,
+                        89.55780935680016
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0008813878192544425,
+                      "interval": [
+                        2.9782384234755687e-05,
+                        0.004202926255763298
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.001762775638508885,
+                      "interval": [
+                        5.9564768469511374e-05,
+                        0.008405852511526596
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.528798575014636,
+                      "interval": [
+                        1.4789839578020798,
+                        1.563078644149548
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.6137718670997,
+                      "interval": [
+                        84.62454761073812,
+                        89.57610286512774
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0017335147751246266,
+                      "interval": [
+                        5.47356960807841e-05,
+                        0.008776273934580267
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0008667573875623133,
+                      "interval": [
+                        2.736784804039205e-05,
+                        0.004388136967290133
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5291487891720696,
+                      "interval": [
+                        1.4769769838180808,
+                        1.563397926101605
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 87.60213244404986,
+                  "overlap_a_on_b": 0.0008752287097022231,
+                  "overlap_b_on_a": 0.0017504574194044463,
+                  "grassmann": 1.5289456429168173,
+                  "angles_degrees": [
+                    87.60213244404986
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.06315678477266,
+                      "interval": [
+                        83.4264049547,
+                        89.3391830717933
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.001312530539739992,
+                      "interval": [
+                        6.650706998759941e-05,
+                        0.0065527595633761105
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.002625061079479984,
+                      "interval": [
+                        0.00013301413997519881,
+                        0.013105519126752221
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5195387430743228,
+                      "interval": [
+                        1.4560654495616259,
+                        1.5592628956447745
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.12549193634557,
+                      "interval": [
+                        83.34781385072307,
+                        89.40796302414053
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.002514880759489,
+                      "interval": [
+                        0.00010677189374881404,
+                        0.013419343136025228
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0012574403797445,
+                      "interval": [
+                        5.338594687440702e-05,
+                        0.006709671568012614
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.520626696709,
+                      "interval": [
+                        1.4546937760344512,
+                        1.5604633322725987
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                }
+              },
+              "weights_k_minus_1": {
+                "common": {
+                  "mean_angle_degrees": 77.06501215836495,
+                  "overlap_a_on_b": 0.0671644209125616,
+                  "overlap_b_on_a": 0.07835849106465519,
+                  "grassmann": 4.702630026457604,
+                  "angles_degrees": [
+                    54.353001476761165,
+                    62.49257620728101,
+                    68.34309050885514,
+                    72.44068817800714,
+                    75.82113138777622,
+                    78.19672044547116,
+                    79.46229828306724,
+                    83.13258303121029,
+                    85.08684963675117,
+                    87.03992187817067,
+                    88.70383037310532,
+                    89.70745449392287
+                  ],
+                  "dims": [
+                    12,
+                    14
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.01171875,
+                    "overlap_b_on_a": 0.013671875
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.42681944362654,
+                      "interval": [
+                        82.75842351875026,
+                        84.19373374385678
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.014760080231277829,
+                      "interval": [
+                        0.011712843673513534,
+                        0.017874496591233545
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.017220093603157467,
+                      "interval": [
+                        0.013664984285765788,
+                        0.020853579356439136
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 5.04902665463753,
+                      "interval": [
+                        5.0087479870851634,
+                        5.094388152807505
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.59737541281403,
+                      "interval": [
+                        82.86688726604181,
+                        84.33803374917639
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.01641802441335349,
+                      "interval": [
+                        0.013053740609057568,
+                        0.020008762146198563
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.014072592354302992,
+                      "interval": [
+                        0.011188920522049344,
+                        0.017150367553884483
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 5.059372171887617,
+                      "interval": [
+                        5.015305649883766,
+                        5.103946512400031
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 75.95532882458207,
+                  "overlap_a_on_b": 0.07545763912612982,
+                  "overlap_b_on_a": 0.08803391231381813,
+                  "grassmann": 4.6390529447266555,
+                  "angles_degrees": [
+                    53.035246173944365,
+                    59.00215339364453,
+                    66.63570699609403,
+                    72.00669913431625,
+                    76.56771995449182,
+                    78.40468672277116,
+                    78.88810086823479,
+                    80.78262463179045,
+                    84.24634165219581,
+                    85.59060493668575,
+                    86.48603198412206,
+                    89.81802944669381
+                  ],
+                  "dims": [
+                    12,
+                    14
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.01171875,
+                    "overlap_b_on_a": 0.013671875
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 81.24288796707168,
+                      "interval": [
+                        80.3116307882984,
+                        82.2562505263519
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.026204982734959116,
+                      "interval": [
+                        0.020626722637277255,
+                        0.03161010712595336
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.030572479857452303,
+                      "interval": [
+                        0.02406450974349013,
+                        0.03687845831361226
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.921240421051058,
+                      "interval": [
+                        4.865807818476514,
+                        4.981143990684715
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 81.22128403127186,
+                      "interval": [
+                        80.29538153469487,
+                        82.22084750575029
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.030485020396183997,
+                      "interval": [
+                        0.024644871531266606,
+                        0.03689414263366909
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.02613001748244343,
+                      "interval": [
+                        0.02112417559822852,
+                        0.03162355082885922
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.919745379157507,
+                      "interval": [
+                        4.864686405449503,
+                        4.979634707559987
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              },
+              "patterns": {
+                "common": {
+                  "mean_angle_degrees": 65.43239588869599,
+                  "overlap_a_on_b": 0.08643094534529042,
+                  "overlap_b_on_a": 0.17286189069058083,
+                  "grassmann": 1.1420107457261461,
+                  "angles_degrees": [
+                    65.43239588869599
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.68837050449253,
+                      "interval": [
+                        84.5112875166926,
+                        89.54322038031013
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0008134400313498768,
+                      "interval": [
+                        3.177826042301667e-05,
+                        0.004574459009712651
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0016268800626997536,
+                      "interval": [
+                        6.355652084603333e-05,
+                        0.009148918019425302
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5304507810120755,
+                      "interval": [
+                        1.4750002222658685,
+                        1.5628240184753008
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.67985907746535,
+                      "interval": [
+                        84.44489976299181,
+                        89.55390847171063
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0016388765599650759,
+                      "interval": [
+                        6.0617091323356815e-05,
+                        0.009370816008733282
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0008194382799825379,
+                      "interval": [
+                        3.0308545661678407e-05,
+                        0.004685408004366641
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.530302228586408,
+                      "interval": [
+                        1.4738415373807863,
+                        1.5630105608609937
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 38.74469412231097,
+                  "overlap_a_on_b": 0.3041551075193483,
+                  "overlap_b_on_a": 0.6083102150386966,
+                  "grassmann": 0.6762224801124209,
+                  "angles_degrees": [
+                    38.74469412231097
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 79.03006155421298,
+                      "interval": [
+                        67.03947747372438,
+                        87.9277434999665
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.018105950277965355,
+                      "interval": [
+                        0.0006537661434472852,
+                        0.07608776768964545
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.03621190055593071,
+                      "interval": [
+                        0.0013075322868945703,
+                        0.1521755353792909
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.3793347821748032,
+                      "interval": [
+                        1.1700596107330605,
+                        1.534628627923458
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 82.62527034923087,
+                      "interval": [
+                        70.09606473685427,
+                        88.94263623354175
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.016475855668442407,
+                      "interval": [
+                        0.00034052929226187134,
+                        0.11590231773950559
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.008237927834221203,
+                      "interval": [
+                        0.00017026464613093567,
+                        0.05795115886975279
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.442083012944524,
+                      "interval": [
+                        1.2234071223491996,
+                        1.5523418476789115
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              }
+            }
+          }
+        },
+        "block_8": {
+          "plot_index": 9,
+          "k": {
+            "direction": 6,
+            "speed": 7,
+            "acceleration": 7
+          },
+          "span_rank": {
+            "direction": 812,
+            "speed": 831,
+            "acceleration": 831
+          },
+          "pairs": {
+            "speed-acceleration": {
+              "weights_1": {
+                "common": {
+                  "mean_angle_degrees": 53.12408098406861,
+                  "overlap_a_on_b": 0.3601008921158781,
+                  "overlap_b_on_a": 0.3601008921158781,
+                  "grassmann": 0.9271901252681065,
+                  "angles_degrees": [
+                    53.12408098406861
+                  ],
+                  "dims": [
+                    1,
+                    1
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.0009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.70234200035426,
+                      "interval": [
+                        85.76087186328364,
+                        89.92853422944142
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0005128628487588168,
+                      "interval": [
+                        1.5558352103861064e-06,
+                        0.005464057706499993
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0005128628487588168,
+                      "interval": [
+                        1.5558352103861064e-06,
+                        0.005464057706499993
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.548147922136235,
+                      "interval": [
+                        1.4968095833952637,
+                        1.5695490137961745
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.71710914077183,
+                      "interval": [
+                        85.62602342633572,
+                        89.94347196480194
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0005012592411168906,
+                      "interval": [
+                        9.747544119832423e-07,
+                        0.0058165386364221975
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0005012592411168906,
+                      "interval": [
+                        9.747544119832423e-07,
+                        0.0058165386364221975
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.548405657357626,
+                      "interval": [
+                        1.4944560341793547,
+                        1.5698097264610074
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 56.89967513753655,
+                  "overlap_a_on_b": 0.29823253958453505,
+                  "overlap_b_on_a": 0.29823253958453505,
+                  "grassmann": 0.9930866744651701,
+                  "angles_degrees": [
+                    56.89967513753655
+                  ],
+                  "dims": [
+                    1,
+                    1
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.0009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.72388454106101,
+                      "interval": [
+                        85.82673519946549,
+                        89.92329597220947
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0004959787102619699,
+                      "interval": [
+                        1.7923727413018572e-06,
+                        0.005295887216980176
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0004959787102619699,
+                      "interval": [
+                        1.7923727413018572e-06,
+                        0.005295887216980176
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5485239104008126,
+                      "interval": [
+                        1.497959115467985,
+                        1.5694575889604105
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.73902576919865,
+                      "interval": [
+                        85.70832520798741,
+                        89.9235641601263
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0004842809775731224,
+                      "interval": [
+                        1.7797418927395745e-06,
+                        0.005600108465786406
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0004842809775731224,
+                      "interval": [
+                        1.7797418927395745e-06,
+                        0.005600108465786406
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.54878817468461,
+                      "interval": [
+                        1.4958924712494344,
+                        1.5694622697225733
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              },
+              "weights_k_minus_1": {
+                "common": {
+                  "mean_angle_degrees": 54.29266095686658,
+                  "overlap_a_on_b": 0.37058300016408036,
+                  "overlap_b_on_a": 0.37058300016408036,
+                  "grassmann": 2.4697101103082333,
+                  "angles_degrees": [
+                    23.62671627889389,
+                    36.398230156214694,
+                    50.76351685061827,
+                    63.03426406384163,
+                    71.05683593512484,
+                    80.87640245650618
+                  ],
+                  "dims": [
+                    6,
+                    6
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.005859375,
+                    "overlap_b_on_a": 0.005859375
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 85.99718561345492,
+                      "interval": [
+                        84.95879459343632,
+                        86.9149997167528
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.006897953807758293,
+                      "interval": [
+                        0.00417965609248463,
+                        0.010588987811368853
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.006897953807758293,
+                      "interval": [
+                        0.00417965609248463,
+                        0.010588987811368853
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 3.6780962016299656,
+                      "interval": [
+                        3.6340461411922806,
+                        3.716715052881706
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 86.02722903997251,
+                      "interval": [
+                        84.94321487613914,
+                        86.88836281408956
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.006818972936434128,
+                      "interval": [
+                        0.004209138190109313,
+                        0.01059935856097711
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.006818972936434128,
+                      "interval": [
+                        0.004209138190109313,
+                        0.01059935856097711
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 3.6795297527520043,
+                      "interval": [
+                        3.6336058442044905,
+                        3.716435906510373
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 54.801909463205256,
+                  "overlap_a_on_b": 0.36377298265474406,
+                  "overlap_b_on_a": 0.36377298265474406,
+                  "grassmann": 2.4803943862036544,
+                  "angles_degrees": [
+                    26.005702070427525,
+                    37.332572499696596,
+                    50.20791225582061,
+                    63.00806287513937,
+                    71.38529973037964,
+                    80.87190734776779
+                  ],
+                  "dims": [
+                    6,
+                    6
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.005859375,
+                    "overlap_b_on_a": 0.005859375
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 85.71210939597202,
+                      "interval": [
+                        84.647419338501,
+                        86.76172066865593
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.007914144723702166,
+                      "interval": [
+                        0.004755935745644816,
+                        0.012169666496686953
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.007914144723702166,
+                      "interval": [
+                        0.004755935745644816,
+                        0.012169666496686953
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 3.6663976849008773,
+                      "interval": [
+                        3.621056994368424,
+                        3.7107286450484214
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 85.773319063669,
+                      "interval": [
+                        84.66103080521756,
+                        86.71216775418954
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.00778101622190173,
+                      "interval": [
+                        0.004728500370103204,
+                        0.012043120169870537
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.00778101622190173,
+                      "interval": [
+                        0.004728500370103204,
+                        0.012043120169870537
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 3.668729760326517,
+                      "interval": [
+                        3.6211920109016544,
+                        3.708267178613293
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              },
+              "patterns": {
+                "common": {
+                  "mean_angle_degrees": 32.61139855161329,
+                  "overlap_a_on_b": 0.7095454293275987,
+                  "overlap_b_on_a": 0.7095454293275987,
+                  "grassmann": 0.5691762784057619,
+                  "angles_degrees": [
+                    32.61139855161329
+                  ],
+                  "dims": [
+                    1,
+                    1
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.0009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.80113705305229,
+                      "interval": [
+                        85.5992641751783,
+                        89.94241400220541
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.00043775476120613496,
+                      "interval": [
+                        1.0101559206762583e-06,
+                        0.005887775165775944
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.00043775476120613496,
+                      "interval": [
+                        1.0101559206762583e-06,
+                        0.005887775165775944
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5498722210904967,
+                      "interval": [
+                        1.4939889971412894,
+                        1.5697912615303347
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.7291543061203,
+                      "interval": [
+                        85.82376742709856,
+                        89.94036337310496
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0004918939621153457,
+                      "interval": [
+                        1.0833800476184122e-06,
+                        0.005303405664750212
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0004918939621153457,
+                      "interval": [
+                        1.0833800476184122e-06,
+                        0.005303405664750212
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5486158851519036,
+                      "interval": [
+                        1.4979073180687323,
+                        1.5697554713007946
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 27.96867693493268,
+                  "overlap_a_on_b": 0.7800495115810072,
+                  "overlap_b_on_a": 0.7800495115810072,
+                  "grassmann": 0.4881454999411711,
+                  "angles_degrees": [
+                    27.96867693493268
+                  ],
+                  "dims": [
+                    1,
+                    1
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.0009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.87140391194407,
+                      "interval": [
+                        82.97953346794165,
+                        89.86128571379341
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0013795672520899253,
+                      "interval": [
+                        5.861467517363659e-06,
+                        0.014938678368563024
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0013795672520899253,
+                      "interval": [
+                        5.861467517363659e-06,
+                        0.014938678368563024
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5336453166132493,
+                      "interval": [
+                        1.4482660707844102,
+                        1.5683753057810377
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.73225855403663,
+                      "interval": [
+                        82.6225719934763,
+                        89.89973616345455
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0015657246150740493,
+                      "interval": [
+                        3.0622748129430335e-06,
+                        0.0164880596393812
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0015657246150740493,
+                      "interval": [
+                        3.0622748129430335e-06,
+                        0.0164880596393812
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5312167719788987,
+                      "interval": [
+                        1.4420359177522162,
+                        1.5690463927264968
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              }
+            },
+            "speed-direction": {
+              "weights_1": {
+                "common": {
+                  "mean_angle_degrees": 87.65572117430135,
+                  "overlap_a_on_b": 0.0008365673476826516,
+                  "overlap_b_on_a": 0.0016731346953653033,
+                  "grassmann": 1.5298809427016689,
+                  "angles_degrees": [
+                    87.65572117430135
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.59087801326858,
+                      "interval": [
+                        84.68933567597925,
+                        89.5671586856139
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0008834589398551231,
+                      "interval": [
+                        2.8534740294540917e-05,
+                        0.004283300485538066
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0017669178797102463,
+                      "interval": [
+                        5.7069480589081835e-05,
+                        0.008566600971076132
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5287492160442462,
+                      "interval": [
+                        1.4781077488725356,
+                        1.5632418207201995
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.81938377513086,
+                      "interval": [
+                        85.09420781020317,
+                        89.58401923532875
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0014477832209508614,
+                      "interval": [
+                        5.271007281688896e-05,
+                        0.007313275315570565
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0007238916104754307,
+                      "interval": [
+                        2.635503640844448e-05,
+                        0.0036566376577852823
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5327373939485212,
+                      "interval": [
+                        1.485174100664319,
+                        1.5635360928264197
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 86.7129204814096,
+                  "overlap_a_on_b": 0.00164387441037214,
+                  "overlap_b_on_a": 0.00328774882074428,
+                  "grassmann": 1.513425966420624,
+                  "angles_degrees": [
+                    86.7129204814096
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.56361442170248,
+                      "interval": [
+                        84.4291799242962,
+                        89.49519631116883
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0009035565591221319,
+                      "interval": [
+                        3.881246745590455e-05,
+                        0.004711878102339381
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0018071131182442637,
+                      "interval": [
+                        7.76249349118091e-05,
+                        0.009423756204678762
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.528273376605499,
+                      "interval": [
+                        1.4735671744376655,
+                        1.5619858403485796
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.73974239385905,
+                      "interval": [
+                        84.6278007877988,
+                        89.55533964296274
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0015554115554372286,
+                      "interval": [
+                        6.022881471091607e-05,
+                        0.008765685932938257
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0007777057777186143,
+                      "interval": [
+                        3.0114407355458034e-05,
+                        0.004382842966469128
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5313473896244916,
+                      "interval": [
+                        1.4770337624689402,
+                        1.563035539511503
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                }
+              },
+              "weights_k_minus_1": {
+                "common": {
+                  "mean_angle_degrees": 83.89623912906784,
+                  "overlap_a_on_b": 0.008831607996917176,
+                  "overlap_b_on_a": 0.014719346661528626,
+                  "grassmann": 3.589661432857441,
+                  "angles_degrees": [
+                    77.12774532527995,
+                    82.01949385725985,
+                    85.26868175329945,
+                    85.57781023574236,
+                    86.6362618116091,
+                    86.74744179121632
+                  ],
+                  "dims": [
+                    6,
+                    10
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.005859375,
+                    "overlap_b_on_a": 0.009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 84.35628900100014,
+                      "interval": [
+                        83.18415402900126,
+                        85.33379754510165
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.007012481586554469,
+                      "interval": [
+                        0.004809317235302631,
+                        0.0099249964008331
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.011687469310924115,
+                      "interval": [
+                        0.008015528725504385,
+                        0.016541660668055166
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 3.6079309413546303,
+                      "interval": [
+                        3.558392115513615,
+                        3.6493039021815257
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 84.44411842308662,
+                      "interval": [
+                        83.47033450764516,
+                        85.47738370930126
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.011361102590326942,
+                      "interval": [
+                        0.007693189217576116,
+                        0.015558574267832966
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.006816661554196165,
+                      "interval": [
+                        0.00461591353054567,
+                        0.00933514456069978
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 3.6119321607466732,
+                      "interval": [
+                        3.570568585445011,
+                        3.6556519255081286
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 83.39701600805394,
+                  "overlap_a_on_b": 0.009877311064634828,
+                  "overlap_b_on_a": 0.016462185107724712,
+                  "grassmann": 3.5681970483318795,
+                  "angles_degrees": [
+                    76.74196820272743,
+                    82.15564820443387,
+                    83.55655242252517,
+                    85.36023248455243,
+                    86.14615492587484,
+                    86.42153980820986
+                  ],
+                  "dims": [
+                    6,
+                    10
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.005859375,
+                    "overlap_b_on_a": 0.009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.9647428715273,
+                      "interval": [
+                        82.77415156522281,
+                        85.08932247652281
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.00799755416747344,
+                      "interval": [
+                        0.005429382360696098,
+                        0.011287148576603692
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.013329256945789066,
+                      "interval": [
+                        0.009048970601160163,
+                        0.018811914294339486
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 3.591670318229516,
+                      "interval": [
+                        3.5407599554358495,
+                        3.638808768726324
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 84.01166848093295,
+                      "interval": [
+                        82.97252654979116,
+                        85.0895510445171
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.013129660741644938,
+                      "interval": [
+                        0.008892790920220963,
+                        0.018168552820224178
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.007877796444986963,
+                      "interval": [
+                        0.005335674552132579,
+                        0.010901131692134507
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 3.593646249988142,
+                      "interval": [
+                        3.5492310053841942,
+                        3.6387811468044906
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                }
+              },
+              "patterns": {
+                "common": {
+                  "mean_angle_degrees": 82.78388197108072,
+                  "overlap_a_on_b": 0.007889227849816018,
+                  "overlap_b_on_a": 0.015778455699632037,
+                  "grassmann": 1.4448513079777316,
+                  "angles_degrees": [
+                    82.78388197108072
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.64994369246503,
+                      "interval": [
+                        84.6147425174681,
+                        89.54375713214392
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0008406936058983864,
+                      "interval": [
+                        3.170354616896093e-05,
+                        0.004404116387078235
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0016813872117967727,
+                      "interval": [
+                        6.340709233792187e-05,
+                        0.00880823277415647
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5297801066211507,
+                      "interval": [
+                        1.476805852657054,
+                        1.5628333865620667
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.61569184282455,
+                      "interval": [
+                        84.4236344995373,
+                        89.48326270189992
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0017307280386824608,
+                      "interval": [
+                        8.13426907581623e-05,
+                        0.009442498374405923
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0008653640193412304,
+                      "interval": [
+                        4.067134537908115e-05,
+                        0.004721249187202962
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5291822990700263,
+                      "interval": [
+                        1.4734703885172011,
+                        1.5617775595751906
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 79.81360984412316,
+                  "overlap_a_on_b": 0.01563812976315557,
+                  "overlap_b_on_a": 0.03127625952631114,
+                  "grassmann": 1.3930102796821073,
+                  "angles_degrees": [
+                    79.81360984412316
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 86.1952558636261,
+                      "interval": [
+                        81.21255729591326,
+                        89.23588611093854
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0022015938041327903,
+                      "interval": [
+                        8.892701650982143e-05,
+                        0.01166922204057463
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0044031876082655805,
+                      "interval": [
+                        0.00017785403301964287,
+                        0.02333844408114926
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.504391014419224,
+                      "interval": [
+                        1.4174265187782291,
+                        1.5574600235705554
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.02298562221486,
+                      "interval": [
+                        83.10474395565372,
+                        89.42952556533565
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0026972781996410207,
+                      "interval": [
+                        9.913576573338237e-05,
+                        0.01441313993169374
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0013486390998205104,
+                      "interval": [
+                        4.956788286669119e-05,
+                        0.00720656996584687
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5188376240233352,
+                      "interval": [
+                        1.4504514060530138,
+                        1.5608396696115503
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              }
+            },
+            "acceleration-direction": {
+              "weights_1": {
+                "common": {
+                  "mean_angle_degrees": 88.4513391763205,
+                  "overlap_a_on_b": 0.00036520069817407475,
+                  "overlap_b_on_a": 0.0007304013963481495,
+                  "grassmann": 1.5437670964250418,
+                  "angles_degrees": [
+                    88.4513391763205
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.68408401493738,
+                      "interval": [
+                        84.88026209225775,
+                        89.52062006549504
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0008164579960533024,
+                      "interval": [
+                        3.5001582019809984e-05,
+                        0.003981660222495959
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0016329159921066047,
+                      "interval": [
+                        7.000316403961997e-05,
+                        0.007963320444991918
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.530375967655986,
+                      "interval": [
+                        1.4814400434656285,
+                        1.5624295685697902
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.6635262184231,
+                      "interval": [
+                        84.66696471604145,
+                        89.49644528638484
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0016620189811964435,
+                      "interval": [
+                        7.723906759528469e-05,
+                        0.008638713847218073
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0008310094905982217,
+                      "interval": [
+                        3.861953379764234e-05,
+                        0.004319356923609036
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.530017166419857,
+                      "interval": [
+                        1.4777173019647891,
+                        1.562007639078375
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 88.02979199183203,
+                  "overlap_a_on_b": 0.0005909867133275119,
+                  "overlap_b_on_a": 0.0011819734266550238,
+                  "grassmann": 1.5364097101032061,
+                  "angles_degrees": [
+                    88.02979199183203
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.6413021645655,
+                      "interval": [
+                        84.74298568323135,
+                        89.47471008032765
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.000846884834717874,
+                      "interval": [
+                        4.202529055771749e-05,
+                        0.004197435731655508
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.001693769669435748,
+                      "interval": [
+                        8.405058111543498e-05,
+                        0.008394871463311016
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5296292835069014,
+                      "interval": [
+                        1.4790441181428036,
+                        1.5616282881690775
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.50710690314999,
+                      "interval": [
+                        84.65097543304047,
+                        89.53485411021104
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0018918650306305267,
+                      "interval": [
+                        6.590579035572694e-05,
+                        0.008690444106978808
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0009459325153152634,
+                      "interval": [
+                        3.295289517786347e-05,
+                        0.004345222053489404
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.527287134354626,
+                      "interval": [
+                        1.477438236331389,
+                        1.5626779995159608
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                }
+              },
+              "weights_k_minus_1": {
+                "common": {
+                  "mean_angle_degrees": 84.35042807007555,
+                  "overlap_a_on_b": 0.008386836392575418,
+                  "overlap_b_on_a": 0.013978060654292364,
+                  "grassmann": 3.6098118837350013,
+                  "angles_degrees": [
+                    76.50573501405034,
+                    83.72888113528943,
+                    85.0974033814693,
+                    85.29072108901562,
+                    87.00205564647705,
+                    88.47777215415158
+                  ],
+                  "dims": [
+                    6,
+                    10
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.005859375,
+                    "overlap_b_on_a": 0.009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 84.359992820688,
+                      "interval": [
+                        83.27597401417917,
+                        85.38330688811496
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.006932950389814689,
+                      "interval": [
+                        0.004728678545042314,
+                        0.009762205634684348
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.011554917316357816,
+                      "interval": [
+                        0.007881130908403857,
+                        0.016270342724473915
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 3.608525004115401,
+                      "interval": [
+                        3.562397596768729,
+                        3.6515533418226545
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 84.50906711712899,
+                      "interval": [
+                        83.46309123733823,
+                        85.46477960950936
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.011080874753289139,
+                      "interval": [
+                        0.007654595208817346,
+                        0.015365986297604514
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0066485248519734825,
+                      "interval": [
+                        0.004592757125290408,
+                        0.00921959177856271
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 3.614551186089945,
+                      "interval": [
+                        3.5696024656152208,
+                        3.6545621951094387
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 83.89709053351288,
+                  "overlap_a_on_b": 0.008884571521888613,
+                  "overlap_b_on_a": 0.014807619203147687,
+                  "grassmann": 3.589780533867813,
+                  "angles_degrees": [
+                    76.79785158635136,
+                    83.8299220079188,
+                    84.16778719750678,
+                    84.43640877382579,
+                    86.49942611824463,
+                    87.65114751722997
+                  ],
+                  "dims": [
+                    6,
+                    10
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.005859375,
+                    "overlap_b_on_a": 0.009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 84.04738221727712,
+                      "interval": [
+                        82.85233921365517,
+                        85.1388486189103
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.007816736947067686,
+                      "interval": [
+                        0.005251054440845858,
+                        0.011184132084486943
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.013027894911779477,
+                      "interval": [
+                        0.008751757401409764,
+                        0.01864022014081157
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 3.5950877790372884,
+                      "interval": [
+                        3.5446323412893794,
+                        3.6412783707265035
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 84.10613378056762,
+                      "interval": [
+                        83.01935059817012,
+                        85.13110684719433
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.012759694796615758,
+                      "interval": [
+                        0.008819052011510392,
+                        0.017532669597748574
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.007655816877969453,
+                      "interval": [
+                        0.005291431206906234,
+                        0.010519601758649145
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 3.597515860039377,
+                      "interval": [
+                        3.5519298337200107,
+                        3.6406799927713105
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                }
+              },
+              "patterns": {
+                "common": {
+                  "mean_angle_degrees": 85.77727794323683,
+                  "overlap_a_on_b": 0.002710960965239084,
+                  "overlap_b_on_a": 0.005421921930478168,
+                  "grassmann": 1.4970959235077923,
+                  "angles_degrees": [
+                    85.77727794323683
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.81706056760137,
+                      "interval": [
+                        84.66588788624807,
+                        89.56797236873322
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0007254350151114366,
+                      "interval": [
+                        2.8427559203611338e-05,
+                        0.004321108635499777
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0014508700302228732,
+                      "interval": [
+                        5.6855118407222677e-05,
+                        0.008642217270999553
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5326968463279245,
+                      "interval": [
+                        1.4776985077394111,
+                        1.5632560221696992
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.67202929325504,
+                      "interval": [
+                        84.68017935559178,
+                        89.54216326528108
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0016499525359377882,
+                      "interval": [
+                        6.385086879575004e-05,
+                        0.008596079020862707
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0008249762679688941,
+                      "interval": [
+                        3.192543439787502e-05,
+                        0.0042980395104313535
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.530165573072218,
+                      "interval": [
+                        1.4779479409344065,
+                        1.5628055683374715
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 83.47855627227685,
+                  "overlap_a_on_b": 0.006449647542998701,
+                  "overlap_b_on_a": 0.012899295085997402,
+                  "grassmann": 1.4569756617625949,
+                  "angles_degrees": [
+                    83.47855627227685
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 86.01548500739983,
+                      "interval": [
+                        80.76805890283275,
+                        89.28867387463686
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0024142133644508585,
+                      "interval": [
+                        7.706198254918684e-05,
+                        0.012869135628836088
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.004828426728901717,
+                      "interval": [
+                        0.00015412396509837368,
+                        0.025738271257672175
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.501253421078946,
+                      "interval": [
+                        1.4096685582991502,
+                        1.5583813438518554
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 86.9780855178995,
+                      "interval": [
+                        83.01672555428995,
+                        89.45384612410753
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.002779178937795208,
+                      "interval": [
+                        9.08597690427442e-05,
+                        0.014781643925962101
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.001389589468897604,
+                      "interval": [
+                        4.54298845213721e-05,
+                        0.0073908219629810505
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5180539693685433,
+                      "interval": [
+                        1.4489151951468742,
+                        1.5612641434380445
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                }
+              }
+            }
+          }
+        },
+        "block_17": {
+          "plot_index": 18,
+          "k": {
+            "direction": 8,
+            "speed": 9,
+            "acceleration": 9
+          },
+          "span_rank": {
+            "direction": 812,
+            "speed": 831,
+            "acceleration": 831
+          },
+          "pairs": {
+            "speed-acceleration": {
+              "weights_1": {
+                "common": {
+                  "mean_angle_degrees": 55.807931722305185,
+                  "overlap_a_on_b": 0.3158090174134959,
+                  "overlap_b_on_a": 0.3158090174134959,
+                  "grassmann": 0.9740321572824152,
+                  "angles_degrees": [
+                    55.807931722305185
+                  ],
+                  "dims": [
+                    1,
+                    1
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.0009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.71775257298151,
+                      "interval": [
+                        85.8159025114873,
+                        89.94251722698294
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.00050075592529739,
+                      "interval": [
+                        1.0065972758745503e-06,
+                        0.005323364398828856
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.00050075592529739,
+                      "interval": [
+                        1.0065972758745503e-06,
+                        0.005323364398828856
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.548416887368198,
+                      "interval": [
+                        1.4977700493959243,
+                        1.5697930631425723
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.64567376146738,
+                      "interval": [
+                        85.72652925062317,
+                        89.9330114957627
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0005586256464611276,
+                      "interval": [
+                        1.3670979540130231e-06,
+                        0.005552786967691515
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0005586256464611276,
+                      "interval": [
+                        1.3670979540130231e-06,
+                        0.005552786967691515
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.547158874786352,
+                      "interval": [
+                        1.4962101917306014,
+                        1.5696271568349693
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 57.953919481677296,
+                  "overlap_a_on_b": 0.2815375710375935,
+                  "overlap_b_on_a": 0.2815375710375935,
+                  "grassmann": 1.0114867093909543,
+                  "angles_degrees": [
+                    57.953919481677296
+                  ],
+                  "dims": [
+                    1,
+                    1
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.0009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.57985986502638,
+                      "interval": [
+                        85.39950193300339,
+                        89.93228703133212
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0006142260502444567,
+                      "interval": [
+                        1.3966987803410787e-06,
+                        0.0064332574147941204
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0006142260502444567,
+                      "interval": [
+                        1.3966987803410787e-06,
+                        0.0064332574147941204
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5460102055998899,
+                      "interval": [
+                        1.4905024882941713,
+                        1.5696145125453422
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.56535930818056,
+                      "interval": [
+                        85.35314981189765,
+                        89.94437444250217
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0006268308694924532,
+                      "interval": [
+                        9.425608925663e-07,
+                        0.006563264164162568
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0006268308694924532,
+                      "interval": [
+                        9.425608925663e-07,
+                        0.006563264164162568
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5457571231395582,
+                      "interval": [
+                        1.4896934911655928,
+                        1.569825477668302
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              },
+              "weights_k_minus_1": {
+                "common": {
+                  "mean_angle_degrees": 61.07685210205116,
+                  "overlap_a_on_b": 0.2844215867391845,
+                  "overlap_b_on_a": 0.2844215867391845,
+                  "grassmann": 3.1830951208340372,
+                  "angles_degrees": [
+                    23.600029986041562,
+                    38.713599214127285,
+                    48.229112240123555,
+                    62.42611745104097,
+                    72.24200312749844,
+                    78.44339814505055,
+                    80.95279983268937,
+                    84.00775681983762
+                  ],
+                  "dims": [
+                    8,
+                    8
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0078125,
+                    "overlap_b_on_a": 0.0078125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 85.44649171808183,
+                      "interval": [
+                        84.60986174797614,
+                        86.20490732257045
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.008970774732103474,
+                      "interval": [
+                        0.006374648121777373,
+                        0.012433842233687178
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.008970774732103474,
+                      "interval": [
+                        0.006374648121777373,
+                        0.012433842233687178
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.220456498415369,
+                      "interval": [
+                        4.180242818186016,
+                        4.257217698971315
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 85.3931125516973,
+                      "interval": [
+                        84.51858619851342,
+                        86.2525251399316
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.00920091142152386,
+                      "interval": [
+                        0.006357678724647173,
+                        0.012606906602070764
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.00920091142152386,
+                      "interval": [
+                        0.006357678724647173,
+                        0.012606906602070764
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.218120331576689,
+                      "interval": [
+                        4.174763680507286,
+                        4.259673869994135
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 61.57515902865736,
+                  "overlap_a_on_b": 0.27811131998313754,
+                  "overlap_b_on_a": 0.27811131998313754,
+                  "grassmann": 3.1951233431415984,
+                  "angles_degrees": [
+                    26.892939114948348,
+                    39.051063944024634,
+                    48.30702185261083,
+                    62.8977794619328,
+                    71.28152778155203,
+                    77.98419545798598,
+                    81.67317014344745,
+                    84.5135744727568
+                  ],
+                  "dims": [
+                    8,
+                    8
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0078125,
+                    "overlap_b_on_a": 0.0078125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 84.78553440183939,
+                      "interval": [
+                        83.8092136073305,
+                        85.71981839154107
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.01171895246682765,
+                      "interval": [
+                        0.008241118169558746,
+                        0.016371695656592442
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.01171895246682765,
+                      "interval": [
+                        0.008241118169558746,
+                        0.016371695656592442
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.188890183853588,
+                      "interval": [
+                        4.141951028953435,
+                        4.234291905924329
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 84.78945414592425,
+                      "interval": [
+                        83.87716945011177,
+                        85.68449282070381
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.011650502690838416,
+                      "interval": [
+                        0.00822427181794405,
+                        0.01599878093143686
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.011650502690838416,
+                      "interval": [
+                        0.00822427181794405,
+                        0.01599878093143686
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.18910709477715,
+                      "interval": [
+                        4.144767823238883,
+                        4.232451905594347
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              },
+              "patterns": {
+                "common": {
+                  "mean_angle_degrees": 27.990692395001673,
+                  "overlap_a_on_b": 0.7797311127641865,
+                  "overlap_b_on_a": 0.7797311127641865,
+                  "grassmann": 0.4885297422057164,
+                  "angles_degrees": [
+                    27.990692395001673
+                  ],
+                  "dims": [
+                    1,
+                    1
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.0009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.75273138987404,
+                      "interval": [
+                        85.73038590629713,
+                        89.92201806200744
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.00047381268300375175,
+                      "interval": [
+                        1.8524778530850803e-06,
+                        0.005542788613911117
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.00047381268300375175,
+                      "interval": [
+                        1.8524778530850803e-06,
+                        0.005542788613911117
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.549027382891425,
+                      "interval": [
+                        1.4962775030702278,
+                        1.5694352852198403
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 88.74474626608486,
+                      "interval": [
+                        85.40152311223412,
+                        89.94286275262115
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0004798973255173394,
+                      "interval": [
+                        9.946252551526876e-07,
+                        0.006427622637312627
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0004798973255173394,
+                      "interval": [
+                        9.946252551526876e-07,
+                        0.006427622637312627
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5488880161901246,
+                      "interval": [
+                        1.49053776452652,
+                        1.5697990937026094
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 22.519417947934457,
+                  "overlap_a_on_b": 0.8533136658681386,
+                  "overlap_b_on_a": 0.8533136658681386,
+                  "grassmann": 0.39303798882416124,
+                  "angles_degrees": [
+                    22.519417947934457
+                  ],
+                  "dims": [
+                    1,
+                    1
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.0009765625
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 86.7889682600356,
+                      "interval": [
+                        79.59323243319257,
+                        89.84236813328192
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.003137541044504146,
+                      "interval": [
+                        7.5691243223571786e-06,
+                        0.032629118836346414
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.003137541044504146,
+                      "interval": [
+                        7.5691243223571786e-06,
+                        0.032629118836346414
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5147532505464754,
+                      "interval": [
+                        1.389163968264348,
+                        1.5680451317146014
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 86.06563530468861,
+                      "interval": [
+                        77.6995674281923,
+                        89.80442651289414
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.004707835534829672,
+                      "interval": [
+                        1.165169228888835e-05,
+                        0.045385089387098065
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.004707835534829672,
+                      "interval": [
+                        1.165169228888835e-05,
+                        0.045385089387098065
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.502128708887489,
+                      "interval": [
+                        1.3561132789972983,
+                        1.5673829255152927
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              }
+            },
+            "speed-direction": {
+              "weights_1": {
+                "common": {
+                  "mean_angle_degrees": 89.23514593882106,
+                  "overlap_a_on_b": 8.909556701192359e-05,
+                  "overlap_b_on_a": 0.00017819113402384718,
+                  "grassmann": 1.557447105130074,
+                  "angles_degrees": [
+                    89.23514593882106
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.83372906044232,
+                      "interval": [
+                        84.81244822094209,
+                        89.57571243006757
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.000714403113650147,
+                      "interval": [
+                        2.7421383421235876e-05,
+                        0.004087549042038184
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.001428806227300294,
+                      "interval": [
+                        5.484276684247175e-05,
+                        0.008175098084076368
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5329877664093439,
+                      "interval": [
+                        1.4802564681326464,
+                        1.5633911117242898
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.89471517198037,
+                      "interval": [
+                        85.04286225851469,
+                        89.60595104482478
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0013495255110390408,
+                      "interval": [
+                        4.7298664099965415e-05,
+                        0.007466777451490455
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0006747627555195204,
+                      "interval": [
+                        2.3649332049982708e-05,
+                        0.0037333887257452276
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5340521748536715,
+                      "interval": [
+                        1.4842779517311022,
+                        1.5639188751130455
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 88.93850719742683,
+                  "overlap_a_on_b": 0.00017159678963881025,
+                  "overlap_b_on_a": 0.0003431935792776205,
+                  "grassmann": 1.5522697824037726,
+                  "angles_degrees": [
+                    88.93850719742683
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.58676642195476,
+                      "interval": [
+                        84.24594795376831,
+                        89.55105799738948
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0008864770094339561,
+                      "interval": [
+                        3.069710991306509e-05,
+                        0.005025884615623978
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0017729540188679122,
+                      "interval": [
+                        6.139421982613017e-05,
+                        0.010051769231247955
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5286774552383235,
+                      "interval": [
+                        1.4703691732570363,
+                        1.562960810698846
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.62641511583864,
+                      "interval": [
+                        84.50237595695724,
+                        89.55456253366164
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0017152059995151033,
+                      "interval": [
+                        6.0440506824867276e-05,
+                        0.009178506800397272
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0008576029997575517,
+                      "interval": [
+                        3.0220253412433638e-05,
+                        0.004589253400198636
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5293694554907127,
+                      "interval": [
+                        1.474844686206998,
+                        1.5630219763955506
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                }
+              },
+              "weights_k_minus_1": {
+                "common": {
+                  "mean_angle_degrees": 81.35531446397765,
+                  "overlap_a_on_b": 0.01656097105947068,
+                  "overlap_b_on_a": 0.02898169935407369,
+                  "grassmann": 4.022880023033467,
+                  "angles_degrees": [
+                    73.39274444173031,
+                    74.8482246712809,
+                    80.29353213263884,
+                    81.68169778136284,
+                    83.04771258789357,
+                    84.10464219894236,
+                    85.57901896467014,
+                    87.89494293330223
+                  ],
+                  "dims": [
+                    8,
+                    14
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0078125,
+                    "overlap_b_on_a": 0.013671875
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.29910153349162,
+                      "interval": [
+                        82.43639052575273,
+                        84.25341477732904
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.009199309036186718,
+                      "interval": [
+                        0.006908563570535466,
+                        0.011737825867098383
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.016098790813326755,
+                      "interval": [
+                        0.012089986248437065,
+                        0.02054119526742217
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.114706271715553,
+                      "interval": [
+                        4.072566047794183,
+                        4.161501582807595
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.42937431295584,
+                      "interval": [
+                        82.49071734676757,
+                        84.30068349129577
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.015581016332808607,
+                      "interval": [
+                        0.011912610785631956,
+                        0.020098578742609684
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.008903437904462061,
+                      "interval": [
+                        0.006807206163218261,
+                        0.011484902138634106
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.120899327688749,
+                      "interval": [
+                        4.075308876408066,
+                        4.163542479662342
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 80.26541616176198,
+                  "overlap_a_on_b": 0.021208939248882213,
+                  "overlap_b_on_a": 0.037115643685543875,
+                  "grassmann": 3.9715654769605275,
+                  "angles_degrees": [
+                    71.98844475296237,
+                    72.54235335782678,
+                    77.54310849112238,
+                    79.63733319952172,
+                    82.90135189626896,
+                    84.76775367730849,
+                    85.19838055713221,
+                    87.54460336195301
+                  ],
+                  "dims": [
+                    8,
+                    14
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0078125,
+                    "overlap_b_on_a": 0.013671875
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 82.3668116863704,
+                      "interval": [
+                        81.30647118446123,
+                        83.35123450641866
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.012002275638305561,
+                      "interval": [
+                        0.009208904965003043,
+                        0.015377099162279683
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.021003982367034733,
+                      "interval": [
+                        0.016115583688755326,
+                        0.02690992353398944
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.06926187069392,
+                      "interval": [
+                        4.017697201982385,
+                        4.117740182353814
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 82.52866206644399,
+                      "interval": [
+                        81.35965215605091,
+                        83.4240427713197
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.020177147102297392,
+                      "interval": [
+                        0.01584039138428435,
+                        0.026232350813035654
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.011529798344169938,
+                      "interval": [
+                        0.009051652219591057,
+                        0.014989914750306088
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.077230477637626,
+                      "interval": [
+                        4.01943319810558,
+                        4.120762445272182
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              },
+              "patterns": {
+                "common": {
+                  "mean_angle_degrees": 82.80201858733525,
+                  "overlap_a_on_b": 0.007849829522844343,
+                  "overlap_b_on_a": 0.015699659045688687,
+                  "grassmann": 1.445167851646544,
+                  "angles_degrees": [
+                    82.80201858733525
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.66053572387763,
+                      "interval": [
+                        84.77943168564468,
+                        89.53570275903921
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0008331372203576986,
+                      "interval": [
+                        3.283604488985194e-05,
+                        0.004139598103886611
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0016662744407153973,
+                      "interval": [
+                        6.567208977970388e-05,
+                        0.008279196207773221
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5299649724437754,
+                      "interval": [
+                        1.479680220884106,
+                        1.5626928112322054
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.64852840479567,
+                      "interval": [
+                        84.641301922426,
+                        89.51146815591491
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0016834126849185158,
+                      "interval": [
+                        7.269934515758576e-05,
+                        0.008721810443595653
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0008417063424592579,
+                      "interval": [
+                        3.634967257879288e-05,
+                        0.004360905221797827
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5297554051914577,
+                      "interval": [
+                        1.4772694017209396,
+                        1.5622698376147723
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 83.07328584002279,
+                  "overlap_a_on_b": 0.007272143689614819,
+                  "overlap_b_on_a": 0.014544287379229639,
+                  "grassmann": 1.4499023583587811,
+                  "angles_degrees": [
+                    83.07328584002279
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.68928491231785,
+                      "interval": [
+                        75.65498964890791,
+                        88.68478254855137
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0060412274897039195,
+                      "interval": [
+                        0.0002634326302657629,
+                        0.03069256326525681
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.012082454979407839,
+                      "interval": [
+                        0.0005268652605315258,
+                        0.06138512653051362
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.4606535703595602,
+                      "interval": [
+                        1.320428664935672,
+                        1.5478414518874293
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 84.23525803363384,
+                      "interval": [
+                        76.15490509242177,
+                        88.73067980912434
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.010089023218892119,
+                      "interval": [
+                        0.0004907125018568416,
+                        0.05726345745985272
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.005044511609446059,
+                      "interval": [
+                        0.0002453562509284208,
+                        0.02863172872992636
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.4701825989539148,
+                      "interval": [
+                        1.3291538354065564,
+                        1.5486425102020733
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                }
+              }
+            },
+            "acceleration-direction": {
+              "weights_1": {
+                "common": {
+                  "mean_angle_degrees": 88.03318433196958,
+                  "overlap_a_on_b": 0.0005889541207242681,
+                  "overlap_b_on_a": 0.0011779082414485362,
+                  "grassmann": 1.536468917607954,
+                  "angles_degrees": [
+                    88.03318433196958
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.67645198199598,
+                      "interval": [
+                        84.99541158256304,
+                        89.58757060947374
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0008218455529200964,
+                      "interval": [
+                        2.590812719033502e-05,
+                        0.0038050249535685823
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0016436911058401928,
+                      "interval": [
+                        5.181625438067004e-05,
+                        0.007610049907137165
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.530242763552538,
+                      "interval": [
+                        1.483449781203449,
+                        1.56359807599822
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.72648131810556,
+                      "interval": [
+                        85.01790805231218,
+                        89.5554928389895
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0015737068915067354,
+                      "interval": [
+                        6.018743185617621e-05,
+                        0.007541950625491979
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0007868534457533677,
+                      "interval": [
+                        3.0093715928088106e-05,
+                        0.0037709753127459895
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5311159401902368,
+                      "interval": [
+                        1.4838424186706471,
+                        1.5630382132865706
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 86.99670271906517,
+                  "overlap_a_on_b": 0.0013725355281246565,
+                  "overlap_b_on_a": 0.002745071056249313,
+                  "grassmann": 1.5183789008263906,
+                  "angles_degrees": [
+                    86.99670271906517
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.48799972196545,
+                      "interval": [
+                        84.61185770544404,
+                        89.52284093188072
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0009604755338612803,
+                      "interval": [
+                        3.467696520999208e-05,
+                        0.00440882118703265
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0019209510677225606,
+                      "interval": [
+                        6.935393041998417e-05,
+                        0.0088176423740653
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5269536511321808,
+                      "interval": [
+                        1.476755503188933,
+                        1.5624683300004674
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.4297846594739,
+                      "interval": [
+                        84.29101237751341,
+                        89.5079247743333
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.002010960471801655,
+                      "interval": [
+                        7.375898625597165e-05,
+                        0.009895450973375611
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0010054802359008275,
+                      "interval": [
+                        3.6879493127985824e-05,
+                        0.0049477254866878055
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5259376066174486,
+                      "interval": [
+                        1.4711556958269025,
+                        1.5622079939395186
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                }
+              },
+              "weights_k_minus_1": {
+                "common": {
+                  "mean_angle_degrees": 81.34773921862184,
+                  "overlap_a_on_b": 0.016679281303746803,
+                  "overlap_b_on_a": 0.029188742281556906,
+                  "grassmann": 4.0226838542059555,
+                  "angles_degrees": [
+                    72.68444346605352,
+                    75.88044437493699,
+                    80.48267029056875,
+                    80.75152086927244,
+                    83.1729009477923,
+                    83.4944332791394,
+                    86.38729745747919,
+                    87.92820306373206
+                  ],
+                  "dims": [
+                    8,
+                    14
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0078125,
+                    "overlap_b_on_a": 0.013671875
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.30641376493531,
+                      "interval": [
+                        82.38845117784939,
+                        84.1713677064793
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.009220091193713975,
+                      "interval": [
+                        0.007080214635488641,
+                        0.011766409283253409
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.016135159588999456,
+                      "interval": [
+                        0.012390375612105124,
+                        0.020591216245693465
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.115037804858921,
+                      "interval": [
+                        4.069562167198118,
+                        4.157333208929284
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.4617354513997,
+                      "interval": [
+                        82.57931222243931,
+                        84.28831195965473
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.01546458152057395,
+                      "interval": [
+                        0.01182805141835464,
+                        0.019669584794749905
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.008836903726042258,
+                      "interval": [
+                        0.00675888652477408,
+                        0.01123976273985709
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.122947715703823,
+                      "interval": [
+                        4.079556852667384,
+                        4.162967406964633
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 80.37607196269018,
+                  "overlap_a_on_b": 0.02019435484746935,
+                  "overlap_b_on_a": 0.03534012098307136,
+                  "grassmann": 3.9757998364372327,
+                  "angles_degrees": [
+                    71.36202175403695,
+                    73.90538530949163,
+                    79.7766160217937,
+                    80.57208273901479,
+                    81.18482402750872,
+                    83.03687448116712,
+                    86.13859017994803,
+                    87.03218118856049
+                  ],
+                  "dims": [
+                    8,
+                    14
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0078125,
+                    "overlap_b_on_a": 0.013671875
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 82.50427718323053,
+                      "interval": [
+                        81.49111999860466,
+                        83.52903375197691
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.011572026148175029,
+                      "interval": [
+                        0.008769629335168356,
+                        0.014671216230419091
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0202510457593063,
+                      "interval": [
+                        0.015346851336544624,
+                        0.02567462840323341
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.076193011112909,
+                      "interval": [
+                        4.026247604217287,
+                        4.1258738496209215
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 82.60116920926954,
+                      "interval": [
+                        81.59271286892007,
+                        83.53969239668265
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.019712008140733515,
+                      "interval": [
+                        0.015203592097873456,
+                        0.0251564982893173
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.011264004651847723,
+                      "interval": [
+                        0.008687766913070548,
+                        0.014375141879609884
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 4.080859529606547,
+                      "interval": [
+                        4.031317033597635,
+                        4.12744349525743
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                }
+              },
+              "patterns": {
+                "common": {
+                  "mean_angle_degrees": 83.97065711526986,
+                  "overlap_a_on_b": 0.005516466982050969,
+                  "overlap_b_on_a": 0.011032933964101937,
+                  "grassmann": 1.4655644417246627,
+                  "angles_degrees": [
+                    83.97065711526986
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.72275146632424,
+                      "interval": [
+                        84.59402873790255,
+                        89.49204810713782
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0007894360166898278,
+                      "interval": [
+                        3.9297366809798254e-05,
+                        0.004437978499597982
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0015788720333796556,
+                      "interval": [
+                        7.859473361959651e-05,
+                        0.008875956999195965
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.5310508419960418,
+                      "interval": [
+                        1.4764443290031024,
+                        1.561930893822714
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 87.57541482348294,
+                      "interval": [
+                        84.33805849959344,
+                        89.49059003704095
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.0017896667999870483,
+                      "interval": [
+                        7.904643065427129e-05,
+                        0.009733553647983454
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.0008948333999935241,
+                      "interval": [
+                        3.9523215327135646e-05,
+                        0.004866776823991727
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.528479332469626,
+                      "interval": [
+                        1.4719768055574944,
+                        1.5619054456987989
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "aligned beyond chance",
+                  "reading_b_on_a": "aligned beyond chance"
+                },
+                "raw": {
+                  "mean_angle_degrees": 83.22414119508304,
+                  "overlap_a_on_b": 0.006960298355837927,
+                  "overlap_b_on_a": 0.013920596711675854,
+                  "grassmann": 1.4525352809988474,
+                  "angles_degrees": [
+                    83.22414119508304
+                  ],
+                  "dims": [
+                    1,
+                    2
+                  ],
+                  "analytic_null": {
+                    "overlap_a_on_b": 0.0009765625,
+                    "overlap_b_on_a": 0.001953125
+                  },
+                  "null_b_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 83.56778943975905,
+                      "interval": [
+                        75.59234165801641,
+                        88.84598632711342
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.006275091135788724,
+                      "interval": [
+                        0.00020281195627635027,
+                        0.030955534422869673
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.012550182271577448,
+                      "interval": [
+                        0.00040562391255270054,
+                        0.061911068845739346
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.4585330743371432,
+                      "interval": [
+                        1.319335251224856,
+                        1.550654988589993
+                      ]
+                    }
+                  },
+                  "null_a_randomized": {
+                    "mean_angle_degrees": {
+                      "median": 84.20359517185685,
+                      "interval": [
+                        75.86191129381092,
+                        88.92747109743645
+                      ]
+                    },
+                    "overlap_a_on_b": {
+                      "median": 0.01019976264682683,
+                      "interval": [
+                        0.00035036715736156044,
+                        0.059662991630752685
+                      ]
+                    },
+                    "overlap_b_on_a": {
+                      "median": 0.005099881323413415,
+                      "interval": [
+                        0.00017518357868078022,
+                        0.029831495815376342
+                      ]
+                    },
+                    "grassmann": {
+                      "median": 1.4696299777653024,
+                      "interval": [
+                        1.3240401289328718,
+                        1.5520771661223611
+                      ]
+                    }
+                  },
+                  "reading_a_on_b": "at chance",
+                  "reading_b_on_a": "at chance"
+                }
+              }
+            }
+          }
+        }
+      },
+      "validity": {
+        "speed_on_direction": {
+          "n_clips": 87,
+          "9": {
+            "r2": 0.9714585972201557,
+            "valid": true,
+            "mae_m": 0.09610971814265784
+          },
+          "18": {
+            "r2": 0.9817061509388914,
+            "valid": true,
+            "mae_m": 0.07187651550940218
+          }
+        },
+        "acceleration_on_direction": {
+          "n_clips": 87,
+          "9": {
+            "r2": 0.9568682737129027,
+            "valid": true,
+            "mae_m": 0.11455380837657492
+          },
+          "18": {
+            "r2": 0.9452720473377716,
+            "valid": true,
+            "mae_m": 0.13248492124097255
+          }
+        },
+        "direction_on_speed": {
+          "n_clips": 304,
+          "9": {
+            "r2": 0.9599322685006749,
+            "valid": true,
+            "circular_mae": 5.3984252271956
+          },
+          "18": {
+            "r2": 0.9708066820240591,
+            "valid": true,
+            "circular_mae": 4.645636932411199
+          }
+        },
+        "direction_on_acceleration": {
+          "n_clips": 304,
+          "9": {
+            "r2": 0.9287574212224396,
+            "valid": true,
+            "circular_mae": 7.087014029595716
+          },
+          "18": {
+            "r2": 0.953973900019781,
+            "valid": true,
+            "circular_mae": 5.076665331615308
+          }
+        }
+      },
+      "specificity": {
+        "direction_to_speed": {
+          "arm": "probes_5",
+          "n_clips": 30,
+          "probes": 0.05331492203789516,
+          "random": 0.041404370328515704,
+          "difference": 0.011910551709379458,
+          "ci": [
+            0.005162301646317781,
+            0.01900017997130226
+          ],
+          "valid_readout": true,
+          "reading": "cross-talk beyond a random edit"
+        },
+        "direction_to_acceleration": {
+          "arm": "probes_5",
+          "n_clips": 30,
+          "probes": 0.19865061818932767,
+          "random": 0.14340721733600886,
+          "difference": 0.055243400853318754,
+          "ci": [
+            0.030919670558755757,
+            0.08028460871998525
+          ],
+          "valid_readout": true,
+          "reading": "cross-talk beyond a random edit"
+        },
+        "speed_to_direction": {
+          "arm": "probes_6",
+          "n_clips": 30,
+          "probes": 1.5099103288133586,
+          "random": 1.5101836007724485,
+          "difference": -0.00027327195908980845,
+          "ci": [
+            -0.29005979536889376,
+            0.31715627524794987
+          ],
+          "valid_readout": true,
+          "reading": "no cross-talk beyond a random edit"
+        },
+        "acceleration_to_direction": {
+          "arm": "probes_6",
+          "n_clips": 30,
+          "probes": 1.1325698625745146,
+          "random": 1.2973970528129182,
+          "difference": -0.16482719023840325,
+          "ci": [
+            -0.4126952631494217,
+            0.08582939624678802
+          ],
+          "valid_readout": true,
+          "reading": "no cross-talk beyond a random edit"
+        }
+      },
+      "criteria": {
+        "q_orthonormal": true,
+        "weights_invariant": true,
+        "patterns_consistent": true,
+        "null_in_span": true,
+        "angles_agree": true,
+        "analytic_null": true,
+        "specificity_reproduced": true,
+        "finite": true
+      },
+      "passed": true
+    }
   }
 }
