@@ -990,7 +990,7 @@ def check_figure_spline_profile() -> dict:
     ok: dict[str, list[bool]] = {"covariance_equals_phase5": [], "finite": []}
 
     fig = plt.figure(figsize=(15, 9.5), facecolor=SURFACE)
-    grid = fig.add_gridspec(2, 3, height_ratios=[1.15, 0.85], hspace=0.45, wspace=0.14, top=0.86)
+    grid = fig.add_gridspec(2, 3, height_ratios=[1.15, 0.85], hspace=0.45, wspace=0.2, top=0.86)
     first = None
     for col, variable in enumerate(DATASETS):
         k1 = load_probe_sequence(variable).k - 1
@@ -1015,10 +1015,10 @@ def check_figure_spline_profile() -> dict:
             ok["finite"].append(bool(np.isfinite(values).all()))
             ax.plot(indices, values, zorder=2 + z, **style)
         at18 = {name: profile["18"]["arms"][arm]["gain"] for name, arm in
-                (("spline", "spline_1"), ("covariance", "covariance_1"), ("probes", f"phase5_probes_{k1}"))}
+                (("spline", "spline_1"), ("cov.", "covariance_1"), ("probes", f"phase5_probes_{k1}"))}
         ax.set_title(variable.capitalize() + (" (gain on (sin, cos))" if variable == "direction" else "")
-                     + "\nindex 18: " + " · ".join(f"{n} {g:.3f}" for n, g in at18.items()),
-                     color=INK, fontsize=10.5, loc="left")
+                     + "\nidx 18: " + " · ".join(f"{n} {g:.3f}" for n, g in at18.items()),
+                     color=INK, fontsize=9.5, loc="left")
         ax.axhline(0, color=INK_MUTED, lw=0.8, zorder=1)
         ax.set_xticks(indices)
         ax.set_xlabel("layer index (steered at 9)", color=INK_SECONDARY)
