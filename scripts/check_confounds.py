@@ -279,7 +279,7 @@ def check_figure_confounds() -> dict:
 
     ok: dict[str, list[bool]] = {"validation_reproduced": [], "slope_matches_saved": []}
     plotted: list[float] = []
-    fig, (left, right) = plt.subplots(1, 2, figsize=(11.5, 4.6), facecolor=SURFACE,
+    fig, (left, right) = plt.subplots(1, 2, figsize=(11.5, 5.4), facecolor=SURFACE,
                                       gridspec_kw={"width_ratios": [1, 1.25]})
 
     top = 0.0
@@ -309,7 +309,8 @@ def check_figure_confounds() -> dict:
     left.set_title("Probes applied across sets read distance (index 18)", fontsize=11, loc="left", color=INK)
     left.set_xlabel("true distance travelled over the clip (m)", fontsize=9)
     left.set_ylabel("cross-applied probe reading (m)", fontsize=9)
-    left.legend(loc="lower right", fontsize=8, frameon=False, labelcolor=INK_SECONDARY)  # empty below the diagonal
+    left.legend(loc="upper center", bbox_to_anchor=(0.5, -0.18), fontsize=8.5, frameon=False,
+                labelcolor=INK_SECONDARY)  # below the axes: no corner of the data area is wide and empty enough
 
     rows = sorted((r for r in classifier["sites"].values() if r["plot_index"] is not None),
                   key=lambda r: r["plot_index"])
@@ -340,7 +341,7 @@ def check_figure_confounds() -> dict:
 
     fig.suptitle("The probes read distance travelled, yet the two motion profiles stay separable",
                  fontsize=12, color=INK, x=0.06, ha="left")
-    fig.subplots_adjust(bottom=0.13, top=0.84, wspace=0.25)
+    fig.subplots_adjust(bottom=0.3, top=0.87, wspace=0.25)
     fig.savefig(FIGURE, dpi=FIGURE_DPI, facecolor=SURFACE)
     plt.close(fig)
 
