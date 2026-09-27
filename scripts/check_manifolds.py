@@ -10,14 +10,15 @@ import time
 from pathlib import Path
 
 import numpy as np
+from sklearn.preprocessing import StandardScaler
 
 from vjepa_physics.data import DATASETS
 from vjepa_physics.evidence import file_sha256, require_clean_code, save_result
 from vjepa_physics.extraction import plot_index
 from vjepa_physics.joined import load_joined
 from vjepa_physics.manifolds import (
-    EXACT, PCA_DIMS, centroid_noise, fit_curve, loco_errors, loco_grid, select_setting, smoothing_grid,
-    value_centroids,
+    EXACT, LINE, PCA_DIMS, centroid_noise, fit_curve, loco_errors, loco_grid, select_setting, smoothing_grid,
+    unit_tangents, value_centroids,
 )
 from vjepa_physics.metrics import bootstrap_indices, percentile_interval, resampled_mean
 from vjepa_physics.nullspace import train_scaler
@@ -37,6 +38,13 @@ LINE_TOLERANCE = 1e-10  # relative: centroid line vs Phase 5's covariance map (t
 EXACT_TOLERANCE = 1e-10  # relative: exact interpolation passes through every centroid
 GRID_TOLERANCE = 1e-12  # relative: grid entry vs loco_errors² at one fold (two computation paths)
 BOOTSTRAP_RESAMPLES = 10_000
+
+PAIR = ("speed", "acceleration")
+CLIP_SECONDS = 15 / 24  # frame 0 to frame 15 at 24 fps
+DISTANCE_PER_UNIT = {"speed": CLIP_SECONDS, "acceleration": CLIP_SECONDS**2 / 2}  # metres per m/s; per m/s² from rest
+WINDOW_REFERENCE = (0.15625, 1.953125)  # F-65's overlap window of distances travelled (metres)
+WINDOW_TOLERANCE = 1e-12
+TANGENT_POINTS = 201  # matched distances for tangent angles (ends dropped)
 
 
 def kind_of(variable: str) -> str:
@@ -193,8 +201,115 @@ def check_manifold_loco() -> dict:
     }
 
 
+def angle_degrees(u: np.ndarray, v: np.ndarray) -> float:
+    cos = float(u @ v / (np.linalg.norm(u) * np.linalg.norm(v)))
+    return float(np.degrees(np.arccos(np.clip(cos, -1.0, 1.0))))
+
+
+def check_speed_acceleration_manifold() -> dict:
+    """Observation: do the speed and acceleration sets lie on one index-9 curve on a distance-travelled scale?
+
+    Window = the overlap of both sets' distance ranges (F-65). One scaler fit on both sets' train clips in the window;
+    per set, train centroids per seen value parameterized by distance (metres) and an open curve chosen by the LOCO
+    rule. Each set's centroids are scored against the other set's curve at the same distance (raw, and after removing
+    the mean offset) and compared with their own LOCO error (paired value-bootstrap intervals). Tangent angles at
+    matched distances, straight-line slope angle, principal angles between the two curves' PCA axes, each curve's own
+    tangent turn and arc length. Passes if: window = F-65's; 16 train clips per value; a grid entry = loco_errors at
+    one fold for each set; everything finite.
+    """
+    tables = {v: load_joined(v) for v in PAIR}
+    distance = {v: np.asarray(tables[v]["label"], dtype=np.float64) * DISTANCE_PER_UNIT[v] for v in PAIR}
+    lo = max(float(distance[v].min()) for v in PAIR)
+    hi = min(float(distance[v].max()) for v in PAIR)
+    in_window = {v: (distance[v] >= lo) & (distance[v] <= hi) for v in PAIR}
+    x = {v: site_features(tables[v]["activations"], STEERING_SITE) for v in PAIR}
+    fit_rows = {v: in_window[v] & (tables[v]["role"] == "train") for v in PAIR}
+    scaler = StandardScaler().fit(np.concatenate([x[v][fit_rows[v]] for v in PAIR]))
+
+    ok: dict[str, list[bool]] = {name: [] for name in ("value_counts", "grid_matches_loco_errors")}
+    sets, curves, per_set = {}, {}, {}
+    for v in PAIR:
+        rows = in_window[v]
+        z = (x[v][rows] - scaler.mean_) / scaler.scale_
+        values, cents, counts = value_centroids(
+            z, tables[v]["value_index"][rows], distance[v][rows], tables[v]["role"][rows])
+        ok["value_counts"].append(bool((counts == EXPECTED_COUNTS[v]).all()))
+        smooths = smoothing_grid("open", values)
+        grid = loco_grid("open", values, cents, PCA_DIMS, smooths)
+        mse = np.nanmean(grid, axis=2)
+        a, b = select_setting(mse)
+        k, smooth = PCA_DIMS[a], smooths[b]
+        j = len(values) // 2
+        brute = float(loco_errors("open", values, cents, k, smooth)[j] ** 2)
+        ok["grid_matches_loco_errors"].append(abs(brute - grid[a, b, j]) <= GRID_TOLERANCE * brute)
+        line_a = int(np.argmin(mse[:, 0]))
+        sets[v] = (values, cents, grid[a, b])
+        curves[v] = fit_curve("open", values, cents, k, smooth)
+        per_set[v] = {
+            "n_values": len(values), "train_clips": int(fit_rows[v].sum()),
+            "distance_range": [float(values[0]), float(values[-1])],
+            "median_adjacent_spacing": float(np.median(np.linalg.norm(np.diff(cents, axis=0), axis=1))),
+            "selected": {"k": dim_name(k), "smooth": smooth, "mse": float(mse[a, b])},
+            "line": {"k": dim_name(PCA_DIMS[line_a]), "mse": float(mse[line_a, 0])},
+            "gap_line_minus_selected": paired_gap(grid[line_a, 0], grid[a, b]),
+        }
+
+    cross = {}
+    for v, other in (PAIR, PAIR[::-1]):
+        values, cents, own_sq = sets[v]
+        other_values = sets[other][0]
+        inside = (values >= other_values[0]) & (values <= other_values[-1]) & np.isfinite(own_sq)
+        residual = cents[inside] - curves[other](values[inside])
+        offset = residual.mean(axis=0)
+        cross_sq, aligned_sq = np.full(len(values), np.nan), np.full(len(values), np.nan)
+        cross_sq[inside] = (residual**2).sum(axis=1)
+        aligned_sq[inside] = ((residual - offset) ** 2).sum(axis=1)
+        cross[f"{v}_centroids_on_{other}_curve"] = {
+            "n_values": int(inside.sum()),
+            "own_loco_mse": float(own_sq[inside].mean()),
+            "cross_mse": float(np.nanmean(cross_sq)),
+            "cross_aligned_mse": float(np.nanmean(aligned_sq)),
+            "offset_norm": float(np.linalg.norm(offset)),
+            "gap_cross_minus_own": paired_gap(cross_sq, own_sq),
+            "gap_aligned_minus_own": paired_gap(aligned_sq, own_sq),
+        }
+
+    common_lo = max(float(sets[v][0][0]) for v in PAIR)
+    common_hi = min(float(sets[v][0][-1]) for v in PAIR)
+    matched = np.linspace(common_lo, common_hi, TANGENT_POINTS)[1:-1]
+    tangents = {v: unit_tangents(curves[v], matched) for v in PAIR}
+    cos = np.clip((tangents["speed"] * tangents["acceleration"]).sum(axis=1), -1.0, 1.0)
+    tangent_angles = np.degrees(np.arccos(cos))
+    lines = {v: fit_curve("open", sets[v][0], sets[v][1], None, LINE) for v in PAIR}
+    ends = np.array([common_lo, common_hi])
+    slopes = {v: np.diff(lines[v](ends), axis=0)[0] for v in PAIR}
+    singular = np.linalg.svd(curves["speed"].axes.T @ curves["acceleration"].axes, compute_uv=False)
+    dense = np.linspace(common_lo, common_hi, 2001)
+    geometry = {
+        "common_distance_range": [common_lo, common_hi],
+        "tangent_angle_degrees": {"median": float(np.median(tangent_angles)), "min": float(tangent_angles.min()),
+                                  "max": float(tangent_angles.max())},
+        "line_slope_angle_degrees": angle_degrees(slopes["speed"], slopes["acceleration"]),
+        "principal_angles_degrees": np.degrees(np.arccos(np.clip(singular, -1.0, 1.0))).tolist(),
+        "own_tangent_turn_degrees": {v: angle_degrees(tangents[v][0], tangents[v][-1]) for v in PAIR},
+        "arc_length": {v: float(np.linalg.norm(np.diff(curves[v](dense), axis=0), axis=1).sum()) for v in PAIR},
+    }
+
+    window_ok = abs(lo - WINDOW_REFERENCE[0]) <= WINDOW_TOLERANCE and abs(hi - WINDOW_REFERENCE[1]) <= WINDOW_TOLERANCE
+    result = {"window": [lo, hi], "sets": per_set, "cross": cross, "geometry": geometry}
+    criteria = {name: all(values) for name, values in ok.items()} | {
+        "window_matches_reference": window_ok,
+        "finite": bool(np.isfinite(json.dumps(result).count("NaN") == 0)),
+    }
+    return result | {
+        "post_hoc": False, "observation": True, "site": STEERING_SITE,
+        "criteria": criteria, "passed": all(criteria.values()),
+    }
+    
+
 CHECKS = {
     "manifold_loco": check_manifold_loco,
+    "speed_acceleration_manifold": check_speed_acceleration_manifold,
 }
 
 

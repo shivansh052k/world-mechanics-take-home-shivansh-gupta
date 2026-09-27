@@ -208,3 +208,10 @@ def select_setting(mse: np.ndarray) -> tuple[int, int]:
     qualify = mse <= np.nanmin(mse) * (1 + SELECTION_TOLERANCE)
     a = int(np.flatnonzero(qualify.any(axis=1))[0])
     return a, int(np.flatnonzero(qualify[a])[0])
+
+def unit_tangents(curve: Curve, values: np.ndarray) -> np.ndarray:
+    """(n, d) unit tangent vectors of the curve at `values`, by central differences with step 1e-4 x their range."""
+    v = np.asarray(values, dtype=np.float64)
+    h = 1e-4 * float(v.max() - v.min())
+    t = curve(v + h) - curve(v - h)
+    return t / np.linalg.norm(t, axis=1, keepdims=True)
