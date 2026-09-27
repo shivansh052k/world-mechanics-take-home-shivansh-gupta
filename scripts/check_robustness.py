@@ -815,7 +815,6 @@ CHECKS = {
     "motion_type_test": check_motion_type_test,
     "subspace_overlap": check_subspace_overlap,
 }
-}
 
 
 def main() -> None:
