@@ -26,6 +26,7 @@ ARTIFACTS = REPO / "artifacts/robustness"  # regenerable, git-ignored
 PROBE_CHECKS = REPO / "results/probes/checks.json"  # key "layer_curves": all-train validation predictions
 
 VALIDATION_ROLES = ("val_seen", "val_unseen")
+TEST_ROLES = ("test_seen", "test_unseen")  # scored once, after the validation findings are fixed
 HEADLINE_SITES = ("block_0", STEERING_SITE, "block_17")  # indices 1, 9, 18: intervals, readings, the one-time test
 EXPECTED_FIT = {"velocity": 397, "acceleration": 416}  # train clips per motion type
 BOOTSTRAP_RESAMPLES = 10_000
@@ -161,7 +162,90 @@ def check_motion_type_transfer() -> dict:
     }
 
 
-CHECKS = {"motion_type_transfer": check_motion_type_transfer}
+def check_motion_type_test() -> dict:
+    """One-time test of the motion-type transfer at indices 1, 9, 18 (scope fixed before any test row was read).
+
+    The six probes are refit as in motion_type_transfer and must reproduce its saved validation predictions bit for bit;
+    then test-seen and test-unseen clips of each type are scored within / across (all, distance_overlap, without_exit),
+    with the same metrics, bootstrap and reading bands on the combined test clips. Nothing is selected. Passes if:
+    saved artifact hash-verified and aligned; validation reproduced; only test rows predicted; everything finite.
+    """
+    table = load_joined("direction")
+    labels, roles = table["label"], table["role"]
+    y = probe_targets("direction", labels)
+    masks, overlap = motion_masks(table), distance_overlap(table)
+    validation, test = np.isin(roles, VALIDATION_ROLES), np.isin(roles, TEST_ROLES)
+    with np.load(verified_artifact(OUT, "motion_type_transfer")) as f:
+        saved = {key: f[key] for key in f.files}
+    aligned = bool(np.array_equal(saved["ids"], table["id"]) and np.array_equal(saved["validation"], validation))
+    subsets = {"all": test, "distance_overlap": test & overlap, "without_exit": test & ~table["exit"]}
+    groups = {"test": test, "test_seen": roles == "test_seen", "test_unseen": roles == "test_unseen"}
+    boot = {m: bootstrap_indices(int((test & masks[m]).sum()), BOOTSTRAP_RESAMPLES, SEED + i)
+            for i, m in enumerate(MOTION_TYPES)}
+
+    ok: dict[str, list[bool]] = {name: [] for name in ("validation_reproduced", "only_test_rows_predicted", "finite")}
+    result, summary = {}, {}
+    for site in HEADLINE_SITES:
+        x = site_features(table["activations"], site)
+        site_record: dict = {"plot_index": site_index(site)}
+        for fit_type in MOTION_TYPES:
+            other = MOTION_TYPES[1 - MOTION_TYPES.index(fit_type)]
+            probe = fit_probe(x, y, np.where(masks[fit_type], roles, "other_type"))
+            val_pred = np.full(y.shape, np.nan)
+            val_pred[validation] = probe.predict(x[validation])
+            ok["validation_reproduced"].append(bool(np.array_equal(
+                val_pred, saved[f"{site}_{fit_type}_predictions"], equal_nan=True)))
+            pred = np.full(y.shape, np.nan)
+            pred[test] = probe.predict(x[test])
+            ok["only_test_rows_predicted"].append(bool(np.isnan(pred[~test]).all()))
+
+            record: dict = {"alpha": probe.alpha}
+            for group, g in groups.items():
+                record[group] = {}
+                for subset, rows in subsets.items():
+                    record[group][subset] = {}
+                    for name, eval_type in (("within", fit_type), ("across", other)):
+                        r = rows & g & masks[eval_type]
+                        score, _ = direction_scores(labels[r], pred[r])
+                        record[group][subset][name] = score | {"n_clips": int(r.sum())}
+
+            rows = {"within": test & masks[fit_type], "across": test & masks[other]}
+            errors = {name: direction_scores(labels[r], pred[r])[1] for name, r in rows.items()}
+            gap_ci = [float(c) for c in percentile_interval(
+                resampled_mean(errors["across"], boot[other]) - resampled_mean(errors["within"], boot[fit_type]))]
+            across_ci = [float(c) for c in percentile_interval(
+                resampled_r2(y[rows["across"]], pred[rows["across"]], boot[other]))]
+            full = record["test"]["all"]
+            record["headline"] = {
+                "across_r2_ci": across_ci,
+                "gap_circular_mae": full["across"]["circular_mae"] - full["within"]["circular_mae"],
+                "gap_ci": gap_ci, "reading": transfer_reading(full["across"]["r2"], gap_ci),
+            }
+            summary.setdefault(str(site_index(site)), {})[f"{fit_type}_to_{other}"] = {
+                "within_r2": full["within"]["r2"], "across_r2": full["across"]["r2"], "across_r2_ci": across_ci,
+                "within_mae": full["within"]["circular_mae"], "across_mae": full["across"]["circular_mae"],
+                "gap_ci": gap_ci, "reading": record["headline"]["reading"],
+                "across_mae_seen_unseen": [record[g]["all"]["across"]["circular_mae"] for g in TEST_ROLES],
+                "overlap_within_across_mae": [record["test"]["distance_overlap"][n]["circular_mae"]
+                                              for n in ("within", "across")],
+            }
+            ok["finite"].append(all_finite(record))
+            site_record[fit_type] = record
+        result[site] = site_record
+
+    criteria = {name: all(values) for name, values in ok.items()} | {"saved_aligned": aligned}
+    return {
+        "roles_scored": list(TEST_ROLES), "subsets": list(subsets),
+        "counts": {s: {m: int((rows & masks[m]).sum()) for m in MOTION_TYPES} for s, rows in subsets.items()},
+        "reading_bands": {"shared": SHARED_R2, "type_specific_below": TYPE_SPECIFIC_R2},
+        "summary": summary, "sites": result, "criteria": criteria, "passed": all(criteria.values()),
+    }
+
+
+CHECKS = {
+    "motion_type_transfer": check_motion_type_transfer, 
+    "motion_type_test": check_motion_type_test
+}
 
 
 def main() -> None:

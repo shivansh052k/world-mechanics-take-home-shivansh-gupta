@@ -401,6 +401,13 @@ what's next.
   excluded, no exit clip. Prediction "≈ 406 train each" missed: velocity cells are smaller (13–14 vs 18–20 clips, F-63),
   so D-38's per-cell floor + remainder allocation gives them a larger validation / test share (explanation by
   arithmetic, not re-derived). **Step 7.2a done.**
+- 7.2b: `scripts/check_robustness.py motion_type_transfer` **passed** (7/7, clean commit; artifact
+  `motion_type_predictions.npz`). Across R² v → a / a → v: idx 1 0.710 / 0.607 ("partly shared" both); idx 9 0.931
+  "shared, partly type-specific" / 0.962 "shared"; idx 18 0.972 / 0.951 "shared, partly type-specific" (a → v gap 3.6°,
+  CI [2.6, 4.6]). Distance overlap removes idx 1's v → a gap, not idx 18's a → v gap. Claude Code's predictions: criteria
+  ✓, idx 9 / 18 across 0.93–0.98 ✓, idx 1 0.6–0.9 ✓, overlap gap shrinks ✓ (mostly); idx 9 a → v "shared" (predicted
+  partly type-specific; flagged as uncertain). Validation findings frozen as F-149–F-152 in DECISIONS §1.13 (early, for
+  the test-once rule). **Step 7.2b done.**
 
 ### 2026-09-26 — Phase 6 started (spline steering)
 - Phase 6 layout (`manifolds.py`, `behavior.py`, spline arms in `steering.py`; `check_manifolds.py`,
