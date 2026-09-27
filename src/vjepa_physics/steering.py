@@ -13,6 +13,7 @@ from vjepa_physics.extraction import pool_time_steps
 from vjepa_physics.intervention import run_blocks
 from vjepa_physics.reproducibility import SEED
 from vjepa_physics.metrics import angles_from_sincos
+from vjepa_physics.probes import probe_targets
 
 NULLSPACE_CHECKS = "results/nullspace/checks.json"  # key "nullspace_rounds": rounds.npz and each site's K
 STEERING_SITE = "block_8"  # hidden_states index 9
@@ -28,6 +29,7 @@ TARGET_VALUE_INDICES = {
 QUARTILE_SIZE = 16  # speed / acceleration test-seen clips are spread over value-index quartiles 0-15, ..., 48-63
 RANDOM_SEEDS = 3  # random directions per clip, target and probe count
 
+PATH_FRACTIONS = (0.25, 0.5, 0.75, 1.0)  # waypoints along a steering path (1.0 = the endpoint)
 
 @dataclass(frozen=True)
 class ProbeSequence:
@@ -248,16 +250,20 @@ def arm_shifts(
 def steered_features(
     model: VJEPA2Model, cached: torch.Tensor, shifts: np.ndarray, first: int, last: int
 ) -> np.ndarray:
-    """(A, last - first + 2, d) float64 probe features for each raw shift added to every token of `cached`.
+    """(A, last - first + 2, d) float64 probe features for each raw shift added to the tokens of `cached`.
 
-    cached: the steering site's (1, 2048, d) output on the model's device. Each shift is cast to the model's fp32 and
-    added to every token; blocks first...last then run on the result. Row 0 = the edited steering site, rows 1...
-    = blocks first...last. Features are computed as the probes' are: per-time-step means on the device, moved to the
-    CPU, widened to float64, then averaged over the 8 steps.
+    cached: the steering site's (1, 2048, d) output on the model's device. shifts: (A, d) = the same shift on every
+    token, or (A, T, d) = one shift per time step, added to that step's 2048 / T tokens (token i is time step
+    i // (2048 / T)). Each shift is cast to the model's fp32; blocks first...last then run on the result. Row 0 = the
+    edited steering site, rows 1... = blocks first...last. Features are computed as the probes' are: per-time-step
+    means on the device, moved to the CPU, widened to float64, then averaged over the 8 steps.
     """
     out = np.empty((len(shifts), last - first + 2, cached.shape[-1]))
     for a, shift in enumerate(np.asarray(shifts)):
-        edited = cached + torch.from_numpy(shift.astype(np.float32)).to(cached.device)
+        delta = torch.from_numpy(shift.astype(np.float32)).to(cached.device)
+        if delta.ndim == 2:  # one shift per time step, on that step's tokens
+            delta = torch.repeat_interleave(delta, cached.shape[1] // delta.shape[0], dim=0)
+        edited = cached + delta
         blocks = run_blocks(model, edited, first, last)
         pooled = torch.stack([pool_time_steps(edited)] + [pool_time_steps(blocks[f"block_{i}"])
                                                           for i in range(first, last + 1)])
@@ -276,3 +282,95 @@ def label_difference(variable: str, a: np.ndarray, b: np.ndarray) -> np.ndarray:
     """a - b in label units; for direction the signed angle in [-180, 180) degrees."""
     d = np.asarray(a, dtype=np.float64) - np.asarray(b, dtype=np.float64)
     return (d + 180.0) % 360.0 - 180.0 if variable == "direction" else d
+
+def curve_parameter(variable: str, reading: np.ndarray) -> np.ndarray:
+    """(N,) label values of (N, m) round-1 probe readings: degrees of (sin, cos) for direction, else the reading."""
+    r = np.atleast_2d(np.asarray(reading, dtype=np.float64))
+    return angles_from_sincos(r) if variable == "direction" else r[:, 0]
+
+
+def clamp_to_curve(kind: str, values: np.ndarray, u: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Parameters clamped to an open curve's fitted value range, and which were clamped (a loop needs none)."""
+    u = np.asarray(u, dtype=np.float64)
+    if kind == "loop":
+        return u, np.zeros(u.shape, dtype=bool)
+    return np.clip(u, values[0], values[-1]), (u < values[0]) | (u > values[-1])
+
+
+def path_values(variable: str, start: float, target: float, fractions=PATH_FRACTIONS) -> np.ndarray:
+    """(F,) waypoint labels start + f Δ, Δ = target - start (direction: on the shorter arc)."""
+    return start + np.asarray(fractions, dtype=np.float64) * float(label_difference(variable, target, start))
+
+
+def spline_path_shifts(curve, variable: str, start: float, target: float, fractions=PATH_FRACTIONS) -> np.ndarray:
+    """(F, d) standardized shifts along the activation curve: S(start + f Δ) - S(start)."""
+    return curve(path_values(variable, start, target, fractions)) - curve(np.array([start]))
+
+
+def chord_shifts(curve, start: float, target: float, fractions=PATH_FRACTIONS) -> np.ndarray:
+    """(F, d) standardized shifts along the straight chord with the same endpoint: f (S(target) - S(start))."""
+    return np.outer(np.asarray(fractions, dtype=np.float64), curve(np.array([target]))[0] - curve(np.array([start]))[0])
+
+
+def covariance_path_shifts(
+    seq: ProbeSequence, b: np.ndarray, x: np.ndarray, target: np.ndarray, fractions=PATH_FRACTIONS
+) -> np.ndarray:
+    """(F, d) raw shifts f x covariance_shift; f = 1 is Phase 5's covariance arm exactly."""
+    full = covariance_shift(seq, b, np.asarray(x, dtype=np.float64).reshape(1, -1), target)[0]
+    return np.outer(np.asarray(fractions, dtype=np.float64), full)
+
+
+def time_covariance_maps(z_steps: np.ndarray, y: np.ndarray) -> np.ndarray:
+    """(T, m, d) covariance maps of each time step's standardized train features z_steps (n, T, d) on the target.
+    The map is linear in z, so their mean over steps is the all-token map."""
+    return np.stack([covariance_map(z_steps[:, s], y) for s in range(z_steps.shape[1])])
+
+
+def time_structured_shift(
+    seq: ProbeSequence, maps: np.ndarray, x: np.ndarray, target: np.ndarray, reverse: bool = False
+) -> np.ndarray:
+    """(T, d) raw shifts σ ⊙ ((t - ŷ) B_s), one per time step s; ŷ = the round-1 reading of the clip's all-token row
+    (as the covariance arm). reverse: step s gets step T - 1 - s's shift (control). Mean over steps = the covariance
+    arm's shift."""
+    x = np.asarray(x, dtype=np.float64).reshape(1, -1)
+    goal = np.asarray(target, dtype=np.float64).reshape(seq.dims_per_round)
+    per_step = np.einsum("m,smd->sd", goal - seq.outputs(x, 1)[0, 0], maps) * seq.scale
+    return per_step[::-1].copy() if reverse else per_step
+
+def spline_arm_table(variable: str) -> tuple[list[tuple[str, float]], list[tuple[str, float]]]:
+    """Phase 6 arms as (kind, fraction): uniform (same shift on every token) and timed (one shift per time step).
+
+    Uniform: spline path f = 0.25...1, chord f = 0.25...0.75 (f = 1 is the spline endpoint), covariance path
+    f = 0.25...0.75 (f = 1 is Phase 5's covariance arm), and for speed / acceleration the free-spacing B line
+    (endpoint). Timed: time-structured covariance and its time-reversed control.
+    """
+    uniform = [("spline", f) for f in PATH_FRACTIONS]
+    uniform += [("chord", f) for f in PATH_FRACTIONS[:-1]] + [("covariance", f) for f in PATH_FRACTIONS[:-1]]
+    if variable != "direction":
+        uniform.append(("spacing_line", 1.0))
+    return uniform, [("time_covariance", 1.0), ("time_reversed", 1.0)]
+
+
+def spline_arm_shifts(
+    seq: ProbeSequence, b: np.ndarray, maps: np.ndarray, curve, line, variable: str, values: np.ndarray,
+    x: np.ndarray, target_label: float,
+) -> dict:
+    """Raw shifts of every Phase 6 arm for one clip and target, in spline_arm_table's order.
+
+    x: the clip's (d,) raw pooled row at the steering site. The start = the round-1 probe's reading of x as a label
+    (clamped to an open curve's range). Returns uniform (A_u, d), timed (A_t, T, d), the start and whether it was
+    clamped. line: the free-spacing B line (None for direction).
+    """
+    kind = "loop" if variable == "direction" else "open"
+    x = np.asarray(x, dtype=np.float64).reshape(-1)
+    goal = probe_targets(variable, np.array([target_label])).reshape(-1)
+    start, clamped = clamp_to_curve(kind, values, curve_parameter(variable, seq.outputs(x[None], 1)[:, 0, :]))
+    start = float(start[0])
+    uniform = [spline_path_shifts(curve, variable, start, target_label) * seq.scale,
+               chord_shifts(curve, start, target_label)[:-1] * seq.scale,
+               covariance_path_shifts(seq, b, x, goal)[:-1]]
+    if line is not None:
+        uniform.append((line(np.array([target_label])) - line(np.array([start]))) * seq.scale)
+    timed = np.stack([time_structured_shift(seq, maps, x, goal),
+                      time_structured_shift(seq, maps, x, goal, reverse=True)])
+    return {"uniform": np.concatenate(uniform), "timed": timed, "start": start, "clamped": bool(clamped[0])}
