@@ -408,6 +408,33 @@ what's next.
   ✓, idx 9 / 18 across 0.93–0.98 ✓, idx 1 0.6–0.9 ✓, overlap gap shrinks ✓ (mostly); idx 9 a → v "shared" (predicted
   partly type-specific; flagged as uncertain). Validation findings frozen as F-149–F-152 in DECISIONS §1.13 (early, for
   the test-once rule). **Step 7.2b done.**
+- 7.2c: `check_robustness.py motion_type_test` (one-time test, F-152 scope) **passed** (4/4; validation reproduced bit
+  for bit). All six readings = validation; idx 18 a → v gap 4.1° [3.2, 4.9], survives distance matching; idx 1 a → v
+  across R² 0.505 (validation 0.607). Claude Code's predictions: criteria ✓, readings ✓ (6/6), idx 9 / 18 within ±0.03 ✓,
+  idx 1 within ±0.08 missed for a → v (−0.10). F-153 added. **Step 7.2 done.**
+- 7.3 criteria (re-drafted; the original brief text was lost; Claude Code's own additions, D-37; user approved; fixed
+  before any run). `sub_patch_motion` is label-determined (metadata, `flags.py`), `frozen_start` is not (tracked centre).
+  Correctness: artifacts via `verified_artifact`, ids aligned; `within_tubelet_px` = flags table columns to its 4-decimal rounding (≤ 5e-5 px); recomputed
+  errors = saved `layer_curves` scores ≤ 1e-12 (field confirmed at 7.3b); flag counts per role = joined table.
+  (A) stratified flagged − unflagged error (10,000 resamples, idx 1 / 9 / 18, validation): direction exit / clipped /
+  frozen_start within motion group; acceleration frozen_start within label value; CI low > 0 "excess error beyond
+  stratum", CI ∋ 0 "no excess", CI high < 0 "lower"; raw difference and n per stratum observations. (B) H-05: speed /
+  acceleration sub-patch clips, `within_range_trend`: slope CI > 0 and Spearman CI > 0 "continuous inside the sub-patch
+  range", slope CI ∋ 0 "consistent with a binary detector"; full-range slope, per-value errors, relative error flagged
+  vs unflagged ("confounded with label value") observations. (C) figure: error vs mean tubelet px at idx 9, direction
+  with / without exit; Spearman on absolute and relative error observations. (D) Phase 5 per-clip reduction by flag,
+  observation (Phase 6 omitted: spline = covariance within 0.005 downstream). Test later: same A / B on F-104's saved
+  test predictions, labelled confirmation after the validation F-entry, no selection. No planner questions.
+- 7.3a: `robustness.py` part 2 (`clip_errors`, `within_tubelet_px`, `stratified_difference`, `within_range_trend`).
+  Smoke test (terminal, not saved): tubelet px = flags table ≤ 4.97e-5 (CSV rounding), ids match; hand case 5.0, strata
+  A / B, n 3 / 3, no-flag case raises; slope = polyfit 1.8e-15, Spearman = scipy 1.1e-16; flat case CIs contain 0;
+  clip errors = `circular_mae` / abs exactly. Prediction "other seed differs" missed: the hand case's resampled
+  statistic takes 7 discrete values and both seeds hit the extremes, CI [4, 6] = 2/3 · {1, 4} + 10/3 exactly
+  (arithmetic; not a bug). **Step 7.3a done.**
+- 7.3b criteria refined before the run (Claude Code, stated to user): "flag counts per role = joined table" was circular
+  → flag totals per dataset = F-72's counts; criterion 3 field confirmed (`layer_curves` saves `r2` + `mae` /
+  `circular_mae` per role; recomputed and per-clip-error means ≤ 1e-12); trend outcomes outside both rules (e.g. slope
+  CI > 0 but Spearman CI ∋ 0, or slope CI < 0) read "neither rule met".
 
 ### 2026-09-26 — Phase 6 started (spline steering)
 - Phase 6 layout (`manifolds.py`, `behavior.py`, spline arms in `steering.py`; `check_manifolds.py`,

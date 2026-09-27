@@ -1,0 +1,1566 @@
+{
+  "cross_applied_probes": {
+    "provenance": {
+      "utc": "2026-09-27T06:38:07+00:00",
+      "git_commit": "192f9bea020ed2eb3ebd48ee59d5036bf1021202",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/confounds.py": "06ad47b7ffca456e376b4543d4f6915fd6613340b4b91dfa9a034d3a8783694d",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "2aaf059c980a059425efef4d1e808ce3768a93dbdb9ddbf47448423dabeae0a0",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_confounds.py": "4105b40daecf93fc9b377f5ce083bfc05772e1920e7246619af75a26d7e2854f"
+        },
+        "combined_sha256": "f6e210259a20df94ea5b69fcf6062a4c548815564b741b5ff8ad720325281407"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "window_m": [
+        0.15625,
+        1.953125
+      ],
+      "roles_scored": [
+        "val_seen",
+        "val_unseen"
+      ],
+      "note": "each probe is applied out of distribution: to clips of the other set, whose motion profile it never saw",
+      "rule": {
+        "acceleration_probe_on_speed_clips": "CI < 0.25 reads acceleration; CI > 0.5 reads a speed / distance quantity; else mixed",
+        "speed_probe_on_acceleration_clips": "tau / T = slope / 2, no verdict"
+      },
+      "summary": {
+        "speed_probe_on_acceleration_clips": {
+          "9": {
+            "slope": 1.0160284704118134,
+            "intercept_m": 0.01582887566230462,
+            "r2_vs_distance": 0.9730627242344569,
+            "slope_ci": [
+              0.9972027839618219,
+              1.0347402815834892
+            ],
+            "tau_fraction": 0.5080142352059067,
+            "tau_fraction_ci": [
+              0.49860139198091097,
+              0.5173701407917446
+            ],
+            "own_slope": 1.0139645616435569,
+            "own_slope_ci": [
+              0.9945194341857588,
+              1.0335023905735559
+            ]
+          },
+          "18": {
+            "slope": 0.99056226428676,
+            "intercept_m": 0.11462532093678557,
+            "r2_vs_distance": 0.939798655049182,
+            "slope_ci": [
+              0.9727851242658875,
+              1.0083178866956726
+            ],
+            "tau_fraction": 0.49528113214338,
+            "tau_fraction_ci": [
+              0.48639256213294374,
+              0.5041589433478363
+            ],
+            "own_slope": 1.0173495226909726,
+            "own_slope_ci": [
+              1.0046996008603737,
+              1.0301646400820714
+            ]
+          }
+        },
+        "acceleration_probe_on_speed_clips": {
+          "9": {
+            "slope": 0.9589622754455107,
+            "intercept_m": 0.04165294542657194,
+            "r2_vs_distance": 0.9773804893627142,
+            "slope_ci": [
+              0.9402661619376372,
+              0.9782806050936799
+            ],
+            "verdict": "reads a speed / distance quantity",
+            "own_slope": 0.9895568034353492,
+            "own_slope_ci": [
+              0.9719171841962407,
+              1.007736258459045
+            ]
+          },
+          "18": {
+            "slope": 1.00393172858434,
+            "intercept_m": -0.02411877685317232,
+            "r2_vs_distance": 0.9811593155109667,
+            "slope_ci": [
+              0.9875973794872914,
+              1.0203198499946964
+            ],
+            "verdict": "reads a speed / distance quantity",
+            "own_slope": 0.9866856821311261,
+            "own_slope_ci": [
+              0.9750075432204328,
+              0.9982566012836952
+            ]
+          }
+        }
+      },
+      "probes": {
+        "speed": {
+          "embedding": {
+            "plot_index": 0,
+            "alpha": 10000000.0,
+            "alpha_verdict": "no_signal",
+            "own_val_seen_r2": -0.00010990396687171611,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": -6.738870211142027e-05,
+              "intercept_m": 1.328227755591083,
+              "r2_vs_distance": -0.28480606032245537
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": -2.6884105471121717e-05,
+              "intercept_m": 1.3281820710816832,
+              "r2_vs_distance": -0.2967067524080289
+            }
+          },
+          "block_0": {
+            "plot_index": 1,
+            "alpha": 1.0,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9814741912031875,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 0.9912459525076842,
+              "intercept_m": 0.04017610759174661,
+              "r2_vs_distance": 0.9680064888494697
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.021078339456053,
+              "intercept_m": -0.024307484018672332,
+              "r2_vs_distance": 0.9677092044323506
+            }
+          },
+          "block_1": {
+            "plot_index": 2,
+            "alpha": 1.0,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9824528207147845,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0052529466051812,
+              "intercept_m": 0.02813284373440106,
+              "r2_vs_distance": 0.9636995818625314
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.025180208447745,
+              "intercept_m": -0.032379090975127145,
+              "r2_vs_distance": 0.9694582964052718
+            }
+          },
+          "block_2": {
+            "plot_index": 3,
+            "alpha": 1.7782794100389228,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9790972741298198,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0187643356455647,
+              "intercept_m": 0.01226664893111118,
+              "r2_vs_distance": 0.9525785749025468
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.02538316655205,
+              "intercept_m": -0.030468857599382115,
+              "r2_vs_distance": 0.969694760192309
+            }
+          },
+          "block_3": {
+            "plot_index": 4,
+            "alpha": 3.1622776601683795,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9771904749437876,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0051102465154762,
+              "intercept_m": 0.038940317476827024,
+              "r2_vs_distance": 0.9478308551592527
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.032331681755376,
+              "intercept_m": -0.03226361158218305,
+              "r2_vs_distance": 0.967377132555258
+            }
+          },
+          "block_4": {
+            "plot_index": 5,
+            "alpha": 5.623413251903491,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9768424864441527,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 0.9952496500741498,
+              "intercept_m": 0.024857441163212535,
+              "r2_vs_distance": 0.9594375000888495
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.045828781234909,
+              "intercept_m": -0.04772849662770673,
+              "r2_vs_distance": 0.9640505593235201
+            }
+          },
+          "block_5": {
+            "plot_index": 6,
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9815093533416216,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0324359338481557,
+              "intercept_m": 0.01580717891537131,
+              "r2_vs_distance": 0.9478898933599155
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.034800068499265,
+              "intercept_m": -0.037940672832707856,
+              "r2_vs_distance": 0.971089182817727
+            }
+          },
+          "block_6": {
+            "plot_index": 7,
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9815442720719588,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0316868428096428,
+              "intercept_m": 0.032444288790771436,
+              "r2_vs_distance": 0.9429228986068758
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0258676108281002,
+              "intercept_m": -0.02076694616666308,
+              "r2_vs_distance": 0.971955786265507
+            }
+          },
+          "block_7": {
+            "plot_index": 8,
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9858003865827831,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.046244197477665,
+              "intercept_m": 0.028265106471632606,
+              "r2_vs_distance": 0.9434931642910565
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0240496167106012,
+              "intercept_m": -0.01723723158403856,
+              "r2_vs_distance": 0.9759478388490729
+            }
+          },
+          "block_8": {
+            "plot_index": 9,
+            "alpha": 56.23413251903491,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.989067012497931,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0160284704118134,
+              "intercept_m": 0.01582887566230462,
+              "r2_vs_distance": 0.9730627242344569,
+              "slope_ci": [
+                0.9972027839618219,
+                1.0347402815834892
+              ],
+              "tau_fraction": 0.5080142352059067,
+              "tau_fraction_ci": [
+                0.49860139198091097,
+                0.5173701407917446
+              ]
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0139645616435569,
+              "intercept_m": -0.0071270987811282716,
+              "r2_vs_distance": 0.9811598022658988,
+              "slope_ci": [
+                0.9945194341857588,
+                1.0335023905735559
+              ]
+            }
+          },
+          "block_9": {
+            "plot_index": 10,
+            "alpha": 56.23413251903491,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9882939465870134,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.034801872120153,
+              "intercept_m": -0.00931112598997852,
+              "r2_vs_distance": 0.9716154053856623
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0130451352256935,
+              "intercept_m": -0.007185191125599788,
+              "r2_vs_distance": 0.9789332936589805
+            }
+          },
+          "block_10": {
+            "plot_index": 11,
+            "alpha": 56.23413251903491,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9874496537526912,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0247667058408831,
+              "intercept_m": 0.0226183915196021,
+              "r2_vs_distance": 0.9660571771695671
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0144740556334544,
+              "intercept_m": -0.00924034521124506,
+              "r2_vs_distance": 0.9794960560121544
+            }
+          },
+          "block_11": {
+            "plot_index": 12,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9894488839910025,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 0.9961415500795502,
+              "intercept_m": 0.029244271421857038,
+              "r2_vs_distance": 0.9781348586397952
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.010781390118931,
+              "intercept_m": -0.0054403721477671585,
+              "r2_vs_distance": 0.9837609558583371
+            }
+          },
+          "block_12": {
+            "plot_index": 13,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9888753596322951,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 0.9977330572424953,
+              "intercept_m": 0.04940732282281601,
+              "r2_vs_distance": 0.9731200483288135
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0214034037089794,
+              "intercept_m": -0.019108940448769207,
+              "r2_vs_distance": 0.9819414888681243
+            }
+          },
+          "block_13": {
+            "plot_index": 14,
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9904814633485853,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 0.9700685624502853,
+              "intercept_m": 0.09044147656923052,
+              "r2_vs_distance": 0.9664475525267384
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0146059075282066,
+              "intercept_m": -0.007841862602902872,
+              "r2_vs_distance": 0.9852791774438714
+            }
+          },
+          "block_14": {
+            "plot_index": 15,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9907462399575205,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0110698972481589,
+              "intercept_m": 0.0928651018389417,
+              "r2_vs_distance": 0.9380553395079104
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0143632888853984,
+              "intercept_m": -0.005418733375706308,
+              "r2_vs_distance": 0.9850524458225692
+            }
+          },
+          "block_15": {
+            "plot_index": 16,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9930002258919933,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0108704227643397,
+              "intercept_m": 0.0962952949875635,
+              "r2_vs_distance": 0.9338071754434255
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.010346225560183,
+              "intercept_m": -0.005004345308952551,
+              "r2_vs_distance": 0.9886721811673547
+            }
+          },
+          "block_16": {
+            "plot_index": 17,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9935557460094253,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0576935651699024,
+              "intercept_m": 0.08132593567301694,
+              "r2_vs_distance": 0.8980969628529889
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.018941748389234,
+              "intercept_m": -0.0168939517352531,
+              "r2_vs_distance": 0.9898222502580198
+            }
+          },
+          "block_17": {
+            "plot_index": 18,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9940999678905063,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 0.99056226428676,
+              "intercept_m": 0.11462532093678557,
+              "r2_vs_distance": 0.939798655049182,
+              "slope_ci": [
+                0.9727851242658875,
+                1.0083178866956726
+              ],
+              "tau_fraction": 0.49528113214338,
+              "tau_fraction_ci": [
+                0.48639256213294374,
+                0.5041589433478363
+              ]
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0173495226909726,
+              "intercept_m": -0.012823263787739236,
+              "r2_vs_distance": 0.9903088963154034,
+              "slope_ci": [
+                1.0046996008603737,
+                1.0301646400820714
+              ]
+            }
+          },
+          "block_18": {
+            "plot_index": 19,
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9948754406744121,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 0.9781275972621983,
+              "intercept_m": 0.09220981687768326,
+              "r2_vs_distance": 0.9644420568207934
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0187070876326687,
+              "intercept_m": -0.012802980629612604,
+              "r2_vs_distance": 0.9918213833564554
+            }
+          },
+          "block_19": {
+            "plot_index": 20,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9938128107699078,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0229850279913533,
+              "intercept_m": 0.06572452504643156,
+              "r2_vs_distance": 0.9490627255898779
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0255304789566306,
+              "intercept_m": -0.019469519575848082,
+              "r2_vs_distance": 0.9898139405876415
+            }
+          },
+          "block_20": {
+            "plot_index": 21,
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9920489982133095,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 0.9998625456264856,
+              "intercept_m": 0.08848706119099914,
+              "r2_vs_distance": 0.9441668115157047
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0240610925379803,
+              "intercept_m": -0.016015460468863374,
+              "r2_vs_distance": 0.9881652155409008
+            }
+          },
+          "block_21": {
+            "plot_index": 22,
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.992609016933008,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0547986286252529,
+              "intercept_m": 0.04949676219601784,
+              "r2_vs_distance": 0.9260342463022079
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0276630174639756,
+              "intercept_m": -0.024173910740708626,
+              "r2_vs_distance": 0.9876402894684949
+            }
+          },
+          "block_22": {
+            "plot_index": 23,
+            "alpha": 5.623413251903491,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9923753386724996,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0606976810529414,
+              "intercept_m": 0.06971765596458468,
+              "r2_vs_distance": 0.902001866694812
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0290326595867316,
+              "intercept_m": -0.028617633383799745,
+              "r2_vs_distance": 0.9875210496514343
+            }
+          },
+          "block_23": {
+            "plot_index": 24,
+            "alpha": 5.623413251903491,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9922354943561005,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0638007810362005,
+              "intercept_m": 0.04191434836828467,
+              "r2_vs_distance": 0.9211928857010646
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0232747290623783,
+              "intercept_m": -0.018631890859705846,
+              "r2_vs_distance": 0.988114778880993
+            }
+          },
+          "final_norm": {
+            "plot_index": null,
+            "alpha": 5.623413251903491,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9918706239629036,
+            "cross": {
+              "applied_to": "acceleration",
+              "n_clips": 288,
+              "slope": 1.0611509235083016,
+              "intercept_m": 0.04200709746616704,
+              "r2_vs_distance": 0.9239900035915485
+            },
+            "own_in_window": {
+              "n_clips": 232,
+              "slope": 1.0257361853166582,
+              "intercept_m": -0.021478794386626143,
+              "r2_vs_distance": 0.9875153324981244
+            }
+          }
+        },
+        "acceleration": {
+          "embedding": {
+            "plot_index": 0,
+            "alpha": 316227.7660168379,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": -0.00048422795133418184,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": -0.0015480027572565675,
+              "intercept_m": 1.0043161324196228,
+              "r2_vs_distance": -0.01168382465695772
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": -0.0025824410524834273,
+              "intercept_m": 1.0048569197036012,
+              "r2_vs_distance": -0.014621821996695594
+            }
+          },
+          "block_0": {
+            "plot_index": 1,
+            "alpha": 0.5623413251903491,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9763554884465242,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.015703102650799,
+              "intercept_m": -0.07319752241956123,
+              "r2_vs_distance": 0.9550081931280563
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 1.0135745679081836,
+              "intercept_m": -0.02226961861572363,
+              "r2_vs_distance": 0.9729789163527653
+            }
+          },
+          "block_1": {
+            "plot_index": 2,
+            "alpha": 0.1778279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9748386807893092,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.021440907555212,
+              "intercept_m": -0.06505421894339691,
+              "r2_vs_distance": 0.9593726950189925
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 1.0060179659435082,
+              "intercept_m": -0.017025875410585423,
+              "r2_vs_distance": 0.9701590439266695
+            }
+          },
+          "block_2": {
+            "plot_index": 3,
+            "alpha": 1.0,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9728068170941222,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0272797437874537,
+              "intercept_m": -0.07772664501934023,
+              "r2_vs_distance": 0.9592096323310736
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9998092824881407,
+              "intercept_m": -0.009174879499569188,
+              "r2_vs_distance": 0.9680751362806723
+            }
+          },
+          "block_3": {
+            "plot_index": 4,
+            "alpha": 1.7782794100389228,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9699426796218305,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0267524372237056,
+              "intercept_m": -0.06010081204729856,
+              "r2_vs_distance": 0.9624309084909085
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9866987852153077,
+              "intercept_m": 0.005290584744412019,
+              "r2_vs_distance": 0.965882848686522
+            }
+          },
+          "block_4": {
+            "plot_index": 5,
+            "alpha": 1.7782794100389228,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.966763973681087,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0423608171684648,
+              "intercept_m": -0.05724362142944606,
+              "r2_vs_distance": 0.9509658063222245
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9824678294077329,
+              "intercept_m": 0.01357496102938649,
+              "r2_vs_distance": 0.9625928455257915
+            }
+          },
+          "block_5": {
+            "plot_index": 6,
+            "alpha": 5.623413251903491,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9756322778811155,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 0.9749053447514323,
+              "intercept_m": -0.025162858766656138,
+              "r2_vs_distance": 0.9593098589115624
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9897939703351767,
+              "intercept_m": 0.00928064521796168,
+              "r2_vs_distance": 0.9743289545676105
+            }
+          },
+          "block_6": {
+            "plot_index": 7,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9690995582497584,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 0.9914366542354847,
+              "intercept_m": -0.01605431884294073,
+              "r2_vs_distance": 0.9634391227217143
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 1.0048405261267204,
+              "intercept_m": -0.009023023541600006,
+              "r2_vs_distance": 0.9695860660690429
+            }
+          },
+          "block_7": {
+            "plot_index": 8,
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9769186071221013,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 0.9635559965292673,
+              "intercept_m": 0.0004974012760132762,
+              "r2_vs_distance": 0.9654213624184603
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9978830103891145,
+              "intercept_m": -0.003124477873321485,
+              "r2_vs_distance": 0.9745410739607543
+            }
+          },
+          "block_8": {
+            "plot_index": 9,
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9794602179263446,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 0.9589622754455107,
+              "intercept_m": 0.04165294542657194,
+              "r2_vs_distance": 0.9773804893627142,
+              "slope_ci": [
+                0.9402661619376372,
+                0.9782806050936799
+              ],
+              "verdict": "reads a speed / distance quantity"
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9895568034353492,
+              "intercept_m": 0.00856872838397349,
+              "r2_vs_distance": 0.9781183200415263,
+              "slope_ci": [
+                0.9719171841962407,
+                1.007736258459045
+              ]
+            }
+          },
+          "block_9": {
+            "plot_index": 10,
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9793462264724228,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 0.950631183276947,
+              "intercept_m": 0.03843431071597925,
+              "r2_vs_distance": 0.9753237592224091
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9924183373683552,
+              "intercept_m": 0.0031072252856387816,
+              "r2_vs_distance": 0.9773007799609186
+            }
+          },
+          "block_10": {
+            "plot_index": 11,
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9804869370704963,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 0.9697258502211821,
+              "intercept_m": 0.0014026288889383842,
+              "r2_vs_distance": 0.974817680974273
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9993581745594519,
+              "intercept_m": -0.006055352225069255,
+              "r2_vs_distance": 0.9791759444728898
+            }
+          },
+          "block_11": {
+            "plot_index": 12,
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9852714303944222,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0139426119032084,
+              "intercept_m": -0.010937250175047986,
+              "r2_vs_distance": 0.9805221450782915
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 1.007157902110647,
+              "intercept_m": -0.014033636973731722,
+              "r2_vs_distance": 0.9835813455580537
+            }
+          },
+          "block_12": {
+            "plot_index": 13,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9864949626194706,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0252660934068758,
+              "intercept_m": -0.03183952548147251,
+              "r2_vs_distance": 0.977528997061203
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9999882397698059,
+              "intercept_m": -0.002902474701109714,
+              "r2_vs_distance": 0.9845979063536264
+            }
+          },
+          "block_13": {
+            "plot_index": 14,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9879015425053373,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0686994390032942,
+              "intercept_m": -0.06471768597611316,
+              "r2_vs_distance": 0.9727238366465654
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9933997601248442,
+              "intercept_m": 0.005399214885470682,
+              "r2_vs_distance": 0.9857718779405541
+            }
+          },
+          "block_14": {
+            "plot_index": 15,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9883357882851945,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0630972636396427,
+              "intercept_m": -0.059599941834496795,
+              "r2_vs_distance": 0.9750494658110134
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9948333195640834,
+              "intercept_m": 0.0035734130431948063,
+              "r2_vs_distance": 0.9867224025633323
+            }
+          },
+          "block_15": {
+            "plot_index": 16,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9895346738959948,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0618104781998055,
+              "intercept_m": -0.053583796083127355,
+              "r2_vs_distance": 0.9715487331773054
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9988262511235799,
+              "intercept_m": 0.0014748048955834925,
+              "r2_vs_distance": 0.9878294037948835
+            }
+          },
+          "block_16": {
+            "plot_index": 17,
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9887698282924502,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0040027341581474,
+              "intercept_m": -0.0014495540081800318,
+              "r2_vs_distance": 0.9817863040231789
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9926620779590125,
+              "intercept_m": 0.008637917239323611,
+              "r2_vs_distance": 0.9873720419402747
+            }
+          },
+          "block_17": {
+            "plot_index": 18,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9915013554969699,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.00393172858434,
+              "intercept_m": -0.02411877685317232,
+              "r2_vs_distance": 0.9811593155109667,
+              "slope_ci": [
+                0.9875973794872914,
+                1.0203198499946964
+              ],
+              "verdict": "reads a speed / distance quantity"
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9866856821311261,
+              "intercept_m": 0.01497262562905699,
+              "r2_vs_distance": 0.9901440399837099,
+              "slope_ci": [
+                0.9750075432204328,
+                0.9982566012836952
+              ]
+            }
+          },
+          "block_18": {
+            "plot_index": 19,
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9913008979069654,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0139195355983444,
+              "intercept_m": -0.010026445690557217,
+              "r2_vs_distance": 0.9838297239031909
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9902429955152924,
+              "intercept_m": 0.011963103954473864,
+              "r2_vs_distance": 0.9896943153636498
+            }
+          },
+          "block_19": {
+            "plot_index": 20,
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9912183344444903,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0391269017628426,
+              "intercept_m": -0.008830836667123032,
+              "r2_vs_distance": 0.9803501918036779
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9930298991856924,
+              "intercept_m": 0.009354141033040442,
+              "r2_vs_distance": 0.9897530517968691
+            }
+          },
+          "block_20": {
+            "plot_index": 21,
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9892712433183326,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0531015901393779,
+              "intercept_m": -0.04537099840148229,
+              "r2_vs_distance": 0.9818674234366885
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.992181179303012,
+              "intercept_m": 0.010243825174002241,
+              "r2_vs_distance": 0.9880564641832063
+            }
+          },
+          "block_21": {
+            "plot_index": 22,
+            "alpha": 5.623413251903491,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9905169876451174,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0228278515648992,
+              "intercept_m": -0.04911361528502667,
+              "r2_vs_distance": 0.9781410307505795
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9947860514394213,
+              "intercept_m": 0.009235194298431226,
+              "r2_vs_distance": 0.9893414030980431
+            }
+          },
+          "block_22": {
+            "plot_index": 23,
+            "alpha": 5.623413251903491,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9891845277283715,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0333491554345444,
+              "intercept_m": -0.06261472561012016,
+              "r2_vs_distance": 0.977292091130511
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9965104601794667,
+              "intercept_m": 0.00876578896586322,
+              "r2_vs_distance": 0.9884916469076228
+            }
+          },
+          "block_23": {
+            "plot_index": 24,
+            "alpha": 5.623413251903491,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9891887374813232,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.032902320089349,
+              "intercept_m": -0.050120619836665714,
+              "r2_vs_distance": 0.9793365496373995
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.9895703434241632,
+              "intercept_m": 0.012872405192167147,
+              "r2_vs_distance": 0.9879404448736695
+            }
+          },
+          "final_norm": {
+            "plot_index": null,
+            "alpha": 5.623413251903491,
+            "alpha_verdict": "ok",
+            "own_val_seen_r2": 0.9888419364144903,
+            "cross": {
+              "applied_to": "speed",
+              "n_clips": 232,
+              "slope": 1.0337611991492994,
+              "intercept_m": -0.04923444704004987,
+              "r2_vs_distance": 0.9795734631339793
+            },
+            "own_in_window": {
+              "n_clips": 288,
+              "slope": 0.986830539077901,
+              "intercept_m": 0.015366473497665067,
+              "r2_vs_distance": 0.9874817856546854
+            }
+          }
+        }
+      },
+      "criteria": {
+        "n_fit": true,
+        "alpha_matches_layer_curves": true,
+        "validation_reproduced": true,
+        "no_alpha_failure": true,
+        "bootstrap_point": true,
+        "finite": true,
+        "saved_ids_aligned": true,
+        "scored_counts": true
+      },
+      "passed": true
+    }
+  },
+  "matched_distance_classifier": {
+    "provenance": {
+      "utc": "2026-09-27T06:46:16+00:00",
+      "git_commit": "03b38e8bfd30252f8a0ee3acdc97a1ad54d26cd6",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/confounds.py": "9f20249c1e81d142c995a8a0f6deb7c026cea41955d26ee719ab769614582c47",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "2aaf059c980a059425efef4d1e808ce3768a93dbdb9ddbf47448423dabeae0a0",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_confounds.py": "5bcc84d944712e0dac7604636ebe8ae658ae714746a672011ffbe56b6a6c8613"
+        },
+        "combined_sha256": "04f83e3753facc9f33f8d7ec0cbdedd0ca3c12d2ffe3abdcc38da380bfbb6862"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "window_m": [
+        0.15625,
+        1.953125
+      ],
+      "counts": {
+        "train": {
+          "pairs": 32,
+          "speed_clips": 512,
+          "acceleration_clips": 512
+        },
+        "validation": {
+          "pairs": 37,
+          "speed_clips": 208,
+          "acceleration_clips": 188
+        }
+      },
+      "weighting": "validation clips weighted 1 / (clips of their pair in their class)",
+      "summary": {
+        "distance_only_control": {
+          "alpha": 10000000.0,
+          "alpha_verdict": "no_signal",
+          "balanced_accuracy": 0.5,
+          "auc": 0.4996347699050403
+        },
+        "balanced_accuracy_by_index": {
+          "0": 0.509,
+          "1": 0.765,
+          "2": 0.855,
+          "3": 0.904,
+          "4": 0.9,
+          "5": 0.909,
+          "6": 0.934,
+          "7": 0.931,
+          "8": 0.947,
+          "9": 0.947,
+          "10": 0.948,
+          "11": 0.967,
+          "12": 0.98,
+          "13": 0.97,
+          "14": 0.976,
+          "15": 0.986,
+          "16": 0.986,
+          "17": 0.983,
+          "18": 0.983,
+          "19": 0.98,
+          "20": 0.976,
+          "21": 0.973,
+          "22": 0.976,
+          "23": 0.97,
+          "24": 0.969,
+          "None": 0.973
+        },
+        "headline": {
+          "9": {
+            "balanced_accuracy": 0.9470720720720722,
+            "balanced_accuracy_ci": [
+              0.9201615636432607,
+              0.9705853577327971
+            ],
+            "auc": 0.9904418776884995,
+            "auc_ci": [
+              0.9826772511964922,
+              0.9961647405109458
+            ],
+            "reading": "motion profile linearly separable at matched distance"
+          },
+          "18": {
+            "balanced_accuracy": 0.9831081081081081,
+            "balanced_accuracy_ci": [
+              0.9665501573064255,
+              0.9965398920479007
+            ],
+            "auc": 0.9989880082785488,
+            "auc_ci": [
+              0.9969965641294256,
+              1.0
+            ],
+            "reading": "motion profile linearly separable at matched distance"
+          }
+        }
+      },
+      "sites": {
+        "embedding": {
+          "plot_index": 0,
+          "alpha": 10000000.0,
+          "alpha_edge": "upper",
+          "alpha_verdict": "no_signal",
+          "balanced_accuracy": 0.509009009009009,
+          "auc": 0.49489946027108156
+        },
+        "block_0": {
+          "plot_index": 1,
+          "alpha": 5.623413251903491,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.7646396396396395,
+          "auc": 0.8449369978086196
+        },
+        "block_1": {
+          "plot_index": 2,
+          "alpha": 1.0,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.8552927927927929,
+          "auc": 0.9301611577794011
+        },
+        "block_2": {
+          "plot_index": 3,
+          "alpha": 1.7782794100389228,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9037162162162162,
+          "auc": 0.967261180099018
+        },
+        "block_3": {
+          "plot_index": 4,
+          "alpha": 5.623413251903491,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.8997747747747749,
+          "auc": 0.9573948948948949
+        },
+        "block_4": {
+          "plot_index": 5,
+          "alpha": 10.0,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9087837837837838,
+          "auc": 0.9740192050158267
+        },
+        "block_5": {
+          "plot_index": 6,
+          "alpha": 17.78279410038923,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9341216216216216,
+          "auc": 0.9780050320590861
+        },
+        "block_6": {
+          "plot_index": 7,
+          "alpha": 31.622776601683793,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9307432432432432,
+          "auc": 0.9850179571463356
+        },
+        "block_7": {
+          "plot_index": 8,
+          "alpha": 31.622776601683793,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9470720720720722,
+          "auc": 0.9907500405811217
+        },
+        "block_8": {
+          "plot_index": 9,
+          "alpha": 31.622776601683793,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9470720720720722,
+          "auc": 0.9904418776884995,
+          "balanced_accuracy_ci": [
+            0.9201615636432607,
+            0.9705853577327971
+          ],
+          "auc_ci": [
+            0.9826772511964922,
+            0.9961647405109458
+          ],
+          "reading": "motion profile linearly separable at matched distance"
+        },
+        "block_9": {
+          "plot_index": 10,
+          "alpha": 31.622776601683793,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9476351351351351,
+          "auc": 0.9886309451343235
+        },
+        "block_10": {
+          "plot_index": 11,
+          "alpha": 31.622776601683793,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9673423423423424,
+          "auc": 0.9931240361983604
+        },
+        "block_11": {
+          "plot_index": 12,
+          "alpha": 31.622776601683793,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9797297297297298,
+          "auc": 0.9964390065741418
+        },
+        "block_12": {
+          "plot_index": 13,
+          "alpha": 56.23413251903491,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9695945945945945,
+          "auc": 0.9973596907718529
+        },
+        "block_13": {
+          "plot_index": 14,
+          "alpha": 31.622776601683793,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9763513513513513,
+          "auc": 0.9964466155344534
+        },
+        "block_14": {
+          "plot_index": 15,
+          "alpha": 31.622776601683793,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9864864864864865,
+          "auc": 0.9976716581446311
+        },
+        "block_15": {
+          "plot_index": 16,
+          "alpha": 31.622776601683793,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9864864864864865,
+          "auc": 0.998128195763331
+        },
+        "block_16": {
+          "plot_index": 17,
+          "alpha": 31.622776601683793,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9831081081081081,
+          "auc": 0.9981966764061359
+        },
+        "block_17": {
+          "plot_index": 18,
+          "alpha": 31.622776601683793,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9831081081081081,
+          "auc": 0.9989880082785488,
+          "balanced_accuracy_ci": [
+            0.9665501573064255,
+            0.9965398920479007
+          ],
+          "auc_ci": [
+            0.9969965641294256,
+            1.0
+          ],
+          "reading": "motion profile linearly separable at matched distance"
+        },
+        "block_18": {
+          "plot_index": 19,
+          "alpha": 31.622776601683793,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9797297297297297,
+          "auc": 0.9986532140248355
+        },
+        "block_19": {
+          "plot_index": 20,
+          "alpha": 31.622776601683793,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9763513513513513,
+          "auc": 0.9976488312636961
+        },
+        "block_20": {
+          "plot_index": 21,
+          "alpha": 17.78279410038923,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.972972972972973,
+          "auc": 0.9982955928901874
+        },
+        "block_21": {
+          "plot_index": 22,
+          "alpha": 17.78279410038923,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9763513513513513,
+          "auc": 0.9976488312636962
+        },
+        "block_22": {
+          "plot_index": 23,
+          "alpha": 17.78279410038923,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9695945945945946,
+          "auc": 0.997108595081568
+        },
+        "block_23": {
+          "plot_index": 24,
+          "alpha": 17.78279410038923,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.9690315315315317,
+          "auc": 0.9972151205259313
+        },
+        "final_norm": {
+          "plot_index": null,
+          "alpha": 10.0,
+          "alpha_edge": null,
+          "alpha_verdict": "ok",
+          "balanced_accuracy": 0.972972972972973,
+          "auc": 0.9974586072559045
+        }
+      },
+      "criteria": {
+        "n_fit": true,
+        "no_alpha_failure": true,
+        "finite": true,
+        "counts_as_expected": true,
+        "control_at_chance": true,
+        "control_finite": true
+      },
+      "passed": true
+    }
+  }
+}

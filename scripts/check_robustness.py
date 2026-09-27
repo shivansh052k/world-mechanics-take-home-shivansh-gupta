@@ -1,23 +1,28 @@
 """Robustness checks on stored activations and saved outputs (no model is run): direction's transfer between motion
-types.
+types, and probe errors broken down by clip flag and per-tubelet motion.
 
 Usage: python scripts/check_robustness.py <check>
 """
 import argparse
+import csv
 import json
 from pathlib import Path
 
 import numpy as np
 
+from vjepa_physics.data import DATASETS
 from vjepa_physics.evidence import file_sha256, require_clean_code, save_result, verified_artifact
 from vjepa_physics.extraction import SITES, plot_index
 from vjepa_physics.joined import load_joined
 from vjepa_physics.metrics import (
     angles_from_sincos, bootstrap_indices, circular_errors, percentile_interval, r2, resampled_mean, resampled_r2,
 )
-from vjepa_physics.probes import alpha_verdict, fit_probe, probe_targets, site_features
+from vjepa_physics.probes import alpha_verdict, fit_probe, probe_scores, probe_targets, site_features
 from vjepa_physics.reproducibility import SEED
-from vjepa_physics.robustness import MOTION_TYPES, distance_overlap, motion_masks
+from vjepa_physics.robustness import (
+    MOTION_TYPES, clip_errors, distance_overlap, motion_masks, stratified_difference, within_range_trend,
+    within_tubelet_px,
+)
 from vjepa_physics.steering import STEERING_SITE
 
 REPO = Path(__file__).resolve().parents[1]
@@ -32,6 +37,20 @@ EXPECTED_FIT = {"velocity": 397, "acceleration": 416}  # train clips per motion 
 BOOTSTRAP_RESAMPLES = 10_000
 SHARED_R2 = 0.9  # reading bands on the across-type R² (planning chat)
 TYPE_SPECIFIC_R2 = 0.5
+
+FLAGS_TABLE = REPO / "results/tracking/clip_flags.csv"  # committed; within-tubelet px rounded to 4 decimals
+CSV_ROUNDING_PX = 5.0001e-5  # half the table's last decimal, plus float slack
+SCORE_TOLERANCE = 1e-12  # recomputed validation scores vs the ones layer_curves saved
+FLAG_TOTALS = {  # all clips per dataset, from the data audit's flags check
+    "direction": {"exit": 113, "clipped": 199, "sub_patch_motion": 150, "frozen_start": 92},
+    "speed": {"exit": 0, "clipped": 0, "sub_patch_motion": 240, "frozen_start": 1},
+    "acceleration": {"exit": 0, "clipped": 0, "sub_patch_motion": 360, "frozen_start": 267},
+}
+STRATIFIED_FLAGS = {  # (flag, stratum): flags that vary inside a stratum; speed's single frozen clip is not tested
+    "direction": (("exit", "group"), ("clipped", "group"), ("frozen_start", "group")),
+    "acceleration": (("frozen_start", "label"),),
+}
+TREND_VARIABLES = ("speed", "acceleration")  # sub_patch_motion is fixed by the label value in these sets
 
 
 def site_index(site: str) -> int | None:
@@ -241,10 +260,126 @@ def check_motion_type_test() -> dict:
         "summary": summary, "sites": result, "criteria": criteria, "passed": all(criteria.values()),
     }
 
+def excess_reading(ci: list[float]) -> str:
+    """Reading of a stratified flagged - unflagged error difference from its 95% interval."""
+    if ci[0] > 0.0:
+        return "excess error beyond stratum"
+    if ci[1] < 0.0:
+        return "lower error"
+    return "no excess"
+
+
+def trend_reading(trend: dict) -> str:
+    """Continuous vs binary reading of a readout inside the sub-patch range (rules fixed before the run)."""
+    if trend["slope_ci"][0] > 0.0 and trend["spearman_ci"][0] > 0.0:
+        return "continuous inside the sub-patch range"
+    if trend["slope_ci"][0] <= 0.0 <= trend["slope_ci"][1]:
+        return "consistent with a binary detector"
+    return "neither rule met"
+
+
+def flags_table_tubelet_px(variable: str, ids: np.ndarray) -> np.ndarray:
+    """(clips, 8) within-tubelet displacement from the committed flags table, in the order of `ids`."""
+    with FLAGS_TABLE.open() as f:
+        rows = {int(r["id"]): r for r in csv.DictReader(f) if r["dataset"] == variable}
+    return np.array([[float(rows[int(i)][f"within_tubelet_{k}_px"]) for k in range(8)] for i in ids])
+
+
+def check_flag_breakdown() -> dict:
+    """Validation errors of the layer-curve probes at indices 1, 9, 18, broken down by clip flag (no fitting).
+
+    (A) Stratified flagged - unflagged mean error (stratified_difference): direction exit / clipped / frozen_start
+    within motion group, acceleration frozen_start within label value; raw difference and clips per stratum as
+    observations. (B) Speed and acceleration clips with sub_patch_motion: slope and Spearman of prediction on label
+    inside that range (within_range_trend), read continuous vs binary; full-range trend, mean error per value, relative
+    error flagged vs unflagged, and acceleration's frozen_start trend as observations. Passes if: saved predictions
+    hash-verified and aligned; flag totals = the data audit's; within-tubelet px = flags table; recomputed scores and
+    per-clip error means = the saved layer-curve scores; everything finite.
+    """
+    with np.load(verified_artifact(PROBE_CHECKS, "layer_curves")) as f:
+        saved = {key: f[key] for key in f.files}
+    saved_scores = json.loads(PROBE_CHECKS.read_text())["layer_curves"]["result"]
+    column = {site: SITES.index(site) for site in HEADLINE_SITES}
+
+    ok: dict[str, list[bool]] = {name: [] for name in (
+        "aligned", "flag_totals_match", "tubelet_px_match_flags_table", "scores_reproduced", "finite")}
+    ok["aligned"].append([str(s) for s in saved["sites"]] == list(SITES))
+    result, summary, counts = {}, {}, {}
+    for variable in DATASETS:
+        table = load_joined(variable)
+        labels, roles = table["label"], table["role"]
+        validation = np.isin(roles, VALIDATION_ROLES)
+        ok["aligned"].append(bool(np.array_equal(saved[f"{variable}_ids"], table["id"])
+                                  and np.array_equal(saved[f"{variable}_roles"], roles)))
+        ok["flag_totals_match"].append({n: int(table[n].sum()) for n in FLAG_TOTALS[variable]} == FLAG_TOTALS[variable])
+        px_gap = float(np.abs(within_tubelet_px(table) - flags_table_tubelet_px(variable, table["id"])).max())
+        ok["tubelet_px_match_flags_table"].append(px_gap <= CSV_ROUNDING_PX)
+        counts[variable] = {n: int((validation & table[n]).sum()) for n in FLAG_TOTALS[variable]}
+        metric = "circular_mae" if variable == "direction" else "mae"
+
+        variable_record: dict = {"tubelet_px_max_gap": px_gap}
+        for site in HEADLINE_SITES:
+            pred = saved[f"{variable}_predictions"][:, column[site]]
+            errors = np.full(len(labels), np.nan)
+            errors[validation] = clip_errors(variable, labels[validation], pred[validation])
+            for role in VALIDATION_ROLES:
+                r = roles == role
+                ref = saved_scores[variable]["sites"][site][role]
+                again = probe_scores(variable, labels[r], pred[r])
+                ok["scores_reproduced"].append(
+                    all(abs(again[key] - ref[key]) <= SCORE_TOLERANCE for key in ref)
+                    and abs(float(errors[r].mean()) - ref[metric]) <= SCORE_TOLERANCE)
+
+            record: dict = {"plot_index": site_index(site)}
+            line: dict = {}
+            for flag, stratum in STRATIFIED_FLAGS.get(variable, ()):
+                flagged, strata = table[flag][validation], table[stratum][validation].astype(str)
+                d = stratified_difference(errors[validation], flagged, strata, BOOTSTRAP_RESAMPLES, SEED)
+                d["raw_difference"] = float(errors[validation & table[flag]].mean()
+                                            - errors[validation & ~table[flag]].mean())
+                d["clips_per_stratum"] = {s: [int(((strata == s) & flagged).sum()), int(((strata == s) & ~flagged).sum())]
+                                          for s in d["strata"]}
+                d["reading"] = excess_reading(d["ci"])
+                record[flag] = d
+                line[flag] = [round(d["difference"], 4), [round(c, 4) for c in d["ci"]], d["reading"]]
+
+            if variable in TREND_VARIABLES:
+                sub = validation & table["sub_patch_motion"]
+                inside = within_range_trend(labels[sub], pred[sub],
+                                            bootstrap_indices(int(sub.sum()), BOOTSTRAP_RESAMPLES, SEED))
+                full = within_range_trend(labels[validation], pred[validation],
+                                          bootstrap_indices(int(validation.sum()), BOOTSTRAP_RESAMPLES, SEED))
+                relative = errors / labels
+                record["sub_patch"] = {
+                    "n_clips": int(sub.sum()), "values": [float(v) for v in np.unique(labels[sub])],
+                    "inside": inside, "reading": trend_reading(inside), "full_range": full,
+                    "mean_error_per_value": {f"{v:g}": float(errors[sub & (labels == v)].mean())
+                                             for v in np.unique(labels[sub])},
+                    "relative_error": {"flagged": float(relative[sub].mean()),
+                                       "unflagged": float(relative[validation & ~table["sub_patch_motion"]].mean())},
+                }
+                if variable == "acceleration":
+                    frozen = validation & table["frozen_start"]
+                    record["frozen_start_trend"] = within_range_trend(
+                        labels[frozen], pred[frozen], bootstrap_indices(int(frozen.sum()), BOOTSTRAP_RESAMPLES, SEED))
+                line["sub_patch"] = [[round(c, 4) for c in inside["slope_ci"]],
+                                     [round(c, 4) for c in inside["spearman_ci"]], record["sub_patch"]["reading"]]
+            ok["finite"].append(all_finite(record))
+            variable_record[site] = record
+            summary.setdefault(variable, {})[str(site_index(site))] = line
+        result[variable] = variable_record
+
+    criteria = {name: all(values) for name, values in ok.items()}
+    return {
+        "roles_scored": list(VALIDATION_ROLES), "sites_scored": list(HEADLINE_SITES),
+        "counts": counts, "stratified_flags": {v: [list(p) for p in pairs] for v, pairs in STRATIFIED_FLAGS.items()},
+        "summary": summary, "variables": result, "criteria": criteria, "passed": all(criteria.values()),
+    }
 
 CHECKS = {
-    "motion_type_transfer": check_motion_type_transfer, 
-    "motion_type_test": check_motion_type_test
+    "flag_breakdown": check_flag_breakdown,
+    "motion_type_transfer": check_motion_type_transfer,
+    "motion_type_test": check_motion_type_test,
 }
 
 

@@ -1,0 +1,4722 @@
+{
+  "motion_type_transfer": {
+    "provenance": {
+      "utc": "2026-09-27T06:52:47+00:00",
+      "git_commit": "89628acf3e48c5a86b7e2b32005acdab6afbbb04",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/confounds.py": "9f20249c1e81d142c995a8a0f6deb7c026cea41955d26ee719ab769614582c47",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/robustness.py": "120437b63c5a3c7fddcb2da4fc55b25e485809ed5c62c24d8b8124f984097659",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "2aaf059c980a059425efef4d1e808ce3768a93dbdb9ddbf47448423dabeae0a0",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_robustness.py": "6dcf1f0029ff555deba10e272943768061ecf7175938d43c0bb8408ff5f19026"
+        },
+        "combined_sha256": "da514b2bd5d79a05db04c27c200af31fed414b633afc2b263852efd6d0685412"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "roles_scored": [
+        "val_seen",
+        "val_unseen"
+      ],
+      "subsets": [
+        "all",
+        "distance_overlap",
+        "without_exit"
+      ],
+      "counts": {
+        "all": {
+          "velocity": 155,
+          "acceleration": 142
+        },
+        "distance_overlap": {
+          "velocity": 66,
+          "acceleration": 114
+        },
+        "without_exit": {
+          "velocity": 138,
+          "acceleration": 142
+        }
+      },
+      "reading_bands": {
+        "shared": 0.9,
+        "type_specific_below": 0.5
+      },
+      "summary": {
+        "1": {
+          "velocity_to_acceleration": {
+            "within_r2": 0.8481012956754233,
+            "across_r2": 0.7097845919430115,
+            "across_r2_ci": [
+              0.6506497075342812,
+              0.7587575293215103
+            ],
+            "within_mae": 13.425423929299253,
+            "across_mae": 24.216714232120335,
+            "gap_ci": [
+              5.707767690349197,
+              16.54627016455311
+            ],
+            "reading": "partly shared",
+            "overlap_within_across_mae": [
+              16.686032536810522,
+              16.90914336651827
+            ]
+          },
+          "acceleration_to_velocity": {
+            "within_r2": 0.7950659279246641,
+            "across_r2": 0.6070398516365625,
+            "across_r2_ci": [
+              0.5277263734472871,
+              0.6719935143794803
+            ],
+            "within_mae": 14.429770422003797,
+            "across_mae": 12.5925246763976,
+            "gap_ci": [
+              -4.550832706218098,
+              0.7787365791748165
+            ],
+            "reading": "partly shared",
+            "overlap_within_across_mae": [
+              12.313444791701858,
+              12.679155673990795
+            ]
+          }
+        },
+        "9": {
+          "velocity_to_acceleration": {
+            "within_r2": 0.9854146688282273,
+            "across_r2": 0.9308839564711825,
+            "across_r2_ci": [
+              0.9149811337088047,
+              0.9448267017164954
+            ],
+            "within_mae": 3.8210909483529414,
+            "across_mae": 5.545891102882275,
+            "gap_ci": [
+              0.7454093315159475,
+              2.722312771176877
+            ],
+            "reading": "shared, partly type-specific",
+            "overlap_within_across_mae": [
+              4.858058542295214,
+              4.479148391237308
+            ]
+          },
+          "acceleration_to_velocity": {
+            "within_r2": 0.9743346904422437,
+            "across_r2": 0.9624644594036377,
+            "across_r2_ci": [
+              0.956299786478028,
+              0.9675073333706157
+            ],
+            "within_mae": 4.893444560685065,
+            "across_mae": 5.257026328834507,
+            "gap_ci": [
+              -0.5793805526844565,
+              1.2875893498710749
+            ],
+            "reading": "shared",
+            "overlap_within_across_mae": [
+              4.438468902620305,
+              5.057928445408124
+            ]
+          }
+        },
+        "18": {
+          "velocity_to_acceleration": {
+            "within_r2": 0.9912987475222197,
+            "across_r2": 0.9724634614963346,
+            "across_r2_ci": [
+              0.9662867752526271,
+              0.977460382240122
+            ],
+            "within_mae": 2.9195144044921055,
+            "across_mae": 4.7400996800503234,
+            "gap_ci": [
+              1.0548990856944898,
+              2.6410714380927067
+            ],
+            "reading": "shared, partly type-specific",
+            "overlap_within_across_mae": [
+              2.9632820581316426,
+              4.043146078492931
+            ]
+          },
+          "acceleration_to_velocity": {
+            "within_r2": 0.9850803291537348,
+            "across_r2": 0.9506860924549192,
+            "across_r2_ci": [
+              0.9420740807452262,
+              0.9574839177568462
+            ],
+            "within_mae": 3.888409291128974,
+            "across_mae": 7.483272509216333,
+            "gap_ci": [
+              2.623872672886624,
+              4.596341771448884
+            ],
+            "reading": "shared, partly type-specific",
+            "overlap_within_across_mae": [
+              3.4292861005654984,
+              5.755823440648858
+            ]
+          }
+        }
+      },
+      "sites": {
+        "embedding": {
+          "plot_index": 0,
+          "velocity": {
+            "alpha": 1778.2794100389228,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.17146774754907762,
+                "circular_mae": 62.626107931948916,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.22216739450785356,
+                  "circular_mae": 57.14644490032263
+                }
+              },
+              "across": {
+                "r2": -0.09964137266536788,
+                "circular_mae": 87.17666641595723,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.01702686661638453,
+                  "circular_mae": 74.7214890315274
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": -0.0011150468508659972,
+                "circular_mae": 74.80337189090018,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.046120810130755474,
+                  "circular_mae": 69.14413669282857
+                }
+              },
+              "across": {
+                "r2": -0.089843286254909,
+                "circular_mae": 86.91999907023221,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.02504681422353955,
+                  "circular_mae": 73.53503742045632
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.10472602659504282,
+                "circular_mae": 67.84111067251673,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.16729480857244744,
+                  "circular_mae": 61.01338939142116
+                }
+              },
+              "across": {
+                "r2": -0.09964137266536788,
+                "circular_mae": 87.17666641595723,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.01702686661638453,
+                  "circular_mae": 74.7214890315274
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 10000000.0,
+            "alpha_verdict": "no_signal",
+            "all": {
+              "within": {
+                "r2": -0.00012208159441084998,
+                "circular_mae": 88.77800280932381,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.01702686661638453,
+                  "circular_mae": 74.7214890315274
+                }
+              },
+              "across": {
+                "r2": -0.0001404814212014882,
+                "circular_mae": 89.05850439074646,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.22216739450785356,
+                  "circular_mae": 57.14644490032263
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": -0.00010472241502534896,
+                "circular_mae": 88.55899591279024,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.02504681422353955,
+                  "circular_mae": 73.53503742045632
+                }
+              },
+              "across": {
+                "r2": -0.000919552003351698,
+                "circular_mae": 89.12298527929728,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.046120810130755474,
+                  "circular_mae": 69.14413669282857
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": -0.00012208159441084998,
+                "circular_mae": 88.77800280932381,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.01702686661638453,
+                  "circular_mae": 74.7214890315274
+                }
+              },
+              "across": {
+                "r2": -8.600900417787827e-05,
+                "circular_mae": 88.91616117160692,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.16729480857244744,
+                  "circular_mae": 61.01338939142116
+                }
+              }
+            }
+          }
+        },
+        "block_0": {
+          "plot_index": 1,
+          "velocity": {
+            "alpha": 1.7782794100389228,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.8481012956754233,
+                "circular_mae": 13.425423929299253,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.8759405567728149,
+                  "circular_mae": 9.955254384280622
+                }
+              },
+              "across": {
+                "r2": 0.7097845919430115,
+                "circular_mae": 24.216714232120335,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.8527465893341235,
+                  "circular_mae": 11.785583230013946
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.7954812309369184,
+                "circular_mae": 16.686032536810522,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.8809565112268146,
+                  "circular_mae": 11.288459455310802
+                }
+              },
+              "across": {
+                "r2": 0.806331815301947,
+                "circular_mae": 16.90914336651827,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.917577746599572,
+                  "circular_mae": 9.519555388796107
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.8521915023685496,
+                "circular_mae": 12.962171179808886,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.8740845743595262,
+                  "circular_mae": 9.624444664673186
+                }
+              },
+              "across": {
+                "r2": 0.7097845919430115,
+                "circular_mae": 24.216714232120335,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.8527465893341235,
+                  "circular_mae": 11.785583230013946
+                }
+              }
+            },
+            "headline": {
+              "across_r2_ci": [
+                0.6506497075342812,
+                0.7587575293215103
+              ],
+              "gap_circular_mae": 10.791290302821082,
+              "gap_ci": [
+                5.707767690349197,
+                16.54627016455311
+              ],
+              "reading": "partly shared"
+            }
+          },
+          "acceleration": {
+            "alpha": 1.0,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.7950659279246641,
+                "circular_mae": 14.429770422003797,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.8527465893341235,
+                  "circular_mae": 11.785583230013946
+                }
+              },
+              "across": {
+                "r2": 0.6070398516365625,
+                "circular_mae": 12.5925246763976,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.8759405567728149,
+                  "circular_mae": 9.955254384280622
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.8471603456268769,
+                "circular_mae": 12.313444791701858,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.917577746599572,
+                  "circular_mae": 9.519555388796107
+                }
+              },
+              "across": {
+                "r2": 0.7974803369479251,
+                "circular_mae": 12.679155673990795,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.8809565112268146,
+                  "circular_mae": 11.288459455310802
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.7950659279246641,
+                "circular_mae": 14.429770422003797,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.8527465893341235,
+                  "circular_mae": 11.785583230013946
+                }
+              },
+              "across": {
+                "r2": 0.676789892085616,
+                "circular_mae": 11.934947778217639,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.8740845743595262,
+                  "circular_mae": 9.624444664673186
+                }
+              }
+            },
+            "headline": {
+              "across_r2_ci": [
+                0.5277263734472871,
+                0.6719935143794803
+              ],
+              "gap_circular_mae": -1.8372457456061966,
+              "gap_ci": [
+                -4.550832706218098,
+                0.7787365791748165
+              ],
+              "reading": "partly shared"
+            }
+          }
+        },
+        "block_1": {
+          "plot_index": 2,
+          "velocity": {
+            "alpha": 3.1622776601683795,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9374909355854735,
+                "circular_mae": 8.537027414604955,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9428237485820443,
+                  "circular_mae": 7.105392314066185
+                }
+              },
+              "across": {
+                "r2": 0.8449387051596584,
+                "circular_mae": 14.127927991190768,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9072330784924698,
+                  "circular_mae": 9.900508250645332
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9149823534905281,
+                "circular_mae": 10.543949481363342,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9338356553018557,
+                  "circular_mae": 8.74710333524638
+                }
+              },
+              "across": {
+                "r2": 0.9006162407230072,
+                "circular_mae": 10.786873497563684,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9422952439456405,
+                  "circular_mae": 7.89159066397675
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.938031239092642,
+                "circular_mae": 8.5332801901056,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9413411636351945,
+                  "circular_mae": 7.174764185324048
+                }
+              },
+              "across": {
+                "r2": 0.8449387051596584,
+                "circular_mae": 14.127927991190768,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9072330784924698,
+                  "circular_mae": 9.900508250645332
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 1.0,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.8868047439625771,
+                "circular_mae": 11.526680277398436,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9072330784924698,
+                  "circular_mae": 9.900508250645332
+                }
+              },
+              "across": {
+                "r2": 0.860375366501898,
+                "circular_mae": 10.615957338371821,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9428237485820443,
+                  "circular_mae": 7.105392314066185
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9176623943549352,
+                "circular_mae": 9.40132567389517,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9422952439456405,
+                  "circular_mae": 7.89159066397675
+                }
+              },
+              "across": {
+                "r2": 0.8784067366789006,
+                "circular_mae": 9.727770830521598,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9338356553018557,
+                  "circular_mae": 8.74710333524638
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.8868047439625771,
+                "circular_mae": 11.526680277398436,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9072330784924698,
+                  "circular_mae": 9.900508250645332
+                }
+              },
+              "across": {
+                "r2": 0.8596198946917453,
+                "circular_mae": 10.461136281468782,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9413411636351945,
+                  "circular_mae": 7.174764185324048
+                }
+              }
+            }
+          }
+        },
+        "block_2": {
+          "plot_index": 3,
+          "velocity": {
+            "alpha": 3.1622776601683795,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9554580904464632,
+                "circular_mae": 7.14611873507717,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9613431459709672,
+                  "circular_mae": 6.396059863861433
+                }
+              },
+              "across": {
+                "r2": 0.8836207546827346,
+                "circular_mae": 11.706819586125253,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9315685163078496,
+                  "circular_mae": 8.627867196067319
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9432425264117374,
+                "circular_mae": 8.40054965554513,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9517592833185631,
+                  "circular_mae": 7.6611735718709575
+                }
+              },
+              "across": {
+                "r2": 0.9332423412884954,
+                "circular_mae": 8.477896327160707,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9651337312118016,
+                  "circular_mae": 6.431609670826676
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9563542393065569,
+                "circular_mae": 7.2637356488221965,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9616609095614773,
+                  "circular_mae": 6.55183217349682
+                }
+              },
+              "across": {
+                "r2": 0.8836207546827346,
+                "circular_mae": 11.706819586125253,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9315685163078496,
+                  "circular_mae": 8.627867196067319
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 3.1622776601683795,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9201071960940503,
+                "circular_mae": 9.915959957610848,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9315685163078496,
+                  "circular_mae": 8.627867196067319
+                }
+              },
+              "across": {
+                "r2": 0.9105814953341758,
+                "circular_mae": 9.078903910977653,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9613431459709672,
+                  "circular_mae": 6.396059863861433
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9517815169324915,
+                "circular_mae": 7.359571606357389,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9651337312118016,
+                  "circular_mae": 6.431609670826676
+                }
+              },
+              "across": {
+                "r2": 0.9103889543056338,
+                "circular_mae": 8.411606315297574,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9517592833185631,
+                  "circular_mae": 7.6611735718709575
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9201071960940503,
+                "circular_mae": 9.915959957610848,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9315685163078496,
+                  "circular_mae": 8.627867196067319
+                }
+              },
+              "across": {
+                "r2": 0.9065983162272112,
+                "circular_mae": 9.181188092403795,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9616609095614773,
+                  "circular_mae": 6.55183217349682
+                }
+              }
+            }
+          }
+        },
+        "block_3": {
+          "plot_index": 4,
+          "velocity": {
+            "alpha": 5.623413251903491,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9598262035864374,
+                "circular_mae": 6.129942899012189,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9646326262866638,
+                  "circular_mae": 5.708516417863455
+                }
+              },
+              "across": {
+                "r2": 0.8789550422602227,
+                "circular_mae": 9.788907810981572,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9450719935324172,
+                  "circular_mae": 7.230052280368032
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9566019883051078,
+                "circular_mae": 6.372745144129382,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9595073901684466,
+                  "circular_mae": 5.734286034230834
+                }
+              },
+              "across": {
+                "r2": 0.9358525363270187,
+                "circular_mae": 7.449840512260454,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9770113516437939,
+                  "circular_mae": 5.143153464514014
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9615511306218608,
+                "circular_mae": 6.0856606455742055,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9669924575397628,
+                  "circular_mae": 5.671137123607155
+                }
+              },
+              "across": {
+                "r2": 0.8789550422602227,
+                "circular_mae": 9.788907810981572,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9450719935324172,
+                  "circular_mae": 7.230052280368032
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 5.623413251903491,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9405623859556562,
+                "circular_mae": 7.606733031622221,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9450719935324172,
+                  "circular_mae": 7.230052280368032
+                }
+              },
+              "across": {
+                "r2": 0.9187234250055121,
+                "circular_mae": 8.204494268581232,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9646326262866638,
+                  "circular_mae": 5.708516417863455
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9723191263414366,
+                "circular_mae": 5.550415357594267,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9770113516437939,
+                  "circular_mae": 5.143153464514014
+                }
+              },
+              "across": {
+                "r2": 0.9085688019382145,
+                "circular_mae": 7.332589936960081,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9595073901684466,
+                  "circular_mae": 5.734286034230834
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9405623859556562,
+                "circular_mae": 7.606733031622221,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9450719935324172,
+                  "circular_mae": 7.230052280368032
+                }
+              },
+              "across": {
+                "r2": 0.9208196267632498,
+                "circular_mae": 8.284771071149954,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9669924575397628,
+                  "circular_mae": 5.671137123607155
+                }
+              }
+            }
+          }
+        },
+        "block_4": {
+          "plot_index": 5,
+          "velocity": {
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9749952892746601,
+                "circular_mae": 4.70542355512321,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9699792531028547,
+                  "circular_mae": 5.114360610827319
+                }
+              },
+              "across": {
+                "r2": 0.9179331686876373,
+                "circular_mae": 8.1413895838236,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9545517609620773,
+                  "circular_mae": 6.549676574940135
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9730697823015138,
+                "circular_mae": 4.820556034481783,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9687681807167524,
+                  "circular_mae": 4.7363231535483115
+                }
+              },
+              "across": {
+                "r2": 0.9572077152572718,
+                "circular_mae": 5.4601863729743645,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9769992897779833,
+                  "circular_mae": 5.111928385524242
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9756716177739109,
+                "circular_mae": 4.747795911876679,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9717557315583327,
+                  "circular_mae": 5.092588924116522
+                }
+              },
+              "across": {
+                "r2": 0.9179331686876373,
+                "circular_mae": 8.1413895838236,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9545517609620773,
+                  "circular_mae": 6.549676574940135
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9596866521812836,
+                "circular_mae": 6.499236539536521,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9545517609620773,
+                  "circular_mae": 6.549676574940135
+                }
+              },
+              "across": {
+                "r2": 0.9213671847139769,
+                "circular_mae": 7.329644347352728,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9699792531028547,
+                  "circular_mae": 5.114360610827319
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.972562951439614,
+                "circular_mae": 5.417130048286864,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9769992897779833,
+                  "circular_mae": 5.111928385524242
+                }
+              },
+              "across": {
+                "r2": 0.9352264389991995,
+                "circular_mae": 5.69435890425042,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9687681807167524,
+                  "circular_mae": 4.7363231535483115
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9596866521812836,
+                "circular_mae": 6.499236539536521,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9545517609620773,
+                  "circular_mae": 6.549676574940135
+                }
+              },
+              "across": {
+                "r2": 0.9300206681264884,
+                "circular_mae": 7.015129675621796,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9717557315583327,
+                  "circular_mae": 5.092588924116522
+                }
+              }
+            }
+          }
+        },
+        "block_5": {
+          "plot_index": 6,
+          "velocity": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9741087073232189,
+                "circular_mae": 5.021470508432953,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9726444449606542,
+                  "circular_mae": 5.13641886161028
+                }
+              },
+              "across": {
+                "r2": 0.9243574916911081,
+                "circular_mae": 7.510401665428838,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9639225536558245,
+                  "circular_mae": 5.602563693824867
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9724942303485453,
+                "circular_mae": 6.047272246891533,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9696416005375547,
+                  "circular_mae": 5.6792421456333075
+                }
+              },
+              "across": {
+                "r2": 0.9590796083500446,
+                "circular_mae": 5.773762140706345,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9817483033109504,
+                  "circular_mae": 4.402874791344648
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9744238572683965,
+                "circular_mae": 5.148873296588626,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9737323478943629,
+                  "circular_mae": 5.231806793449191
+                }
+              },
+              "across": {
+                "r2": 0.9243574916911081,
+                "circular_mae": 7.510401665428838,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9639225536558245,
+                  "circular_mae": 5.602563693824867
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 56.23413251903491,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9653947795450123,
+                "circular_mae": 5.488978314257701,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9639225536558245,
+                  "circular_mae": 5.602563693824867
+                }
+              },
+              "across": {
+                "r2": 0.9487269646693486,
+                "circular_mae": 5.909713817943129,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9726444449606542,
+                  "circular_mae": 5.13641886161028
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9794499396952032,
+                "circular_mae": 4.4654663452664085,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9817483033109504,
+                  "circular_mae": 4.402874791344648
+                }
+              },
+              "across": {
+                "r2": 0.9530721723480047,
+                "circular_mae": 5.274921181803075,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9696416005375547,
+                  "circular_mae": 5.6792421456333075
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9653947795450123,
+                "circular_mae": 5.488978314257701,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9639225536558245,
+                  "circular_mae": 5.602563693824867
+                }
+              },
+              "across": {
+                "r2": 0.9572213510195451,
+                "circular_mae": 5.626903865522532,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9737323478943629,
+                  "circular_mae": 5.231806793449191
+                }
+              }
+            }
+          }
+        },
+        "block_6": {
+          "plot_index": 7,
+          "velocity": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9703968733233594,
+                "circular_mae": 5.574432950788042,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9736951076790823,
+                  "circular_mae": 5.018953054407941
+                }
+              },
+              "across": {
+                "r2": 0.9301859593487285,
+                "circular_mae": 7.6635244949477865,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.968568853992207,
+                  "circular_mae": 5.28706618613109
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9716021181851009,
+                "circular_mae": 6.258929287058177,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9768077913853889,
+                  "circular_mae": 4.919499491980134
+                }
+              },
+              "across": {
+                "r2": 0.9589431433211311,
+                "circular_mae": 6.337348726399162,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.982308080534166,
+                  "circular_mae": 4.388795467575773
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9708465774604776,
+                "circular_mae": 5.568125115831165,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9755909043665438,
+                  "circular_mae": 4.919273731886167
+                }
+              },
+              "across": {
+                "r2": 0.9301859593487285,
+                "circular_mae": 7.6635244949477865,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.968568853992207,
+                  "circular_mae": 5.28706618613109
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9657350195729916,
+                "circular_mae": 5.645411497675177,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.968568853992207,
+                  "circular_mae": 5.28706618613109
+                }
+              },
+              "across": {
+                "r2": 0.943605301323906,
+                "circular_mae": 6.732616221496472,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9736951076790823,
+                  "circular_mae": 5.018953054407941
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9777232939641327,
+                "circular_mae": 4.720224277787138,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.982308080534166,
+                  "circular_mae": 4.388795467575773
+                }
+              },
+              "across": {
+                "r2": 0.961987802608478,
+                "circular_mae": 5.083867497752914,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9768077913853889,
+                  "circular_mae": 4.919499491980134
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9657350195729916,
+                "circular_mae": 5.645411497675177,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.968568853992207,
+                  "circular_mae": 5.28706618613109
+                }
+              },
+              "across": {
+                "r2": 0.9536861698697117,
+                "circular_mae": 6.417984717829045,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9755909043665438,
+                  "circular_mae": 4.919273731886167
+                }
+              }
+            }
+          }
+        },
+        "block_7": {
+          "plot_index": 8,
+          "velocity": {
+            "alpha": 56.23413251903491,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9795927666389463,
+                "circular_mae": 4.499323946285041,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9777979289833807,
+                  "circular_mae": 4.566870666629104
+                }
+              },
+              "across": {
+                "r2": 0.9239523420303559,
+                "circular_mae": 7.517960780504731,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9694672075273458,
+                  "circular_mae": 5.491897551831284
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.975820496535998,
+                "circular_mae": 5.172588407305247,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9770301124180998,
+                  "circular_mae": 4.728806646129669
+                }
+              },
+              "across": {
+                "r2": 0.9552443935777015,
+                "circular_mae": 6.232527099589438,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.980172600663572,
+                  "circular_mae": 4.782962837853784
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9793418312138042,
+                "circular_mae": 4.531498595889101,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9783981481685395,
+                  "circular_mae": 4.584991207144263
+                }
+              },
+              "across": {
+                "r2": 0.9239523420303559,
+                "circular_mae": 7.517960780504731,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9694672075273458,
+                  "circular_mae": 5.491897551831284
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 56.23413251903491,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9643909784908036,
+                "circular_mae": 5.888715415597289,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9694672075273458,
+                  "circular_mae": 5.491897551831284
+                }
+              },
+              "across": {
+                "r2": 0.9531592376242246,
+                "circular_mae": 6.262013672302759,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9777979289833807,
+                  "circular_mae": 4.566870666629104
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9772804260119701,
+                "circular_mae": 4.91902796442023,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.980172600663572,
+                  "circular_mae": 4.782962837853784
+                }
+              },
+              "across": {
+                "r2": 0.9561125546920646,
+                "circular_mae": 5.4395391225245895,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9770301124180998,
+                  "circular_mae": 4.728806646129669
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9643909784908036,
+                "circular_mae": 5.888715415597289,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9694672075273458,
+                  "circular_mae": 5.491897551831284
+                }
+              },
+              "across": {
+                "r2": 0.9598649079516097,
+                "circular_mae": 5.854855782744252,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9783981481685395,
+                  "circular_mae": 4.584991207144263
+                }
+              }
+            }
+          }
+        },
+        "block_8": {
+          "plot_index": 9,
+          "velocity": {
+            "alpha": 100.0,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9854146688282273,
+                "circular_mae": 3.8210909483529414,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9836004020534883,
+                  "circular_mae": 4.061731450431285
+                }
+              },
+              "across": {
+                "r2": 0.9308839564711825,
+                "circular_mae": 5.545891102882275,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9763980519633384,
+                  "circular_mae": 4.4600012561991
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9819650504280097,
+                "circular_mae": 4.858058542295214,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9807126604656653,
+                  "circular_mae": 4.951665982445385
+                }
+              },
+              "across": {
+                "r2": 0.9639447432989801,
+                "circular_mae": 4.479148391237308,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9845733845115057,
+                  "circular_mae": 4.017098049092647
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9850432719275556,
+                "circular_mae": 3.8634566817705633,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9843081346519782,
+                  "circular_mae": 4.196447452228288
+                }
+              },
+              "across": {
+                "r2": 0.9308839564711825,
+                "circular_mae": 5.545891102882275,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9763980519633384,
+                  "circular_mae": 4.4600012561991
+                }
+              }
+            },
+            "headline": {
+              "across_r2_ci": [
+                0.9149811337088047,
+                0.9448267017164954
+              ],
+              "gap_circular_mae": 1.7248001545293339,
+              "gap_ci": [
+                0.7454093315159475,
+                2.722312771176877
+              ],
+              "reading": "shared, partly type-specific"
+            }
+          },
+          "acceleration": {
+            "alpha": 100.0,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9743346904422437,
+                "circular_mae": 4.893444560685065,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9763980519633384,
+                  "circular_mae": 4.4600012561991
+                }
+              },
+              "across": {
+                "r2": 0.9624644594036377,
+                "circular_mae": 5.257026328834507,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9836004020534883,
+                  "circular_mae": 4.061731450431285
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9818985017599839,
+                "circular_mae": 4.438468902620305,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9845733845115057,
+                  "circular_mae": 4.017098049092647
+                }
+              },
+              "across": {
+                "r2": 0.9615983966101774,
+                "circular_mae": 5.057928445408124,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9807126604656653,
+                  "circular_mae": 4.951665982445385
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9743346904422437,
+                "circular_mae": 4.893444560685065,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9763980519633384,
+                  "circular_mae": 4.4600012561991
+                }
+              },
+              "across": {
+                "r2": 0.9677833409429295,
+                "circular_mae": 5.0346497977594655,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9843081346519782,
+                  "circular_mae": 4.196447452228288
+                }
+              }
+            },
+            "headline": {
+              "across_r2_ci": [
+                0.956299786478028,
+                0.9675073333706157
+              ],
+              "gap_circular_mae": 0.36358176814944176,
+              "gap_ci": [
+                -0.5793805526844565,
+                1.2875893498710749
+              ],
+              "reading": "shared"
+            }
+          }
+        },
+        "block_9": {
+          "plot_index": 10,
+          "velocity": {
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9856804603918004,
+                "circular_mae": 3.913437377046315,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9851227282306602,
+                  "circular_mae": 4.035818601586077
+                }
+              },
+              "across": {
+                "r2": 0.9365357112880642,
+                "circular_mae": 5.901946862575869,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9770533946866293,
+                  "circular_mae": 4.47251092878335
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9832548015017126,
+                "circular_mae": 4.747993529401765,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9832321998061764,
+                  "circular_mae": 4.753771790099899
+                }
+              },
+              "across": {
+                "r2": 0.9644614485659446,
+                "circular_mae": 4.909379121653008,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9835763304887989,
+                  "circular_mae": 4.093810331786568
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9856402510131492,
+                "circular_mae": 3.9166091444251756,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9852723048066427,
+                  "circular_mae": 4.093429446416176
+                }
+              },
+              "across": {
+                "r2": 0.9365357112880642,
+                "circular_mae": 5.901946862575869,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9770533946866293,
+                  "circular_mae": 4.47251092878335
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 56.23413251903491,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9757049529879511,
+                "circular_mae": 4.807695536534176,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9770533946866293,
+                  "circular_mae": 4.47251092878335
+                }
+              },
+              "across": {
+                "r2": 0.9617367399502843,
+                "circular_mae": 5.42953164314924,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9851227282306602,
+                  "circular_mae": 4.035818601586077
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9820747418939559,
+                "circular_mae": 4.491675291968459,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9835763304887989,
+                  "circular_mae": 4.093810331786568
+                }
+              },
+              "across": {
+                "r2": 0.9738633738717704,
+                "circular_mae": 4.586320501155067,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9832321998061764,
+                  "circular_mae": 4.753771790099899
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9757049529879511,
+                "circular_mae": 4.807695536534176,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9770533946866293,
+                  "circular_mae": 4.47251092878335
+                }
+              },
+              "across": {
+                "r2": 0.9684035721320421,
+                "circular_mae": 5.0799970493069715,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9852723048066427,
+                  "circular_mae": 4.093429446416176
+                }
+              }
+            }
+          }
+        },
+        "block_10": {
+          "plot_index": 11,
+          "velocity": {
+            "alpha": 56.23413251903491,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.985927982577174,
+                "circular_mae": 3.897719786566612,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9847692989961494,
+                  "circular_mae": 4.144573921058393
+                }
+              },
+              "across": {
+                "r2": 0.9263470596702331,
+                "circular_mae": 5.925751743165821,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9774861183389036,
+                  "circular_mae": 3.998015732703846
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9828586533434429,
+                "circular_mae": 4.577996057587997,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9822390488733953,
+                  "circular_mae": 4.585066346695543
+                }
+              },
+              "across": {
+                "r2": 0.9589637970585075,
+                "circular_mae": 4.976570317012512,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9853358788775086,
+                  "circular_mae": 3.7791615635460314
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9859567175855359,
+                "circular_mae": 3.905239646059182,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9852476474828573,
+                  "circular_mae": 4.093874545393175
+                }
+              },
+              "across": {
+                "r2": 0.9263470596702331,
+                "circular_mae": 5.925751743165821,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9774861183389036,
+                  "circular_mae": 3.998015732703846
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 56.23413251903491,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9761071329280552,
+                "circular_mae": 4.60897963592355,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9774861183389036,
+                  "circular_mae": 3.998015732703846
+                }
+              },
+              "across": {
+                "r2": 0.9616146034746391,
+                "circular_mae": 6.17131246969592,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9847692989961494,
+                  "circular_mae": 4.144573921058393
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9833231619622296,
+                "circular_mae": 4.2753770169916665,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9853358788775086,
+                  "circular_mae": 3.7791615635460314
+                }
+              },
+              "across": {
+                "r2": 0.97575929449332,
+                "circular_mae": 5.104614853045622,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9822390488733953,
+                  "circular_mae": 4.585066346695543
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9761071329280552,
+                "circular_mae": 4.60897963592355,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9774861183389036,
+                  "circular_mae": 3.998015732703846
+                }
+              },
+              "across": {
+                "r2": 0.9684935626329398,
+                "circular_mae": 5.774349356386017,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9852476474828573,
+                  "circular_mae": 4.093874545393175
+                }
+              }
+            }
+          }
+        },
+        "block_11": {
+          "plot_index": 12,
+          "velocity": {
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9882113018026955,
+                "circular_mae": 3.3976694247361623,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9887059611497837,
+                  "circular_mae": 3.514752102012291
+                }
+              },
+              "across": {
+                "r2": 0.9413306433747635,
+                "circular_mae": 5.828567411706522,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9802062011749352,
+                  "circular_mae": 3.735868101867745
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9862873682873676,
+                "circular_mae": 3.9170365179279854,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9886505551627038,
+                  "circular_mae": 3.421873291484126
+                }
+              },
+              "across": {
+                "r2": 0.970418878607689,
+                "circular_mae": 4.984391196765652,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9886314136381305,
+                  "circular_mae": 3.1826589529703373
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9880825540971574,
+                "circular_mae": 3.425885136391255,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9893666102412342,
+                  "circular_mae": 3.389647087034646
+                }
+              },
+              "across": {
+                "r2": 0.9413306433747635,
+                "circular_mae": 5.828567411706522,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9802062011749352,
+                  "circular_mae": 3.735868101867745
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9784057336798413,
+                "circular_mae": 4.044980891510959,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9802062011749352,
+                  "circular_mae": 3.735868101867745
+                }
+              },
+              "across": {
+                "r2": 0.9432949601367119,
+                "circular_mae": 6.406538261652741,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9887059611497837,
+                  "circular_mae": 3.514752102012291
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9855466867287943,
+                "circular_mae": 3.7122449493762484,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9886314136381305,
+                  "circular_mae": 3.1826589529703373
+                }
+              },
+              "across": {
+                "r2": 0.9759686990248699,
+                "circular_mae": 4.733970999655533,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9886505551627038,
+                  "circular_mae": 3.421873291484126
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9784057336798413,
+                "circular_mae": 4.044980891510959,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9802062011749352,
+                  "circular_mae": 3.735868101867745
+                }
+              },
+              "across": {
+                "r2": 0.9546442064374965,
+                "circular_mae": 5.96122256288228,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9893666102412342,
+                  "circular_mae": 3.389647087034646
+                }
+              }
+            }
+          }
+        },
+        "block_12": {
+          "plot_index": 13,
+          "velocity": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9884105411722495,
+                "circular_mae": 3.379624733579397,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.990490492765163,
+                  "circular_mae": 3.1100485214780664
+                }
+              },
+              "across": {
+                "r2": 0.9596416804058254,
+                "circular_mae": 4.91705055990466,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9875205977712848,
+                  "circular_mae": 3.127178217955479
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.986621476731512,
+                "circular_mae": 3.581113590292425,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9905154576287917,
+                  "circular_mae": 3.128875593788784
+                }
+              },
+              "across": {
+                "r2": 0.9783295065493822,
+                "circular_mae": 4.300569983560258,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9915453906621257,
+                  "circular_mae": 2.839646422934151
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9885511121524607,
+                "circular_mae": 3.3527646006231033,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9909269798405758,
+                  "circular_mae": 3.0274835329266723
+                }
+              },
+              "across": {
+                "r2": 0.9596416804058254,
+                "circular_mae": 4.91705055990466,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9875205977712848,
+                  "circular_mae": 3.127178217955479
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.984378044831594,
+                "circular_mae": 3.4806054317223336,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9875205977712848,
+                  "circular_mae": 3.127178217955479
+                }
+              },
+              "across": {
+                "r2": 0.9639850701608336,
+                "circular_mae": 4.534967763630864,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.990490492765163,
+                  "circular_mae": 3.1100485214780664
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.988581712460681,
+                "circular_mae": 3.341728126143137,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9915453906621257,
+                  "circular_mae": 2.839646422934151
+                }
+              },
+              "across": {
+                "r2": 0.9844861887696943,
+                "circular_mae": 3.816235664130395,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9905154576287917,
+                  "circular_mae": 3.128875593788784
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.984378044831594,
+                "circular_mae": 3.4806054317223336,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9875205977712848,
+                  "circular_mae": 3.127178217955479
+                }
+              },
+              "across": {
+                "r2": 0.9698922627173028,
+                "circular_mae": 4.327531415047492,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9909269798405758,
+                  "circular_mae": 3.0274835329266723
+                }
+              }
+            }
+          }
+        },
+        "block_13": {
+          "plot_index": 14,
+          "velocity": {
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9887998329299645,
+                "circular_mae": 3.192743378491974,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9904795040086055,
+                  "circular_mae": 3.1033332178545865
+                }
+              },
+              "across": {
+                "r2": 0.9538697993762477,
+                "circular_mae": 5.12645367905273,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9874804305899686,
+                  "circular_mae": 3.1799526620082506
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.98712495681047,
+                "circular_mae": 3.171213958978032,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9898992208815917,
+                  "circular_mae": 3.234048460922811
+                }
+              },
+              "across": {
+                "r2": 0.9721414088952134,
+                "circular_mae": 4.910331308579534,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9913357585911394,
+                  "circular_mae": 3.0497388656614053
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9885835248633932,
+                "circular_mae": 3.157545481201582,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9906729110054486,
+                  "circular_mae": 3.135888014463381
+                }
+              },
+              "across": {
+                "r2": 0.9538697993762477,
+                "circular_mae": 5.12645367905273,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9874804305899686,
+                  "circular_mae": 3.1799526620082506
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 56.23413251903491,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9851983720852822,
+                "circular_mae": 3.452699133757588,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9874804305899686,
+                  "circular_mae": 3.1799526620082506
+                }
+              },
+              "across": {
+                "r2": 0.9598535054212702,
+                "circular_mae": 4.706804277800483,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9904795040086055,
+                  "circular_mae": 3.1033332178545865
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.98903197055183,
+                "circular_mae": 3.3526935110979976,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9913357585911394,
+                  "circular_mae": 3.0497388656614053
+                }
+              },
+              "across": {
+                "r2": 0.9842588340647183,
+                "circular_mae": 4.379949440146877,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9898992208815917,
+                  "circular_mae": 3.234048460922811
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9851983720852822,
+                "circular_mae": 3.452699133757588,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9874804305899686,
+                  "circular_mae": 3.1799526620082506
+                }
+              },
+              "across": {
+                "r2": 0.9692180035100677,
+                "circular_mae": 4.559503798671085,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9906729110054486,
+                  "circular_mae": 3.135888014463381
+                }
+              }
+            }
+          }
+        },
+        "block_14": {
+          "plot_index": 15,
+          "velocity": {
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9896117543246894,
+                "circular_mae": 3.171964238040899,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9909914582885656,
+                  "circular_mae": 3.118324916348731
+                }
+              },
+              "across": {
+                "r2": 0.9646833070818985,
+                "circular_mae": 4.519536486365659,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9879003908916187,
+                  "circular_mae": 3.107692336198791
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9873656228701753,
+                "circular_mae": 3.086488919524382,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9903831133880934,
+                  "circular_mae": 3.1854259816878945
+                }
+              },
+              "across": {
+                "r2": 0.9801768234782642,
+                "circular_mae": 4.106417435748722,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9916242374945816,
+                  "circular_mae": 2.8566990224247983
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.989138271221695,
+                "circular_mae": 3.246536083761158,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.991066142392981,
+                  "circular_mae": 3.15641931007154
+                }
+              },
+              "across": {
+                "r2": 0.9646833070818985,
+                "circular_mae": 4.519536486365659,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9879003908916187,
+                  "circular_mae": 3.107692336198791
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9846016158459685,
+                "circular_mae": 3.578382789890251,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9879003908916187,
+                  "circular_mae": 3.107692336198791
+                }
+              },
+              "across": {
+                "r2": 0.9606030496414819,
+                "circular_mae": 4.387284245023356,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9909914582885656,
+                  "circular_mae": 3.118324916348731
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9882677771945902,
+                "circular_mae": 3.462420696783148,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9916242374945816,
+                  "circular_mae": 2.8566990224247983
+                }
+              },
+              "across": {
+                "r2": 0.9845125316318435,
+                "circular_mae": 3.6767017517091056,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9903831133880934,
+                  "circular_mae": 3.1854259816878945
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9846016158459685,
+                "circular_mae": 3.578382789890251,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9879003908916187,
+                  "circular_mae": 3.107692336198791
+                }
+              },
+              "across": {
+                "r2": 0.9682849538529601,
+                "circular_mae": 4.342052982811568,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.991066142392981,
+                  "circular_mae": 3.15641931007154
+                }
+              }
+            }
+          }
+        },
+        "block_15": {
+          "plot_index": 16,
+          "velocity": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9900902462920134,
+                "circular_mae": 3.0017957169309843,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.99121954513072,
+                  "circular_mae": 3.046531314102639
+                }
+              },
+              "across": {
+                "r2": 0.9583974430127029,
+                "circular_mae": 5.555473759269555,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9869935919247943,
+                  "circular_mae": 3.652052492283741
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9879873652813285,
+                "circular_mae": 3.1572681773763325,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9908935928145202,
+                  "circular_mae": 3.1536251971569973
+                }
+              },
+              "across": {
+                "r2": 0.9724840477114909,
+                "circular_mae": 5.155350332882004,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9911013524291801,
+                  "circular_mae": 3.041940218391954
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9897042550807775,
+                "circular_mae": 3.105312934488215,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9913995522193073,
+                  "circular_mae": 3.1108415584873073
+                }
+              },
+              "across": {
+                "r2": 0.9583974430127029,
+                "circular_mae": 5.555473759269555,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9869935919247943,
+                  "circular_mae": 3.652052492283741
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 31.622776601683793,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9849126491239032,
+                "circular_mae": 3.9376009464165587,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9869935919247943,
+                  "circular_mae": 3.652052492283741
+                }
+              },
+              "across": {
+                "r2": 0.9485454320539565,
+                "circular_mae": 5.082602504284837,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.99121954513072,
+                  "circular_mae": 3.046531314102639
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.989503657755707,
+                "circular_mae": 3.3736020585656865,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9911013524291801,
+                  "circular_mae": 3.041940218391954
+                }
+              },
+              "across": {
+                "r2": 0.9802570439546547,
+                "circular_mae": 4.220008345560697,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9908935928145202,
+                  "circular_mae": 3.1536251971569973
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9849126491239032,
+                "circular_mae": 3.9376009464165587,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9869935919247943,
+                  "circular_mae": 3.652052492283741
+                }
+              },
+              "across": {
+                "r2": 0.9576335253409807,
+                "circular_mae": 4.92367583637269,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9913995522193073,
+                  "circular_mae": 3.1108415584873073
+                }
+              }
+            }
+          }
+        },
+        "block_16": {
+          "plot_index": 17,
+          "velocity": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9913050137289943,
+                "circular_mae": 2.7655863767577182,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9917483184143174,
+                  "circular_mae": 2.6587697890176956
+                }
+              },
+              "across": {
+                "r2": 0.9597738913608731,
+                "circular_mae": 4.978326621472768,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.987466299681109,
+                  "circular_mae": 3.422979622729175
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9889153973656865,
+                "circular_mae": 2.921243507739899,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9904848081588342,
+                  "circular_mae": 2.8504634967261824
+                }
+              },
+              "across": {
+                "r2": 0.9711719997839322,
+                "circular_mae": 4.680390834130462,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9899863166814964,
+                  "circular_mae": 2.9931856919986575
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9911313146392551,
+                "circular_mae": 2.8045205215269022,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9917658165079771,
+                  "circular_mae": 2.7425237028253235
+                }
+              },
+              "across": {
+                "r2": 0.9597738913608731,
+                "circular_mae": 4.978326621472768,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.987466299681109,
+                  "circular_mae": 3.422979622729175
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9838189275697039,
+                "circular_mae": 3.809019245728623,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.987466299681109,
+                  "circular_mae": 3.422979622729175
+                }
+              },
+              "across": {
+                "r2": 0.9274650989362059,
+                "circular_mae": 9.199806728791462,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9917483184143174,
+                  "circular_mae": 2.6587697890176956
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.988435394058606,
+                "circular_mae": 3.2207194915024018,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9899863166814964,
+                  "circular_mae": 2.9931856919986575
+                }
+              },
+              "across": {
+                "r2": 0.9563204871403522,
+                "circular_mae": 7.398621637463687,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9904848081588342,
+                  "circular_mae": 2.8504634967261824
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9838189275697039,
+                "circular_mae": 3.809019245728623,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.987466299681109,
+                  "circular_mae": 3.422979622729175
+                }
+              },
+              "across": {
+                "r2": 0.9360630327365169,
+                "circular_mae": 8.929277861553492,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9917658165079771,
+                  "circular_mae": 2.7425237028253235
+                }
+              }
+            }
+          }
+        },
+        "block_17": {
+          "plot_index": 18,
+          "velocity": {
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9912987475222197,
+                "circular_mae": 2.9195144044921055,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9907830677614707,
+                  "circular_mae": 3.06610323026484
+                }
+              },
+              "across": {
+                "r2": 0.9724634614963346,
+                "circular_mae": 4.7400996800503234,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9884583519299216,
+                  "circular_mae": 3.567156483107802
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9893841135262563,
+                "circular_mae": 2.9632820581316426,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9902249290939684,
+                  "circular_mae": 3.0943337696610334
+                }
+              },
+              "across": {
+                "r2": 0.9815807150480726,
+                "circular_mae": 4.043146078492931,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9916702940939575,
+                  "circular_mae": 2.979247431440008
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9911572780070961,
+                "circular_mae": 2.9631416765765133,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9908995120267656,
+                  "circular_mae": 3.097920499681408
+                }
+              },
+              "across": {
+                "r2": 0.9724634614963346,
+                "circular_mae": 4.7400996800503234,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9884583519299216,
+                  "circular_mae": 3.567156483107802
+                }
+              }
+            },
+            "headline": {
+              "across_r2_ci": [
+                0.9662867752526271,
+                0.977460382240122
+              ],
+              "gap_circular_mae": 1.820585275558218,
+              "gap_ci": [
+                1.0548990856944898,
+                2.6410714380927067
+              ],
+              "reading": "shared, partly type-specific"
+            }
+          },
+          "acceleration": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9850803291537348,
+                "circular_mae": 3.888409291128974,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9884583519299216,
+                  "circular_mae": 3.567156483107802
+                }
+              },
+              "across": {
+                "r2": 0.9506860924549192,
+                "circular_mae": 7.483272509216333,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9907830677614707,
+                  "circular_mae": 3.06610323026484
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9890618673294951,
+                "circular_mae": 3.4292861005654984,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9916702940939575,
+                  "circular_mae": 2.979247431440008
+                }
+              },
+              "across": {
+                "r2": 0.9737989508819441,
+                "circular_mae": 5.755823440648858,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9902249290939684,
+                  "circular_mae": 3.0943337696610334
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9850803291537348,
+                "circular_mae": 3.888409291128974,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9884583519299216,
+                  "circular_mae": 3.567156483107802
+                }
+              },
+              "across": {
+                "r2": 0.9555112201490066,
+                "circular_mae": 7.424199106845986,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9908995120267656,
+                  "circular_mae": 3.097920499681408
+                }
+              }
+            },
+            "headline": {
+              "across_r2_ci": [
+                0.9420740807452262,
+                0.9574839177568462
+              ],
+              "gap_circular_mae": 3.5948632180873585,
+              "gap_ci": [
+                2.623872672886624,
+                4.596341771448884
+              ],
+              "reading": "shared, partly type-specific"
+            }
+          }
+        },
+        "block_18": {
+          "plot_index": 19,
+          "velocity": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9907657365501434,
+                "circular_mae": 2.8838418586439807,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9908291121383794,
+                  "circular_mae": 3.1436666762755707
+                }
+              },
+              "across": {
+                "r2": 0.9520878987547059,
+                "circular_mae": 6.053808358527398,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.990219146617841,
+                  "circular_mae": 3.040335871814915
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9886996965320941,
+                "circular_mae": 3.1091232526760653,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9904362776569534,
+                  "circular_mae": 3.394509349160158
+                }
+              },
+              "across": {
+                "r2": 0.9716479332123197,
+                "circular_mae": 4.8911955606239,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9933964820128895,
+                  "circular_mae": 2.5681104812821642
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.990415459582014,
+                "circular_mae": 2.960840953491243,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9910044880086338,
+                  "circular_mae": 3.1747565288902444
+                }
+              },
+              "across": {
+                "r2": 0.9520878987547059,
+                "circular_mae": 6.053808358527398,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.990219146617841,
+                  "circular_mae": 3.040335871814915
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9886039204506576,
+                "circular_mae": 3.2437908548301633,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.990219146617841,
+                  "circular_mae": 3.040335871814915
+                }
+              },
+              "across": {
+                "r2": 0.9624499574046352,
+                "circular_mae": 5.038800481868296,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9908291121383794,
+                  "circular_mae": 3.1436666762755707
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9922114806405024,
+                "circular_mae": 2.8375759391583575,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9933964820128895,
+                  "circular_mae": 2.5681104812821642
+                }
+              },
+              "across": {
+                "r2": 0.9797342816510266,
+                "circular_mae": 4.458963086911062,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9904362776569534,
+                  "circular_mae": 3.394509349160158
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9886039204506576,
+                "circular_mae": 3.2437908548301633,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.990219146617841,
+                  "circular_mae": 3.040335871814915
+                }
+              },
+              "across": {
+                "r2": 0.9673240101689299,
+                "circular_mae": 5.051722188948664,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9910044880086338,
+                  "circular_mae": 3.1747565288902444
+                }
+              }
+            }
+          }
+        },
+        "block_19": {
+          "plot_index": 20,
+          "velocity": {
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9905594735521659,
+                "circular_mae": 2.98155208239402,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9912636000987063,
+                  "circular_mae": 2.895466606528489
+                }
+              },
+              "across": {
+                "r2": 0.9510739213559598,
+                "circular_mae": 6.714597818414362,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9892325304721519,
+                  "circular_mae": 3.210170210299582
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9875812679774363,
+                "circular_mae": 3.581592414491892,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9901372857859894,
+                  "circular_mae": 3.108106907884486
+                }
+              },
+              "across": {
+                "r2": 0.9687295334700805,
+                "circular_mae": 5.758358909311545,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9923336642135647,
+                  "circular_mae": 2.7357788599099853
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9904705587456022,
+                "circular_mae": 3.049183343940925,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9915908510293607,
+                  "circular_mae": 2.9000382818728587
+                }
+              },
+              "across": {
+                "r2": 0.9510739213559598,
+                "circular_mae": 6.714597818414362,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9892325304721519,
+                  "circular_mae": 3.210170210299582
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9871015132814984,
+                "circular_mae": 3.2715526757269613,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9892325304721519,
+                  "circular_mae": 3.210170210299582
+                }
+              },
+              "across": {
+                "r2": 0.9543484944008805,
+                "circular_mae": 5.31724512139612,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9912636000987063,
+                  "circular_mae": 2.895466606528489
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9908023780544344,
+                "circular_mae": 2.782543888470707,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9923336642135647,
+                  "circular_mae": 2.7357788599099853
+                }
+              },
+              "across": {
+                "r2": 0.9815861193914402,
+                "circular_mae": 4.2036568910688885,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9901372857859894,
+                  "circular_mae": 3.108106907884486
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9871015132814984,
+                "circular_mae": 3.2715526757269613,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9892325304721519,
+                  "circular_mae": 3.210170210299582
+                }
+              },
+              "across": {
+                "r2": 0.9622070788094422,
+                "circular_mae": 4.8558803499317476,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9915908510293607,
+                  "circular_mae": 2.9000382818728587
+                }
+              }
+            }
+          }
+        },
+        "block_20": {
+          "plot_index": 21,
+          "velocity": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9921679037188953,
+                "circular_mae": 3.0232011839356057,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9911169839316678,
+                  "circular_mae": 3.0659193129294686
+                }
+              },
+              "across": {
+                "r2": 0.950715881698664,
+                "circular_mae": 6.100128782617672,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9881115698373284,
+                  "circular_mae": 3.2741547070813937
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9898972750886341,
+                "circular_mae": 3.480078165383025,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9898739560925326,
+                  "circular_mae": 3.237644567648586
+                }
+              },
+              "across": {
+                "r2": 0.9715848341739782,
+                "circular_mae": 5.350070435799282,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9925839655806965,
+                  "circular_mae": 2.78812692644062
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9920842102005529,
+                "circular_mae": 3.0491273417604567,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9909006023393119,
+                  "circular_mae": 3.1079093672496114
+                }
+              },
+              "across": {
+                "r2": 0.950715881698664,
+                "circular_mae": 6.100128782617672,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9881115698373284,
+                  "circular_mae": 3.2741547070813937
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9862443327730326,
+                "circular_mae": 3.581255128306396,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9881115698373284,
+                  "circular_mae": 3.2741547070813937
+                }
+              },
+              "across": {
+                "r2": 0.9573610743625252,
+                "circular_mae": 4.825824466471114,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9911169839316678,
+                  "circular_mae": 3.0659193129294686
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9902671121016448,
+                "circular_mae": 3.078674604291971,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9925839655806965,
+                  "circular_mae": 2.78812692644062
+                }
+              },
+              "across": {
+                "r2": 0.9809647688524862,
+                "circular_mae": 4.401040490485303,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9898739560925326,
+                  "circular_mae": 3.237644567648586
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9862443327730326,
+                "circular_mae": 3.581255128306396,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9881115698373284,
+                  "circular_mae": 3.2741547070813937
+                }
+              },
+              "across": {
+                "r2": 0.9643178219861004,
+                "circular_mae": 4.6761654658343375,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9909006023393119,
+                  "circular_mae": 3.1079093672496114
+                }
+              }
+            }
+          }
+        },
+        "block_21": {
+          "plot_index": 22,
+          "velocity": {
+            "alpha": 17.78279410038923,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9922449575118679,
+                "circular_mae": 3.007106265307118,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9910092429863958,
+                  "circular_mae": 3.3064847462356783
+                }
+              },
+              "across": {
+                "r2": 0.9421790062956004,
+                "circular_mae": 6.59345391138943,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.987742091235329,
+                  "circular_mae": 3.312676415365624
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9896471609216283,
+                "circular_mae": 3.4092193770961643,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9901770136655312,
+                  "circular_mae": 3.5854716237873108
+                }
+              },
+              "across": {
+                "r2": 0.9617496750223709,
+                "circular_mae": 5.837732845539446,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9919250130953853,
+                  "circular_mae": 2.8552078264167733
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9921181478478007,
+                "circular_mae": 2.97634076915044,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9909995417914552,
+                  "circular_mae": 3.355295960773781
+                }
+              },
+              "across": {
+                "r2": 0.9421790062956004,
+                "circular_mae": 6.59345391138943,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.987742091235329,
+                  "circular_mae": 3.312676415365624
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9863623571795412,
+                "circular_mae": 3.6788585400222344,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.987742091235329,
+                  "circular_mae": 3.312676415365624
+                }
+              },
+              "across": {
+                "r2": 0.9703028945573695,
+                "circular_mae": 4.05608387938311,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9910092429863958,
+                  "circular_mae": 3.3064847462356783
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9897199113556692,
+                "circular_mae": 3.12424257948416,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9919250130953853,
+                  "circular_mae": 2.8552078264167733
+                }
+              },
+              "across": {
+                "r2": 0.9807310200898032,
+                "circular_mae": 4.008181340949303,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9901770136655312,
+                  "circular_mae": 3.5854716237873108
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9863623571795412,
+                "circular_mae": 3.6788585400222344,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.987742091235329,
+                  "circular_mae": 3.312676415365624
+                }
+              },
+              "across": {
+                "r2": 0.9755199369130434,
+                "circular_mae": 4.05332331188604,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9909995417914552,
+                  "circular_mae": 3.355295960773781
+                }
+              }
+            }
+          }
+        },
+        "block_22": {
+          "plot_index": 23,
+          "velocity": {
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9911036010584053,
+                "circular_mae": 3.113596868201547,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9911873251986391,
+                  "circular_mae": 3.26750412901076
+                }
+              },
+              "across": {
+                "r2": 0.944095132091545,
+                "circular_mae": 6.6616331655723835,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9864411949404516,
+                  "circular_mae": 3.522857540239813
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9870316153267791,
+                "circular_mae": 3.9328014836537486,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9892170809278228,
+                  "circular_mae": 3.9584667689519497
+                }
+              },
+              "across": {
+                "r2": 0.9658286770783087,
+                "circular_mae": 5.572916942796909,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9917173233005812,
+                  "circular_mae": 2.8942536829910104
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9909473824068022,
+                "circular_mae": 3.1466624488671178,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.991026919963319,
+                  "circular_mae": 3.3366382964888546
+                }
+              },
+              "across": {
+                "r2": 0.944095132091545,
+                "circular_mae": 6.6616331655723835,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9864411949404516,
+                  "circular_mae": 3.522857540239813
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9853511712214212,
+                "circular_mae": 3.8223646982446695,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9864411949404516,
+                  "circular_mae": 3.522857540239813
+                }
+              },
+              "across": {
+                "r2": 0.9724252293291733,
+                "circular_mae": 4.226574938730919,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9911873251986391,
+                  "circular_mae": 3.26750412901076
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9898191618341001,
+                "circular_mae": 3.2796188364732117,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9917173233005812,
+                  "circular_mae": 2.8942536829910104
+                }
+              },
+              "across": {
+                "r2": 0.9806074461689944,
+                "circular_mae": 3.874068564003319,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9892170809278228,
+                  "circular_mae": 3.9584667689519497
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9853511712214212,
+                "circular_mae": 3.8223646982446695,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9864411949404516,
+                  "circular_mae": 3.522857540239813
+                }
+              },
+              "across": {
+                "r2": 0.975875526336945,
+                "circular_mae": 4.266623070755617,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.991026919963319,
+                  "circular_mae": 3.3366382964888546
+                }
+              }
+            }
+          }
+        },
+        "block_23": {
+          "plot_index": 24,
+          "velocity": {
+            "alpha": 5.623413251903491,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9897440100643321,
+                "circular_mae": 3.5456001063856695,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9915772514974344,
+                  "circular_mae": 3.056321548602987
+                }
+              },
+              "across": {
+                "r2": 0.944373091124918,
+                "circular_mae": 6.828081269311774,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9859783120091407,
+                  "circular_mae": 3.8412504061522945
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9854235047851885,
+                "circular_mae": 4.143996002796394,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9896473614542846,
+                  "circular_mae": 3.4942688248336276
+                }
+              },
+              "across": {
+                "r2": 0.9617696157054884,
+                "circular_mae": 6.056353138992135,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9908738136070663,
+                  "circular_mae": 3.23917713970112
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9893809130567535,
+                "circular_mae": 3.5781335542477137,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9915070621751847,
+                  "circular_mae": 3.0211530872785155
+                }
+              },
+              "across": {
+                "r2": 0.944373091124918,
+                "circular_mae": 6.828081269311774,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9859783120091407,
+                  "circular_mae": 3.8412504061522945
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9854494380723002,
+                "circular_mae": 4.0095441470631545,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9859783120091407,
+                  "circular_mae": 3.8412504061522945
+                }
+              },
+              "across": {
+                "r2": 0.9649528572082782,
+                "circular_mae": 5.453341784418579,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9915772514974344,
+                  "circular_mae": 3.056321548602987
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9896452236792501,
+                "circular_mae": 3.4639074356019486,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9908738136070663,
+                  "circular_mae": 3.23917713970112
+                }
+              },
+              "across": {
+                "r2": 0.9738498360220933,
+                "circular_mae": 4.947272749582592,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.9896473614542846,
+                  "circular_mae": 3.4942688248336276
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9854494380723002,
+                "circular_mae": 4.0095441470631545,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9859783120091407,
+                  "circular_mae": 3.8412504061522945
+                }
+              },
+              "across": {
+                "r2": 0.9679153044856811,
+                "circular_mae": 5.441132022395458,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9915070621751847,
+                  "circular_mae": 3.0211530872785155
+                }
+              }
+            }
+          }
+        },
+        "final_norm": {
+          "plot_index": null,
+          "velocity": {
+            "alpha": 5.623413251903491,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9898933576334276,
+                "circular_mae": 3.531920803675445,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9916692091710428,
+                  "circular_mae": 3.0557394377386173
+                }
+              },
+              "across": {
+                "r2": 0.9435484976293225,
+                "circular_mae": 6.956532248818183,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9855444550674652,
+                  "circular_mae": 3.8900994399297093
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9856759555430382,
+                "circular_mae": 4.1072638351286015,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.989855581914013,
+                  "circular_mae": 3.4403685109229456
+                }
+              },
+              "across": {
+                "r2": 0.961237461817758,
+                "circular_mae": 6.1357667343496765,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9906298432942495,
+                  "circular_mae": 3.255041055744819
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9895328344015705,
+                "circular_mae": 3.560358004269736,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9916433796357096,
+                  "circular_mae": 2.997378592872953
+                }
+              },
+              "across": {
+                "r2": 0.9435484976293225,
+                "circular_mae": 6.956532248818183,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9855444550674652,
+                  "circular_mae": 3.8900994399297093
+                }
+              }
+            }
+          },
+          "acceleration": {
+            "alpha": 10.0,
+            "alpha_verdict": "ok",
+            "all": {
+              "within": {
+                "r2": 0.9849779350192596,
+                "circular_mae": 4.0847904795148064,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9855444550674652,
+                  "circular_mae": 3.8900994399297093
+                }
+              },
+              "across": {
+                "r2": 0.9667075231440458,
+                "circular_mae": 5.218980324829888,
+                "n_clips": 155,
+                "all_train_reference": {
+                  "r2": 0.9916692091710428,
+                  "circular_mae": 3.0557394377386173
+                }
+              }
+            },
+            "distance_overlap": {
+              "within": {
+                "r2": 0.9893881552800731,
+                "circular_mae": 3.4946514703221183,
+                "n_clips": 114,
+                "all_train_reference": {
+                  "r2": 0.9906298432942495,
+                  "circular_mae": 3.255041055744819
+                }
+              },
+              "across": {
+                "r2": 0.9760391581084251,
+                "circular_mae": 4.740487686215128,
+                "n_clips": 66,
+                "all_train_reference": {
+                  "r2": 0.989855581914013,
+                  "circular_mae": 3.4403685109229456
+                }
+              }
+            },
+            "without_exit": {
+              "within": {
+                "r2": 0.9849779350192596,
+                "circular_mae": 4.0847904795148064,
+                "n_clips": 142,
+                "all_train_reference": {
+                  "r2": 0.9855444550674652,
+                  "circular_mae": 3.8900994399297093
+                }
+              },
+              "across": {
+                "r2": 0.9694142298246731,
+                "circular_mae": 5.220897877230206,
+                "n_clips": 138,
+                "all_train_reference": {
+                  "r2": 0.9916433796357096,
+                  "circular_mae": 2.997378592872953
+                }
+              }
+            }
+          }
+        }
+      },
+      "artifact": {
+        "path": "artifacts/robustness/motion_type_predictions.npz",
+        "sha256": "3dca5130363a8d95bc112872388848db357561539cf5bdd14809fbc5ac4620e6"
+      },
+      "criteria": {
+        "n_fit": true,
+        "only_one_type_fitted": true,
+        "no_alpha_failure": true,
+        "refit_identical": true,
+        "finite": true,
+        "reference_aligned": true,
+        "saved_equals_computed": true
+      },
+      "passed": true
+    }
+  },
+  "motion_type_test": {
+    "provenance": {
+      "utc": "2026-09-27T06:57:28+00:00",
+      "git_commit": "82a0b0f9fab241cfd1a86e71aaf7bc2495216b50",
+      "git_dirty": false,
+      "git_dirty_paths": [],
+      "code": {
+        "files": {
+          "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
+          "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
+          "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
+          "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/confounds.py": "9f20249c1e81d142c995a8a0f6deb7c026cea41955d26ee719ab769614582c47",
+          "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
+          "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
+          "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
+          "src/vjepa_physics/evidence.py": "4b11d8bd2785d18adf2142a09bca0d81b9e311325e89390542c0a6b20357de85",
+          "src/vjepa_physics/extraction.py": "a570ca814918645fe1497e603c0d07d90ace69d1be53c90658b317b7b1e38417",
+          "src/vjepa_physics/flags.py": "21041811be24362fb3918da664f72ec478f41fa9c790699a5ccdc69945ede570",
+          "src/vjepa_physics/forecast.py": "09a8406986331f9d72c77bbbd9e31e068e1c9a62cc5a4c70f0005e6b73460dbb",
+          "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
+          "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
+          "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
+          "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
+          "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
+          "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
+          "src/vjepa_physics/plotting.py": "0347c3cfcd405eead2f513b2071c17c8dc1aff8f6b73b1d3d0bb5044edcaf442",
+          "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
+          "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
+          "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/robustness.py": "120437b63c5a3c7fddcb2da4fc55b25e485809ed5c62c24d8b8124f984097659",
+          "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
+          "src/vjepa_physics/steering.py": "2aaf059c980a059425efef4d1e808ce3768a93dbdb9ddbf47448423dabeae0a0",
+          "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
+          "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
+          "scripts/check_robustness.py": "f0e172efd250f7b7e8b944c2f5eb8bc8aeaf42b8930c1a0f0e039816b01d4aab"
+        },
+        "combined_sha256": "aa800048778cb299b05e8733bf6383c7bb52ceed7670a21aa752b5c4d6a683c9"
+      },
+      "versions": {
+        "av": "18.1.0",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "transformers": "5.17.0",
+        "opencv-python-headless": "5.0.0.93",
+        "matplotlib": "3.11.2",
+        "scikit-learn": "1.9.1"
+      }
+    },
+    "result": {
+      "roles_scored": [
+        "test_seen",
+        "test_unseen"
+      ],
+      "subsets": [
+        "all",
+        "distance_overlap",
+        "without_exit"
+      ],
+      "counts": {
+        "all": {
+          "velocity": 198,
+          "acceleration": 192
+        },
+        "distance_overlap": {
+          "velocity": 84,
+          "acceleration": 151
+        },
+        "without_exit": {
+          "velocity": 163,
+          "acceleration": 192
+        }
+      },
+      "reading_bands": {
+        "shared": 0.9,
+        "type_specific_below": 0.5
+      },
+      "summary": {
+        "1": {
+          "velocity_to_acceleration": {
+            "within_r2": 0.8595232374887077,
+            "across_r2": 0.7416224277353375,
+            "across_r2_ci": [
+              0.6937215444080624,
+              0.7838090389064599
+            ],
+            "within_mae": 12.216237272897452,
+            "across_mae": 21.04670196205656,
+            "gap_ci": [
+              4.728877805834022,
+              13.232705540333152
+            ],
+            "reading": "partly shared",
+            "across_mae_seen_unseen": [
+              22.44159672150163,
+              19.65180720261149
+            ],
+            "overlap_within_across_mae": [
+              15.06308642902575,
+              14.347238985586882
+            ]
+          },
+          "acceleration_to_velocity": {
+            "within_r2": 0.775496843040169,
+            "across_r2": 0.504925595574059,
+            "across_r2_ci": [
+              0.39306496404079583,
+              0.595755631756311
+            ],
+            "within_mae": 16.745171138589033,
+            "across_mae": 17.03723880803293,
+            "gap_ci": [
+              -3.2659446657495934,
+              3.93702770504047
+            ],
+            "reading": "partly shared",
+            "across_mae_seen_unseen": [
+              19.383866129724474,
+              14.278017671538484
+            ],
+            "overlap_within_across_mae": [
+              12.81249355731862,
+              13.186134011556295
+            ]
+          }
+        },
+        "9": {
+          "velocity_to_acceleration": {
+            "within_r2": 0.9837065174943164,
+            "across_r2": 0.9388464800898612,
+            "across_r2_ci": [
+              0.9278734922718987,
+              0.9483465562877915
+            ],
+            "within_mae": 3.546488064376806,
+            "across_mae": 5.162867429217575,
+            "gap_ci": [
+              0.849368904526972,
+              2.4284768682943847
+            ],
+            "reading": "shared, partly type-specific",
+            "across_mae_seen_unseen": [
+              4.852261012072586,
+              5.4734738463625625
+            ],
+            "overlap_within_across_mae": [
+              3.8238690285595256,
+              4.01792291891735
+            ]
+          },
+          "acceleration_to_velocity": {
+            "within_r2": 0.9769472642235285,
+            "across_r2": 0.9477218904792439,
+            "across_r2_ci": [
+              0.9364753264311381,
+              0.957256502095653
+            ],
+            "within_mae": 4.87578379471413,
+            "across_mae": 5.2643888501013985,
+            "gap_ci": [
+              -0.4704399026272858,
+              1.278850881234127
+            ],
+            "reading": "shared",
+            "across_mae_seen_unseen": [
+              6.058290700292397,
+              4.330899861415283
+            ],
+            "overlap_within_across_mae": [
+              4.224255130162437,
+              3.9619757394982664
+            ]
+          }
+        },
+        "18": {
+          "velocity_to_acceleration": {
+            "within_r2": 0.9901790393010881,
+            "across_r2": 0.9686127516432101,
+            "across_r2_ci": [
+              0.9619686172612938,
+              0.9744731908757543
+            ],
+            "within_mae": 3.0433367168531187,
+            "across_mae": 4.792545804804362,
+            "gap_ci": [
+              1.0561014019535166,
+              2.4682053901580843
+            ],
+            "reading": "shared, partly type-specific",
+            "across_mae_seen_unseen": [
+              4.494029338521194,
+              5.091062271087531
+            ],
+            "overlap_within_across_mae": [
+              3.5536311733123047,
+              3.7689244394755557
+            ]
+          },
+          "acceleration_to_velocity": {
+            "within_r2": 0.9852404308381406,
+            "across_r2": 0.9444748157760929,
+            "across_r2_ci": [
+              0.9354727358259171,
+              0.9522640145808321
+            ],
+            "within_mae": 3.81978046442676,
+            "across_mae": 7.887137103561479,
+            "gap_ci": [
+              3.209896717415223,
+              4.942102142736302
+            ],
+            "reading": "shared, partly type-specific",
+            "across_mae_seen_unseen": [
+              7.855689495336966,
+              7.924113961583709
+            ],
+            "overlap_within_across_mae": [
+              3.2804049374765216,
+              6.222746930063013
+            ]
+          }
+        }
+      },
+      "sites": {
+        "block_0": {
+          "plot_index": 1,
+          "velocity": {
+            "alpha": 1.7782794100389228,
+            "test": {
+              "all": {
+                "within": {
+                  "r2": 0.8595232374887077,
+                  "circular_mae": 12.216237272897452,
+                  "n_clips": 198
+                },
+                "across": {
+                  "r2": 0.7416224277353375,
+                  "circular_mae": 21.04670196205656,
+                  "n_clips": 192
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.8233180262664772,
+                  "circular_mae": 15.06308642902575,
+                  "n_clips": 84
+                },
+                "across": {
+                  "r2": 0.8469198266307791,
+                  "circular_mae": 14.347238985586882,
+                  "n_clips": 151
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.8555958400627635,
+                  "circular_mae": 12.273546934825587,
+                  "n_clips": 163
+                },
+                "across": {
+                  "r2": 0.7416224277353375,
+                  "circular_mae": 21.04670196205656,
+                  "n_clips": 192
+                }
+              }
+            },
+            "test_seen": {
+              "all": {
+                "within": {
+                  "r2": 0.8661007159565253,
+                  "circular_mae": 11.747464754749068,
+                  "n_clips": 107
+                },
+                "across": {
+                  "r2": 0.7267604738184985,
+                  "circular_mae": 22.44159672150163,
+                  "n_clips": 96
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.8577309373596825,
+                  "circular_mae": 13.112655670504271,
+                  "n_clips": 46
+                },
+                "across": {
+                  "r2": 0.8456904207384779,
+                  "circular_mae": 14.360564508424027,
+                  "n_clips": 77
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.861615219090818,
+                  "circular_mae": 11.97623990110514,
+                  "n_clips": 87
+                },
+                "across": {
+                  "r2": 0.7267604738184985,
+                  "circular_mae": 22.44159672150163,
+                  "n_clips": 96
+                }
+              }
+            },
+            "test_unseen": {
+              "all": {
+                "within": {
+                  "r2": 0.8518732333596785,
+                  "circular_mae": 12.7674313326983,
+                  "n_clips": 91
+                },
+                "across": {
+                  "r2": 0.7561768686774591,
+                  "circular_mae": 19.65180720261149,
+                  "n_clips": 96
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.7819943029972158,
+                  "circular_mae": 17.424134189341224,
+                  "n_clips": 38
+                },
+                "across": {
+                  "r2": 0.8470879896002439,
+                  "circular_mae": 14.333373238850939,
+                  "n_clips": 74
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.8487248665111056,
+                  "circular_mae": 12.613885249742417,
+                  "n_clips": 76
+                },
+                "across": {
+                  "r2": 0.7561768686774591,
+                  "circular_mae": 19.65180720261149,
+                  "n_clips": 96
+                }
+              }
+            },
+            "headline": {
+              "across_r2_ci": [
+                0.6937215444080624,
+                0.7838090389064599
+              ],
+              "gap_circular_mae": 8.830464689159108,
+              "gap_ci": [
+                4.728877805834022,
+                13.232705540333152
+              ],
+              "reading": "partly shared"
+            }
+          },
+          "acceleration": {
+            "alpha": 1.0,
+            "test": {
+              "all": {
+                "within": {
+                  "r2": 0.775496843040169,
+                  "circular_mae": 16.745171138589033,
+                  "n_clips": 192
+                },
+                "across": {
+                  "r2": 0.504925595574059,
+                  "circular_mae": 17.03723880803293,
+                  "n_clips": 198
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.851040238099882,
+                  "circular_mae": 12.81249355731862,
+                  "n_clips": 151
+                },
+                "across": {
+                  "r2": 0.7670366465633414,
+                  "circular_mae": 13.186134011556295,
+                  "n_clips": 84
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.775496843040169,
+                  "circular_mae": 16.745171138589033,
+                  "n_clips": 192
+                },
+                "across": {
+                  "r2": 0.6614955247772942,
+                  "circular_mae": 11.760322060602103,
+                  "n_clips": 163
+                }
+              }
+            },
+            "test_seen": {
+              "all": {
+                "within": {
+                  "r2": 0.7808219952157136,
+                  "circular_mae": 16.4477377567823,
+                  "n_clips": 96
+                },
+                "across": {
+                  "r2": 0.40419399494998925,
+                  "circular_mae": 19.383866129724474,
+                  "n_clips": 107
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.8500841802286887,
+                  "circular_mae": 12.929914600813587,
+                  "n_clips": 77
+                },
+                "across": {
+                  "r2": 0.7798703004469809,
+                  "circular_mae": 13.91644118414066,
+                  "n_clips": 46
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.7808219952157136,
+                  "circular_mae": 16.4477377567823,
+                  "n_clips": 96
+                },
+                "across": {
+                  "r2": 0.6345403740907414,
+                  "circular_mae": 13.199796083742662,
+                  "n_clips": 87
+                }
+              }
+            },
+            "test_unseen": {
+              "all": {
+                "within": {
+                  "r2": 0.7696653688775597,
+                  "circular_mae": 17.042604520395773,
+                  "n_clips": 96
+                },
+                "across": {
+                  "r2": 0.6173279198710941,
+                  "circular_mae": 14.278017671538484,
+                  "n_clips": 91
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.8511274133473543,
+                  "circular_mae": 12.690312201249522,
+                  "n_clips": 74
+                },
+                "across": {
+                  "r2": 0.7514271496142758,
+                  "circular_mae": 12.302077960533124,
+                  "n_clips": 38
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.7696653688775597,
+                  "circular_mae": 17.042604520395773,
+                  "n_clips": 96
+                },
+                "across": {
+                  "r2": 0.6912491170626585,
+                  "circular_mae": 10.112503113059619,
+                  "n_clips": 76
+                }
+              }
+            },
+            "headline": {
+              "across_r2_ci": [
+                0.39306496404079583,
+                0.595755631756311
+              ],
+              "gap_circular_mae": 0.29206766944389884,
+              "gap_ci": [
+                -3.2659446657495934,
+                3.93702770504047
+              ],
+              "reading": "partly shared"
+            }
+          }
+        },
+        "block_8": {
+          "plot_index": 9,
+          "velocity": {
+            "alpha": 100.0,
+            "test": {
+              "all": {
+                "within": {
+                  "r2": 0.9837065174943164,
+                  "circular_mae": 3.546488064376806,
+                  "n_clips": 198
+                },
+                "across": {
+                  "r2": 0.9388464800898612,
+                  "circular_mae": 5.162867429217575,
+                  "n_clips": 192
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.9837319620519388,
+                  "circular_mae": 3.8238690285595256,
+                  "n_clips": 84
+                },
+                "across": {
+                  "r2": 0.9683536654826819,
+                  "circular_mae": 4.01792291891735,
+                  "n_clips": 151
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.9862757769351587,
+                  "circular_mae": 3.3266100094018367,
+                  "n_clips": 163
+                },
+                "across": {
+                  "r2": 0.9388464800898612,
+                  "circular_mae": 5.162867429217575,
+                  "n_clips": 192
+                }
+              }
+            },
+            "test_seen": {
+              "all": {
+                "within": {
+                  "r2": 0.9816494203364899,
+                  "circular_mae": 3.9005334498497066,
+                  "n_clips": 107
+                },
+                "across": {
+                  "r2": 0.9419570147228506,
+                  "circular_mae": 4.852261012072586,
+                  "n_clips": 96
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.983762982097899,
+                  "circular_mae": 4.357600002615152,
+                  "n_clips": 46
+                },
+                "across": {
+                  "r2": 0.9683559478592493,
+                  "circular_mae": 4.0043435528329425,
+                  "n_clips": 77
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.9855311771347891,
+                  "circular_mae": 3.6442377387893017,
+                  "n_clips": 87
+                },
+                "across": {
+                  "r2": 0.9419570147228506,
+                  "circular_mae": 4.852261012072586,
+                  "n_clips": 96
+                }
+              }
+            },
+            "test_unseen": {
+              "all": {
+                "within": {
+                  "r2": 0.9860316042762913,
+                  "circular_mae": 3.1301929407987803,
+                  "n_clips": 91
+                },
+                "across": {
+                  "r2": 0.9357451014946043,
+                  "circular_mae": 5.4734738463625625,
+                  "n_clips": 96
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.9836561510875531,
+                  "circular_mae": 3.1777736389132403,
+                  "n_clips": 38
+                },
+                "across": {
+                  "r2": 0.9683853306344825,
+                  "circular_mae": 4.032052799843017,
+                  "n_clips": 74
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.9871139824843829,
+                  "circular_mae": 2.963009845497764,
+                  "n_clips": 76
+                },
+                "across": {
+                  "r2": 0.9357451014946043,
+                  "circular_mae": 5.4734738463625625,
+                  "n_clips": 96
+                }
+              }
+            },
+            "headline": {
+              "across_r2_ci": [
+                0.9278734922718987,
+                0.9483465562877915
+              ],
+              "gap_circular_mae": 1.6163793648407685,
+              "gap_ci": [
+                0.849368904526972,
+                2.4284768682943847
+              ],
+              "reading": "shared, partly type-specific"
+            }
+          },
+          "acceleration": {
+            "alpha": 100.0,
+            "test": {
+              "all": {
+                "within": {
+                  "r2": 0.9769472642235285,
+                  "circular_mae": 4.87578379471413,
+                  "n_clips": 192
+                },
+                "across": {
+                  "r2": 0.9477218904792439,
+                  "circular_mae": 5.2643888501013985,
+                  "n_clips": 198
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.9845678438136721,
+                  "circular_mae": 4.224255130162437,
+                  "n_clips": 151
+                },
+                "across": {
+                  "r2": 0.9656813521081746,
+                  "circular_mae": 3.9619757394982664,
+                  "n_clips": 84
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.9769472642235285,
+                  "circular_mae": 4.87578379471413,
+                  "n_clips": 192
+                },
+                "across": {
+                  "r2": 0.9683848192917837,
+                  "circular_mae": 4.603785672105465,
+                  "n_clips": 163
+                }
+              }
+            },
+            "test_seen": {
+              "all": {
+                "within": {
+                  "r2": 0.979280505151305,
+                  "circular_mae": 4.601084059238836,
+                  "n_clips": 96
+                },
+                "across": {
+                  "r2": 0.9397191218522787,
+                  "circular_mae": 6.058290700292397,
+                  "n_clips": 107
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.9847633923725909,
+                  "circular_mae": 4.214013998961167,
+                  "n_clips": 77
+                },
+                "across": {
+                  "r2": 0.9653905980634986,
+                  "circular_mae": 4.0845923741883325,
+                  "n_clips": 46
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.979280505151305,
+                  "circular_mae": 4.601084059238836,
+                  "n_clips": 96
+                },
+                "across": {
+                  "r2": 0.9661436793260176,
+                  "circular_mae": 4.932541958494249,
+                  "n_clips": 87
+                }
+              }
+            },
+            "test_unseen": {
+              "all": {
+                "within": {
+                  "r2": 0.9744885207559212,
+                  "circular_mae": 5.150483530189425,
+                  "n_clips": 96
+                },
+                "across": {
+                  "r2": 0.9569748396390789,
+                  "circular_mae": 4.330899861415283,
+                  "n_clips": 91
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.9842817753115488,
+                  "circular_mae": 4.234911442358353,
+                  "n_clips": 74
+                },
+                "across": {
+                  "r2": 0.9659804784535253,
+                  "circular_mae": 3.813545076452398,
+                  "n_clips": 38
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.9744885207559212,
+                  "circular_mae": 5.150483530189425,
+                  "n_clips": 96
+                },
+                "across": {
+                  "r2": 0.9709520268462173,
+                  "circular_mae": 4.227446239002515,
+                  "n_clips": 76
+                }
+              }
+            },
+            "headline": {
+              "across_r2_ci": [
+                0.9364753264311381,
+                0.957256502095653
+              ],
+              "gap_circular_mae": 0.3886050553872682,
+              "gap_ci": [
+                -0.4704399026272858,
+                1.278850881234127
+              ],
+              "reading": "shared"
+            }
+          }
+        },
+        "block_17": {
+          "plot_index": 18,
+          "velocity": {
+            "alpha": 10.0,
+            "test": {
+              "all": {
+                "within": {
+                  "r2": 0.9901790393010881,
+                  "circular_mae": 3.0433367168531187,
+                  "n_clips": 198
+                },
+                "across": {
+                  "r2": 0.9686127516432101,
+                  "circular_mae": 4.792545804804362,
+                  "n_clips": 192
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.9882420172515534,
+                  "circular_mae": 3.5536311733123047,
+                  "n_clips": 84
+                },
+                "across": {
+                  "r2": 0.9834479249067993,
+                  "circular_mae": 3.7689244394755557,
+                  "n_clips": 151
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.9907262564725114,
+                  "circular_mae": 3.0369953687664237,
+                  "n_clips": 163
+                },
+                "across": {
+                  "r2": 0.9686127516432101,
+                  "circular_mae": 4.792545804804362,
+                  "n_clips": 192
+                }
+              }
+            },
+            "test_seen": {
+              "all": {
+                "within": {
+                  "r2": 0.9892629569235882,
+                  "circular_mae": 3.089662152618126,
+                  "n_clips": 107
+                },
+                "across": {
+                  "r2": 0.970712158521525,
+                  "circular_mae": 4.494029338521194,
+                  "n_clips": 96
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.9887413822766574,
+                  "circular_mae": 3.471198159703476,
+                  "n_clips": 46
+                },
+                "across": {
+                  "r2": 0.9856472534574539,
+                  "circular_mae": 3.370624927089437,
+                  "n_clips": 77
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.9903482422244474,
+                  "circular_mae": 2.9843500200984225,
+                  "n_clips": 87
+                },
+                "across": {
+                  "r2": 0.970712158521525,
+                  "circular_mae": 4.494029338521194,
+                  "n_clips": 96
+                }
+              }
+            },
+            "test_unseen": {
+              "all": {
+                "within": {
+                  "r2": 0.9911995787709162,
+                  "circular_mae": 2.9888661495250335,
+                  "n_clips": 91
+                },
+                "across": {
+                  "r2": 0.966483063337692,
+                  "circular_mae": 5.091062271087531,
+                  "n_clips": 96
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.9875787132166919,
+                  "circular_mae": 3.653418505575623,
+                  "n_clips": 38
+                },
+                "across": {
+                  "r2": 0.9811739842793902,
+                  "circular_mae": 4.183371229390841,
+                  "n_clips": 74
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.99112806223202,
+                  "circular_mae": 3.097260438952161,
+                  "n_clips": 76
+                },
+                "across": {
+                  "r2": 0.966483063337692,
+                  "circular_mae": 5.091062271087531,
+                  "n_clips": 96
+                }
+              }
+            },
+            "headline": {
+              "across_r2_ci": [
+                0.9619686172612938,
+                0.9744731908757543
+              ],
+              "gap_circular_mae": 1.7492090879512436,
+              "gap_ci": [
+                1.0561014019535166,
+                2.4682053901580843
+              ],
+              "reading": "shared, partly type-specific"
+            }
+          },
+          "acceleration": {
+            "alpha": 17.78279410038923,
+            "test": {
+              "all": {
+                "within": {
+                  "r2": 0.9852404308381406,
+                  "circular_mae": 3.81978046442676,
+                  "n_clips": 192
+                },
+                "across": {
+                  "r2": 0.9444748157760929,
+                  "circular_mae": 7.887137103561479,
+                  "n_clips": 198
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.9903029455413666,
+                  "circular_mae": 3.2804049374765216,
+                  "n_clips": 151
+                },
+                "across": {
+                  "r2": 0.9714935761661063,
+                  "circular_mae": 6.222746930063013,
+                  "n_clips": 84
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.9852404308381406,
+                  "circular_mae": 3.81978046442676,
+                  "n_clips": 192
+                },
+                "across": {
+                  "r2": 0.9554848675266499,
+                  "circular_mae": 7.048727722184462,
+                  "n_clips": 163
+                }
+              }
+            },
+            "test_seen": {
+              "all": {
+                "within": {
+                  "r2": 0.9866187346830986,
+                  "circular_mae": 3.583159958539961,
+                  "n_clips": 96
+                },
+                "across": {
+                  "r2": 0.9412123648779693,
+                  "circular_mae": 7.855689495336966,
+                  "n_clips": 107
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.9915555462070637,
+                  "circular_mae": 2.943048814018816,
+                  "n_clips": 77
+                },
+                "across": {
+                  "r2": 0.9691908163586154,
+                  "circular_mae": 6.048402696266079,
+                  "n_clips": 46
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.9866187346830986,
+                  "circular_mae": 3.583159958539961,
+                  "n_clips": 96
+                },
+                "across": {
+                  "r2": 0.952528039981726,
+                  "circular_mae": 6.911772176284699,
+                  "n_clips": 87
+                }
+              }
+            },
+            "test_unseen": {
+              "all": {
+                "within": {
+                  "r2": 0.9838353177450725,
+                  "circular_mae": 4.056400970313558,
+                  "n_clips": 96
+                },
+                "across": {
+                  "r2": 0.9482073276033169,
+                  "circular_mae": 7.924113961583709,
+                  "n_clips": 91
+                }
+              },
+              "distance_overlap": {
+                "within": {
+                  "r2": 0.9890252914353955,
+                  "circular_mae": 3.6314376605338636,
+                  "n_clips": 74
+                },
+                "across": {
+                  "r2": 0.9741630498020655,
+                  "circular_mae": 6.433795213080356,
+                  "n_clips": 38
+                }
+              },
+              "without_exit": {
+                "within": {
+                  "r2": 0.9838353177450725,
+                  "circular_mae": 4.056400970313558,
+                  "n_clips": 96
+                },
+                "across": {
+                  "r2": 0.9588713911048748,
+                  "circular_mae": 7.205505781306562,
+                  "n_clips": 76
+                }
+              }
+            },
+            "headline": {
+              "across_r2_ci": [
+                0.9354727358259171,
+                0.9522640145808321
+              ],
+              "gap_circular_mae": 4.067356639134719,
+              "gap_ci": [
+                3.209896717415223,
+                4.942102142736302
+              ],
+              "reading": "shared, partly type-specific"
+            }
+          }
+        }
+      },
+      "criteria": {
+        "validation_reproduced": true,
+        "only_test_rows_predicted": true,
+        "finite": true,
+        "saved_aligned": true
+      },
+      "passed": true
+    }
+  }
+}
