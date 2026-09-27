@@ -79,3 +79,58 @@ Candidate slides, added as results come in. Each names its figure, its message a
     as tested; the uniform token edit is the leading open explanation.
   - Speed and acceleration co-move one-for-one in metres (both labels = distance).
 - Evidence: `steering`: `steering_propagation`, `steering_kernel`, `steering_specificity`, `figure_steering`.
+
+
+## Part 2 · The representation is a curved, low-dimensional manifold
+
+- Figure: `results/manifolds/manifolds.png`
+- Message: per-value activation centroids at the steering layer lie on smooth curves — a closed loop for direction, bent
+  arcs for speed and acceleration — that predict held-out values far better than a straight line.
+- Points to say:
+  - Held-out centroid error, line → curve: 144 → 56 (direction), 87 → 45 (speed), 86 → 51 (acceleration); the curve
+    wins at 12 / 12 validation-held-out values.
+  - Mostly curvature, not uneven spacing (87 % / 77 % for speed / acceleration); direction needs harmonics beyond the
+    ellipse.
+  - Low-dimensional: 6–8 PCA dimensions (participation ratio 1.5–3.1); Goodfire-style exact interpolation is 1.2–2.2 ×
+    worse on held-out centroids.
+  - Speed and acceleration on a distance scale: two offset curves, not one.
+- Evidence: `manifolds`: `manifold_loco`, `manifold_ladder`, `manifold_dimension`, `direction_harmonics`,
+  `speed_acceleration_manifold`, `figure_manifolds`.
+
+## Part 2 · Held-out design and isometry against a label null
+
+- Figure: none (table from `results/spline_steering/comparison_table.md`, Q2 rows)
+- Message: activation and behavior geometries correlate as Goodfire reports (0.89–0.99), but on a 1-D manifold both
+  follow label order; with a label-distance null the activation geodesic adds nothing globally.
+- Points to say:
+  - Held out = clips never used (test), values with no centroid in the fit, readouts fit on other clips at later layers.
+  - Split halves: activation and behavior curves from disjoint training clips (no shared noise).
+  - Local test per unit label: speed's curves speed up and slow down together (r 0.59, ceiling 0.62); direction and
+    acceleration do not.
+  - Caveat: equal-width value bins make behavior distances inherit label spacing partly by construction.
+- Evidence: `behavior`: `behavior_readouts`, `isometry`, `isometry_local`.
+
+## Part 2 · Paths along the curve stay natural at the steering layer
+
+- Figure: `results/spline_steering/spline_paths.png`
+- Message: steering along the curve keeps intermediate states looking like real clips; the straight chord cuts through
+  the loop and reads ambiguous — but only at the steering layer.
+- Points to say:
+  - Direction far-target chord midpoints bimodal in 47 %; readout length 0.62 vs 0.94; spline − chord naturalness
+    −0.12 at index 9.
+  - At index 18 every difference vanishes: every edit still reads the start.
+  - Same-layer path results are close to by construction; only downstream readouts are evidence.
+- Evidence: `spline_steering`: `spline_naturalness`, `spline_held_out`, `figure_spline_paths`.
+
+## Part 2 · Downstream, every method collapses alike; only timing nudges it
+
+- Figure: `results/spline_steering/spline_profile.png` (+ comparison table)
+- Message: spline, covariance line and probes all fall from ≈ 1 at index 9 to 0.07–0.14 at index 18 (spline and
+  covariance within 0.005); following the pooled-mean manifold doesn't change what reaches later blocks.
+- Points to say:
+  - The spline edit points 66–76 % differently from the covariance edit yet propagates identically.
+  - All share the uniform token edit; a correctly timed per-step edit adds +0.01–0.03, reversed timing hurts; below
+    the pre-declared 0.05 threshold, not confirmed on fresh clips.
+  - Strengths / limitations / failure cases: spline needs labelled balanced values and no extrapolation; probes need no
+    centroids; both equal at linear readouts by construction.
+- Evidence: `spline_steering`: `spline_setup`, `spline_scores`, `comparison_table`, `figure_spline_profile`.

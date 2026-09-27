@@ -14,7 +14,9 @@ Status markers: [done] results exist · [todo] not yet run.
    "Linear erasure removes the readout, not the information"
 6. **Multi-probe subspace steering on held-out clips and values** (2 min) [done] — slides "Steering works at the
    steering layer, not nine blocks later", "Where the edit is lost"
-7. **Spline steering and the comparison with probe steering** (2 min) [todo]
+7. **Spline steering and the comparison with probe steering** (3 min) [done] — slides "The representation is a curved,
+   low-dimensional manifold", "Held-out design and isometry against a label null", "Paths along the curve stay natural
+   at the steering layer", "Downstream, every method collapses alike; only timing nudges it"
 8. **Confounds and robustness** (1 min) [todo] — distance vs acceleration, motion type, flags
 9. **Limitations and open questions** (1 min) [todo]
-   So far: time-averaged per-patch vectors; simpler stimuli than the paper; one checkpoint; interpretation of unspecified protocol details; nullspace counts depend on the probe's regularization; only linear erasure and one kernel family tested; speed / acceleration labels equal distance travelled. same-layer steering evaluation follows by construction; uniform token edit; one steering / readout layer.
+   So far: time-averaged per-patch vectors; simpler stimuli than the paper; one checkpoint; interpretation of unspecified protocol details; nullspace counts depend on the probe's regularization; only linear erasure and one kernel family tested; speed / acceleration labels equal distance travelled; same-layer steering evaluation follows by construction; uniform token edit for every method; one steering / readout layer; "behavior" is our own readout (blurry for speed / acceleration); isometry dominated by label order.

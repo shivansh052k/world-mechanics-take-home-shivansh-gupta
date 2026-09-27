@@ -361,8 +361,8 @@
   },
   "code_hash_check": {
     "provenance": {
-      "utc": "2026-09-26T21:28:55+00:00",
-      "git_commit": "37b04d09f49b253551dc14169454bd4e7446209d",
+      "utc": "2026-09-27T05:51:56+00:00",
+      "git_commit": "9ebc5fdbaab17c520e7324203ed747fd1cfcb7c8",
       "git_dirty": false,
       "git_dirty_paths": [],
       "code": {
@@ -370,6 +370,7 @@
           "src/vjepa_physics/__init__.py": "46805134afc51f632e94fa29821b9fd8033e8b8835883c843a8512320a99bf5b",
           "src/vjepa_physics/activations.py": "546358dbb9995d0c6cb9b9c6a99f9bca62d94d64462dd699b62c2409c03347a4",
           "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
+          "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
           "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
           "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
           "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
@@ -381,6 +382,7 @@
           "src/vjepa_physics/geometry.py": "256346d61a8db494a463466ffe169f45c6148091ae3045802e4fcb9d6d1d9d22",
           "src/vjepa_physics/intervention.py": "b2f9f0ad3c6f72168f5c6413a4a6c8acbbf0cc54feedfee35ed0c114e23efad9",
           "src/vjepa_physics/joined.py": "00ab9b01265dfb10e1b45997e5c93fa6e4509574f9c074007425f1ca7535a473",
+          "src/vjepa_physics/manifolds.py": "c230daa8d2e0e79b3e2e9906b630f1c242bc3443366d4859937cc8cfc30b3c54",
           "src/vjepa_physics/metrics.py": "e1459995f2dff4ff26a0b0d37d5aee03023254488be6f565c15ce43371a3dd7b",
           "src/vjepa_physics/model.py": "5aac204fdd9806a1a3c128214de7514f26361556961826f53e5bea8222eaaae7",
           "src/vjepa_physics/nullspace.py": "dfc83ff0c9d9df19b507dfe6a094e146598da8f1bcc488062a9008c631e69628",
@@ -389,12 +391,12 @@
           "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
           "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
           "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
-          "src/vjepa_physics/steering.py": "279ec58d6ffe8ecb6f42454e4b5998464e0910a86fdf2ec8df13f87c8bb4566a",
+          "src/vjepa_physics/steering.py": "2aaf059c980a059425efef4d1e808ce3768a93dbdb9ddbf47448423dabeae0a0",
           "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
           "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
-          "scripts/check_evidence.py": "b81cff62bebf3e680d357c4422497692d07da08a4a7b1f925a2777fdb728bfed"
+          "scripts/check_evidence.py": "8989967d99db2d1f38531ebb36660c778b5c29ffa14c33dc475cb290dbf73614"
         },
-        "combined_sha256": "0d6db51a25af1d0b68043c4ee7c98cc1151a73deb7de9e21bae75ccaa0d8ad6a"
+        "combined_sha256": "a36d58385074b0f9a373af8f3459b348061c6830824d04fac29d410582b1eab4"
       },
       "versions": {
         "av": "18.1.0",
@@ -409,9 +411,9 @@
       }
     },
     "result": {
-      "head": "37b04d09f49b253551dc14169454bd4e7446209d",
-      "keys_checked": 46,
-      "commits_searched": 44,
+      "head": "9ebc5fdbaab17c520e7324203ed747fd1cfcb7c8",
+      "keys_checked": 68,
+      "commits_searched": 53,
       "keys": [
         {
           "subject": "probes",
@@ -680,18 +682,18 @@
         {
           "subject": "steering",
           "key": "steering_setup",
-          "recorded_commit": "cda056ec5522edf3476018919ff97161cdec4407",
-          "git_dirty": true,
+          "recorded_commit": "f121ee804ea61c822ba4ff49ee820c9314ae9068",
+          "git_dirty": false,
           "files": 26,
-          "matching_commit": null
+          "matching_commit": "f121ee804ea61c822ba4ff49ee820c9314ae9068"
         },
         {
           "subject": "steering",
           "key": "steering_cache",
-          "recorded_commit": "cda056ec5522edf3476018919ff97161cdec4407",
-          "git_dirty": true,
+          "recorded_commit": "f121ee804ea61c822ba4ff49ee820c9314ae9068",
+          "git_dirty": false,
           "files": 26,
-          "matching_commit": null
+          "matching_commit": "f121ee804ea61c822ba4ff49ee820c9314ae9068"
         },
         {
           "subject": "steering",
@@ -780,13 +782,186 @@
           "git_dirty": false,
           "files": 26,
           "matching_commit": "f0f89d03c5f5d083ebc0f5b62a6ac87cabf6167b"
+        },
+        {
+          "subject": "manifolds",
+          "key": "manifold_loco",
+          "recorded_commit": "d689519c81b40440ec543375d3733256256e66a5",
+          "git_dirty": false,
+          "files": 27,
+          "matching_commit": "d689519c81b40440ec543375d3733256256e66a5"
+        },
+        {
+          "subject": "manifolds",
+          "key": "speed_acceleration_manifold",
+          "recorded_commit": "56f119ad1874b7b4d93156d5986ae6baf1da2b4e",
+          "git_dirty": false,
+          "files": 27,
+          "matching_commit": "56f119ad1874b7b4d93156d5986ae6baf1da2b4e"
+        },
+        {
+          "subject": "manifolds",
+          "key": "manifold_ladder",
+          "recorded_commit": "d8bd3ee23759c8652905f680e3fdf8fc6849dd50",
+          "git_dirty": false,
+          "files": 27,
+          "matching_commit": "d8bd3ee23759c8652905f680e3fdf8fc6849dd50"
+        },
+        {
+          "subject": "manifolds",
+          "key": "manifold_dimension",
+          "recorded_commit": "b59dc1852209d4fcf8c1fb2b62140bea1e303e7b",
+          "git_dirty": false,
+          "files": 27,
+          "matching_commit": "b59dc1852209d4fcf8c1fb2b62140bea1e303e7b"
+        },
+        {
+          "subject": "manifolds",
+          "key": "direction_harmonics",
+          "recorded_commit": "b59dc1852209d4fcf8c1fb2b62140bea1e303e7b",
+          "git_dirty": false,
+          "files": 27,
+          "matching_commit": "b59dc1852209d4fcf8c1fb2b62140bea1e303e7b"
+        },
+        {
+          "subject": "manifolds",
+          "key": "figure_manifolds",
+          "recorded_commit": "f4caa57692184de8b9e4ca2821554271cf308e22",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "f4caa57692184de8b9e4ca2821554271cf308e22"
+        },
+        {
+          "subject": "behavior",
+          "key": "behavior_readouts",
+          "recorded_commit": "70072b9c63a7c780e49f562cf2483d46b6bd3379",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "70072b9c63a7c780e49f562cf2483d46b6bd3379"
+        },
+        {
+          "subject": "behavior",
+          "key": "isometry",
+          "recorded_commit": "e2e7a1dcc2e6f700a28bdb996173974489fc1b38",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "e2e7a1dcc2e6f700a28bdb996173974489fc1b38"
+        },
+        {
+          "subject": "behavior",
+          "key": "isometry_local",
+          "recorded_commit": "3629a50b44f979867980be1b5be18a2fdf875b91",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "3629a50b44f979867980be1b5be18a2fdf875b91"
+        },
+        {
+          "subject": "spline_steering",
+          "key": "spline_setup",
+          "recorded_commit": "db58c839abc297c080156d0e74be40f912458a44",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "db58c839abc297c080156d0e74be40f912458a44"
+        },
+        {
+          "subject": "spline_steering",
+          "key": "spline_direction_seen",
+          "recorded_commit": "48308a040cabb3a5aa39329476029a158ed416f5",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "48308a040cabb3a5aa39329476029a158ed416f5"
+        },
+        {
+          "subject": "spline_steering",
+          "key": "spline_direction_unseen",
+          "recorded_commit": "48308a040cabb3a5aa39329476029a158ed416f5",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "48308a040cabb3a5aa39329476029a158ed416f5"
+        },
+        {
+          "subject": "spline_steering",
+          "key": "spline_speed_seen",
+          "recorded_commit": "48308a040cabb3a5aa39329476029a158ed416f5",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "48308a040cabb3a5aa39329476029a158ed416f5"
+        },
+        {
+          "subject": "spline_steering",
+          "key": "spline_speed_unseen",
+          "recorded_commit": "48308a040cabb3a5aa39329476029a158ed416f5",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "48308a040cabb3a5aa39329476029a158ed416f5"
+        },
+        {
+          "subject": "spline_steering",
+          "key": "spline_acceleration_seen",
+          "recorded_commit": "48308a040cabb3a5aa39329476029a158ed416f5",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "48308a040cabb3a5aa39329476029a158ed416f5"
+        },
+        {
+          "subject": "spline_steering",
+          "key": "spline_acceleration_unseen",
+          "recorded_commit": "48308a040cabb3a5aa39329476029a158ed416f5",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "48308a040cabb3a5aa39329476029a158ed416f5"
+        },
+        {
+          "subject": "spline_steering",
+          "key": "spline_scores",
+          "recorded_commit": "4c43cd206984f8426799820b44a40e98309c3f2d",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "4c43cd206984f8426799820b44a40e98309c3f2d"
+        },
+        {
+          "subject": "spline_steering",
+          "key": "spline_naturalness",
+          "recorded_commit": "c8ca7ee597c16a785a8f075473de7c93a2f01a3e",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "c8ca7ee597c16a785a8f075473de7c93a2f01a3e"
+        },
+        {
+          "subject": "spline_steering",
+          "key": "spline_held_out",
+          "recorded_commit": "c9e91c2ee0e35c045d4b9fed070f73cec79f5c6f",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "c9e91c2ee0e35c045d4b9fed070f73cec79f5c6f"
+        },
+        {
+          "subject": "spline_steering",
+          "key": "comparison_table",
+          "recorded_commit": "a67e4542284300bd564096bd906f5c226249196d",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "a67e4542284300bd564096bd906f5c226249196d"
+        },
+        {
+          "subject": "spline_steering",
+          "key": "figure_spline_paths",
+          "recorded_commit": "4f6a22823ea9760b3d07d0993abc9a230e72e7c6",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "4f6a22823ea9760b3d07d0993abc9a230e72e7c6"
+        },
+        {
+          "subject": "spline_steering",
+          "key": "figure_spline_profile",
+          "recorded_commit": "3113ea13e964efd94f067fa1d1d84b6f654c499a",
+          "git_dirty": false,
+          "files": 28,
+          "matching_commit": "3113ea13e964efd94f067fa1d1d84b6f654c499a"
         }
       ],
-      "rerun_needed": [
-        "steering/steering_setup",
-        "steering/steering_cache"
-      ],
-      "passed": false
+      "rerun_needed": [],
+      "passed": true
     }
   },
   "rerun_identical_probing": {
