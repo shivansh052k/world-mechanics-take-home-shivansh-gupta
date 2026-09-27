@@ -309,7 +309,7 @@ def check_figure_confounds() -> dict:
     left.set_title("Probes applied across sets read distance (index 18)", fontsize=11, loc="left", color=INK)
     left.set_xlabel("true distance travelled over the clip (m)", fontsize=9)
     left.set_ylabel("cross-applied probe reading (m)", fontsize=9)
-    left.legend(loc="upper left", fontsize=8, frameon=False, labelcolor=INK_SECONDARY)
+    left.legend(loc="lower right", fontsize=8, frameon=False, labelcolor=INK_SECONDARY)  # empty below the diagonal
 
     rows = sorted((r for r in classifier["sites"].values() if r["plot_index"] is not None),
                   key=lambda r: r["plot_index"])
