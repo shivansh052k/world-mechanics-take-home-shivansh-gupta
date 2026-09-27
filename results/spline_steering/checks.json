@@ -7762,8 +7762,8 @@
   },
   "figure_spline_profile": {
     "provenance": {
-      "utc": "2026-09-27T05:47:05+00:00",
-      "git_commit": "3113ea13e964efd94f067fa1d1d84b6f654c499a",
+      "utc": "2026-09-27T21:07:00+00:00",
+      "git_commit": "ccd1e1380a9afb66938144a0070ca40b1bd7bd12",
       "git_dirty": false,
       "git_dirty_paths": [],
       "code": {
@@ -7773,6 +7773,7 @@
           "src/vjepa_physics/baselines.py": "8a87bdfda13eeaf7016f3b6fb2cd914d1bdd3bc83d6307d16e57063fc3bf77b7",
           "src/vjepa_physics/behavior.py": "75300d9a1a6a9690171a20817d47af71a83ec295315ff0fd39f265d79c94d563",
           "src/vjepa_physics/checkpoint.py": "9afc85eb08d50d32d5c44d907a68bf2b5071b3755731264a877519f2e49e8bdc",
+          "src/vjepa_physics/confounds.py": "b45f47dd102b1e589e96139364a6b49b225bd08a5404d0c2c5fe76f463a5fbf6",
           "src/vjepa_physics/curves.py": "34388d2af04d1457078294876e3e59d973c95a6bc21003deabfd7ada5265a405",
           "src/vjepa_physics/data.py": "4363a441e6a8f925844a1c3614341a79f5054ba3e3c03e4926985105de826c95",
           "src/vjepa_physics/decoders.py": "779bba40c5107d867e424776da2edb0c96e1b675711c651478278ed705edc735",
@@ -7791,13 +7792,14 @@
           "src/vjepa_physics/preprocess.py": "bc753170c9ce6c4f1419a774f1682b8dbe7339b224464457defc5bafcdd62b43",
           "src/vjepa_physics/probes.py": "671c75da48960d87eca63cc93260d4dedc66a3e846b378d707f3b9658aee6bd7",
           "src/vjepa_physics/reproducibility.py": "a15630a23996f1b0bea1fe052c549d79cb05fcc7db4dfd49bfa3840cf00b300f",
+          "src/vjepa_physics/robustness.py": "0bed621b86ed39f41cfb17fe7e68959827f2640f892fe264c49f31c4f19460bc",
           "src/vjepa_physics/splits.py": "63b6e40f95168cfae2d6473895466660c9ca57ff9fe7272603e91e9163fc4649",
           "src/vjepa_physics/steering.py": "2aaf059c980a059425efef4d1e808ce3768a93dbdb9ddbf47448423dabeae0a0",
           "src/vjepa_physics/tracking.py": "2436f87d95f7d5dabed723a854e298410f7b25eb2962cc1ec1672d0b80f4e803",
           "src/vjepa_physics/video.py": "50306d3f67f6349d9c0f0eeb8893446d68e5a95a91229d949e82b4421382ce50",
-          "scripts/check_spline_steering.py": "b585f57384ef6111315b2e0edd97c3001fa189a12fda73f2108d16a60c152100"
+          "scripts/check_spline_steering.py": "69ab8290ae556a9a034eaf4b0fae41ae6d94d2220f7908e084dc31967ba2ef14"
         },
-        "combined_sha256": "4c837152c654a6d9879a8c76f1b07cf8baf98f29f2fca24aa61b1b7397e8903d"
+        "combined_sha256": "b4b8d78c3c6f60025654db7bd4bc50b8ec98f4148f5c0d85bf5a6844c47edd21"
       },
       "versions": {
         "av": "18.1.0",
@@ -7814,7 +7816,7 @@
     "result": {
       "figure": {
         "path": "results/spline_steering/spline_profile.png",
-        "sha256": "aaf3e077f0c51101eb9f77c5b68ccd27a003a2817d2869789dfb96a55be11b5a"
+        "sha256": "d8b76be227796953a6ec8c55eef4ca013693c722814529adf16f43754d7ac7f5"
       },
       "sources": {
         "spline_scores": "4c43cd206984f8426799820b44a40e98309c3f2d"
