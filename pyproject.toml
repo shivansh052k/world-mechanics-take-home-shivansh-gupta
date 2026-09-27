@@ -7,7 +7,26 @@ name = "vjepa-physics"
 version = "0.1.0"
 description = "World Mechanics take-home: how V-JEPA 2 represents direction, speed and acceleration"
 requires-python = ">=3.13"
-dependencies = []
+# Direct dependencies at the exact versions every saved result was produced with; the full transitive set is pinned
+# in requirements.lock.txt.
+dependencies = [
+    "av==18.1.0",
+    "huggingface_hub==1.32.0",
+    "matplotlib==3.11.2",
+    "numpy==2.5.3",
+    "opencv-python-headless==5.0.0.93",
+    "scikit-learn==1.9.1",
+    "scipy==1.18.1",
+    "torch==2.14.0",
+    "torchvision==0.29.0",
+    "transformers==5.17.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]  # tests and the import check; not used by any result
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

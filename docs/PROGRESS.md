@@ -401,6 +401,15 @@ what's next.
   documented_fields, videos format, tracking documented_colour, patches patch_probes, nullspace nullspace_rounds,
   nullspace kernel_erasure, behavior behavior_readouts (the last missed in Claude Code's from-memory list; F-143).
   **Step C2 done** (committed with C3).
+- C3: `ruff check src scripts --select F` (pyflakes only; ruff installed into `.venv`, not in the lock): 2 unused
+  imports (`check_behavior.py` PERIOD, `check_manifolds.py` GRID) + duplicate `PAIR` in `confounds.py` removed; rerun
+  proof replaced by import smoke test (edits provably behaviour-neutral): ruff clean, all four scripts import. Commit
+  `065a052` (runner + cleanup). **Step C3 done.**
+- C4: `pyproject.toml` declares the 10 direct dependencies pinned to the result-producing versions (= provenance
+  versions) + `dev` extra (pytest, ruff); `pip install -e ".[dev]" --dry-run` would add only vjepa-physics, pytest,
+  iniconfig, pluggy (every pin already satisfied); `pip check` clean. **Step C4 done** (committed with C6).
+- C6 batch 1: `tests/test_metrics.py`, `test_geometry.py`, `test_confounds.py`, `test_robustness.py` (sklearn, hand
+  cases, kinematics, analytic k/d null) + pytest `testpaths`; **20 passed in 3.96 s** (as predicted).
 
 ### 2026-09-27 — Phase 7 (confounds and robustness) — passed
 - Gate steps 4–5: slide log +1 main ("The probes read distance, yet the motion profiles stay separable") +3 backups;
