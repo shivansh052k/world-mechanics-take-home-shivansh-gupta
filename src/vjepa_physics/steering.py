@@ -31,6 +31,9 @@ RANDOM_SEEDS = 3  # random directions per clip, target and probe count
 
 PATH_FRACTIONS = (0.25, 0.5, 0.75, 1.0)  # waypoints along a steering path (1.0 = the endpoint)
 
+PROFILE_SITES = tuple(f"block_{i}" for i in range(8, 18))  # indices 9-18: steering site and the blocks after it
+READOUT_ROLES = ("val_seen", "val_unseen")  # D-16: steering readouts are fit on validation clips only
+
 @dataclass(frozen=True)
 class ProbeSequence:
     """Rounds 1...K of one nullspace run. Round k's probe reads a raw pooled row x as x @ maps[k] + offsets[k]."""
@@ -374,3 +377,11 @@ def spline_arm_shifts(
     timed = np.stack([time_structured_shift(seq, maps, x, goal),
                       time_structured_shift(seq, maps, x, goal, reverse=True)])
     return {"uniform": np.concatenate(uniform), "timed": timed, "start": start, "clamped": bool(clamped[0])}
+
+
+def ridge_readout_map(probe) -> tuple[np.ndarray, np.ndarray]:
+    """Raw-space form of a fitted ridge probe: prediction = x @ weights + offset, weights (d, m), offset (m,)."""
+    d = len(probe.scaler.scale_)
+    weights = np.reshape(probe.ridge.coef_, (-1, d)).T / probe.scaler.scale_[:, None]
+    offset = np.atleast_1d(probe.ridge.intercept_) - probe.scaler.mean_ @ weights
+    return weights, offset

@@ -15,15 +15,17 @@ import torch
 from vjepa_physics.baselines import squared_distances
 from vjepa_physics.data import DATASETS
 from vjepa_physics.evidence import file_sha256, require_clean_code, save_result, verified_artifact
-from vjepa_physics.extraction import SITES, pool_time_steps
+from vjepa_physics.extraction import SITES, plot_index, pool_time_steps
 from vjepa_physics.joined import load_joined
 from vjepa_physics.manifolds import PCA_DIMS, fit_curve, fit_spacing_line, smoothing_grid
+from vjepa_physics.metrics import bootstrap_indices, percentile_interval
 from vjepa_physics.model import load_model, weights_fingerprint
-from vjepa_physics.probes import probe_targets, site_features
-from vjepa_physics.reproducibility import set_seeds
+from vjepa_physics.probes import fit_probe, probe_scores, probe_targets, site_features
+from vjepa_physics.reproducibility import SEED, set_seeds
 from vjepa_physics.steering import (
-    N_CLIPS, STEERING_SITE, chord_shifts, covariance_map, covariance_path_shifts, load_probe_sequence,
-    spline_arm_shifts, spline_arm_table, steered_features, time_covariance_maps,
+    N_CLIPS, PROFILE_SITES, READOUT_ROLES, STEERING_SITE, chord_shifts, covariance_map, covariance_path_shifts,
+    label_difference, load_probe_sequence, readout_values, ridge_readout_map, spline_arm_shifts, spline_arm_table,
+    steered_features, time_covariance_maps,
 )
 
 REPO = Path(__file__).resolve().parents[1]
@@ -41,6 +43,19 @@ FIRST_BLOCK, READOUT_BLOCK = 9, 17  # partial forward: the blocks after the stee
 REFERENCE_FINGERPRINT = "c865f524c1376e4452943b208d7d50ba588be9490604f235a3d9c9dc80804ede"
 SITE_TOLERANCE = 1e-4  # index-9 features vs stored + shift (absolute); fixed on validation clips before any test run
 STEP_TOLERANCE = 3e-4  # timed arms: each time step's pooled mean vs stored + that step's shift; fixed likewise
+
+BOOTSTRAP_RESAMPLES = 10_000
+MIN_READOUT_TRAIN_R2 = 0.9  # profile readouts, scored on train clips (as Phase 5)
+REPRODUCE_TOLERANCE = 1e-12  # relative: Phase 5 arms' gain / reduction vs steering_propagation's saved numbers
+DOWNSTREAM = slice(1, len(PROFILE_SITES))  # profile rows of indices 10-18 (pre-declared downstream summary)
+C11_MIN_DIFFERENCE = 0.05  # H-13 confirmation rule: interval excludes 0 and (e) - (c) >= 0.05
+HEADLINE_PAIRS = {  # name: (arm, reference arm, profile rows)
+    "spline_minus_covariance_idx9": ("spline_1", "covariance_1", slice(0, 1)),
+    "spline_minus_covariance_idx18": ("spline_1", "covariance_1", slice(9, 10)),
+    "time_minus_covariance_downstream": ("time_covariance_1", "covariance_1", DOWNSTREAM),
+    "reversed_minus_covariance_downstream": ("time_reversed_1", "covariance_1", DOWNSTREAM),
+    "time_minus_reversed_downstream": ("time_covariance_1", "time_reversed_1", DOWNSTREAM),
+}
 
 def kind_of(variable: str) -> str:
     return "loop" if variable == "direction" else "open"
@@ -295,10 +310,152 @@ def spline_run(variable: str, half: str) -> dict:
         "artifact": {"path": str(path.relative_to(REPO)), "sha256": file_sha256(path)},
         "passed": all(criteria.values()),
     }
+    
+
+def joined_runs(checks: Path, key_format: str, variable: str, names: tuple[str, ...]) -> list[dict]:
+    """Both halves of one variable's runs, read through their hashes (test_seen first)."""
+    halves = []
+    for half in HALVES:
+        with np.load(verified_artifact(checks, key_format.format(variable=variable, half=half))) as f:
+            halves.append({name: f[name] for name in names})
+    return halves
+
+
+def check_spline_scores() -> dict:
+    """Progress scores of every Phase 6 arm and of Phase 5's arms over indices 9-18 (no model; saved runs only).
+
+    Readouts: Phase 5's validation-fit ridge readouts (D-42 grid, LOO) at every index 9-18. Per arm and index: output-
+    space gain sum(achieved . intended) / sum(|intended|²), intended = f x (target output - unedited output); direction
+    also angle gain (intended f x the shorter-arc angle to the target); error reduction for f = 1 arms. Summary per arm:
+    gain at index 9 and 18, mean gain over 10-18 (pre-declared), seen / unseen targets. Headline pairs with paired
+    clip-bootstrap intervals; C11 rule. Passes if: every readout has an interior alpha and train R² >=
+    MIN_READOUT_TRAIN_R2; Phase 6 and Phase 5 runs hold the same clips; Phase 5 arms reproduce steering_propagation's
+    saved gain and reduction within REPRODUCE_TOLERANCE; everything finite.
+    """
+    propagation = json.loads(STEERING_CHECKS.read_text())["steering_propagation"]["result"]["variables"]
+    with np.load(verified_artifact(STEERING_CHECKS, "steering_setup")) as f:
+        steering_setup = {key: f[key] for key in f.files}
+    boot = bootstrap_indices(sum(N_CLIPS.values()), BOOTSTRAP_RESAMPLES, SEED)
+    ok: dict[str, list[bool]] = {name: [] for name in ("readout_alpha", "readout_quality", "same_ids", "finite")}
+    worst_reproduction = 0.0
+    result: dict = {}
+
+    for variable in DATASETS:
+        table = load_joined(variable)
+        roles, labels = table["role"], table["label"]
+        train = roles == "train"
+        y = probe_targets(variable, labels)
+        six = joined_runs(OUT, "spline_{variable}_{half}", variable, (
+            "ids", "target_label", "uniform_arms", "timed_arms", "features_uniform", "features_timed",
+            "features_covariance_1", "unedited_features"))
+        five = joined_runs(STEERING_CHECKS, "steer_{variable}_{half}", variable, (
+            "ids", "arm_kind", "arm_n", "features", "unedited_features"))
+        ids = np.concatenate([h["ids"] for h in six])
+        ok["same_ids"].append(bool(np.array_equal(ids, np.concatenate([h["ids"] for h in five]))))
+        targets = six[0]["target_label"]
+        unseen = steering_setup[f"{variable}_target_unseen"].astype(bool)
+        target_out = probe_targets(variable, targets).reshape(len(targets), -1)
+        unedited = np.concatenate([h["unedited_features"] for h in six])  # (N, 10, d) fp32
+
+        arms: dict[str, tuple[np.ndarray, float]] = {}  # name: ((N, T, S, 10, d) features, fraction)
+        uniform = np.concatenate([h["features_uniform"] for h in six])
+        for a, name in enumerate(six[0]["uniform_arms"].tolist()):
+            arms[name] = (uniform[:, :, a:a + 1], float(name.rsplit("_", 1)[1]))
+        timed = np.concatenate([h["features_timed"] for h in six])
+        for a, name in enumerate(six[0]["timed_arms"].tolist()):
+            arms[name] = (timed[:, :, a:a + 1], 1.0)
+        arms["covariance_1"] = (np.concatenate([h["features_covariance_1"] for h in six])[:, :, None], 1.0)
+        features5 = np.concatenate([h["features"] for h in five])
+        groups: dict[str, list[int]] = {}
+        for a, (kind, n) in enumerate(zip(five[0]["arm_kind"].tolist(), five[0]["arm_n"].tolist())):
+            groups.setdefault("covariance" if kind == "covariance" else f"{kind}_{n}", []).append(a)
+        for group, idx in groups.items():
+            arms[f"phase5_{group}"] = (features5[:, :, idx], 1.0)
+
+        n_clips, n_targets, n_sites = len(ids), len(targets), len(PROFILE_SITES)
+        num = {name: np.empty((n_clips, n_targets, n_sites)) for name in arms}
+        den = {name: np.empty((n_clips, n_targets, n_sites)) for name in arms}
+        profile: dict = {}
+        for j, site in enumerate(PROFILE_SITES):
+            x = site_features(table["activations"], site)
+            probe = fit_probe(x, y, roles, fit_roles=READOUT_ROLES)
+            weights, offset = ridge_readout_map(probe)
+            train_pred = probe.predict(x[train]).reshape(int(train.sum()), -1)
+            score = probe_scores(variable, labels[train], train_pred[:, 0] if train_pred.shape[1] == 1 else train_pred)
+            ok["readout_alpha"].append(probe.alpha_edge is None)
+            ok["readout_quality"].append(score["r2"] >= MIN_READOUT_TRAIN_R2)
+
+            out0 = unedited[:, j].astype(np.float64) @ weights + offset  # (N, m)
+            intended = target_out[None, :, :] - out0[:, None, :]  # (N, T, m)
+            value0 = readout_values(variable, out0)
+            unsteered = np.abs(label_difference(variable, value0[:, None], targets[None, :]))
+            record: dict = {}
+            for name, (feats, fraction) in arms.items():
+                out = feats[:, :, :, j].astype(np.float64) @ weights + offset  # (N, T, S, m)
+                achieved = out - out0[:, None, None, :]
+                i = np.broadcast_to(fraction * intended[:, :, None, :], achieved.shape)
+                num[name][:, :, j] = (achieved * i).sum(axis=(2, 3))
+                den[name][:, :, j] = (i**2).sum(axis=(2, 3))
+                rec = {"gain": float(num[name][:, :, j].sum() / den[name][:, :, j].sum())}
+                if fraction == 1.0:
+                    err = np.abs(label_difference(variable, readout_values(variable, out), targets[None, :, None]))
+                    rec["reduction"] = float(1 - err.mean() / unsteered.mean())
+                if variable == "direction":
+                    moved = label_difference(variable, readout_values(variable, out), value0[:, None, None])
+                    aim = np.broadcast_to(
+                        fraction * label_difference(variable, targets[None, :], value0[:, None])[:, :, None], moved.shape)
+                    rec["angle_gain"] = float((moved * aim).sum() / (aim**2).sum())
+                if name.startswith("phase5_"):
+                    saved = propagation[variable]["profile"][str(plot_index(site))]["arms"][name.removeprefix("phase5_")]
+                    for key in ("gain", "reduction"):
+                        worst_reproduction = max(worst_reproduction, abs(rec[key] - saved[key]) / max(1.0, abs(saved[key])))
+                record[name] = rec
+            profile[str(plot_index(site))] = {"alpha": probe.alpha, "train_scores": score, "arms": record}
+
+        def gains(name: str, mask: np.ndarray | None = None) -> np.ndarray:
+            m = np.ones(n_targets, dtype=bool) if mask is None else mask
+            return num[name][:, m].sum(axis=(0, 1)) / den[name][:, m].sum(axis=(0, 1))
+
+        def resampled(name: str) -> np.ndarray:
+            return num[name].sum(axis=1)[boot].sum(axis=1) / den[name].sum(axis=1)[boot].sum(axis=1)  # (R, sites)
+
+        summary = {}
+        for name in arms:
+            g, g_seen, g_unseen = gains(name), gains(name, ~unseen), gains(name, unseen)
+            summary[name] = {
+                "idx9": float(g[0]), "idx18": float(g[-1]), "downstream_mean": float(g[DOWNSTREAM].mean()),
+                "seen_targets": {"idx9": float(g_seen[0]), "idx18": float(g_seen[-1]),
+                                 "downstream_mean": float(g_seen[DOWNSTREAM].mean())},
+                "unseen_targets": {"idx9": float(g_unseen[0]), "idx18": float(g_unseen[-1]),
+                                   "downstream_mean": float(g_unseen[DOWNSTREAM].mean())},
+            }
+        headline = {}
+        for pair, (arm, reference, rows) in HEADLINE_PAIRS.items():
+            point = float(gains(arm)[rows].mean() - gains(reference)[rows].mean())
+            samples = resampled(arm)[:, rows].mean(axis=1) - resampled(reference)[:, rows].mean(axis=1)
+            headline[pair] = {"arm": arm, "reference": reference, "point": point,
+                              "ci": list(percentile_interval(samples))}
+        h13 = headline["time_minus_covariance_downstream"]
+        c11 = {"triggered": bool((h13["ci"][0] > 0 or h13["ci"][1] < 0) and h13["point"] >= C11_MIN_DIFFERENCE),
+               "rule": "interval of (e) - (c) mean gain over indices 10-18 excludes 0 and the difference is >= 0.05"}
+        record = {"n_clips": n_clips, "targets": targets.tolist(), "unseen_targets": unseen.tolist(),
+                  "profile": profile, "summary": summary, "headline": headline, "c11": c11}
+        ok["finite"].append("NaN" not in json.dumps(record) and "Infinity" not in json.dumps(record))
+        result[variable] = record
+
+    criteria = {name: all(v) for name, v in ok.items()} | {"phase5_reproduced": worst_reproduction <= REPRODUCE_TOLERANCE}
+    return {
+        "variables": result, "profile_sites": list(PROFILE_SITES), "readout_roles": list(READOUT_ROLES),
+        "gain_definition": "sum(achieved . intended) / sum(|intended|^2), intended = f x (target output - unedited output)",
+        "downstream_summary": "mean gain over indices 10-18", "worst_phase5_reproduction": worst_reproduction,
+        "bootstrap_resamples": BOOTSTRAP_RESAMPLES,
+        "criteria": criteria, "passed": all(criteria.values()),
+    }
 
 CHECKS = {
     "spline_setup": check_spline_setup,
     **{f"spline_{v}_{h}": partial(spline_run, v, h) for v in DATASETS for h in HALVES},
+    "spline_scores": check_spline_scores,
 }
 
 
