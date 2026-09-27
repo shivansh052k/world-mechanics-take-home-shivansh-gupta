@@ -9,7 +9,12 @@ import json
 import time
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.lines import Line2D
 from sklearn.preprocessing import StandardScaler
 
 from vjepa_physics.data import DATASETS
@@ -23,6 +28,7 @@ from vjepa_physics.manifolds import (
 )
 from vjepa_physics.metrics import bootstrap_indices, percentile_interval, resampled_mean
 from vjepa_physics.nullspace import train_scaler
+from vjepa_physics.plotting import DATASET_COLOUR, GRID, INK, INK_MUTED, INK_SECONDARY, SURFACE, style_axes
 from vjepa_physics.probes import probe_targets, site_features
 from vjepa_physics.reproducibility import SEED
 from vjepa_physics.steering import STEERING_SITE, covariance_map, load_probe_sequence
@@ -53,6 +59,12 @@ PERMUTATIONS = 1_000  # angle-shuffle null for the harmonic spectrum
 DENSE_POINTS = 2001  # curve samples for the curve's participation ratio
 HARMONIC_TOLERANCE = 1e-10  # relative: full-space trig fit vs the loop curve with all PCA axes
 
+FIGURE_MANIFOLDS = REPO / "results/manifolds/manifolds.png"
+FIGURE_DPI = 200
+REPRODUCE_TOLERANCE = 1e-12  # relative: figure's recomputed LOCO means vs the saved keys
+LABEL_MARKS = {"direction": (0.0, 90.0, 180.0, 270.0), "speed": (0.25, 1.0, 2.0, 3.0, 4.0),
+               "acceleration": (0.25, 2.5, 5.0, 7.5, 10.0)}  # values annotated along each curve
+UNITS = {"direction": "°", "speed": " m/s", "acceleration": " m/s²"}
 
 def kind_of(variable: str) -> str:
     return "loop" if variable == "direction" else "open"
@@ -526,13 +538,148 @@ def check_direction_harmonics() -> dict:
     return {"observation": True, "sites": result, "permutations": PERMUTATIONS, "max_harmonic": MAX_HARMONIC,
             "criteria": criteria, "passed": all(criteria.values())}
     
+def ladder_rungs(arrays: dict, ladder: dict, variable: str) -> dict[str, np.ndarray]:
+    """Per-value squared LOCO errors of each curve family at index 9, from the saved grid (and a recomputed
+    free-spacing B line and exact interpolation), in ladder order."""
+    prefix = f"{variable}_{STEERING_SITE}"
+    values, cents = arrays[f"{prefix}_values"], arrays[f"{prefix}_centroids"]
+    grid = arrays[f"{prefix}_loco_sq"]
+    a, b = (int(i) for i in arrays[f"{prefix}_selected"])
+    line_a = int(arrays[f"{prefix}_line_k_index"])
+    kind = kind_of(variable)
+    smooths = smoothing_grid(kind, values)
+    rec = ladder[variable]["rungs"]
+    if kind == "open":
+        rungs = {
+            "straight line\n(linear in label)": grid[line_a, 0],
+            "straight, free\nspacing (PC 1)": grid[0, smooths.index(rec["pc1_spacing"]["smooth"])],
+            "straight, free\nspacing (B)": loco_spacing_grid(
+                values, cents, [smooths[smooths.index(rec["covariance_spacing"]["smooth"])]])[0],
+            "curve\n(selected)": grid[a, b],
+        }
+    else:
+        rungs = {"ellipse\n(H = 1)": grid[line_a, 0], f"curve\n(H = {smooths[b]}, selected)": grid[a, b]}
+    rungs["exact\ninterpolation"] = loco_errors(kind, values, cents, PCA_DIMS[a], EXACT) ** 2
+    return rungs
+
+
+def check_figure_manifolds() -> dict:
+    """Figure (6.7): each variable's index-9 activation curve (2-D PCA view) and the Q1 ladder of held-out errors.
+
+    Row 1: the selected curve, the straight reference (covariance line; direction: the H = 1 ellipse), train
+    centroids and val-unseen centroids, projected on the first two PCs of the train centroids, with label values
+    marked. Row 2: paired per-value squared LOCO errors across curve families with the mean. Reads only saved
+    results (curves.npz through its hash, manifold_loco, manifold_ladder). Passes if: the recomputed rung means
+    equal manifold_ladder's and the exact-interpolation mean equals manifold_loco's within REPRODUCE_TOLERANCE;
+    the figure is written.
+    """
+    arrays, saved = saved_curves()
+    all_results = json.loads(OUT.read_text())
+    ladder = all_results["manifold_ladder"]["result"]["variables"]
+    ok: dict[str, list[bool]] = {"ladder_reproduced": [], "exact_reproduced": []}
+
+    fig, axes = plt.subplots(2, 3, figsize=(15.5, 10), facecolor=SURFACE,
+                             gridspec_kw={"height_ratios": [1.15, 1.0], "hspace": 0.42, "wspace": 0.28})
+    for col, variable in enumerate(DATASETS):
+        kind, colour = kind_of(variable), DATASET_COLOUR[variable]
+        values, cents, curve = selected_curve(arrays, variable, STEERING_SITE)
+        prefix = f"{variable}_{STEERING_SITE}"
+        u_cents = arrays[f"{prefix}_val_unseen_centroids"]
+        smooths = smoothing_grid(kind, values)
+        straight = fit_curve(kind, values, cents, None, smooths[0])
+        mean = cents.mean(axis=0)
+        _, s, vt = np.linalg.svd(cents - mean, full_matrices=False)
+        share = s**2 / (s**2).sum()
+
+        def project(points: np.ndarray) -> np.ndarray:
+            return (points - mean) @ vt[:2].T
+
+        dense = dense_values(variable, values)
+        if kind == "loop":
+            dense = np.append(dense, 360.0)  # close the drawn loop
+        ax = axes[0, col]
+        ref, cur = project(straight(dense)), project(curve(dense))
+        ax.plot(ref[:, 0], ref[:, 1], color=INK_SECONDARY, lw=1.2, ls=(0, (4, 3)), zorder=2)
+        ax.plot(cur[:, 0], cur[:, 1], color=colour, lw=2.0, zorder=3)
+        pc = project(cents)
+        ax.scatter(pc[:, 0], pc[:, 1], s=14, color=INK_MUTED, linewidths=0, zorder=4)
+        pu = project(u_cents)
+        ax.scatter(pu[:, 0], pu[:, 1], s=64, facecolors=SURFACE, edgecolors=colour, linewidths=1.8, zorder=5)
+        for v in LABEL_MARKS[variable]:
+            p = project(curve(np.array([v])))[0]
+            ax.scatter(p[0], p[1], s=22, color=INK, zorder=6, linewidths=0)
+            ax.annotate(f"{v:g}{UNITS[variable]}", p, xytext=(7, 5), textcoords="offset points",
+                        color=INK_SECONDARY, fontsize=9, zorder=7)
+        a, b = (int(i) for i in arrays[f"{prefix}_selected"])
+        setting = f"H {smooths[b]}" if kind == "loop" else f"λ {smooths[b]:.3g}"
+        ax.set_title(f"{variable.capitalize()}: k {PCA_DIMS[a]}, {setting} (index 9)", color=INK, fontsize=11, loc="left")
+        ax.set_xlabel(f"PC 1 ({share[0]:.0%} of centroid variance)", color=INK_SECONDARY)
+        ax.set_ylabel(f"PC 2 ({share[1]:.0%})", color=INK_SECONDARY)
+        ax.set_aspect("equal", adjustable="datalim")
+        style_axes(ax, grid_axis=None)
+
+        rungs = ladder_rungs(arrays, ladder, variable)
+        rec = ladder[variable]["rungs"]
+        names = {"open": ("line", "pc1_spacing", "covariance_spacing", "curve"), "loop": ("line", "curve")}[kind]
+        for (label, errors), key in zip(rungs.items(), names):
+            ok["ladder_reproduced"].append(
+                abs(float(np.nanmean(errors)) - rec[key]["mse"]) <= REPRODUCE_TOLERANCE * rec[key]["mse"])
+        exact_saved = saved[variable][STEERING_SITE]["exact_mse"]["selected_k"]
+        ok["exact_reproduced"].append(
+            abs(float(np.nanmean(rungs["exact\ninterpolation"])) - exact_saved) <= REPRODUCE_TOLERANCE * exact_saved)
+
+        ax = axes[1, col]
+        data = np.stack(list(rungs.values()))
+        keep = np.isfinite(data).all(axis=0)
+        xs = np.arange(len(rungs))
+        for j in np.flatnonzero(keep):
+            ax.plot(xs, data[:, j], color=INK_MUTED, lw=0.6, alpha=0.35, zorder=1)
+        means = data[:, keep].mean(axis=1)
+        ax.plot(xs, means, color=colour, lw=2.0, marker="o", ms=8, zorder=3)
+        for x, m in zip(xs, means):
+            ax.annotate(f"{m:.0f}", (x, m), xytext=(0, 9), textcoords="offset points", ha="center",
+                        color=INK, fontsize=9, zorder=4)
+        ax.set_xticks(xs, list(rungs), fontsize=8.5, color=INK_SECONDARY)
+        ax.set_ylim(bottom=0)
+        ax.set_ylabel("squared LOCO error (standardized units²)", color=INK_SECONDARY)
+        if kind == "open":
+            shares = ladder[variable]["spacing_share"]["covariance_split"]
+            note = f"uneven spacing {shares['share']:.0%} · curvature {1 - shares['share']:.0%} of the line → curve gain"
+        else:
+            gap = ladder[variable]["gaps"]["line_minus_curve"]
+            note = f"ellipse − curve {gap['mean']:.0f} [{gap['ci'][0]:.0f}, {gap['ci'][1]:.0f}]"
+        ax.set_title(note, color=INK_SECONDARY, fontsize=9.5, loc="left")
+        style_axes(ax)
+
+    handles = [
+        Line2D([], [], color=INK, lw=2.0, label="selected curve (colour = variable)"),
+        Line2D([], [], color=INK_SECONDARY, lw=1.2, ls=(0, (4, 3)), label="straight reference (covariance line; direction: H = 1 ellipse)"),
+        Line2D([], [], color=INK_MUTED, marker="o", ms=4, lw=0, label="train centroid (seen value)"),
+        Line2D([], [], color=INK, marker="o", ms=8, lw=0, markerfacecolor=SURFACE, label="held-out value (val-unseen centroid)"),
+    ]
+    fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False, fontsize=9, labelcolor=INK,
+               bbox_to_anchor=(0.5, 0.995))
+    fig.text(0.5, 0.47, "Held-out centroid error by curve family (leave one centroid out; grey = one seen value)",
+             ha="center", color=INK, fontsize=11)
+    FIGURE_MANIFOLDS.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(FIGURE_MANIFOLDS, dpi=FIGURE_DPI, facecolor=SURFACE, bbox_inches="tight")
+    plt.close(fig)
+
+    criteria = {name: all(v) for name, v in ok.items()} | {"figure_written": FIGURE_MANIFOLDS.exists()}
+    return {
+        "figure": {"path": str(FIGURE_MANIFOLDS.relative_to(REPO)), "sha256": file_sha256(FIGURE_MANIFOLDS)},
+        "sources": {key: all_results[key]["provenance"]["git_commit"] for key in ("manifold_loco", "manifold_ladder")},
+        "criteria": criteria, "passed": all(criteria.values()),
+    }
     
+
 CHECKS = {
     "manifold_loco": check_manifold_loco,
     "speed_acceleration_manifold": check_speed_acceleration_manifold,
     "manifold_ladder": check_manifold_ladder,
     "manifold_dimension": check_manifold_dimension,
     "direction_harmonics": check_direction_harmonics,
+    "figure_manifolds": check_figure_manifolds,
 }
 
 
