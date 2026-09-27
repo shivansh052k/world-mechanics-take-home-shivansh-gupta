@@ -561,6 +561,83 @@ what's next.
   idx 9–18**; max site difference 2.2–2.8e-5 (≤ 1e-4), max per-step 5.2–7.6e-5 (≤ 3e-4); ids, hooks, weights
   unchanged; finite; saved = computed. Claude Code's predictions: criteria ✓; time 5–6 min per half **wrong** (6.7–9.9).
   **Step 6.9 done.**
+- 6.14 part 1: `steering.PROFILE_SITES`, `READOUT_ROLES`, `ridge_readout_map`; `spline_scores` **passed** (5/5, clean
+  commit; profile readouts interior alpha, train R² ≥ 0.9; same ids; **Phase 5 arms reproduce `steering_propagation`
+  to 4.4e-16**; finite). Output-space gain, idx 9 / idx 18 / mean idx 10–18 (direction; speed; acceleration):
+  spline endpoint 0.986 / 0.069 / 0.269; 0.973 / 0.115 / 0.355; 0.956 / 0.118 / 0.306 — covariance line 0.986 /
+  0.069 / 0.268; 0.977 / 0.119 / 0.357; 0.957 / 0.119 / 0.308 — Phase 5 K−1 probes (n = 5 / 6 / 6) 0.980 / 0.068 /
+  0.271; 1.011 / 0.128 / 0.355; 0.993 / 0.136 / 0.317 — free-spacing line (h) 0.972 /
+  0.118 / 0.355; 0.961 / 0.118 / 0.308; random ≈ 0. **Headline (paired clip bootstrap):** spline − covariance at idx 9
+  +0.001 [−0.013, 0.016] / −0.004 [−0.008, 0.001] / −0.001 [−0.009, 0.007]; at idx 18 −0.0004 [−0.002, 0.001] /
+  −0.005 [−0.006, −0.003] / −0.0003 [−0.004, 0.004] → **no difference** despite 66–76 % different edit directions
+  (by construction at idx 9 for a linear readout that decodes the centroids: W·S(v) ≈ v; the downstream collapse is
+  the same). **H-13:** time-structured − covariance, mean idx 10–18: +0.030 [0.028, 0.032] / +0.013 [0.012, 0.015] /
+  +0.017 [0.015, 0.019]; reversed − covariance −0.026 / −0.007 / −0.007 (CIs below 0); structured − reversed +0.056 /
+  +0.020 / +0.024 → a small but real effect of time structure, with the correct time order helping and the reversed
+  order hurting; **C11 not triggered** (point < 0.05 everywhere). Chord and covariance gains are identical across f
+  (linear readout, by construction); spline path gain varies with f (direction 0.80 at f = 0.25). Planner's
+  prediction "(a) − (c) non-zero at idx 9" **not met**; collapse ✓. Claude Code's predictions: criteria ✓, covariance
+  idx 9 ≈ 0.95 ✓, spline lower at idx 9 **wrong** (equal), idx 18 small and no difference ✓, (e) − (c) small positive
+  ✓, (g) ≈ (e) **wrong** (order matters), C11 not triggered ✓.
+- 6.14 part 2: `spline_naturalness` **passed** (4/4, clean commit; saved readouts / curves reproduce the saved natural
+  train distances exactly, 0.0; same ids; sums to 1; finite). Readout (A), excess Hellinger over the clip's unedited
+  distance to the behavior curve, paired with behavior progress (gain of the nearest curve value). **Direction, idx 9
+  (same layer, labelled):** spline waypoints excess −0.018 to −0.028 (more natural than the unedited clip; natural
+  percentile 0.52–0.56 vs unedited 0.70), behavior gain 0.77–0.81, bimodal 0–0.7 %; chord f = 0.5 excess +0.103
+  (percentile 0.95, 52 % above natural 95th), bimodal 24 % (far targets 47 %), ridge (sin, cos) readout length 0.62
+  vs 0.94 unedited; covariance f = 0.5 alike (+0.113); endpoints: spline −0.026 (gain 0.81), covariance +0.062 (gain
+  0.65), Phase 5 K − 1 +0.042 (gain 0.70), random +0.006; time-structured = covariance at idx 9 (by construction).
+  **Headline, midpoint spline − chord (paired clip bootstrap):** idx 9 direction −0.124 [−0.138, −0.110] (far targets
+  −0.206, near −0.047), speed −0.046 [−0.055, −0.037], acceleration −0.015 [−0.025, −0.004]; **idx 18 0.000
+  [−0.004, 0.004] / −0.001 [−0.003, 0.000] / −0.001 [−0.004, 0.001]** → the spline's naturalness advantage exists at
+  the steering layer only (close to by construction there, C9) and vanishes downstream, where every edit's behavior
+  progress is ≤ 0.05 (direction). Claude Code's predictions: criteria ✓; unedited percentile 0.4–0.6 **wrong** for
+  direction (0.70 / 0.75); endpoint |excess| < 0.05 **wrong** for covariance (0.062) and K − 1 not the largest;
+  random ≈ 0 ✓; chord less natural, larger for far targets ✓; planner's bimodal chord midpoints ✓ (far 47 %);
+  readout length shorter ✓; idx 18 shrinks ✓; speed / acceleration ≈ 0 at idx 9 **wrong** (small but CI < 0).
+  Q3 + Q4 → planning chat.
+- Planning chat on Q3 / Q4 (→ D-51): accepted with wording fixes ("follows the curved pooled-mean manifold"; collapse
+  refutes the off-manifold explanation for the pooled mean only, points at H-13, which Q4 weakly supports; "within
+  0.005" not "indistinguishable"; metrics named: 66–76 % = median ‖δ_spline − δ_cov‖ / ‖δ_cov‖ on test clip × target
+  pairs, direction idx-18 numbers = output-space gain, Q4 not confirmed on fresh clips). Planner's prediction "(a) −
+  (c) non-zero at idx 9" recorded as wrong (near by construction). Same-layer observation kept: direction endpoints
+  differ only for the 16-bin readout (progress 0.81 vs 0.65; excess −0.026 vs +0.062). Before figures: (1) seen vs
+  test-unseen targets for spline and probes, progress and naturalness; (2) filled Q1 / Q2 numbers; (3) 6.12–6.14
+  table incl. H-01 / H-02, ‖δ‖ / clip distance per arm, random as floor; (4) time-structured spline (f) not run
+  (C11 threshold not met); (5) strengths / limitations / failure-cases table. Part 2 gets four slides (exception to
+  D-48's 1–2). Then gate (new subjects), report, talk outline, full docs pass. Claude Code's correction sent back:
+  "within 0.005" holds for spline vs covariance only; the K − 1 probes differ from both by up to 0.018 at idx 18
+  (speed 0.128 vs 0.115, acceleration 0.136 vs 0.118).
+- 6.14 part 3: `spline_held_out` (C7) **passed** (3/3; reproduces `spline_scores` / `spline_naturalness` to 1.8e-15).
+  Seen vs test-unseen targets (unseen = no centroid in the curve fit): spline gain idx 9 0.983 vs 0.989 (direction),
+  0.971 vs 0.974 (speed), 0.987 vs 0.942 (acceleration); idx 18 unchanged (0.069 / 0.068; 0.103 / 0.119; 0.119 /
+  0.118) → the spline interpolates held-out values as well as seen ones, except a −0.045 idx-9 dip for acceleration.
+  Paired on unseen targets: spline − covariance gain idx 18 −0.002 / 0.000 / −0.001 (CIs include 0), downstream mean
+  ≈ 0 except acceleration −0.006 [−0.009, −0.004]; spline − K − 1 probes idx 18 −0.002 / −0.009 [−0.014, −0.005] /
+  −0.021 [−0.026, −0.016] (probe edits are twice as long); excess idx 9 spline − covariance −0.083 / −0.047 / −0.034,
+  spline − probes −0.057 / −0.083 / −0.044 (all CIs < 0: the spline endpoint stays more natural at held-out values).
+  Claude Code's predictions: criteria ✓, spline unseen idx 9 ≥ 0.9 ✓, unseen ≈ seen within ±0.03 **wrong** for
+  acceleration (−0.045), spline − covariance CIs incl. 0 ✓ (except acceleration downstream), spline − probes
+  −0.01 to −0.02 ✓, excess spline − covariance ≈ 0 for speed / acceleration **wrong** (negative).
+- 6.14 part 4: `comparison_table` **passed** (4/4: 11 sources clean, none failed except `behavior_readouts`' recorded
+  bin criterion; K − 1 probe edit size computed from Phase 5's saved shifts 0.52 / 0.52 / 0.53 = F-134; saved =
+  rendered) → `results/spline_steering/comparison_table.md` (24 rows: Q1, H-01, H-02, Q2, Q3 incl. random floor and
+  held-out targets, Q4, with notes and source commits). Claude Code's review: numbers match; two cosmetic defects
+  ("-0.000", CI decimals in the local-speed row) → formatting fix and re-run (passed 4/4; review clean).
+- 6.14 part 5: `figure_spline_paths` → `results/spline_steering/spline_paths.png` (passed 3/3; example by a fixed
+  geometry rule: largest start–target angle, direction clip 318, 72° → 253.1°, 179.2°). Rows 1–2: 16-bin readout
+  along the spline path vs the chord at idx 9 / 18; row 3: midpoint spline − chord excess with CIs, all variables.
+  Idx 9: the spline path goes the short way round through 0°; the chord midpoint is bimodal (start and target
+  peaks). Idx 18: all steps sit on the start (collapse). Claude Code's reviews: (1) legend covering data, "start"
+  label on the idx-18 peak, top gap → figure-level legend, labels dropped (named in the title), top margin; (2) clean.
+- 6.14 part 6: `figure_spline_profile` → `results/spline_steering/spline_profile.png` (passed 3/3; covariance
+  replication profile = Phase 5's covariance profile at every index). Row 1: gain idx 9 → 18 for spline (hollow,
+  on top), covariance line, time-structured, K − 1 probes, random floor, idx-18 values in the panel titles; row 2:
+  Q4 differences with CIs and the C11 threshold. Claude Code's reviews: (1) idx-18 text over the idx-9 points,
+  invisible CIs → text moved, title notes CIs narrower than markers; (2) edit not saved (line 1019 unchanged) →
+  redone; (3) text across the steep drop → moved into titles; (4) old `set_title` overwrote the new one (duplicate)
+  → removed; (5) titles too wide, running into each other → shorter wording, font 9.5, wspace 0.2; (6) clean.
+  **Step 6.14 figures done.**
 
 ### 2026-09-26 — Phase 5 started (multi-probe subspace steering)
 - Phase 5 layout (`steering.py`, partial forward in `intervention.py`, `check_steering.py`) and design brief drafted
